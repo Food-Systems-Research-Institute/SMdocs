@@ -1,0 +1,71 @@
+---
+title: "Sustainability Metrics"
+---
+
+
+## First Header
+
+Reference something in the @sec-second. Also reference the @sec-references. Note that to use a citation style (csl), we have first have to download the style from [Citation Styles](https://citationstyles.org/) or [Zotero](https://zotero.org/styles) and put the file into the working directory.
+
+## Second Header {#sec-second}
+
+```{python}
+# | label: fig-polar
+# | fig-cap: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```
+
+Note that the engine will automatically be knitr (R) if there are ONLY R chunks in the doc. If there are both python and R chunks, it will use reticulate. In this case, you must NOT set the engine in the YAML header. Just leave it blank, and you can run both R and python together.
+
+## R Chunk
+
+Let's test out how an R chunk goes.
+
+```{r}
+#| label: fig-airquality
+#| fig-cap: "Temperature and ozone level."
+#| warning: false
+
+library(ggplot2)
+
+ggplot(airquality, aes(Temp, Ozone)) + 
+  geom_point() + 
+  geom_smooth(method = "loess")
+```
+
+
+
+## Text {#sec-text}
+
+Something something [@alexander2020QualitativeDataSharing]. More interesting things [@fenner2019DataCitationRoadmap; @boettiger2017IntroductionRockerDocker].
+
+## Callouts
+
+::: {.callout-note}
+Note that there are five types of callouts, including:
+`note`, `tip`, `warning`, `caution`, and `important`.
+:::
+
+::: {.callout-tip}
+## Wicked Title
+This is a tip callout with a title
+:::
+
+::: {.callout-tip}
+This is a tip callout without a title
+:::
+
+## References {#sec-references}
+

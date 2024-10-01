@@ -1,0 +1,19 @@
+/* css styles */
+
+body {
+    display: flex;
+    justify-content: center;
+    }
+    
+  /* .container {
+    width: 100%;
+    max-width: 4000px;
+    padding: 0 15px;
+  } */
+
+  /* .styled-output .cell-output pre {
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+  }
+   */

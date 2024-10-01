@@ -1,0 +1,62 @@
+[
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Sustainability Metrics",
+    "section": "",
+    "text": "Reference something in the Section 2. Also reference the Section 6. Note that to use a citation style (csl), we have first have to download the style from Citation Styles or Zotero and put the file into the working directory.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#first-header",
+    "href": "index.html#first-header",
+    "title": "Sustainability Metrics",
+    "section": "",
+    "text": "Reference something in the Section 2. Also reference the Section 6. Note that to use a citation style (csl), we have first have to download the style from Citation Styles or Zotero and put the file into the working directory.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#sec-second",
+    "href": "index.html#sec-second",
+    "title": "Sustainability Metrics",
+    "section": "Second Header",
+    "text": "Second Header\n\n\nCode\n# | label: fig-polar\n# | fig-cap: \"A line plot on a polar axis\"\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(\n  subplot_kw = {'projection': 'polar'} \n)\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\n\n\n\n\n\nNote that the engine will automatically be knitr (R) if there are ONLY R chunks in the doc. If there are both python and R chunks, it will use reticulate. In this case, you must NOT set the engine in the YAML header. Just leave it blank, and you can run both R and python together.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#r-chunk",
+    "href": "index.html#r-chunk",
+    "title": "Sustainability Metrics",
+    "section": "R Chunk",
+    "text": "R Chunk\nLet’s test out how an R chunk goes.\n\n\nCode\nlibrary(ggplot2)\n\nggplot(airquality, aes(Temp, Ozone)) + \n  geom_point() + \n  geom_smooth(method = \"loess\")\n\n\n\n\n\n\n\n\nFigure 1: Temperature and ozone level.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#sec-text",
+    "href": "index.html#sec-text",
+    "title": "Sustainability Metrics",
+    "section": "Text",
+    "text": "Text\nSomething something (Alexander et al. 2020). More interesting things (Fenner et al. 2019; Boettiger and Eddelbuettel 2017).",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#callouts",
+    "href": "index.html#callouts",
+    "title": "Sustainability Metrics",
+    "section": "Callouts",
+    "text": "Callouts\n\n\n\n\n\n\nNote\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nWicked Title\n\n\n\nThis is a tip callout with a title\n\n\n\n\n\n\n\n\nTip\n\n\n\nThis is a tip callout without a title",
+    "crumbs": [
+      "Home"
+    ]
+  }
+]

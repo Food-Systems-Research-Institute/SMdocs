@@ -1,0 +1,46 @@
+project:
+  type: website
+
+website:
+  title: "Food System Sustainability Metrics"
+  reader-mode: false
+  page-navigation: true
+  navbar:
+    search: true
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+    tools:
+      - icon: github
+        href: https://github.com/ChrisDonovan307
+  sidebar:
+    style: docked
+    search: true
+    contents:
+      - text: Home
+        href: index.qmd
+      - text: About
+        href: about.qmd
+      - section: This is a section
+        contents:
+          - index.qmd
+          - about.qmd
+          
+format:
+  html:
+    page-layout: article 
+    theme: sandstone
+    fig-align: left
+    css: styles.css
+    toc: true
+    toc-depth: 2
+    # number-sections: true
+    # number-depth: 2
+    code-fold: true
+    grid: 
+      body-width: 900px
+      sidebar-width: 200px
+      margin-width: 200px
+
+bibliography: 'ref.bib'
