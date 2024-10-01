@@ -1,6 +1,5 @@
 ---
 title: 'Sustainability Metrics Quarto Docs'
-date: "`r Sys.Date()`"
 output: 
     github_document:
         toc: true
