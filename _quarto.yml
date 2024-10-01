@@ -24,9 +24,10 @@ website:
         href: about.qmd
       - section: This is a section
         contents:
-          - index.qmd
+          - text: 'Testing testing'
+            href: index.qmd
           - about.qmd
-          
+          - testpage.qmd
 format:
   html:
     page-layout: article 
