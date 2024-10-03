@@ -1,0 +1,30 @@
+---
+title: "Environment"
+---
+
+## Soil Health
+
+```{r}
+suppressPackageStartupMessages(
+    pacman::p_load(
+        ggplot2,
+        janitor,
+        dplyr
+    )
+)
+
+data(iris)
+dat <- iris %>%
+    clean_names()
+dat %>% 
+    ggplot(aes(x = sepal_length, y = petal_length, color = species)) +
+    geom_jitter(
+        size = 3,
+        alpha = 0.6
+    ) +
+    theme_classic()
+```
+
+## Biodiversity
+
+## Climate

@@ -5,12 +5,13 @@ website:
   title: "Food System Sustainability Metrics"
   reader-mode: false
   page-navigation: true
+  bread-crumbs: false
   navbar:
     search: true
-    left:
-      - href: index.qmd
-        text: Home
-      - about.qmd
+    # left:
+    #   - href: index.qmd
+    #     text: Home
+    #   - about.qmd
     tools:
       - icon: github
         href: https://github.com/ChrisDonovan307
@@ -20,14 +21,20 @@ website:
     contents:
       - text: Home
         href: index.qmd
-      - text: About
-        href: about.qmd
-      - section: This is a section
+      - text: Framework
+        href: framework.qmd
+      - section: Dimensions
         contents:
-          - text: 'Testing testing'
-            href: index.qmd
-          - about.qmd
-          - testpage.qmd
+          - text: 'Environment'
+            href: pages/environment.qmd
+          - text: 'Economics'
+            href: pages/economics.qmd
+          - text: 'Production'
+            href: pages/production.qmd
+          - text: 'Health'
+            href: pages/health.qmd
+          - text: 'Social'
+            href: pages/social.qmd
 format:
   html:
     page-layout: article 
@@ -40,7 +47,7 @@ format:
     # number-depth: 2
     code-fold: true
     grid: 
-      body-width: 900px
+      # body-width: 900px
       sidebar-width: 200px
       margin-width: 200px
 

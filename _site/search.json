@@ -70,5 +70,183 @@
       "This is a section",
       "Test Page"
     ]
+  },
+  {
+    "objectID": "about.html",
+    "href": "about.html",
+    "title": "About",
+    "section": "",
+    "text": "This is the about page",
+    "crumbs": [
+      "Home",
+      "About"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html",
+    "href": "pages/environment.html",
+    "title": "Environment",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages(\n    pacman::p_load(\n        ggplot2,\n        janitor,\n        dplyr\n    )\n)\n\ndata(iris)\ndat &lt;- iris %&gt;%\n    clean_names()\ndat %&gt;% \n    ggplot(aes(x = sepal_length, y = petal_length, color = species)) +\n    geom_jitter(\n        size = 3,\n        alpha = 0.6\n    ) +\n    theme_classic()",
+    "crumbs": [
+      "Dimensions",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html#first-section",
+    "href": "pages/environment.html#first-section",
+    "title": "Environment",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages(\n    pacman::p_load(\n        ggplot2,\n        janitor,\n        dplyr\n    )\n)\n\ndata(iris)\ndat &lt;- iris %&gt;%\n    clean_names()\ndat %&gt;% \n    ggplot(aes(x = sepal_length, y = petal_length, color = species)) +\n    geom_jitter(\n        size = 3,\n        alpha = 0.6\n    ) +\n    theme_classic()",
+    "crumbs": [
+      "Home",
+      "Framework",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html#second-section",
+    "href": "pages/environment.html#second-section",
+    "title": "Environment",
+    "section": "Second Section",
+    "text": "Second Section",
+    "crumbs": [
+      "Home",
+      "Framework",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html#third-section",
+    "href": "pages/environment.html#third-section",
+    "title": "Environment",
+    "section": "Third Section",
+    "text": "Third Section",
+    "crumbs": [
+      "Home",
+      "Framework",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/social.html#racial-and-age-diversity",
+    "href": "pages/social.html#racial-and-age-diversity",
+    "title": "Social",
+    "section": "Racial and Age Diversity",
+    "text": "Racial and Age Diversity",
+    "crumbs": [
+      "Dimensions",
+      "Social"
+    ]
+  },
+  {
+    "objectID": "pages/production.html#business-infrastructure",
+    "href": "pages/production.html#business-infrastructure",
+    "title": "Production",
+    "section": "Business Infrastructure",
+    "text": "Business Infrastructure",
+    "crumbs": [
+      "Dimensions",
+      "Production"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html#soil-health",
+    "href": "pages/environment.html#soil-health",
+    "title": "Environment",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages(\n    pacman::p_load(\n        ggplot2,\n        janitor,\n        dplyr\n    )\n)\n\ndata(iris)\ndat &lt;- iris %&gt;%\n    clean_names()\ndat %&gt;% \n    ggplot(aes(x = sepal_length, y = petal_length, color = species)) +\n    geom_jitter(\n        size = 3,\n        alpha = 0.6\n    ) +\n    theme_classic()",
+    "crumbs": [
+      "Dimensions",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html#biodiversity",
+    "href": "pages/environment.html#biodiversity",
+    "title": "Environment",
+    "section": "Biodiversity",
+    "text": "Biodiversity",
+    "crumbs": [
+      "Dimensions",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html#climate",
+    "href": "pages/environment.html#climate",
+    "title": "Environment",
+    "section": "Climate",
+    "text": "Climate",
+    "crumbs": [
+      "Dimensions",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/economics.html#local-production-and-inputs",
+    "href": "pages/economics.html#local-production-and-inputs",
+    "title": "Economics",
+    "section": "Local Production and Inputs",
+    "text": "Local Production and Inputs",
+    "crumbs": [
+      "Dimensions",
+      "Economics"
+    ]
+  },
+  {
+    "objectID": "pages/economics.html#some-other-thing",
+    "href": "pages/economics.html#some-other-thing",
+    "title": "Economics",
+    "section": "Some other thing",
+    "text": "Some other thing",
+    "crumbs": [
+      "Dimensions",
+      "Economics"
+    ]
+  },
+  {
+    "objectID": "pages/health.html#mental-health",
+    "href": "pages/health.html#mental-health",
+    "title": "Health",
+    "section": "Mental Health",
+    "text": "Mental Health",
+    "crumbs": [
+      "Dimensions",
+      "Health"
+    ]
+  },
+  {
+    "objectID": "pages/health.html#trust-and-embededdness",
+    "href": "pages/health.html#trust-and-embededdness",
+    "title": "Health",
+    "section": "Trust and Embededdness",
+    "text": "Trust and Embededdness",
+    "crumbs": [
+      "Dimensions",
+      "Health"
+    ]
+  },
+  {
+    "objectID": "pages/health.html#nutrition-and-food-security",
+    "href": "pages/health.html#nutrition-and-food-security",
+    "title": "Health",
+    "section": "Nutrition and Food Security",
+    "text": "Nutrition and Food Security",
+    "crumbs": [
+      "Dimensions",
+      "Health"
+    ]
+  },
+  {
+    "objectID": "framework.html",
+    "href": "framework.html",
+    "title": "Framework",
+    "section": "",
+    "text": "This is the framework page.\n\n\n\nTree",
+    "crumbs": [
+      "Framework"
+    ]
   }
 ]
