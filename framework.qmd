@@ -1,9 +1,0 @@
----
-title: "Framework"
----
-
-This is the framework page.
-
-![Tree](tree.png){width=95%}
-
-<!-- (https://clipart-library.com/3/tree-open-clipart-07022019-clipart-xl.png) -->

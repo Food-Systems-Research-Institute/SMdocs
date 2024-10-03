@@ -4,7 +4,7 @@
     "href": "index.html",
     "title": "Sustainability Metrics",
     "section": "",
-    "text": "Reference something in the Section 2. Also reference the Section 6. Note that to use a citation style (csl), we have first have to download the style from Citation Styles or Zotero and put the file into the working directory.",
+    "text": "Reference something in the Section 3. Also reference the Section 6. Note that to use a citation style (csl), we have first have to download the style from Citation Styles or Zotero and put the file into the working directory.",
     "crumbs": [
       "Home"
     ]
@@ -14,17 +14,7 @@
     "href": "index.html#first-header",
     "title": "Sustainability Metrics",
     "section": "",
-    "text": "Reference something in the Section 2. Also reference the Section 6. Note that to use a citation style (csl), we have first have to download the style from Citation Styles or Zotero and put the file into the working directory.",
-    "crumbs": [
-      "Home"
-    ]
-  },
-  {
-    "objectID": "index.html#sec-second",
-    "href": "index.html#sec-second",
-    "title": "Sustainability Metrics",
-    "section": "Second Header",
-    "text": "Second Header\n\n\nCode\n# | label: fig-polar\n# | fig-cap: \"A line plot on a polar axis\"\n\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(\n  subplot_kw = {'projection': 'polar'} \n)\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\n\n\n\n\n\nNote that the engine will automatically be knitr (R) if there are ONLY R chunks in the doc. If there are both python and R chunks, it will use reticulate. In this case, you must NOT set the engine in the YAML header. Just leave it blank, and you can run both R and python together.",
+    "text": "Reference something in the Section 3. Also reference the Section 6. Note that to use a citation style (csl), we have first have to download the style from Citation Styles or Zotero and put the file into the working directory.",
     "crumbs": [
       "Home"
     ]
@@ -35,6 +25,16 @@
     "title": "Sustainability Metrics",
     "section": "R Chunk",
     "text": "R Chunk\nLet’s test out how an R chunk goes.\n\n\nCode\nlibrary(ggplot2)\n\nggplot(airquality, aes(Temp, Ozone)) + \n  geom_point() + \n  geom_smooth(method = \"loess\")\n\n\n\n\n\n\n\n\nFigure 1: Temperature and ozone level.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "index.html#sec-second",
+    "href": "index.html#sec-second",
+    "title": "Sustainability Metrics",
+    "section": "Second Header",
+    "text": "Second Header\nNote that the engine will automatically be knitr (R) if there are ONLY R chunks in the doc. If there are both python and R chunks, it will use reticulate. In this case, you must NOT set the engine in the YAML header. Just leave it blank, and you can run both R and python together.",
     "crumbs": [
       "Home"
     ]
@@ -60,76 +60,6 @@
     ]
   },
   {
-    "objectID": "testpage.html",
-    "href": "testpage.html",
-    "title": "Test Page",
-    "section": "",
-    "text": "ergd reg sh ths rht",
-    "crumbs": [
-      "Home",
-      "This is a section",
-      "Test Page"
-    ]
-  },
-  {
-    "objectID": "about.html",
-    "href": "about.html",
-    "title": "About",
-    "section": "",
-    "text": "This is the about page",
-    "crumbs": [
-      "Home",
-      "About"
-    ]
-  },
-  {
-    "objectID": "pages/environment.html",
-    "href": "pages/environment.html",
-    "title": "Environment",
-    "section": "",
-    "text": "Code\nsuppressPackageStartupMessages(\n    pacman::p_load(\n        ggplot2,\n        janitor,\n        dplyr\n    )\n)\n\ndata(iris)\ndat &lt;- iris %&gt;%\n    clean_names()\ndat %&gt;% \n    ggplot(aes(x = sepal_length, y = petal_length, color = species)) +\n    geom_jitter(\n        size = 3,\n        alpha = 0.6\n    ) +\n    theme_classic()",
-    "crumbs": [
-      "Dimensions",
-      "Environment"
-    ]
-  },
-  {
-    "objectID": "pages/environment.html#first-section",
-    "href": "pages/environment.html#first-section",
-    "title": "Environment",
-    "section": "",
-    "text": "Code\nsuppressPackageStartupMessages(\n    pacman::p_load(\n        ggplot2,\n        janitor,\n        dplyr\n    )\n)\n\ndata(iris)\ndat &lt;- iris %&gt;%\n    clean_names()\ndat %&gt;% \n    ggplot(aes(x = sepal_length, y = petal_length, color = species)) +\n    geom_jitter(\n        size = 3,\n        alpha = 0.6\n    ) +\n    theme_classic()",
-    "crumbs": [
-      "Home",
-      "Framework",
-      "Environment"
-    ]
-  },
-  {
-    "objectID": "pages/environment.html#second-section",
-    "href": "pages/environment.html#second-section",
-    "title": "Environment",
-    "section": "Second Section",
-    "text": "Second Section",
-    "crumbs": [
-      "Home",
-      "Framework",
-      "Environment"
-    ]
-  },
-  {
-    "objectID": "pages/environment.html#third-section",
-    "href": "pages/environment.html#third-section",
-    "title": "Environment",
-    "section": "Third Section",
-    "text": "Third Section",
-    "crumbs": [
-      "Home",
-      "Framework",
-      "Environment"
-    ]
-  },
-  {
     "objectID": "pages/social.html#racial-and-age-diversity",
     "href": "pages/social.html#racial-and-age-diversity",
     "title": "Social",
@@ -138,72 +68,6 @@
     "crumbs": [
       "Dimensions",
       "Social"
-    ]
-  },
-  {
-    "objectID": "pages/production.html#business-infrastructure",
-    "href": "pages/production.html#business-infrastructure",
-    "title": "Production",
-    "section": "Business Infrastructure",
-    "text": "Business Infrastructure",
-    "crumbs": [
-      "Dimensions",
-      "Production"
-    ]
-  },
-  {
-    "objectID": "pages/environment.html#soil-health",
-    "href": "pages/environment.html#soil-health",
-    "title": "Environment",
-    "section": "",
-    "text": "Code\nsuppressPackageStartupMessages(\n    pacman::p_load(\n        ggplot2,\n        janitor,\n        dplyr\n    )\n)\n\ndata(iris)\ndat &lt;- iris %&gt;%\n    clean_names()\ndat %&gt;% \n    ggplot(aes(x = sepal_length, y = petal_length, color = species)) +\n    geom_jitter(\n        size = 3,\n        alpha = 0.6\n    ) +\n    theme_classic()",
-    "crumbs": [
-      "Dimensions",
-      "Environment"
-    ]
-  },
-  {
-    "objectID": "pages/environment.html#biodiversity",
-    "href": "pages/environment.html#biodiversity",
-    "title": "Environment",
-    "section": "Biodiversity",
-    "text": "Biodiversity",
-    "crumbs": [
-      "Dimensions",
-      "Environment"
-    ]
-  },
-  {
-    "objectID": "pages/environment.html#climate",
-    "href": "pages/environment.html#climate",
-    "title": "Environment",
-    "section": "Climate",
-    "text": "Climate",
-    "crumbs": [
-      "Dimensions",
-      "Environment"
-    ]
-  },
-  {
-    "objectID": "pages/economics.html#local-production-and-inputs",
-    "href": "pages/economics.html#local-production-and-inputs",
-    "title": "Economics",
-    "section": "Local Production and Inputs",
-    "text": "Local Production and Inputs",
-    "crumbs": [
-      "Dimensions",
-      "Economics"
-    ]
-  },
-  {
-    "objectID": "pages/economics.html#some-other-thing",
-    "href": "pages/economics.html#some-other-thing",
-    "title": "Economics",
-    "section": "Some other thing",
-    "text": "Some other thing",
-    "crumbs": [
-      "Dimensions",
-      "Economics"
     ]
   },
   {
@@ -240,11 +104,158 @@
     ]
   },
   {
+    "objectID": "pages/economics.html#local-production-and-inputs",
+    "href": "pages/economics.html#local-production-and-inputs",
+    "title": "Economics",
+    "section": "Local Production and Inputs",
+    "text": "Local Production and Inputs",
+    "crumbs": [
+      "Dimensions",
+      "Economics"
+    ]
+  },
+  {
+    "objectID": "pages/economics.html#some-other-thing",
+    "href": "pages/economics.html#some-other-thing",
+    "title": "Economics",
+    "section": "Some other thing",
+    "text": "Some other thing",
+    "crumbs": [
+      "Dimensions",
+      "Economics"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html",
+    "href": "pages/environment.html",
+    "title": "Environment",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages(\n    pacman::p_load(\n        ggplot2,\n        janitor,\n        dplyr\n    )\n)\n\ndata(iris)\ndat &lt;- iris %&gt;%\n    clean_names()\ndat %&gt;% \n    ggplot(aes(x = sepal_length, y = petal_length, color = species)) +\n    geom_jitter(\n        size = 3,\n        alpha = 0.6\n    ) +\n    theme_classic()",
+    "crumbs": [
+      "Dimensions",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html#soil-health",
+    "href": "pages/environment.html#soil-health",
+    "title": "Environment",
+    "section": "",
+    "text": "Code\nsuppressPackageStartupMessages(\n    pacman::p_load(\n        ggplot2,\n        janitor,\n        dplyr\n    )\n)\n\ndata(iris)\ndat &lt;- iris %&gt;%\n    clean_names()\ndat %&gt;% \n    ggplot(aes(x = sepal_length, y = petal_length, color = species)) +\n    geom_jitter(\n        size = 3,\n        alpha = 0.6\n    ) +\n    theme_classic()",
+    "crumbs": [
+      "Dimensions",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html#biodiversity",
+    "href": "pages/environment.html#biodiversity",
+    "title": "Environment",
+    "section": "Biodiversity",
+    "text": "Biodiversity",
+    "crumbs": [
+      "Dimensions",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/environment.html#climate",
+    "href": "pages/environment.html#climate",
+    "title": "Environment",
+    "section": "Climate",
+    "text": "Climate",
+    "crumbs": [
+      "Dimensions",
+      "Environment"
+    ]
+  },
+  {
+    "objectID": "pages/production.html#business-infrastructure",
+    "href": "pages/production.html#business-infrastructure",
+    "title": "Production",
+    "section": "Business Infrastructure",
+    "text": "Business Infrastructure",
+    "crumbs": [
+      "Dimensions",
+      "Production"
+    ]
+  },
+  {
     "objectID": "framework.html",
     "href": "framework.html",
     "title": "Framework",
     "section": "",
-    "text": "This is the framework page.\n\n\n\nTree",
+    "text": "This is the framework page.\n\n\n\nTree\n\n\n\n\n\nCode\nimport sys\nprint(sys.prefix)\nprint(sys.version)\n\n\nC:\\Users\\cdonov12\\AppData\\Local\\R-MINI~1\\envs\\myenv\n3.12.6 | packaged by conda-forge | (main, Sep 30 2024, 17:48:58) [MSC v.1941 64 bit (AMD64)]\n\n\nThis should show the environment\n\n\nCode\nimport sys\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(\n  subplot_kw = {'projection': 'polar'} \n)\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\n\n\n\n\nFigure 1: A line plot on a polar axis",
+    "crumbs": [
+      "Framework"
+    ]
+  },
+  {
+    "objectID": "pages/home.html",
+    "href": "pages/home.html",
+    "title": "Sustainability Metrics",
+    "section": "",
+    "text": "Reference something in the Section 3. Also reference the Section 6. Note that to use a citation style (csl), we have first have to download the style from Citation Styles or Zotero and put the file into the working directory.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "pages/home.html#first-header",
+    "href": "pages/home.html#first-header",
+    "title": "Sustainability Metrics",
+    "section": "",
+    "text": "Reference something in the Section 3. Also reference the Section 6. Note that to use a citation style (csl), we have first have to download the style from Citation Styles or Zotero and put the file into the working directory.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "pages/home.html#r-chunk",
+    "href": "pages/home.html#r-chunk",
+    "title": "Sustainability Metrics",
+    "section": "R Chunk",
+    "text": "R Chunk\nLet’s test out how an R chunk goes.\n\n\nCode\nlibrary(ggplot2)\n\nggplot(airquality, aes(Temp, Ozone)) + \n  geom_point() + \n  geom_smooth(method = \"loess\")\n\n\n\n\n\n\n\n\nFigure 1: Temperature and ozone level.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "pages/home.html#sec-second",
+    "href": "pages/home.html#sec-second",
+    "title": "Sustainability Metrics",
+    "section": "Second Header",
+    "text": "Second Header\nNote that the engine will automatically be knitr (R) if there are ONLY R chunks in the doc. If there are both python and R chunks, it will use reticulate. In this case, you must NOT set the engine in the YAML header. Just leave it blank, and you can run both R and python together.",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "pages/home.html#sec-text",
+    "href": "pages/home.html#sec-text",
+    "title": "Sustainability Metrics",
+    "section": "Text",
+    "text": "Text\nSomething something (Alexander et al. 2020). More interesting things (Fenner et al. 2019; Boettiger and Eddelbuettel 2017).",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "pages/home.html#callouts",
+    "href": "pages/home.html#callouts",
+    "title": "Sustainability Metrics",
+    "section": "Callouts",
+    "text": "Callouts\n\n\n\n\n\n\nNote\n\n\n\nNote that there are five types of callouts, including: note, tip, warning, caution, and important.\n\n\n\n\n\n\n\n\nWicked Title\n\n\n\nThis is a tip callout with a title\n\n\n\n\n\n\n\n\nTip\n\n\n\nThis is a tip callout without a title",
+    "crumbs": [
+      "Home"
+    ]
+  },
+  {
+    "objectID": "pages/framework.html",
+    "href": "pages/framework.html",
+    "title": "Framework",
+    "section": "",
+    "text": "This is the framework page.\n\n\n\nTree\n\n\n\n\n\nCode\nimport sys\nprint(sys.prefix)\nprint(sys.version)\n\n\nC:\\Users\\cdonov12\\AppData\\Local\\R-MINI~1\\envs\\myenv\n3.12.6 | packaged by conda-forge | (main, Sep 30 2024, 17:48:58) [MSC v.1941 64 bit (AMD64)]\n\n\nThis should show the environment\n\n\nCode\nimport sys\nimport numpy as np\nimport matplotlib.pyplot as plt\n\nr = np.arange(0, 2, 0.01)\ntheta = 2 * np.pi * r\nfig, ax = plt.subplots(\n  subplot_kw = {'projection': 'polar'} \n)\nax.plot(theta, r)\nax.set_rticks([0.5, 1, 1.5, 2])\nax.grid(True)\nplt.show()\n\n\n\n\n\n\n\n\nFigure 1: A line plot on a polar axis",
     "crumbs": [
       "Framework"
     ]
