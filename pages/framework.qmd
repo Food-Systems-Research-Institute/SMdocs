@@ -1,11 +1,12 @@
 ---
 title: "Framework"
-jupyter: python3
+# jupyter: python3
 ---
 
 This is the framework page.
 
-![Tree](../figures/tree.png){width=95%}
+![Tree](../figures/tree.png){width="95%"}
+
 
 ```{python}
 import sys
