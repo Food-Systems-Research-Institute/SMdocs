@@ -1,0 +1,4 @@
+- source: project
+  quarto-pub:
+    - id: 97e6a853-0724-4fd7-907c-8c51ac9fbac2
+      url: 'https://christopher-donovan.quarto.pub/food-system-sustainability-metrics'

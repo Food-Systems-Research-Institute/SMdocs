@@ -1,0 +1,15 @@
+---
+title: "Framework"
+execute:
+    cache: true
+---
+
+This is the framework page. Add some conceptual stuff here. Cite some papers.
+
+## Radial Plot
+
+Big round pretty graph, but less practical
+
+## Phylogeny Tree
+
+Less attractive, but more comprehensible way to learn about dimensions, indices, indicators, and metrics

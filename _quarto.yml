@@ -2,13 +2,16 @@ project:
   type: website
 
 website:
-  title: "Food System Sustainability Metrics"
+  title: "Food Systems Research Center"
   reader-mode: false
   page-navigation: true
   bread-crumbs: false
   navbar:
+    logo: images/uvm_logo.png
     search: true
     tools:
+      - icon: tree
+        href: https://www.uvm.edu/cals/food-systems-research
       - icon: github
         href: https://github.com/ChrisDonovan307
   sidebar:
@@ -16,21 +19,31 @@ website:
     search: true
     contents:
       - text: Home
-        href: pages/home.qmd
+        href: pages/01_home.qmd
       - text: Framework
-        href: pages/framework.qmd
+        href: pages/02_framework.qmd
       - section: Dimensions
         contents:
           - text: 'Environment'
-            href: pages/environment.qmd
+            href: pages/03.1_environment.qmd
           - text: 'Economics'
-            href: pages/economics.qmd
+            href: pages/03.2_economics.qmd
           - text: 'Production'
-            href: pages/production.qmd
+            href: pages/03.3_production.qmd
           - text: 'Health'
-            href: pages/health.qmd
+            href: pages/03.4_health.qmd
           - text: 'Social'
-            href: pages/social.qmd
+            href: pages/03.5_social.qmd
+      - section: Analysis
+        contents:
+          - text: 'Visualization'
+            href: pages/04.1_graphs.qmd
+          - text: 'Correlation'
+            href: pages/04.2_correlations.qmd
+          - text: 'Principal Components'
+            href: pages/04.3_pca.qmd
+          - text: 'Regression'
+            href: pages/04.4_regression.qmd
 format:
   html:
     page-layout: article 
@@ -43,8 +56,8 @@ format:
     # number-depth: 2
     code-fold: true
     grid: 
-      # body-width: 900px
+      body-width: 900px
       sidebar-width: 200px
       margin-width: 200px
 
-bibliography: 'ref.bib'
+bibliography: fsrc.bib

@@ -1,0 +1,42 @@
+---
+title: "Sustainability Metrics"
+---
+
+::: {.callout-note collapse='false'}
+The Sustainability Metrics project, as well as this site itself, are both works in progress. All data and analyses shown here are preliminary. All color schemes will be improved upon. If you have any questions, comments, or suggestions, feel free to reach out to Chris at [christopher.donovan@uvm.edu](mailto:christopher.donovan@uvm.edu), or find us at the [UVM Food Systems Research Center](https://www.uvm.edu/cals/food-systems-research) website.
+:::
+
+## Introduction{#sec-intro}
+
+Food systems are increasingly recognized as an essential piece of sustainable development [@untitednationsTransformingOurWorld2015]. Approximately 42% of world's population depend on agriculture for employment, which is increasingly challenging in the face of farm consolidationm, changing consumption patterns, and climate change [@gillerFutureFarmingWho2021; @aznar-sanchezWorldwideResearchTrends2019]. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years [@crippaFoodSystemsAre2021; @ortiz-bobeaAnthropogenicClimateChange2021]. [Add line about hunger, nutrition, food security.]
+
+Consequently, the sustainability of food systems is paramount in meeting the needs of the population without exceeding planetary boundaries. However, there is little consensus on how to define, let alone measure food system sustainability [@allen2016ModelingSustainableFood; @bene2019GlobalMapIndicators]. And while there is an abundance of research at the global level [@bathaei2023SystematicReviewAgricultural; @chaudhary2018MultiindicatorSustainabilityAssessment], there exists a conspicuous gap in understanding at the local, regional, or landscape level [@daleLandscapePerspectiveSustainability2012].
+
+The Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The work is led by the Food Systems Research Center at the University of Vermont in partnership with the USDA Agricultural Research Service in Burlington, Vermont. Primary research in developing and measuring indicators of sustainability is ongoing. For now, what you will find here is a growing collection of secondary data, visualizations, and preliminary analyses to help inform the project as well as the public on the sustainability of the New England food system.
+
+Metadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS [Food and Agriculture Mapper and Explorer](https://www.ams.usda.gov/services/local-regional/research-publications/fame) in particular, as many of the data shown here were cleaned and compiled in their data warehouse. 
+
+## Navigation
+
+To do:
+
+* what to find on this website
+  + conceptual framework
+  + secondary data sources
+  + preliminary exploratory analyses
+* link to Shiny App for interactive maps and graphs
+* add some images to make this page less depressing
+
+## License
+
+<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
+
+This work is licensed under the 
+<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. 
+
+<a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text"><img alt="GPLv3 License" style="border-width:0" src="https://www.gnu.org/graphics/gplv3-or-later-sm.png" /></a>
+
+The code is licensed under the <a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text">GNU General Public License v3</a>.
+
+## References {#sec-references}
+
