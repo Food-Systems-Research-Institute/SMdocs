@@ -1,5 +1,14 @@
 ---
 title: "Sustainability Metrics"
+author: 
+  - name: Chris Donovan
+    email: christopher.donovan@uvm.edu
+    affiliation:
+      - name: UVM Food Systems Research Center
+        city: Burlington
+        state: Vermont
+        url: https://www.uvm.edu/cals/food-systems-research
+date: today
 ---
 
 ::: {.callout-note collapse='false'}

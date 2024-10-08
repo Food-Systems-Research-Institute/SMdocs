@@ -1,0 +1,78 @@
+---
+title: Correlations
+---
+
+## Introduction
+
+Talking points:
+
+* Interactions are important
+* Probably cite Kate Schneider [@schneider2023StateFoodSystems] 
+* Something about causal models and Allen and Prosperi [@allen2016ModelingSustainableFood].
+
+## Wrangle Data
+
+```{r}
+#| label: clean_data
+
+pacman::p_load(
+  dplyr,
+  GGally,
+  ggplot2,
+  tidyr,
+  tibble
+)
+
+dat <- readRDS('data/aggregated_metrics.rds')
+source('dev/data_pipeline_functions.R')
+
+# What variables should we use?
+# First let's just take the last year of everything
+dat <- dat %>% 
+  filter(str_length(fips) == 5) %>% 
+  get_latest_year()
+
+# Pick vars
+# dat$variable_name %>% 
+#   unique %>% 
+#   sort
+
+# Take anything mildly relevant
+pattern <- paste0(c(
+  '^agri', 'd2c', '^edu', '^groc', 'insecurity', 'median_rent$', 
+  'median_rent_as_perc', '^n_house', '^number_', 'refrig', 'pth$', '_pct$', 
+  '^wic'), collapse = '|')
+dat <- dat %>% 
+  filter(str_detect(variable_name, pattern)) %>% 
+  mutate(variable_name = paste0(variable_name, '_', year), .keep = 'unused') %>%
+  pivot_wider(
+    names_from = 'variable_name',
+    values_from = 'value'
+  ) %>% 
+  mutate(across(c(2:last_col()), as.numeric))
+
+# What to do about Connecticut? Try using only new governing regions
+dat <- filter(dat, !str_detect(fips, '^09.*[1-9]$')) %>% 
+  tibble::column_to_rownames('fips')
+```
+
+## Correlation Plot
+
+```{r}
+#| label: correlation_plot
+
+get_str(dat)
+cor(dat)
+skimr::skim(dat)
+
+ggcorr(
+  dat,
+  cor_matrix = cor(dat, use = 'pairwise'),
+  geom = 'tile',
+  layout.exp = 15,
+)
+
+```
+
+## References
+

@@ -110,7 +110,7 @@
     "href": "pages/02_framework.html",
     "title": "Framework",
     "section": "",
-    "text": "This is the framework page. Add some conceptual stuff here. Cite some papers.",
+    "text": "This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages.",
     "crumbs": [
       "Framework"
     ]
@@ -120,17 +120,7 @@
     "href": "pages/02_framework.html#radial-plot",
     "title": "Framework",
     "section": "Radial Plot",
-    "text": "Radial Plot\nBig round pretty graph, but less practical",
-    "crumbs": [
-      "Framework"
-    ]
-  },
-  {
-    "objectID": "pages/02_framework.html#phylogeny-tree",
-    "href": "pages/02_framework.html#phylogeny-tree",
-    "title": "Framework",
-    "section": "Phylogeny Tree",
-    "text": "Phylogeny Tree\nLess attractive, but more comprehensible way to learn about dimensions, indices, indicators, and metrics",
+    "text": "Radial Plot\n\n\nCode\n## Load packages\npacman::p_load(\n  ggraph,\n  igraph,\n  dplyr,\n  RColorBrewer,\n  viridisLite\n)\n\n\n## Load data and add an origin level\ndat &lt;- readRDS('../data/tree_dat.rds') %&gt;% \n  mutate(Framework = 'Sustainability') %&gt;% \n  select(Framework, Dimension:Indicator)\n\n\n## Make edges\n# include groupings by dimension, then combine them\nedges &lt;- list()\nedges$sm_dim &lt;- dat %&gt;% \n  select(Framework, Dimension) %&gt;% \n  unique() %&gt;% \n  rename(from = Framework, to = Dimension) %&gt;% \n  mutate(group = to)\nedges$dim_ind &lt;- dat %&gt;% \n  select(Dimension, Index) %&gt;% \n  unique() %&gt;% \n  rename(from = Dimension, to = Index) %&gt;% \n  mutate(group = from)\nedges$ind_ind &lt;- dat %&gt;% \n  select(Index, Indicator) %&gt;% \n  unique() %&gt;% \n  rename(from = Index, to = Indicator) %&gt;% \n  mutate(group = edges$dim_ind$from[match(.$from, edges$dim_ind$to)])\nedges &lt;- bind_rows(edges)\n\n\n## Make vertices\n# Each line is a single vertex (dimension, index, or indicator)\n# We are just giving them random values to control point size for now\nvertices = data.frame(\n  name = unique(c(as.character(edges$from), as.character(edges$to))) , \n  value = runif(nrow(edges) + 1)\n) \n\n# Add the dimension groupings to the vertices as well\nvertices$group = edges$group[match(vertices$name, edges$to)]\n\n# Calculate the angles to arrange indicator labels\nvertices$id = NA\nmyleaves = which(is.na(match(vertices$name, edges$from)))\nnleaves = length(myleaves)\nvertices$id[myleaves] = seq(1:nleaves)\nvertices$angle = 90 - 360 * vertices$id / nleaves\n\n# Calculate alignment of indicator labels\nvertices$hjust &lt;- ifelse(vertices$angle &lt; -90, 1, 0)\n\n# Flip label angles around 180 degrees if they are facing the wrong way\nvertices$angle &lt;- ifelse(vertices$angle &lt; -90, vertices$angle + 180, vertices$angle)\n\n\n## Create graph\n# Make ggraph object from edges and vertices\ngraph &lt;- graph_from_data_frame(edges, vertices = vertices)\n\n# Plot the graph\nggraph(graph, layout = 'dendrogram', circular = TRUE) +\n  \n  # Color edges by dimension\n  geom_edge_diagonal(aes(color = group), width = 0.5) +\n  \n  # Create text for indicators using angles, hjust, and dimension groupings\n  geom_node_text(\n    aes(\n      x = x * 1.15,\n      y = y * 1.15,\n      filter = leaf,\n      label = name,\n      angle = angle,\n      hjust = hjust,\n      colour = group\n    ),\n    size = 2.7,\n    alpha = 1\n  ) +\n  \n  # Make the points for indicators based on dimension groupings\n  geom_node_point(aes(\n    filter = leaf,\n    x = x * 1.07,\n    y = y * 1.07,\n    colour = group,\n    size = value,\n    alpha = 0.2\n  )) +\n  \n  # Label the dimensions within the graph\n  geom_node_label(\n    aes(label = ifelse(name == group, name, NA)),\n    label.padding = unit(0.2, \"lines\"),\n    label.r = unit(0.3, \"lines\"),\n    label.size = 0.1,\n    size = 3\n  ) +\n  \n  # Various formatting options\n  scale_colour_manual(values = brewer.pal(5, 'Set1')) +\n  scale_edge_color_manual(values = brewer.pal(5, 'Set1')) +\n  scale_size_continuous(range = c(0.1, 7)) +\n  theme_void() +\n  theme(\n    legend.position = \"none\",\n    plot.margin = unit(c(0, 0, 0, 0), \"cm\")\n  ) +\n  expand_limits(x = c(-2, 2), y = c(-2, 2))\n\n\n\n\n\nRadial plot of Sustainability Metrics framework\n\n\n\n\nNote that the size of the leaf nodes doesn’t actually mean anything right now - they are just randomly generated. Eventually we could weight this by eigenvalues within dimensions.",
     "crumbs": [
       "Framework"
     ]
@@ -188,6 +178,72 @@
     "crumbs": [
       "Dimensions",
       "Health"
+    ]
+  },
+  {
+    "objectID": "pages/04.1_graphs.html",
+    "href": "pages/04.1_graphs.html",
+    "title": "Visualization",
+    "section": "",
+    "text": "This is a first pass at making some interactive visualizations with metrics from secondary data.",
+    "crumbs": [
+      "Analysis",
+      "Visualization"
+    ]
+  },
+  {
+    "objectID": "pages/04.1_graphs.html#introduction",
+    "href": "pages/04.1_graphs.html#introduction",
+    "title": "Visualization",
+    "section": "",
+    "text": "This is a first pass at making some interactive visualizations with metrics from secondary data.",
+    "crumbs": [
+      "Analysis",
+      "Visualization"
+    ]
+  },
+  {
+    "objectID": "pages/04.1_graphs.html#time-series",
+    "href": "pages/04.1_graphs.html#time-series",
+    "title": "Visualization",
+    "section": "Time Series",
+    "text": "Time Series\nExploring the metrics that are clean and have 5 or more time points.\n\nChild Food Insecurity\nFirst let’s clean up data and get it into the right format\n\n\nCode\npacman::p_load(\n  dplyr,\n  ggplot2,\n  plotly,\n  purrr,\n  RColorBrewer,\n  stringr\n)\n\ndat &lt;- readRDS('data/aggregated_metrics.rds')\nfips_key &lt;- readRDS('data/fips_key.rds')\n\n\n## Select metrics\n# Start with variables with &gt;= 5 time points\nts_vars &lt;- dat %&gt;% \n  group_by(variable_name) %&gt;% \n  summarize(n_years = length(unique(year))) %&gt;% \n  filter(n_years &gt;= 5) %&gt;% \n  pull(variable_name)\n\n# Select a subset of them\nts_vars &lt;- str_subset(ts_vars, 'child|overall|^wic|^women')\n\n# Add a clean name for graphs\nts_vars &lt;- data.frame(\n  variable = ts_vars,\n  yaxis = c(\n    'Insecurity Rate',\n    'Insecurity Rate',\n    'Coverage Rate',\n    'Eligibility Rate',\n    'Percent',\n    'Percent'\n  ),\n  title = c(\n    'Child Food Insecurity Rate',\n    'Overall Food Insecurity Rate',\n    'WIC Coverage Rate',\n    'WIC Eligibility Rate',\n    'Womens Earnings as % of Men, Farming',\n    'Womens Earnings as % of Men, Food Service'\n  )\n)\n\n## Clean data frame\ndat &lt;- dat %&gt;% \n  mutate(\n    across(c(year, value), as.numeric),\n    state = str_sub(fips, end = 2),\n  ) %&gt;% \n  left_join(fips_key, by = 'fips') %&gt;% \n  mutate(county_name = str_remove(county_name, ' County'))\n\n\nNow let’s look at a single plot over time: child food insecurity rates. Hover over the points to see the popup that identifies the county and value.\n\n\nCode\npacman::p_load(\n  dplyr,\n  ggplot2,\n  plotly,\n  purrr,\n  RColorBrewer,\n  ggpubr\n)\n\n## Filter to variable and create plot\nplot &lt;- dat %&gt;% \n  filter(variable_name == ts_vars$variable[1], str_length(fips) == 2) %&gt;% \n  mutate(year = as.factor(year)) %&gt;% \n  ggplot(aes(\n    x = year, \n    y = value, \n    group = fips, \n    color = state_name,\n    text = paste0(\n      'State: ', state_name, '\\n',\n      'County: ', county_name, '\\n',\n      'Value: ', round(value, 3)\n    )\n  )) +\n  geom_line(\n    lwd = 1,\n    alpha = 0.6\n  ) +\n  theme_bw() +\n  # scale_x_continuous(n.breaks = 10) +\n  scale_y_continuous(n.breaks = 10) +\n  labs(\n    x = 'Year',\n    y = 'Child Food Insecurity Rate',\n    color = 'State',\n    title = 'Child Food Insecurity Rate by County, 2011-2021'\n  ) +\n  scale_color_manual(values = brewer.pal(6, 'Dark2'))\nggplotly(plot, tooltip = 'text')\n\n\n\n\nTime series plot",
+    "crumbs": [
+      "Analysis",
+      "Visualization"
+    ]
+  },
+  {
+    "objectID": "pages/04.1_graphs.html#more-time-series",
+    "href": "pages/04.1_graphs.html#more-time-series",
+    "title": "Visualization",
+    "section": "More Time Series",
+    "text": "More Time Series\nLet’s look at a whole bunch at once.\n\n\nCode\nplots &lt;- map(1:nrow(ts_vars), \\(row) {\n  subplot &lt;- dat %&gt;% \n    filter(variable_name == ts_vars$variable[row], str_length(fips) == 2) %&gt;% \n    ggplot(aes(\n      x = year, \n      y = value, \n      group = state_name, \n      color = state_name,\n      text = paste0(\n        'State: ', state_name, '\\n',\n        'Value: ', round(value, 3)\n      )\n    )) +\n    geom_line(\n      lwd = 1,\n      alpha = 0.6\n    ) +\n    theme_bw() +\n    # theme(legend.position = 'none') +\n    scale_y_continuous(n.breaks = 10) +\n    labs(\n      x = 'Year',\n      y = ts_vars$yaxis[row],\n      color = 'State'\n      # title = var\n    ) + \n    scale_color_manual(values = brewer.pal(6, 'Dark2'))\n  \n  ggplotly(subplot, tooltip = 'text') %&gt;% \n    add_annotations(\n      text = ~unique(ts_vars$title[row]),\n      x = 0,\n      y = 1.25,\n      yref = \"paper\",\n      xref = \"paper\",\n      xanchor = \"left\",\n      yanchor = \"top\",\n      showarrow = FALSE,\n      font = list(size = 15)\n    )\n})\n\nsubplot(\n  plots[[1]],\n  style(plots[[2]], showlegend = FALSE),\n  style(plots[[3]], showlegend = FALSE),\n  style(plots[[4]], showlegend = FALSE),\n  style(plots[[5]], showlegend = FALSE),\n  style(plots[[6]], showlegend = FALSE),\n  nrows = 3,\n  margin = 0.06,\n  shareY = FALSE,\n  titleY = TRUE\n  # titleX = TRUE\n) %&gt;% \n  plotly::layout(\n    autosize = FALSE,\n    width = 900, \n    height= 700\n  )",
+    "crumbs": [
+      "Analysis",
+      "Visualization"
+    ]
+  },
+  {
+    "objectID": "pages/04.2_correlations.html",
+    "href": "pages/04.2_correlations.html",
+    "title": "Correlations",
+    "section": "",
+    "text": "Talking points:\n\nInteractions are important\nProbably cite Kate Schneider (Schneider et al. 2023)\nSomething about causal models and Allen and Prosperi (Allen and Prosperi 2016).",
+    "crumbs": [
+      "Analysis",
+      "Correlation"
+    ]
+  },
+  {
+    "objectID": "pages/04.2_correlations.html#introduction",
+    "href": "pages/04.2_correlations.html#introduction",
+    "title": "Correlations",
+    "section": "",
+    "text": "Talking points:\n\nInteractions are important\nProbably cite Kate Schneider (Schneider et al. 2023)\nSomething about causal models and Allen and Prosperi (Allen and Prosperi 2016).",
+    "crumbs": [
+      "Analysis",
+      "Correlation"
     ]
   }
 ]

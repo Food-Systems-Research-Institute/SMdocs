@@ -1,11 +1,19 @@
 project:
   type: website
+  execute-dir: project
+  preview:
+    browser: false
 
 website:
   title: "Food Systems Research Center"
   reader-mode: false
   page-navigation: true
   bread-crumbs: false
+  announcement:
+    icon: info-circle
+    content: "This is a work in progress - all content and analyses are preliminary."
+    dismissable: true
+    position: below-navbar
   navbar:
     logo: images/uvm_logo.png
     search: true
@@ -51,7 +59,7 @@ format:
     fig-align: left
     css: styles.css
     toc: true
-    toc-depth: 2
+    toc-depth: 3
     # number-sections: true
     # number-depth: 2
     code-fold: true
@@ -59,5 +67,14 @@ format:
       body-width: 900px
       sidebar-width: 200px
       margin-width: 200px
+    # mainfont: Garamond
+    smooth-scroll: true
+    link-external-newwindow: true
+    # linkcolor: DarkOliveGreen
+    title-block-style: default
 
 bibliography: fsrc.bib
+
+execute:
+  warning: false
+  cache: true

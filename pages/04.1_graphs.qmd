@@ -1,0 +1,191 @@
+---
+title: Visualization
+---
+
+## Introduction
+
+This is a first pass at making some interactive visualizations with metrics from secondary data.
+
+## Time Series
+
+Exploring the metrics that are clean and have 5 or more time points.
+
+### Child Food Insecurity
+
+First let's clean up data and get it into the right format
+
+```{r}
+#| label: wrangle_ts_data
+
+pacman::p_load(
+  dplyr,
+  ggplot2,
+  plotly,
+  purrr,
+  RColorBrewer,
+  stringr
+)
+
+dat <- readRDS('data/aggregated_metrics.rds')
+fips_key <- readRDS('data/fips_key.rds')
+
+
+## Select metrics
+# Start with variables with >= 5 time points
+ts_vars <- dat %>% 
+  group_by(variable_name) %>% 
+  summarize(n_years = length(unique(year))) %>% 
+  filter(n_years >= 5) %>% 
+  pull(variable_name)
+
+# Select a subset of them
+ts_vars <- str_subset(ts_vars, 'child|overall|^wic|^women')
+
+# Add a clean name for graphs
+ts_vars <- data.frame(
+  variable = ts_vars,
+  yaxis = c(
+    'Insecurity Rate',
+    'Insecurity Rate',
+    'Coverage Rate',
+    'Eligibility Rate',
+    'Percent',
+    'Percent'
+  ),
+  title = c(
+    'Child Food Insecurity Rate',
+    'Overall Food Insecurity Rate',
+    'WIC Coverage Rate',
+    'WIC Eligibility Rate',
+    'Womens Earnings as % of Men, Farming',
+    'Womens Earnings as % of Men, Food Service'
+  )
+)
+
+## Clean data frame
+dat <- dat %>% 
+  mutate(
+    across(c(year, value), as.numeric),
+    state = str_sub(fips, end = 2),
+  ) %>% 
+  left_join(fips_key, by = 'fips') %>% 
+  mutate(county_name = str_remove(county_name, ' County'))
+```
+
+Now let's look at a single plot over time: child food insecurity rates. Hover over the points to see the popup that identifies the county and value.
+
+```{r}
+#| label: child_food_insecurity_ts
+#| fig-cap: Time series plot
+
+pacman::p_load(
+  dplyr,
+  ggplot2,
+  plotly,
+  purrr,
+  RColorBrewer,
+  ggpubr
+)
+
+## Filter to variable and create plot
+plot <- dat %>% 
+  filter(variable_name == ts_vars$variable[1], str_length(fips) == 2) %>% 
+  mutate(year = as.factor(year)) %>% 
+  ggplot(aes(
+    x = year, 
+    y = value, 
+    group = fips, 
+    color = state_name,
+    text = paste0(
+      'State: ', state_name, '\n',
+      'County: ', county_name, '\n',
+      'Value: ', round(value, 3)
+    )
+  )) +
+  geom_line(
+    lwd = 1,
+    alpha = 0.6
+  ) +
+  theme_bw() +
+  # scale_x_continuous(n.breaks = 10) +
+  scale_y_continuous(n.breaks = 10) +
+  labs(
+    x = 'Year',
+    y = 'Child Food Insecurity Rate',
+    color = 'State',
+    title = 'Child Food Insecurity Rate by County, 2011-2021'
+  ) +
+  scale_color_manual(values = brewer.pal(6, 'Dark2'))
+ggplotly(plot, tooltip = 'text')
+
+```
+
+## More Time Series
+
+Let's look at a whole bunch at once.
+
+```{r fig.dim=c(10, 14), fig.align='center'}
+
+plots <- map(1:nrow(ts_vars), \(row) {
+  subplot <- dat %>% 
+    filter(variable_name == ts_vars$variable[row], str_length(fips) == 2) %>% 
+    ggplot(aes(
+      x = year, 
+      y = value, 
+      group = state_name, 
+      color = state_name,
+      text = paste0(
+        'State: ', state_name, '\n',
+        'Value: ', round(value, 3)
+      )
+    )) +
+    geom_line(
+      lwd = 1,
+      alpha = 0.6
+    ) +
+    theme_bw() +
+    # theme(legend.position = 'none') +
+    scale_y_continuous(n.breaks = 10) +
+    labs(
+      x = 'Year',
+      y = ts_vars$yaxis[row],
+      color = 'State'
+      # title = var
+    ) + 
+    scale_color_manual(values = brewer.pal(6, 'Dark2'))
+  
+  ggplotly(subplot, tooltip = 'text') %>% 
+    add_annotations(
+      text = ~unique(ts_vars$title[row]),
+      x = 0,
+      y = 1.25,
+      yref = "paper",
+      xref = "paper",
+      xanchor = "left",
+      yanchor = "top",
+      showarrow = FALSE,
+      font = list(size = 15)
+    )
+})
+
+subplot(
+  plots[[1]],
+  style(plots[[2]], showlegend = FALSE),
+  style(plots[[3]], showlegend = FALSE),
+  style(plots[[4]], showlegend = FALSE),
+  style(plots[[5]], showlegend = FALSE),
+  style(plots[[6]], showlegend = FALSE),
+  nrows = 3,
+  margin = 0.06,
+  shareY = FALSE,
+  titleY = TRUE
+  # titleX = TRUE
+) %>% 
+  plotly::layout(
+    autosize = FALSE,
+    width = 900, 
+    height= 700
+  )
+```
+
+
