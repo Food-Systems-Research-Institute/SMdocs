@@ -25,28 +25,28 @@ pacman::p_load(
 
 
 ## Load data and add an origin level
-dat <- readRDS('../data/tree_dat.rds') %>% 
-  mutate(Framework = 'Sustainability') %>% 
-  select(Framework, Dimension:Indicator)
+dat <- readRDS('data/tree_dat.rds') %>% 
+  dplyr::mutate(Framework = 'Sustainability') %>% 
+  dplyr::select(Framework, Dimension:Indicator)
 
 
 ## Make edges
 # include groupings by dimension, then combine them
 edges <- list()
 edges$sm_dim <- dat %>% 
-  select(Framework, Dimension) %>% 
+  dplyr::select(Framework, Dimension) %>% 
   unique() %>% 
-  rename(from = Framework, to = Dimension) %>% 
+  dplyr::rename(from = Framework, to = Dimension) %>% 
   mutate(group = to)
 edges$dim_ind <- dat %>% 
-  select(Dimension, Index) %>% 
+  dplyr::select(Dimension, Index) %>% 
   unique() %>% 
-  rename(from = Dimension, to = Index) %>% 
+  dplyr::rename(from = Dimension, to = Index) %>% 
   mutate(group = from)
 edges$ind_ind <- dat %>% 
-  select(Index, Indicator) %>% 
+  dplyr::select(Index, Indicator) %>% 
   unique() %>% 
-  rename(from = Index, to = Indicator) %>% 
+  dplyr::rename(from = Index, to = Indicator) %>% 
   mutate(group = edges$dim_ind$from[match(.$from, edges$dim_ind$to)])
 edges <- bind_rows(edges)
 
@@ -133,3 +133,76 @@ ggraph(graph, layout = 'dendrogram', circular = TRUE) +
 ```
 
 Note that the size of the leaf nodes doesn't actually mean anything right now - they are just randomly generated. Eventually we could weight this by eigenvalues within dimensions.
+
+## Phylogeny
+
+Here is a more practical but less visually appealing version of the same framework. Still kind of a monster. **To do: fix the color scheme so it is colored by dimension and matches the radial plot above.**
+
+```{r}
+#| label: tree
+#| fig-cap: Phylogeny tree diagram
+#| fig-height: 20
+#| fig-width: 8
+pacman::p_load(
+  ggtree,
+  dplyr,
+  ape,
+  data.tree,
+  viridisLite,
+  stringr
+)
+
+## Load data and add an origin level
+dat <- readRDS('data/tree_dat.rds') %>% 
+  mutate(Framework = 'Sustainability') %>% 
+  dplyr::select(Framework, Dimension:Indicator) %>% 
+  mutate(across(
+    everything(), 
+    ~ str_trim(str_replace_all(., ';|%|/|\\.|\"|,|\\(|\\)', '_'))
+  ))
+# print(dat, n = 100)
+# get_str(dat)
+
+dat$pathString <- paste(
+  dat$Framework,
+  dat$Dimension,
+  dat$Index,
+  dat$Indicator,
+  sep = '/'
+)
+tree <- as.Node(dat)
+
+# Convert the data.tree structure to Newick format
+tree_newick <- ToNewick(tree)
+
+# Read the Newick tree into ape
+phylo_tree <- read.tree(text = tree_newick)
+
+# Make all edge lengths 1
+phylo_tree$edge.length <- rep(1, length(phylo_tree$edge.length))
+
+# Add a space to end of node labels so it isn't cut off
+phylo_tree$node.label <- paste0(phylo_tree$node.label, ' ')
+
+# Plot it
+plot(
+  phylo_tree, 
+  type = 'c',
+  cex = 0.75,
+  edge.width = 2,
+  show.tip.label = TRUE,
+  label.offset = 0,
+  no.margin = TRUE,
+  tip.color = 'black',
+  edge.color = viridis(181),
+  x.lim = c(-0.1, 5)
+)
+
+nodelabels(
+  phylo_tree$node.label,
+  cex = 0.8,
+  bg = 'white'
+)
+
+```
+

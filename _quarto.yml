@@ -9,6 +9,8 @@ website:
   reader-mode: false
   page-navigation: true
   bread-crumbs: false
+  back-to-top-navigation: true
+  # repo-url: https://github.com/quarto-dev/quarto-demo
   announcement:
     icon: info-circle
     content: "This is a work in progress - all content and analyses are preliminary."
@@ -16,6 +18,7 @@ website:
     position: below-navbar
   navbar:
     logo: images/uvm_logo.png
+    logo-href: https://www.uvm.edu/cals/food-systems-research
     search: true
     tools:
       - icon: tree
@@ -30,28 +33,29 @@ website:
         href: pages/01_home.qmd
       - text: Framework
         href: pages/02_framework.qmd
-      - section: Dimensions
-        contents:
-          - text: 'Environment'
-            href: pages/03.1_environment.qmd
-          - text: 'Economics'
-            href: pages/03.2_economics.qmd
-          - text: 'Production'
-            href: pages/03.3_production.qmd
-          - text: 'Health'
-            href: pages/03.4_health.qmd
-          - text: 'Social'
-            href: pages/03.5_social.qmd
+      - text: Dimensions
+        href: pages/03_dimensions.qmd
+        # contents:
+          # - text: 'Environment'
+          #   href: pages/03.1_environment.qmd
+          # - text: 'Economics'
+          #   href: pages/03.2_economics.qmd
+          # - text: 'Production'
+          #   href: pages/03.3_production.qmd
+          # - text: 'Health'
+          #   href: pages/03.4_health.qmd
+          # - text: 'Social'
+          #   href: pages/03.5_social.qmd
       - section: Analysis
         contents:
           - text: 'Visualization'
             href: pages/04.1_graphs.qmd
           - text: 'Correlation'
             href: pages/04.2_correlations.qmd
-          - text: 'Principal Components'
-            href: pages/04.3_pca.qmd
-          - text: 'Regression'
-            href: pages/04.4_regression.qmd
+          # - text: 'Principal Components'
+            # href: pages/04.3_pca.qmd
+          # - text: 'Regression'
+            # href: pages/04.4_regression.qmd
 format:
   html:
     page-layout: article 

@@ -11,13 +11,13 @@ author:
 date: today
 ---
 
-::: {.callout-note collapse='false'}
+::: {.callout-note collapse='false' title='Caution'}
 The Sustainability Metrics project, as well as this site itself, are both works in progress. All data and analyses shown here are preliminary. All color schemes will be improved upon. If you have any questions, comments, or suggestions, feel free to reach out to Chris at [christopher.donovan@uvm.edu](mailto:christopher.donovan@uvm.edu), or find us at the [UVM Food Systems Research Center](https://www.uvm.edu/cals/food-systems-research) website.
 :::
 
 ## Introduction{#sec-intro}
 
-Food systems are increasingly recognized as an essential piece of sustainable development [@untitednationsTransformingOurWorld2015]. Approximately 42% of world's population depend on agriculture for employment, which is increasingly challenging in the face of farm consolidationm, changing consumption patterns, and climate change [@gillerFutureFarmingWho2021; @aznar-sanchezWorldwideResearchTrends2019]. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years [@crippaFoodSystemsAre2021; @ortiz-bobeaAnthropogenicClimateChange2021]. [Add line about hunger, nutrition, food security.]
+Food systems are increasingly recognized as an essential piece of sustainable development [@untitednationsTransformingOurWorld2015]. Approximately 42% of world's population depend on agriculture for employment, which is increasingly challenging in the face of farm consolidation, changing consumption patterns, and climate change [@gillerFutureFarmingWho2021; @aznar-sanchezWorldwideResearchTrends2019]. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years [@crippaFoodSystemsAre2021; @ortiz-bobeaAnthropogenicClimateChange2021]. [Add line about hunger, nutrition, food security.]
 
 Consequently, the sustainability of food systems is paramount in meeting the needs of the population without exceeding planetary boundaries. However, there is little consensus on how to define, let alone measure food system sustainability [@allen2016ModelingSustainableFood; @bene2019GlobalMapIndicators]. And while there is an abundance of research at the global level [@bathaei2023SystematicReviewAgricultural; @chaudhary2018MultiindicatorSustainabilityAssessment], there exists a conspicuous gap in understanding at the local, regional, or landscape level [@daleLandscapePerspectiveSustainability2012].
 
@@ -27,14 +27,26 @@ Metadata and citations will be provided throughout the document, but it is worth
 
 ## Navigation
 
-To do:
+Provide info here about what is on the site.
 
-* what to find on this website
-  + conceptual framework
-  + secondary data sources
-  + preliminary exploratory analyses
-* link to Shiny App for interactive maps and graphs
-* add some images to make this page less depressing
+* **Framework:** Describes the conceptual framework and includes some big picture visualizations.
+* **Dimensions:** More specifics about dimensions, indices, indicators, and metrics. Will also include metadata and sources for metrics.
+* **Visualizations:** Note to rename this. It is exploratory analysis - distributions, time series, bivariate plots.
+* **Correlations:** Throwing together all the metrics to see how they relate. 
+* PCA, clustering, regression, others to come.
+
+## SM Explorer
+
+While there are some client-side interactive plots on this site, the server-side interactions will be hosted on a separate Shiny App. They could be combined into this doc, but I think it makes for a better user experience to have it separate, and it is more approachable logistically as well. **To do: provide link to Shiny App to explore spatial data here.**
+
+## To do on this page
+
+* Link Shiny App
+* Consider putting something interactive up top
+* Definitely add some images to make this page less depressing
+* Revamp color scheme, particularly the links
+* Consider changing from APA style citations to whichever one just has the numbers to make it look more approachable and less technical. 
+* Vastly improve on the introduction section.
 
 ## License
 

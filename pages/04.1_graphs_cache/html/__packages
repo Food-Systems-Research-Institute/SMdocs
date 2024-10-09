@@ -7,3 +7,5 @@ purrr
 RColorBrewer
 stringr
 ggpubr
+rlang
+tidyr

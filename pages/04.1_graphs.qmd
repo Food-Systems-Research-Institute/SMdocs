@@ -8,11 +8,7 @@ This is a first pass at making some interactive visualizations with metrics from
 
 ## Time Series
 
-Exploring the metrics that are clean and have 5 or more time points.
-
-### Child Food Insecurity
-
-First let's clean up data and get it into the right format
+Exploring the metrics that are clean and have 5 or more time points. First let's clean up data and get it into the right format
 
 ```{r}
 #| label: wrangle_ts_data
@@ -34,7 +30,7 @@ fips_key <- readRDS('data/fips_key.rds')
 # Start with variables with >= 5 time points
 ts_vars <- dat %>% 
   group_by(variable_name) %>% 
-  summarize(n_years = length(unique(year))) %>% 
+  dplyr::summarize(n_years = length(unique(year))) %>% 
   filter(n_years >= 5) %>% 
   pull(variable_name)
 
@@ -72,60 +68,12 @@ dat <- dat %>%
   mutate(county_name = str_remove(county_name, ' County'))
 ```
 
-Now let's look at a single plot over time: child food insecurity rates. Hover over the points to see the popup that identifies the county and value.
+Now we can plot a series of 6 metrics for which we have data for 5 or more years at the state level. Hover over the joints to see specific values for each state.
 
-```{r}
-#| label: child_food_insecurity_ts
-#| fig-cap: Time series plot
 
-pacman::p_load(
-  dplyr,
-  ggplot2,
-  plotly,
-  purrr,
-  RColorBrewer,
-  ggpubr
-)
-
-## Filter to variable and create plot
-plot <- dat %>% 
-  filter(variable_name == ts_vars$variable[1], str_length(fips) == 2) %>% 
-  mutate(year = as.factor(year)) %>% 
-  ggplot(aes(
-    x = year, 
-    y = value, 
-    group = fips, 
-    color = state_name,
-    text = paste0(
-      'State: ', state_name, '\n',
-      'County: ', county_name, '\n',
-      'Value: ', round(value, 3)
-    )
-  )) +
-  geom_line(
-    lwd = 1,
-    alpha = 0.6
-  ) +
-  theme_bw() +
-  # scale_x_continuous(n.breaks = 10) +
-  scale_y_continuous(n.breaks = 10) +
-  labs(
-    x = 'Year',
-    y = 'Child Food Insecurity Rate',
-    color = 'State',
-    title = 'Child Food Insecurity Rate by County, 2011-2021'
-  ) +
-  scale_color_manual(values = brewer.pal(6, 'Dark2'))
-ggplotly(plot, tooltip = 'text')
-
-```
-
-## More Time Series
-
-Let's look at a whole bunch at once.
-
-```{r fig.dim=c(10, 14), fig.align='center'}
-
+```{r fig.dim=c(10, 12), fig.align='center'}
+#| label: time_series
+#| fig-cap: Interactive time series plots
 plots <- map(1:nrow(ts_vars), \(row) {
   subplot <- dat %>% 
     filter(variable_name == ts_vars$variable[row], str_length(fips) == 2) %>% 
@@ -188,4 +136,72 @@ subplot(
   )
 ```
 
+
+## Distributions
+
+Taking an exploratory look at the distributions of our variables at the county level. We are only using the latest years available for each metric. Note that y-axes are indepednent 
+
+
+```{r}
+#| label: distributions
+#| fig-cap: Distributions of all metrics at the county level.
+#| fig-height: 25
+#| fig-width: 10
+#| warning: false
+#| fig-align: center
+
+pacman::p_load(
+  dplyr,
+  purrr,
+  ggplot2,
+  rlang,
+  ggpubr,
+  tidyr
+)
+
+source('dev/data_pipeline_functions.R')
+dat <- readRDS('data/aggregated_metrics.rds')
+# get_str(dat)
+
+# Get names of all vars
+vars <- dat$variable_name %>% unique
+
+# DF with only final years of all vars, states only, CT governing regions
+dat_latest <- dat %>% 
+  dplyr::filter(
+    !str_detect(fips, '^09.*[1-9]$'),
+    str_length(fips) == 5
+  ) %>% 
+  get_latest_year() %>%
+  mutate(
+    variable_name = str_sub(variable_name, end = 60),
+    variable_name = paste0(variable_name, '_', year), .keep = 'unused'
+  ) %>%
+  unique() %>% 
+  tidyr::pivot_wider(
+    id_cols = fips,
+    names_from = 'variable_name',
+    values_from = 'value'
+  ) %>% 
+  mutate(across(everything(), as.numeric))
+# get_str(dat_latest)
+
+plots <- map(names(dat_latest)[-1], \(var){
+  dat_latest %>% 
+    ggplot(aes(x = !!sym(var))) + 
+    geom_density() +
+    theme_classic()
+})
+
+ggarrange(
+  plotlist = plots,
+  ncol = 3,
+  nrow = 23
+)
+
+```
+
+## Bivariate Plots
+
+Taking a look at bivariate scatter plots for a selection fo variables at the county level. 
 

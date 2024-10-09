@@ -1,3 +1,15 @@
 dplyr
 conflicted
 projecter
+tidyr
+tibble
+stringr
+purrr
+rlang
+ggplot2
+plotly
+reshape
+Hmisc
+viridisLite
+ggraph
+igraph

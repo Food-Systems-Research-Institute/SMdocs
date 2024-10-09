@@ -7,22 +7,24 @@
 pacman::p_load(
   purrr,
   dplyr,
-  stringr
+  stringr,
+  purrr,
+  rlang
 )
 
 # Convenience function to filter so that each variable_name only has latest year
 get_latest_year <- function(df, var_col = 'variable_name', year_col = 'year'){
-  
+
   df <- mutate(df, {{ year_col }} := as.numeric(.data[[year_col]]))
   vars <- unique(df[[var_col]])
   
   filtered_df <- map(vars, \(var) {
     unique_years <- df %>%
-      filter(.data[[var_col]] == var) %>%
+      dplyr::filter(.data[[var_col]] == var) %>%
       pull({{ year_col }}) %>% 
       unique()
     out <- df %>% 
-      filter(.data[[var_col]] == var, .data[[year_col]] == max(unique_years))
+      dplyr::filter(.data[[var_col]] == var, .data[[year_col]] == max(unique_years))
     return(out)
   }) %>% 
     bind_rows()

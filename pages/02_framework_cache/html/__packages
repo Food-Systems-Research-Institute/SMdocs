@@ -6,3 +6,7 @@ ggraph
 igraph
 RColorBrewer
 viridisLite
+ggtree
+ape
+data.tree
+stringr
