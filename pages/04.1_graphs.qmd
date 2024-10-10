@@ -70,12 +70,13 @@ dat <- dat %>%
 
 Now we can plot a series of 6 metrics for which we have data for 5 or more years at the state level. Hover over the joints to see specific values for each state.
 
-
 ```{r fig.dim=c(10, 12), fig.align='center'}
 #| label: time_series
 #| fig-cap: Interactive time series plots
+
+# Mapping over our time series variables to make a list of plots
 plots <- map(1:nrow(ts_vars), \(row) {
-  subplot <- dat %>% 
+  sub_plot <- dat %>% 
     filter(variable_name == ts_vars$variable[row], str_length(fips) == 2) %>% 
     ggplot(aes(
       x = year, 
@@ -92,17 +93,15 @@ plots <- map(1:nrow(ts_vars), \(row) {
       alpha = 0.6
     ) +
     theme_bw() +
-    # theme(legend.position = 'none') +
     scale_y_continuous(n.breaks = 10) +
     labs(
       x = 'Year',
       y = ts_vars$yaxis[row],
       color = 'State'
-      # title = var
     ) + 
     scale_color_manual(values = brewer.pal(6, 'Dark2'))
   
-  ggplotly(subplot, tooltip = 'text') %>% 
+  ggplotly(sub_plot, tooltip = 'text') %>% 
     add_annotations(
       text = ~unique(ts_vars$title[row]),
       x = 0,
@@ -116,6 +115,7 @@ plots <- map(1:nrow(ts_vars), \(row) {
     )
 })
 
+# Arrange the plots together in one frame
 subplot(
   plots[[1]],
   style(plots[[2]], showlegend = FALSE),
@@ -127,7 +127,6 @@ subplot(
   margin = 0.06,
   shareY = FALSE,
   titleY = TRUE
-  # titleX = TRUE
 ) %>% 
   plotly::layout(
     autosize = FALSE,
@@ -149,6 +148,7 @@ Taking an exploratory look at the distributions of our variables at the county l
 #| fig-width: 10
 #| warning: false
 #| fig-align: center
+#| code-annotations: select
 
 pacman::p_load(
   dplyr,
@@ -169,8 +169,8 @@ vars <- dat$variable_name %>% unique
 # DF with only final years of all vars, states only, CT governing regions
 dat_latest <- dat %>% 
   dplyr::filter(
-    !str_detect(fips, '^09.*[1-9]$'),
-    str_length(fips) == 5
+    !str_detect(fips, '^09.*[1-9]$'), # <1>
+    str_length(fips) == 5 # <2>
   ) %>% 
   get_latest_year() %>%
   mutate(
@@ -198,8 +198,9 @@ ggarrange(
   ncol = 3,
   nrow = 23
 )
-
 ```
+1. Here we are filtering out old county codes for CT which start with "09" and end in a "0". We are left with only the governing regions. 
+2. Fips codes are a 2 digit state identifier plus a 3 digit county identifier. By removing any 2-digit fips codes, we are filtering to keep only counties.
 
 ## Bivariate Plots
 
