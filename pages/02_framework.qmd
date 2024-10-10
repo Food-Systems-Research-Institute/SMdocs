@@ -4,7 +4,18 @@ execute:
     cache: true
 ---
 
-This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages.
+<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 30%;">
+  <img src="../images/josh_david.jpg" alt="description" style="width: 100%;">
+  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Dr. Josh Taylor (left) and Dr. David Conner (right) attending a Sustainability Metrics workshop. Photo credit: Colleen Goodhue, FSRC.</div>
+</div>
+
+This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al. in that food system sustainability is still largely undefined [@beneWhenFoodSystems2019].
+
+[Including some more text here just so that it wraps around the photo. 
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia eu nibh vel luctus. Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.
+
+Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.]
 
 ## Radial Plot
 
@@ -134,9 +145,9 @@ ggraph(graph, layout = 'dendrogram', circular = TRUE) +
 
 Note that the size of the leaf nodes doesn't actually mean anything right now - they are just randomly generated. Eventually we could weight this by eigenvalues within dimensions.
 
-## Phylogeny
+## Phylogenic Tree
 
-Here is a more practical but less visually appealing version of the same framework. Still kind of a monster. **To do: fix the color scheme so it is colored by dimension and matches the radial plot above.**
+Here is a more practical but less visually appealing version of the same framework. Still kind of a monster. **To do: fix the color scheme so it is colored by dimension and matches the radial plot above.** Might also be better off using ggraph package as above and fiddling with the layout. 
 
 ```{r}
 #| label: tree

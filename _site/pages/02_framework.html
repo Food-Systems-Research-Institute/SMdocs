@@ -54,7 +54,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -172,7 +192,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/03_dimensions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Dimensions</span></a>
+ <span class="menu-text">Indicators</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -187,13 +207,13 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/04.1_graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualization</span></a>
+ <span class="menu-text">Exploratory Graphs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/04.2_correlations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Correlation</span></a>
+ <span class="menu-text">Correlations</span></a>
   </div>
 </li>
       </ul>
@@ -209,7 +229,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#radial-plot" id="toc-radial-plot" class="nav-link active" data-scroll-target="#radial-plot">Radial Plot</a></li>
-  <li><a href="#phylogeny" id="toc-phylogeny" class="nav-link" data-scroll-target="#phylogeny">Phylogeny</a></li>
+  <li><a href="#phylogenic-tree" id="toc-phylogenic-tree" class="nav-link" data-scroll-target="#phylogenic-tree">Phylogenic Tree</a></li>
   </ul>
 </nav>
     </div>
@@ -235,7 +255,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages.</p>
+<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 30%;">
+<img src="../images/josh_david.jpg" alt="description" style="width: 100%;">
+<div style="text-align: left; margin-top: 0.5em; font-size: smaller;">
+Dr.&nbsp;Josh Taylor (left) and Dr.&nbsp;David Conner (right) attending a Sustainability Metrics workshop. Photo credit: Colleen Goodhue, FSRC.
+</div>
+</div>
+<p>This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al.&nbsp;in that food system sustainability is still largely undefined <span class="citation" data-cites="beneWhenFoodSystems2019">(<a href="#ref-beneWhenFoodSystems2019" role="doc-biblioref">Béné et al. 2019</a>)</span>.</p>
+<p>[Including some more text here just so that it wraps around the photo.</p>
+<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia eu nibh vel luctus. Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.</p>
+<p>Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.]</p>
 <section id="radial-plot" class="level2">
 <h2 class="anchored" data-anchor-id="radial-plot">Radial Plot</h2>
 <div class="cell" data-layout-align="center">
@@ -369,9 +398,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>Note that the size of the leaf nodes doesn’t actually mean anything right now - they are just randomly generated. Eventually we could weight this by eigenvalues within dimensions.</p>
 </section>
-<section id="phylogeny" class="level2">
-<h2 class="anchored" data-anchor-id="phylogeny">Phylogeny</h2>
-<p>Here is a more practical but less visually appealing version of the same framework. Still kind of a monster. <strong>To do: fix the color scheme so it is colored by dimension and matches the radial plot above.</strong></p>
+<section id="phylogenic-tree" class="level2">
+<h2 class="anchored" data-anchor-id="phylogenic-tree">Phylogenic Tree</h2>
+<p>Here is a more practical but less visually appealing version of the same framework. Still kind of a monster. <strong>To do: fix the color scheme so it is colored by dimension and matches the radial plot above.</strong> Might also be better off using ggraph package as above and fiddling with the layout.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -447,9 +476,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 
 
+
 </section>
 
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-beneWhenFoodSystems2019" class="csl-entry" role="listitem">
+Béné, Christophe, Peter Oosterveer, Lea Lamotte, Inge D. Brouwer, Stef de Haan, Steve D. Prager, Elise F. Talsma, and Colin K. Khoury. 2019. <span>“When Food Systems Meet Sustainability – <span>Current</span> Narratives and Implications for Actions.”</span> <em>World Development</em> 113 (January): 116–30. <a href="https://doi.org/10.1016/j.worlddev.2018.08.011">https://doi.org/10.1016/j.worlddev.2018.08.011</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -882,8 +916,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/03_dimensions.html" class="pagination-link" aria-label="Dimensions">
-        <span class="nav-page-text">Dimensions</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/03_dimensions.html" class="pagination-link" aria-label="Indicators">
+        <span class="nav-page-text">Indicators</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

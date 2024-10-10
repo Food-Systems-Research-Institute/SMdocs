@@ -17,9 +17,14 @@ The Sustainability Metrics project, as well as this site itself, are both works 
 
 ## Introduction{#sec-intro}
 
-Food systems are increasingly recognized as an essential piece of sustainable development [@untitednationsTransformingOurWorld2015]. Approximately 42% of world's population depend on agriculture for employment, which is increasingly challenging in the face of farm consolidation, changing consumption patterns, and climate change [@gillerFutureFarmingWho2021; @aznar-sanchezWorldwideResearchTrends2019]. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years [@crippaFoodSystemsAre2021; @ortiz-bobeaAnthropogenicClimateChange2021]. [Add line about hunger, nutrition, food security.]
+<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 50%;">
+  <img src="../images/harvest.jpg" alt="description" style="width: 100%;">
+  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Spread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRC.</div>
+</div>
 
-Consequently, the sustainability of food systems is paramount in meeting the needs of the population without exceeding planetary boundaries. However, there is little consensus on how to define, let alone measure food system sustainability [@allen2016ModelingSustainableFood; @bene2019GlobalMapIndicators]. And while there is an abundance of research at the global level [@bathaei2023SystematicReviewAgricultural; @chaudhary2018MultiindicatorSustainabilityAssessment], there exists a conspicuous gap in understanding at the local, regional, or landscape level [@daleLandscapePerspectiveSustainability2012].
+Resilient food systems are increasingly recognized as essential, not only in meeting human needs, but in doing so within planetary bounds [@conijnCanOurGlobal2018]. Approximately 42% of world's population depend on agriculture for employment, which is a challenging endeavor in the face of farm consolidation, changing consumption patterns, and climate change [@gillerFutureFarmingWho2021; @aznar-sanchezWorldwideResearchTrends2019]. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years [@crippaFoodSystemsAre2021; @ortiz-bobeaAnthropogenicClimateChange2021]. [Add line about hunger, nutrition, food security.]
+
+Monitoring and adaptively managing the sustainability of food systems is thus vital. However, there is little consensus on how to define, let alone measure food system sustainability [@allen2016ModelingSustainableFood; @bene2019GlobalMapIndicators]. And while there is an abundance of research at the global level [@bathaei2023SystematicReviewAgricultural; @chaudhary2018MultiindicatorSustainabilityAssessment], there exists a conspicuous gap in understanding at the local, regional, or landscape level [@daleLandscapePerspectiveSustainability2012].
 
 The Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The work is led by the Food Systems Research Center at the University of Vermont in partnership with the USDA Agricultural Research Service in Burlington, Vermont. Primary research in developing and measuring indicators of sustainability is ongoing. For now, what you will find here is a growing collection of secondary data, visualizations, and preliminary analyses to help inform the project as well as the public on the sustainability of the New England food system.
 
@@ -27,37 +32,55 @@ Metadata and citations will be provided throughout the document, but it is worth
 
 ## Navigation
 
-Provide info here about what is on the site.
+Might provide an overview of what to find on the site here?
 
-* **Framework:** Describes the conceptual framework and includes some big picture visualizations.
-* **Dimensions:** More specifics about dimensions, indices, indicators, and metrics. Will also include metadata and sources for metrics.
-* **Visualizations:** Note to rename this. It is exploratory analysis - distributions, time series, bivariate plots.
-* **Correlations:** Throwing together all the metrics to see how they relate. 
-* PCA, clustering, regression, others to come.
+* Framework: Describes the conceptual framework and includes some big picture visualizations.
+* Indicators: More specifics about dimensions, indices, indicators, and metrics. Will also include metadata and sources for metrics.
+* Exploratory Graphs: Note to rename this. It is exploratory analysis - distributions, time series, bivariate plots.
+* Correlations: Throwing together all the metrics to see how they relate. 
+* Shiny App: Linked on this page, below.
+* Eventually to add PCA, clustering at the county level, regression, etc.
 
 ## SM Explorer
 
-While there are some client-side interactive plots on this site, the server-side interactions will be hosted on a separate Shiny App. They could be combined into this doc, but I think it makes for a better user experience to have it separate, and it is more approachable logistically as well. **To do: provide link to Shiny App to explore spatial data here.**
+::: {.callout-warning collapse='false'}
+Please be aware that the SM Explorer is early on in development. It currently includes limited features, limited metrics, and you will find more than a few bugs and missing data if you poke around enough. 
+:::
+
+While there are some client-side interactive plots on this site, the server-side interactions are hosted on a separate Shiny App. They could be combined into this doc, but I think it makes for a better user experience to have it separate, and it is way more approachable logistically as well. 
+
+[![](../images/sme.png){width=60% fig-align="center"}](https://chris-donovan.shinyapps.io/SMexplorer/)
+
+So, here is a link to the [SM Explorer Shiny App](https://chris-donovan.shinyapps.io/SMexplorer/). You can also just click on the image above. The vision here is to have an interactive way to explore spatial data, either at the county or state level. As I work through wrangling data, I plan to include proper spatial layers (points, rasters) rather than just county level data. I will also add an interactive bivariate plot system where you can explore relationships between metrics, much like what is available at the [Food Systems Dashboard "Compare" feature](https://www.foodsystemsdashboard.org/compare). In addition, having a way to explore where each county or state sits as compared to others would be nice, much like the [FSD "Profile" and "Indicators"](https://www.foodsystemsdashboard.org/countries/bhs) pages.
 
 ## To do on this page
 
-* Link Shiny App
-* Consider putting something interactive up top
-* Definitely add some images to make this page less depressing
 * Revamp color scheme, particularly the links
 * Consider changing from APA style citations to whichever one just has the numbers to make it look more approachable and less technical. 
-* Vastly improve on the introduction section.
+* Link GitHub source, edits, issues
 
 ## License
 
-<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
+<div style="display: flex; align-items: center;">
+  <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+    <img alt="Creative Commons Licence" style="border-width:0; margin-right: 10px;" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" />
+  </a>
+  <span>
+    This work is licensed under the
+    <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.
+  </span>
+</div>
 
-This work is licensed under the 
-<a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. 
+<div style="display: flex; align-items: center;">
+  <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">
+    <img alt="Creative Commons Licence" style="border-width:0; margin-right: 10px;" src="https://www.gnu.org/graphics/gplv3-or-later-sm.png" />
+  </a>
+  <span>
+    The code is licensed under the 
+    <a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text">GNU General Public License v3</a>.
+  </span>
+</div>
 
-<a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text"><img alt="GPLv3 License" style="border-width:0" src="https://www.gnu.org/graphics/gplv3-or-later-sm.png" /></a>
-
-The code is licensed under the <a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text">GNU General Public License v3</a>.
 
 ## References {#sec-references}
 

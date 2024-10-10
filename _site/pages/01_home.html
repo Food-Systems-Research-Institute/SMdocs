@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Chris Donovan">
-<meta name="dcterms.date" content="2024-10-09">
+<meta name="dcterms.date" content="2024-10-10">
 
 <title>Sustainability Metrics – Food Systems Research Center</title>
 <style>
@@ -159,7 +159,7 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/03_dimensions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Dimensions</span></a>
+ <span class="menu-text">Indicators</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -174,13 +174,13 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/04.1_graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualization</span></a>
+ <span class="menu-text">Exploratory Graphs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/04.2_correlations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Correlation</span></a>
+ <span class="menu-text">Correlations</span></a>
   </div>
 </li>
       </ul>
@@ -235,7 +235,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 9, 2024</p>
+      <p class="date">October 10, 2024</p>
     </div>
   </div>
   
@@ -265,43 +265,71 @@ Caution
 </div>
 <section id="sec-intro" class="level2">
 <h2 class="anchored" data-anchor-id="sec-intro">Introduction</h2>
-<p>Food systems are increasingly recognized as an essential piece of sustainable development <span class="citation" data-cites="untitednationsTransformingOurWorld2015">(<a href="#ref-untitednationsTransformingOurWorld2015" role="doc-biblioref">Nations 2015</a>)</span>. Approximately 42% of world’s population depend on agriculture for employment, which is increasingly challenging in the face of farm consolidation, changing consumption patterns, and climate change <span class="citation" data-cites="gillerFutureFarmingWho2021 aznar-sanchezWorldwideResearchTrends2019">(<a href="#ref-gillerFutureFarmingWho2021" role="doc-biblioref">Giller et al. 2021</a>; <a href="#ref-aznar-sanchezWorldwideResearchTrends2019" role="doc-biblioref">Aznar-Sánchez et al. 2019</a>)</span>. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years <span class="citation" data-cites="crippaFoodSystemsAre2021 ortiz-bobeaAnthropogenicClimateChange2021">(<a href="#ref-crippaFoodSystemsAre2021" role="doc-biblioref">Crippa et al. 2021</a>; <a href="#ref-ortiz-bobeaAnthropogenicClimateChange2021" role="doc-biblioref">Ortiz-Bobea et al. 2021</a>)</span>. [Add line about hunger, nutrition, food security.]</p>
-<p>Consequently, the sustainability of food systems is paramount in meeting the needs of the population without exceeding planetary boundaries. However, there is little consensus on how to define, let alone measure food system sustainability <span class="citation" data-cites="allen2016ModelingSustainableFood bene2019GlobalMapIndicators">(<a href="#ref-allen2016ModelingSustainableFood" role="doc-biblioref">Allen and Prosperi 2016</a>; <a href="#ref-bene2019GlobalMapIndicators" role="doc-biblioref">Béné et al. 2019</a>)</span>. And while there is an abundance of research at the global level <span class="citation" data-cites="bathaei2023SystematicReviewAgricultural chaudhary2018MultiindicatorSustainabilityAssessment">(<a href="#ref-bathaei2023SystematicReviewAgricultural" role="doc-biblioref">Bathaei and Štreimikienė 2023</a>; <a href="#ref-chaudhary2018MultiindicatorSustainabilityAssessment" role="doc-biblioref">Chaudhary, Gustafson, and Mathys 2018</a>)</span>, there exists a conspicuous gap in understanding at the local, regional, or landscape level <span class="citation" data-cites="daleLandscapePerspectiveSustainability2012">(<a href="#ref-daleLandscapePerspectiveSustainability2012" role="doc-biblioref">Dale et al. 2012</a>)</span>.</p>
+<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 50%;">
+<img src="../images/harvest.jpg" alt="description" style="width: 100%;">
+<div style="text-align: left; margin-top: 0.5em; font-size: smaller;">
+Spread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRC.
+</div>
+</div>
+<p>Resilient food systems are increasingly recognized as essential, not only in meeting human needs, but in doing so within planetary bounds <span class="citation" data-cites="conijnCanOurGlobal2018">(<a href="#ref-conijnCanOurGlobal2018" role="doc-biblioref">Conijn et al. 2018</a>)</span>. Approximately 42% of world’s population depend on agriculture for employment, which is a challenging endeavor in the face of farm consolidation, changing consumption patterns, and climate change <span class="citation" data-cites="gillerFutureFarmingWho2021 aznar-sanchezWorldwideResearchTrends2019">(<a href="#ref-gillerFutureFarmingWho2021" role="doc-biblioref">Giller et al. 2021</a>; <a href="#ref-aznar-sanchezWorldwideResearchTrends2019" role="doc-biblioref">Aznar-Sánchez et al. 2019</a>)</span>. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years <span class="citation" data-cites="crippaFoodSystemsAre2021 ortiz-bobeaAnthropogenicClimateChange2021">(<a href="#ref-crippaFoodSystemsAre2021" role="doc-biblioref">Crippa et al. 2021</a>; <a href="#ref-ortiz-bobeaAnthropogenicClimateChange2021" role="doc-biblioref">Ortiz-Bobea et al. 2021</a>)</span>. [Add line about hunger, nutrition, food security.]</p>
+<p>Monitoring and adaptively managing the sustainability of food systems is thus vital. However, there is little consensus on how to define, let alone measure food system sustainability <span class="citation" data-cites="allen2016ModelingSustainableFood bene2019GlobalMapIndicators">(<a href="#ref-allen2016ModelingSustainableFood" role="doc-biblioref">Allen and Prosperi 2016</a>; <a href="#ref-bene2019GlobalMapIndicators" role="doc-biblioref">Béné et al. 2019</a>)</span>. And while there is an abundance of research at the global level <span class="citation" data-cites="bathaei2023SystematicReviewAgricultural chaudhary2018MultiindicatorSustainabilityAssessment">(<a href="#ref-bathaei2023SystematicReviewAgricultural" role="doc-biblioref">Bathaei and Štreimikienė 2023</a>; <a href="#ref-chaudhary2018MultiindicatorSustainabilityAssessment" role="doc-biblioref">Chaudhary, Gustafson, and Mathys 2018</a>)</span>, there exists a conspicuous gap in understanding at the local, regional, or landscape level <span class="citation" data-cites="daleLandscapePerspectiveSustainability2012">(<a href="#ref-daleLandscapePerspectiveSustainability2012" role="doc-biblioref">Dale et al. 2012</a>)</span>.</p>
 <p>The Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The work is led by the Food Systems Research Center at the University of Vermont in partnership with the USDA Agricultural Research Service in Burlington, Vermont. Primary research in developing and measuring indicators of sustainability is ongoing. For now, what you will find here is a growing collection of secondary data, visualizations, and preliminary analyses to help inform the project as well as the public on the sustainability of the New England food system.</p>
 <p>Metadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS <a href="https://www.ams.usda.gov/services/local-regional/research-publications/fame">Food and Agriculture Mapper and Explorer</a> in particular, as many of the data shown here were cleaned and compiled in their data warehouse.</p>
 </section>
 <section id="navigation" class="level2">
 <h2 class="anchored" data-anchor-id="navigation">Navigation</h2>
-<p>Provide info here about what is on the site.</p>
+<p>Might provide an overview of what to find on the site here?</p>
 <ul>
-<li><strong>Framework:</strong> Describes the conceptual framework and includes some big picture visualizations.</li>
-<li><strong>Dimensions:</strong> More specifics about dimensions, indices, indicators, and metrics. Will also include metadata and sources for metrics.</li>
-<li><strong>Visualizations:</strong> Note to rename this. It is exploratory analysis - distributions, time series, bivariate plots.</li>
-<li><strong>Correlations:</strong> Throwing together all the metrics to see how they relate.</li>
-<li>PCA, clustering, regression, others to come.</li>
+<li>Framework: Describes the conceptual framework and includes some big picture visualizations.</li>
+<li>Indicators: More specifics about dimensions, indices, indicators, and metrics. Will also include metadata and sources for metrics.</li>
+<li>Exploratory Graphs: Note to rename this. It is exploratory analysis - distributions, time series, bivariate plots.</li>
+<li>Correlations: Throwing together all the metrics to see how they relate.</li>
+<li>Shiny App: Linked on this page, below.</li>
+<li>Eventually to add PCA, clustering at the county level, regression, etc.</li>
 </ul>
 </section>
 <section id="sm-explorer" class="level2">
 <h2 class="anchored" data-anchor-id="sm-explorer">SM Explorer</h2>
-<p>While there are some client-side interactive plots on this site, the server-side interactions will be hosted on a separate Shiny App. They could be combined into this doc, but I think it makes for a better user experience to have it separate, and it is more approachable logistically as well. <strong>To do: provide link to Shiny App to explore spatial data here.</strong></p>
+<div class="callout callout-style-default callout-warning callout-titled">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="true" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Warning
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-2" class="callout-2-contents callout-collapse collapse show">
+<div class="callout-body-container callout-body">
+<p>Please be aware that the SM Explorer is early on in development. It currently includes limited features, limited metrics, and you will find more than a few bugs and missing data if you poke around enough.</p>
+</div>
+</div>
+</div>
+<p>While there are some client-side interactive plots on this site, the server-side interactions are hosted on a separate Shiny App. They could be combined into this doc, but I think it makes for a better user experience to have it separate, and it is way more approachable logistically as well.</p>
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><a href="https://chris-donovan.shinyapps.io/SMexplorer/"><img src="../images/sme.png" class="img-fluid quarto-figure quarto-figure-center figure-img" style="width:60.0%"></a></p>
+</figure>
+</div>
+<p>So, here is a link to the <a href="https://chris-donovan.shinyapps.io/SMexplorer/">SM Explorer Shiny App</a>. You can also just click on the image above. The vision here is to have an interactive way to explore spatial data, either at the county or state level. As I work through wrangling data, I plan to include proper spatial layers (points, rasters) rather than just county level data. I will also add an interactive bivariate plot system where you can explore relationships between metrics, much like what is available at the <a href="https://www.foodsystemsdashboard.org/compare">Food Systems Dashboard “Compare” feature</a>. In addition, having a way to explore where each county or state sits as compared to others would be nice, much like the <a href="https://www.foodsystemsdashboard.org/countries/bhs">FSD “Profile” and “Indicators”</a> pages.</p>
 </section>
 <section id="to-do-on-this-page" class="level2">
 <h2 class="anchored" data-anchor-id="to-do-on-this-page">To do on this page</h2>
 <ul>
-<li>Link Shiny App</li>
-<li>Consider putting something interactive up top</li>
-<li>Definitely add some images to make this page less depressing</li>
 <li>Revamp color scheme, particularly the links</li>
 <li>Consider changing from APA style citations to whichever one just has the numbers to make it look more approachable and less technical.</li>
-<li>Vastly improve on the introduction section.</li>
+<li>Link GitHub source, edits, issues</li>
 </ul>
 </section>
 <section id="license" class="level2">
 <h2 class="anchored" data-anchor-id="license">License</h2>
-<p><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"><img alt="Creative Commons Licence" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"></a></p>
-<p>This work is licensed under the <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>.</p>
-<p><a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text"><img alt="GPLv3 License" style="border-width:0" src="https://www.gnu.org/graphics/gplv3-or-later-sm.png"></a></p>
-<p>The code is licensed under the <a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text">GNU General Public License v3</a>.</p>
+<div style="display: flex; align-items: center;">
+<p><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> <img alt="Creative Commons Licence" style="border-width:0; margin-right: 10px;" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"> </a> <span> This work is licensed under the <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. </span></p>
+</div>
+<div style="display: flex; align-items: center;">
+<p><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> <img alt="Creative Commons Licence" style="border-width:0; margin-right: 10px;" src="https://www.gnu.org/graphics/gplv3-or-later-sm.png"> </a> <span> The code is licensed under the <a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text">GNU General Public License v3</a>. </span></p>
+</div>
 </section>
 <section id="sec-references" class="level2">
 
@@ -326,6 +354,9 @@ Béné, Christophe, Steven D. Prager, Harold A. E. Achicanoy, Patricia Alvarez T
 <div id="ref-chaudhary2018MultiindicatorSustainabilityAssessment" class="csl-entry" role="listitem">
 Chaudhary, Abhishek, David Gustafson, and Alexander Mathys. 2018. <span>“Multi-Indicator Sustainability Assessment of Global Food Systems.”</span> <em>Nature Communications</em> 9 (1): 848. <a href="https://doi.org/10.1038/s41467-018-03308-7">https://doi.org/10.1038/s41467-018-03308-7</a>.
 </div>
+<div id="ref-conijnCanOurGlobal2018" class="csl-entry" role="listitem">
+Conijn, J. G., P. S. Bindraban, J. J. Schröder, and R. E. E. Jongschaap. 2018. <span>“Can Our Global Food System Meet Food Demand Within Planetary Boundaries?”</span> <em>Agriculture, Ecosystems &amp; Environment</em> 251 (January): 244–56. <a href="https://doi.org/10.1016/j.agee.2017.06.001">https://doi.org/10.1016/j.agee.2017.06.001</a>.
+</div>
 <div id="ref-crippaFoodSystemsAre2021" class="csl-entry" role="listitem">
 Crippa, M., E. Solazzo, D. Guizzardi, F. Monforti-Ferrario, F. N. Tubiello, and A. Leip. 2021. <span>“Food Systems Are Responsible for a Third of Global Anthropogenic <span>GHG</span> Emissions.”</span> <em>Nature Food</em> 2 (3): 198–209. <a href="https://doi.org/10.1038/s43016-021-00225-9">https://doi.org/10.1038/s43016-021-00225-9</a>.
 </div>
@@ -334,9 +365,6 @@ Dale, Virginia, Keith Kline, Stephen Kaffka, and Hans Langeveld. 2012. <span>“
 </div>
 <div id="ref-gillerFutureFarmingWho2021" class="csl-entry" role="listitem">
 Giller, Ken E., Thomas Delaune, João Vasco Silva, Katrien Descheemaeker, Gerrie van de Ven, Antonius G. T. Schut, Mark van Wijk, et al. 2021. <span>“The Future of Farming: <span>Who</span> Will Produce Our Food?”</span> <em>Food Security</em> 13 (5): 1073–99. <a href="https://doi.org/10.1007/s12571-021-01184-6">https://doi.org/10.1007/s12571-021-01184-6</a>.
-</div>
-<div id="ref-untitednationsTransformingOurWorld2015" class="csl-entry" role="listitem">
-Nations, Untited. 2015. <span>“Transforming Our World: The 2030 Agenda for Sustainable Development.”</span> UN,.
 </div>
 <div id="ref-ortiz-bobeaAnthropogenicClimateChange2021" class="csl-entry" role="listitem">
 Ortiz-Bobea, Ariel, Toby R. Ault, Carlos M. Carrillo, Robert G. Chambers, and David B. Lobell. 2021. <span>“Anthropogenic Climate Change Has Slowed Global Agricultural Productivity Growth.”</span> <em>Nature Climate Change</em> 11 (4): 306–12. <a href="https://doi.org/10.1038/s41558-021-01000-1">https://doi.org/10.1038/s41558-021-01000-1</a>.

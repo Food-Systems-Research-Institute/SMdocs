@@ -2,7 +2,7 @@
 title: Correlations
 ---
 
-## Introduction
+## Introduction {#sec-intro}
 
 Talking points:
 
@@ -11,10 +11,6 @@ Talking points:
 * Something about causal models and Allen and Prosperi [@allen2016ModelingSustainableFood].
 
 ## Correlation Heatmap
-
-::: {.callout-note title='Connecticut Planning Regions' collapse='true'}
-The state of Connecticut has operated under an alternative to the traditional county system known as the Councils of Governments since 1960. The U.S. Census Bureau has historically released figures on the county level. In 2022, the Census Bureau formally recognized the state's nine governing regions. Unfortunately as it related to data management, this means that data from before and after 2022 are challenging to compare at the county level. Some resources for understanding the shift can be found at the [CT Data Collaborative](https://www.ctdata.org/blog/geographic-resources-for-connecticuts-new-county-equivalent-geography).
-:::
 
 First we have some data wrangle to do. Here, we choose a selection of 35 variables to work with. We also filter for the Connecticut governing regions rather than counties. Finally, we arrange the variables in sensible order so they appear in similar blocks on the correlation plot.
 
@@ -134,6 +130,8 @@ ggplotly(
   height = 800
 )
 ```
+
+I am in the midst of an argument with Quarto about formatting plotly graphs. I want this to show its full extent without the scroll bar, but it refuses. Will revisit this.
 
 ## Edge Bundling Diagram
 
@@ -295,6 +293,10 @@ p +
   theme(legend.position = "none")
 
 ```
+
+Here is the kind of thing I'd like to make, where stronger correlations are brighter and the links between groups are clearer:
+
+![edge_bundle](../images/edge_bundling.png){width=100%}
 
 ## References
 

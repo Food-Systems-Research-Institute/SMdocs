@@ -207,7 +207,7 @@ div.csl-indent {
         <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/03_dimensions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Dimensions</span></a>
+ <span class="menu-text">Indicators</span></a>
   </div>
 </li>
         <li class="sidebar-item sidebar-item-section">
@@ -222,13 +222,13 @@ div.csl-indent {
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/04.1_graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Visualization</span></a>
+ <span class="menu-text">Exploratory Graphs</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/04.2_correlations.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Correlation</span></a>
+ <span class="menu-text">Correlations</span></a>
   </div>
 </li>
       </ul>
@@ -243,7 +243,7 @@ div.csl-indent {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
+  <li><a href="#sec-intro" id="toc-sec-intro" class="nav-link active" data-scroll-target="#sec-intro">Introduction</a></li>
   <li><a href="#correlation-heatmap" id="toc-correlation-heatmap" class="nav-link" data-scroll-target="#correlation-heatmap">Correlation Heatmap</a></li>
   <li><a href="#edge-bundling-diagram" id="toc-edge-bundling-diagram" class="nav-link" data-scroll-target="#edge-bundling-diagram">Edge Bundling Diagram</a></li>
   <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references">References</a></li>
@@ -272,8 +272,8 @@ div.csl-indent {
 </header>
 
 
-<section id="introduction" class="level2">
-<h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
+<section id="sec-intro" class="level2">
+<h2 class="anchored" data-anchor-id="sec-intro">Introduction</h2>
 <p>Talking points:</p>
 <ul>
 <li>Interactions are important</li>
@@ -283,22 +283,6 @@ div.csl-indent {
 </section>
 <section id="correlation-heatmap" class="level2">
 <h2 class="anchored" data-anchor-id="correlation-heatmap">Correlation Heatmap</h2>
-<div class="callout callout-style-default callout-note callout-titled" title="Connecticut Planning Regions">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
-<div class="callout-icon-container">
-<i class="callout-icon"></i>
-</div>
-<div class="callout-title-container flex-fill">
-Connecticut Planning Regions
-</div>
-<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
-</div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
-<div class="callout-body-container callout-body">
-<p>The state of Connecticut has operated under an alternative to the traditional county system known as the Councils of Governments since 1960. The U.S. Census Bureau has historically released figures on the county level. In 2022, the Census Bureau formally recognized the state’s nine governing regions. Unfortunately as it related to data management, this means that data from before and after 2022 are challenging to compare at the county level. Some resources for understanding the shift can be found at the <a href="https://www.ctdata.org/blog/geographic-resources-for-connecticuts-new-county-equivalent-geography">CT Data Collaborative</a>.</p>
-</div>
-</div>
-</div>
 <p>First we have some data wrangle to do. Here, we choose a selection of 35 variables to work with. We also filter for the Connecticut governing regions rather than counties. Finally, we arrange the variables in sensible order so they appear in similar blocks on the correlation plot.</p>
 <div class="cell">
 <details class="code-fold">
@@ -367,7 +351,7 @@ Connecticut Planning Regions
 </div>
 <p>Now we can build an interactive correlation plot. We are calculating correlations based on complete pairwise observations to account for missing data and the changes to Census Bureau reporting for Connecticut.</p>
 <div class="callout callout-style-default callout-note callout-titled" title="On Missing Data">
-<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -376,7 +360,7 @@ On Missing Data
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-2" class="callout-2-contents callout-collapse collapse">
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>This is a reminder to do a deeper dive on missing data once more of the data have been wrangled. There is a substantial amount given the varying scales at which data are collected, not to mention the issues at the county level with Connecticut.</p>
 </div>
@@ -431,6 +415,7 @@ On Missing Data
 <p>Interactive Correlation Plot</p>
 </div>
 </div>
+<p>I am in the midst of an argument with Quarto about formatting plotly graphs. I want this to show its full extent without the scroll bar, but it refuses. Will revisit this.</p>
 </section>
 <section id="edge-bundling-diagram" class="level2">
 <h2 class="anchored" data-anchor-id="edge-bundling-diagram">Edge Bundling Diagram</h2>
@@ -587,6 +572,13 @@ On Missing Data
 <span id="cb4-81"><a href="#cb4-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_edge_colour_distiller</span>(<span class="at">palette =</span> <span class="st">"RdPu"</span>) <span class="sc">+</span></span>
 <span id="cb4-82"><a href="#cb4-82" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">legend.position =</span> <span class="st">"none"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
+</div>
+<p>Here is the kind of thing I’d like to make, where stronger correlations are brighter and the links between groups are clearer:</p>
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="../images/edge_bundling.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption>edge_bundle</figcaption>
+</figure>
 </div>
 </section>
 <section id="references" class="level2">
@@ -1031,8 +1023,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
 </script>
 <nav class="page-navigation">
   <div class="nav-page nav-page-previous">
-      <a href="../pages/04.1_graphs.html" class="pagination-link" aria-label="Visualization">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Visualization</span>
+      <a href="../pages/04.1_graphs.html" class="pagination-link" aria-label="Exploratory Graphs">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Exploratory Graphs</span>
       </a>          
   </div>
   <div class="nav-page nav-page-next">

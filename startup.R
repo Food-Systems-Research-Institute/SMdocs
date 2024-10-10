@@ -4,7 +4,9 @@ pacman::p_load(
 
 conflicted::conflicts_prefer(
     dplyr::filter(),
-    dplyr::select()
+    dplyr::select(),
+    dplyr::summarize(),
+    dplyr::pivot_wider()
 )
 
 print("startup.R loaded")

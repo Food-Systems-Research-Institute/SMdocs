@@ -33,7 +33,7 @@ website:
         href: pages/01_home.qmd
       - text: Framework
         href: pages/02_framework.qmd
-      - text: Dimensions
+      - text: Indicators
         href: pages/03_dimensions.qmd
         # contents:
           # - text: 'Environment'
@@ -48,9 +48,9 @@ website:
           #   href: pages/03.5_social.qmd
       - section: Analysis
         contents:
-          - text: 'Visualization'
+          - text: 'Exploratory Graphs'
             href: pages/04.1_graphs.qmd
-          - text: 'Correlation'
+          - text: 'Correlations'
             href: pages/04.2_correlations.qmd
           # - text: 'Principal Components'
             # href: pages/04.3_pca.qmd

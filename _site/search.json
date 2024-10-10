@@ -14,18 +14,18 @@
     "text": "Talking points:\n\nInteractions are important\nProbably cite Kate Schneider (Schneider et al. 2023)\nSomething about causal models and Allen and Prosperi (Allen and Prosperi 2016).",
     "crumbs": [
       "Analysis",
-      "Correlation"
+      "Correlations"
     ]
   },
   {
-    "objectID": "pages/04.2_correlations.html#introduction",
-    "href": "pages/04.2_correlations.html#introduction",
+    "objectID": "pages/04.2_correlations.html#sec-intro",
+    "href": "pages/04.2_correlations.html#sec-intro",
     "title": "Correlations",
     "section": "",
     "text": "Talking points:\n\nInteractions are important\nProbably cite Kate Schneider (Schneider et al. 2023)\nSomething about causal models and Allen and Prosperi (Allen and Prosperi 2016).",
     "crumbs": [
       "Analysis",
-      "Correlation"
+      "Correlations"
     ]
   },
   {
@@ -33,10 +33,10 @@
     "href": "pages/04.2_correlations.html#correlation-heatmap",
     "title": "Correlations",
     "section": "Correlation Heatmap",
-    "text": "Correlation Heatmap\n\n\n\n\n\n\nConnecticut Planning Regions\n\n\n\n\n\nThe state of Connecticut has operated under an alternative to the traditional county system known as the Councils of Governments since 1960. The U.S. Census Bureau has historically released figures on the county level. In 2022, the Census Bureau formally recognized the state’s nine governing regions. Unfortunately as it related to data management, this means that data from before and after 2022 are challenging to compare at the county level. Some resources for understanding the shift can be found at the CT Data Collaborative.\n\n\n\nFirst we have some data wrangle to do. Here, we choose a selection of 35 variables to work with. We also filter for the Connecticut governing regions rather than counties. Finally, we arrange the variables in sensible order so they appear in similar blocks on the correlation plot.\n\n\nCode\npacman::p_load(\n  dplyr,\n  tidyr,\n  tibble,\n  stringr,\n  purrr\n)\n\ndat &lt;- readRDS('data/aggregated_metrics.rds')\nsource('dev/data_pipeline_functions.R')\n\n# What variables should we use?\n# First let's just take the last year of everything\ndat &lt;- dat %&gt;%\n  dplyr::filter(stringr::str_length(fips) == 5) %&gt;% \n  get_latest_year()\n\n# Pick vars\n# all_vars &lt;- dat$variable_name %&gt;%\n#   unique %&gt;%\n#   sort\n# all_vars\n\n# Take anything mildly relevant\npattern &lt;- paste0(c(\n  '^agri', 'd2c', '^edu', '^groc', 'insecurity', 'median_rent$', '^female',\n  'median_rent_as_perc', '^n_house', '^number_', 'refrig', 'pth$', '_pct$',\n  '^wic', '^hired', '^total', '^womens_earnings_as_perc', 'vacancy'\n  ), collapse = '|')\n\ndat &lt;- dat %&gt;%\n  dplyr::filter(str_detect(variable_name, pattern)) %&gt;%\n  mutate(variable_name = paste0(variable_name, '_', year), .keep = 'unused') %&gt;%\n  pivot_wider(\n    names_from = 'variable_name',\n    values_from = 'value'\n  ) %&gt;%\n  mutate(across(c(2:last_col()), as.numeric)) %&gt;% \n  dplyr::rename(\n    womens_earnings_perc_men_fff_2023 = womens_earnings_as_perc_of_men_farming_fishing_forestry_2023,\n    womens_earnings_perc_men_service_2023 = \n    womens_earnings_as_perc_of_men_food_prep_and_serving_2023\n  )\n\n# Filter for only CT governing regions.\ndat &lt;- dplyr::filter(dat, !str_detect(fips, '^09.*[1-9]$')) %&gt;%\n  tibble::column_to_rownames('fips')\n\n# Arrange variables in a sensible order by group\n# Housing, income, education, food security, infrastructure, localness, total sales, expenses\ndat &lt;- dat %&gt;% \n  select(\n    matches('_rent_|vacancy'),\n    matches('income|earnings'),\n    matches('education'),\n    matches('insecurity|^wic|^snap'),\n    matches('^number|^groc'),\n    matches('agritourism|market|_csa_|d2c|valueadded|local_sales'),\n    matches('total_|^hired|producer')\n  )\n\n\nNow we can build an interactive correlation plot. We are calculating correlations based on complete pairwise observations to account for missing data and the changes to Census Bureau reporting for Connecticut.\n\n\n\n\n\n\nOn Missing Data\n\n\n\n\n\nThis is a reminder to do a deeper dive on missing data once more of the data have been wrangled. There is a substantial amount given the varying scales at which data are collected, not to mention the issues at the county level with Connecticut.\n\n\n\n\n\nCode\npacman::p_load(\n  dplyr,\n  ggplot2,\n  plotly,\n  reshape,\n  Hmisc,\n  viridisLite\n)\n\n\ncor &lt;- dat %&gt;% \n  as.matrix() %&gt;% \n  rcorr()\n\ncor_r &lt;- melt(cor$r) %&gt;% \n  setNames(c('var_1', 'var_2', 'value'))\ncor_p &lt;- melt(cor$P) \np.value &lt;- cor_p$value\nplot &lt;- ggplot(cor_r, aes(var_1, var_2, fill = value, text = paste0(\n  'Var 1: ', var_1, '\\n',\n  'Var 2: ', var_2, '\\n',\n  'Correlation: ', format(round(value, 3), nsmall = 3), '\\n',\n  'P-Value: ', format(round(p.value, 3), nsmall = 3)\n))) + \n  geom_tile() + \n  scale_fill_viridis_c() + \n  theme(axis.text.x = element_text(hjust = 1, angle = 45)) +\n  labs(\n    x = NULL,\n    y = NULL,\n    fill = 'Correlation'\n  )\n\nggplotly(\n  plot, \n  tooltip = 'text',\n  width = 1000,\n  height = 800\n)\n\n\n\n\nInteractive Correlation Plot",
+    "text": "Correlation Heatmap\nFirst we have some data wrangle to do. Here, we choose a selection of 35 variables to work with. We also filter for the Connecticut governing regions rather than counties. Finally, we arrange the variables in sensible order so they appear in similar blocks on the correlation plot.\n\n\nCode\npacman::p_load(\n  dplyr,\n  tidyr,\n  tibble,\n  stringr,\n  purrr\n)\n\ndat &lt;- readRDS('data/aggregated_metrics.rds')\nsource('dev/data_pipeline_functions.R')\n\n# What variables should we use?\n# First let's just take the last year of everything\ndat &lt;- dat %&gt;%\n  dplyr::filter(stringr::str_length(fips) == 5) %&gt;% \n  get_latest_year()\n\n# Pick vars\n# all_vars &lt;- dat$variable_name %&gt;%\n#   unique %&gt;%\n#   sort\n# all_vars\n\n# Take anything mildly relevant\npattern &lt;- paste0(c(\n  '^agri', 'd2c', '^edu', '^groc', 'insecurity', 'median_rent$', '^female',\n  'median_rent_as_perc', '^n_house', '^number_', 'refrig', 'pth$', '_pct$',\n  '^wic', '^hired', '^total', '^womens_earnings_as_perc', 'vacancy'\n  ), collapse = '|')\n\ndat &lt;- dat %&gt;%\n  dplyr::filter(str_detect(variable_name, pattern)) %&gt;%\n  mutate(variable_name = paste0(variable_name, '_', year), .keep = 'unused') %&gt;%\n  pivot_wider(\n    names_from = 'variable_name',\n    values_from = 'value'\n  ) %&gt;%\n  mutate(across(c(2:last_col()), as.numeric)) %&gt;% \n  dplyr::rename(\n    womens_earnings_perc_men_fff_2023 = womens_earnings_as_perc_of_men_farming_fishing_forestry_2023,\n    womens_earnings_perc_men_service_2023 = \n    womens_earnings_as_perc_of_men_food_prep_and_serving_2023\n  )\n\n# Filter for only CT governing regions.\ndat &lt;- dplyr::filter(dat, !str_detect(fips, '^09.*[1-9]$')) %&gt;%\n  tibble::column_to_rownames('fips')\n\n# Arrange variables in a sensible order by group\n# Housing, income, education, food security, infrastructure, localness, total sales, expenses\ndat &lt;- dat %&gt;% \n  select(\n    matches('_rent_|vacancy'),\n    matches('income|earnings'),\n    matches('education'),\n    matches('insecurity|^wic|^snap'),\n    matches('^number|^groc'),\n    matches('agritourism|market|_csa_|d2c|valueadded|local_sales'),\n    matches('total_|^hired|producer')\n  )\n\n\nNow we can build an interactive correlation plot. We are calculating correlations based on complete pairwise observations to account for missing data and the changes to Census Bureau reporting for Connecticut.\n\n\n\n\n\n\nOn Missing Data\n\n\n\n\n\nThis is a reminder to do a deeper dive on missing data once more of the data have been wrangled. There is a substantial amount given the varying scales at which data are collected, not to mention the issues at the county level with Connecticut.\n\n\n\n\n\nCode\npacman::p_load(\n  dplyr,\n  ggplot2,\n  plotly,\n  reshape,\n  Hmisc,\n  viridisLite\n)\n\n\ncor &lt;- dat %&gt;% \n  as.matrix() %&gt;% \n  rcorr()\n\ncor_r &lt;- melt(cor$r) %&gt;% \n  setNames(c('var_1', 'var_2', 'value'))\ncor_p &lt;- melt(cor$P) \np.value &lt;- cor_p$value\nplot &lt;- ggplot(cor_r, aes(var_1, var_2, fill = value, text = paste0(\n  'Var 1: ', var_1, '\\n',\n  'Var 2: ', var_2, '\\n',\n  'Correlation: ', format(round(value, 3), nsmall = 3), '\\n',\n  'P-Value: ', format(round(p.value, 3), nsmall = 3)\n))) + \n  geom_tile() + \n  scale_fill_viridis_c() + \n  theme(axis.text.x = element_text(hjust = 1, angle = 45)) +\n  labs(\n    x = NULL,\n    y = NULL,\n    fill = 'Correlation'\n  )\n\nggplotly(\n  plot, \n  tooltip = 'text',\n  width = 1000,\n  height = 800\n)\n\n\n\n\nInteractive Correlation Plot\n\n\nI am in the midst of an argument with Quarto about formatting plotly graphs. I want this to show its full extent without the scroll bar, but it refuses. Will revisit this.",
     "crumbs": [
       "Analysis",
-      "Correlation"
+      "Correlations"
     ]
   },
   {
@@ -44,70 +44,80 @@
     "href": "pages/04.2_correlations.html#edge-bundling-diagram",
     "title": "Correlations",
     "section": "Edge Bundling Diagram",
-    "text": "Edge Bundling Diagram\nI would like to including a bundling diagram as a broader overview of how metrics are related. This is trickier than I expected though. I might leave it at the heat map above.\nThis is example code:\n\n\nCode\n# Libraries\nlibrary(ggraph)\nlibrary(igraph)\nlibrary(tidyverse)\n \n# create a data frame giving the hierarchical structure of your individuals\nset.seed(1234)\nd1 &lt;- data.frame(from=\"origin\", to=paste(\"group\", seq(1,10), sep=\"\"))\nd2 &lt;- data.frame(from=rep(d1$to, each=10), to=paste(\"subgroup\", seq(1,100), sep=\"_\"))\nhierarchy &lt;- rbind(d1, d2)\n \n# create a dataframe with connection between leaves (individuals)\nall_leaves &lt;- paste(\"subgroup\", seq(1,100), sep=\"_\")\nconnect &lt;- rbind( \n  data.frame( from=sample(all_leaves, 100, replace=T) , to=sample(all_leaves, 100, replace=T)), \n  data.frame( from=sample(head(all_leaves), 30, replace=T) , to=sample( tail(all_leaves), 30, replace=T)), \n  data.frame( from=sample(all_leaves[25:30], 30, replace=T) , to=sample( all_leaves[55:60], 30, replace=T)), \n  data.frame( from=sample(all_leaves[75:80], 30, replace=T) , to=sample( all_leaves[55:60], 30, replace=T)) )\nconnect$value &lt;- runif(nrow(connect))\n \n# create a vertices data.frame. One line per object of our hierarchy\nvertices  &lt;-  data.frame(\n  name = unique(c(as.character(hierarchy$from), as.character(hierarchy$to))) , \n  value = runif(111)\n) \n# Let's add a column with the group of each name. It will be useful later to color points\nvertices$group  &lt;-  hierarchy$from[ match( vertices$name, hierarchy$to ) ]\n \n \n# Create a graph object\nmygraph &lt;- graph_from_data_frame( hierarchy, vertices=vertices )\n \n# The connection object must refer to the ids of the leaves:\nfrom  &lt;-  match( connect$from, vertices$name)\nto  &lt;-  match( connect$to, vertices$name)\n \n\np &lt;- ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + \n  geom_node_point(aes(filter = leaf, x = x*1.05, y=y*1.05)) +\n  theme_void()\n\n\n\n# Use the 'value' column of the connection data frame for the color:\np +  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value, alpha=value)) \n \n# In this case you can change the color palette\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value)) +\n  scale_edge_color_continuous(low=\"white\", high=\"red\")\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value)) +\n  scale_edge_colour_distiller(palette = \"BuPu\")\n \n# Color depends of the index: the from and the to are different\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), width=1, alpha=0.2, aes(colour=..index..)) +\n  scale_edge_colour_distiller(palette = \"RdPu\") +\n  theme(legend.position = \"none\")\n\n\nAnd an attempt at doing it for the SM framework:\n\n\nCode\ncor_dat &lt;- cor_r %&gt;% \n  mutate(across(c(1:2), as.character)) %&gt;% \n  filter(var_1 != var_2) %&gt;% \n  rowwise() %&gt;%\n  mutate(pair = paste(sort(c(var_1, var_2)), collapse = \"_\")) %&gt;%\n  ungroup() %&gt;%\n  distinct(pair, .keep_all = TRUE) %&gt;%\n  select(-pair)\nget_str(cor_dat)\n\n\n## Vertices\n# Need a vertices data frame with every leaf. The example provides a random value as well, but I don't think we need this.\n# Example:\nvertices\n\n# Make it:\nvert &lt;- data.frame(\n  name = unique(c(cor_dat$var_1, cor_dat$var_2)),\n  group = '1',\n  value = runif(35)\n) %&gt;% \n  bind_rows(c(name = 'origin', group = NA_character_))\n\n\n## Hierarchy\nhierarchy\n# Do we really need this? I don't care about groups\n# Try making it with a single group. Pull it from cor_r\nhier &lt;- data.frame(\n  from = 'origin',\n  to = vert$name\n)\n\n\n## Connections\nconnect\n# cor_dat is this already, just clean it up\ncon &lt;- cor_dat %&gt;% \n  setNames(c('from', 'to', 'value'))\n\n\n\n## Graph\n# Create a graph object\nmygraph &lt;- graph_from_data_frame(hier, vertices = vert)\n \n# The connection object must refer to the ids of the leaves:\nfrom  &lt;-  match( con$from, vert$name)\nto  &lt;-  match( con$to, vert$name)\n \n\n\np &lt;- ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + \n  geom_node_point(aes(filter = leaf, x = x*1.05, y=y*1.05)) +\n  theme_void()\n\n\n\n\n# Use the 'value' column of the connection data frame for the color:\np +  geom_conn_bundle(\n  data = get_con(from = from, to = to), \n  aes(\n    # colour = value, \n    alpha = value\n  )\n) \n \n# In this case you can change the color palette\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value)) +\n  scale_edge_color_continuous(low=\"white\", high=\"red\")\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value)) +\n  scale_edge_colour_distiller(palette = \"BuPu\")\n \n# Color depends of the index: the from and the to are different\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), width=1, alpha=0.2, aes(colour=..index..)) +\n  scale_edge_colour_distiller(palette = \"RdPu\") +\n  theme(legend.position = \"none\")",
+    "text": "Edge Bundling Diagram\nI would like to including a bundling diagram as a broader overview of how metrics are related. This is trickier than I expected though. I might leave it at the heat map above.\nThis is example code:\n\n\nCode\n# Libraries\nlibrary(ggraph)\nlibrary(igraph)\nlibrary(tidyverse)\n \n# create a data frame giving the hierarchical structure of your individuals\nset.seed(1234)\nd1 &lt;- data.frame(from=\"origin\", to=paste(\"group\", seq(1,10), sep=\"\"))\nd2 &lt;- data.frame(from=rep(d1$to, each=10), to=paste(\"subgroup\", seq(1,100), sep=\"_\"))\nhierarchy &lt;- rbind(d1, d2)\n \n# create a dataframe with connection between leaves (individuals)\nall_leaves &lt;- paste(\"subgroup\", seq(1,100), sep=\"_\")\nconnect &lt;- rbind( \n  data.frame( from=sample(all_leaves, 100, replace=T) , to=sample(all_leaves, 100, replace=T)), \n  data.frame( from=sample(head(all_leaves), 30, replace=T) , to=sample( tail(all_leaves), 30, replace=T)), \n  data.frame( from=sample(all_leaves[25:30], 30, replace=T) , to=sample( all_leaves[55:60], 30, replace=T)), \n  data.frame( from=sample(all_leaves[75:80], 30, replace=T) , to=sample( all_leaves[55:60], 30, replace=T)) )\nconnect$value &lt;- runif(nrow(connect))\n \n# create a vertices data.frame. One line per object of our hierarchy\nvertices  &lt;-  data.frame(\n  name = unique(c(as.character(hierarchy$from), as.character(hierarchy$to))) , \n  value = runif(111)\n) \n# Let's add a column with the group of each name. It will be useful later to color points\nvertices$group  &lt;-  hierarchy$from[ match( vertices$name, hierarchy$to ) ]\n \n \n# Create a graph object\nmygraph &lt;- graph_from_data_frame( hierarchy, vertices=vertices )\n \n# The connection object must refer to the ids of the leaves:\nfrom  &lt;-  match( connect$from, vertices$name)\nto  &lt;-  match( connect$to, vertices$name)\n \n\np &lt;- ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + \n  geom_node_point(aes(filter = leaf, x = x*1.05, y=y*1.05)) +\n  theme_void()\n\n\n\n# Use the 'value' column of the connection data frame for the color:\np +  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value, alpha=value)) \n \n# In this case you can change the color palette\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value)) +\n  scale_edge_color_continuous(low=\"white\", high=\"red\")\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value)) +\n  scale_edge_colour_distiller(palette = \"BuPu\")\n \n# Color depends of the index: the from and the to are different\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), width=1, alpha=0.2, aes(colour=..index..)) +\n  scale_edge_colour_distiller(palette = \"RdPu\") +\n  theme(legend.position = \"none\")\n\n\nAnd an attempt at doing it for the SM framework:\n\n\nCode\ncor_dat &lt;- cor_r %&gt;% \n  mutate(across(c(1:2), as.character)) %&gt;% \n  filter(var_1 != var_2) %&gt;% \n  rowwise() %&gt;%\n  mutate(pair = paste(sort(c(var_1, var_2)), collapse = \"_\")) %&gt;%\n  ungroup() %&gt;%\n  distinct(pair, .keep_all = TRUE) %&gt;%\n  select(-pair)\nget_str(cor_dat)\n\n\n## Vertices\n# Need a vertices data frame with every leaf. The example provides a random value as well, but I don't think we need this.\n# Example:\nvertices\n\n# Make it:\nvert &lt;- data.frame(\n  name = unique(c(cor_dat$var_1, cor_dat$var_2)),\n  group = '1',\n  value = runif(35)\n) %&gt;% \n  bind_rows(c(name = 'origin', group = NA_character_))\n\n\n## Hierarchy\nhierarchy\n# Do we really need this? I don't care about groups\n# Try making it with a single group. Pull it from cor_r\nhier &lt;- data.frame(\n  from = 'origin',\n  to = vert$name\n)\n\n\n## Connections\nconnect\n# cor_dat is this already, just clean it up\ncon &lt;- cor_dat %&gt;% \n  setNames(c('from', 'to', 'value'))\n\n\n\n## Graph\n# Create a graph object\nmygraph &lt;- graph_from_data_frame(hier, vertices = vert)\n \n# The connection object must refer to the ids of the leaves:\nfrom  &lt;-  match( con$from, vert$name)\nto  &lt;-  match( con$to, vert$name)\n \n\n\np &lt;- ggraph(mygraph, layout = 'dendrogram', circular = TRUE) + \n  geom_node_point(aes(filter = leaf, x = x*1.05, y=y*1.05)) +\n  theme_void()\n\n\n\n\n# Use the 'value' column of the connection data frame for the color:\np +  geom_conn_bundle(\n  data = get_con(from = from, to = to), \n  aes(\n    # colour = value, \n    alpha = value\n  )\n) \n \n# In this case you can change the color palette\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value)) +\n  scale_edge_color_continuous(low=\"white\", high=\"red\")\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), aes(colour=value)) +\n  scale_edge_colour_distiller(palette = \"BuPu\")\n \n# Color depends of the index: the from and the to are different\np +  \n  geom_conn_bundle(data = get_con(from = from, to = to), width=1, alpha=0.2, aes(colour=..index..)) +\n  scale_edge_colour_distiller(palette = \"RdPu\") +\n  theme(legend.position = \"none\")\n\n\nHere is the kind of thing I’d like to make, where stronger correlations are brighter and the links between groups are clearer:\n\n\n\nedge_bundle",
     "crumbs": [
       "Analysis",
-      "Correlation"
+      "Correlations"
     ]
   },
   {
     "objectID": "pages/03_dimensions.html",
     "href": "pages/03_dimensions.html",
-    "title": "Dimensions",
+    "title": "Indicators",
     "section": "",
-    "text": "This will be where we describe the dimensions, indices, indicators, and metrics, as well as providing information on the sources of metrics and any relevant metadata.",
+    "text": "The plan here is to describe the dimensions, indices, indicators, and metrics in detail. Waiting on most of this until it is slightly more clear what we are working with. At the end is an interactive table to explore metadata and sources of all the metrics that have been collected and cleaned so far.",
     "crumbs": [
-      "Dimensions"
+      "Indicators"
     ]
   },
   {
     "objectID": "pages/03_dimensions.html#environment",
     "href": "pages/03_dimensions.html#environment",
-    "title": "Dimensions",
+    "title": "Indicators",
     "section": "Environment",
     "text": "Environment",
     "crumbs": [
-      "Dimensions"
+      "Indicators"
     ]
   },
   {
     "objectID": "pages/03_dimensions.html#economics",
     "href": "pages/03_dimensions.html#economics",
-    "title": "Dimensions",
+    "title": "Indicators",
     "section": "Economics",
     "text": "Economics",
     "crumbs": [
-      "Dimensions"
+      "Indicators"
     ]
   },
   {
     "objectID": "pages/03_dimensions.html#production",
     "href": "pages/03_dimensions.html#production",
-    "title": "Dimensions",
+    "title": "Indicators",
     "section": "Production",
     "text": "Production",
     "crumbs": [
-      "Dimensions"
+      "Indicators"
     ]
   },
   {
     "objectID": "pages/03_dimensions.html#health",
     "href": "pages/03_dimensions.html#health",
-    "title": "Dimensions",
+    "title": "Indicators",
     "section": "Health",
     "text": "Health",
     "crumbs": [
-      "Dimensions"
+      "Indicators"
     ]
   },
   {
     "objectID": "pages/03_dimensions.html#social",
     "href": "pages/03_dimensions.html#social",
-    "title": "Dimensions",
+    "title": "Indicators",
     "section": "Social",
     "text": "Social",
     "crumbs": [
-      "Dimensions"
+      "Indicators"
+    ]
+  },
+  {
+    "objectID": "pages/03_dimensions.html#metadata-table",
+    "href": "pages/03_dimensions.html#metadata-table",
+    "title": "Indicators",
+    "section": "Metadata Table",
+    "text": "Metadata Table\nUsing the table:\n\nClick headers to sort\nRearrange column widths at your leisure\nGlobal search at top right, column search in headers\nChange page length and page through results at the bottom\n\nTo do:\n\nTurn URLs into actual links, get rid of super long links that mess up the table\nMake space to include a longer definition and proper citations somehow\nMaybe put references section at bottom of page with links from table?\n\n\n\nCode\npacman::p_load(\n  dplyr,\n  reactable,\n  stringr\n)\n\n# Load full metadata table\nmetadata &lt;- readRDS('data/aggregated_meta.rds')\n\n# Pick out variables to display\nmetadata &lt;- metadata %&gt;% \n  select(\n    dimension,\n    index,\n    indicator,\n    metric,\n    year = latest_year,\n    source,\n    url\n  )\n\nnames(metadata) &lt;- str_to_title(names(metadata))\n\nreactable(\n  metadata,\n  sortable = TRUE,\n  resizable = TRUE,\n  filterable = TRUE,\n  searchable = TRUE,\n  pagination = TRUE,\n  bordered = TRUE,\n  wrap = TRUE,\n  rownames = FALSE,\n  onClick = 'select',\n  striped = TRUE,\n  defaultPageSize = 5,\n  pageSizeOptions = c(5, 10, 25, 50, 100),\n  showPageSizeOptions = TRUE,\n  highlight = TRUE,\n  style = list(fontSize = \"12px\"),\n  compact = TRUE,\n  columns = list(\n    Dimension = colDef(minWidth = 50),\n    Index = colDef(minWidth = 50),\n    Indicator = colDef(minWidth = 50),\n    Metric = colDef(minWidth = 75),\n    Year = colDef(minWidth = 35)\n  )\n)",
+    "crumbs": [
+      "Indicators"
     ]
   },
   {
@@ -150,7 +160,7 @@
     "href": "pages/02_framework.html",
     "title": "Framework",
     "section": "",
-    "text": "This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages.",
+    "text": "Dr. Josh Taylor (left) and Dr. David Conner (right) attending a Sustainability Metrics workshop. Photo credit: Colleen Goodhue, FSRC.\nThis is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al. in that food system sustainability is still largely undefined (Béné et al. 2019).\n[Including some more text here just so that it wraps around the photo.\nLorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia eu nibh vel luctus. Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.\nInteger mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.]",
     "crumbs": [
       "Framework"
     ]
@@ -166,11 +176,11 @@
     ]
   },
   {
-    "objectID": "pages/02_framework.html#phylogeny",
-    "href": "pages/02_framework.html#phylogeny",
+    "objectID": "pages/02_framework.html#phylogenic-tree",
+    "href": "pages/02_framework.html#phylogenic-tree",
     "title": "Framework",
-    "section": "Phylogeny",
-    "text": "Phylogeny\nHere is a more practical but less visually appealing version of the same framework. Still kind of a monster. To do: fix the color scheme so it is colored by dimension and matches the radial plot above.\n\n\nCode\npacman::p_load(\n  ggtree,\n  dplyr,\n  ape,\n  data.tree,\n  viridisLite,\n  stringr\n)\n\n## Load data and add an origin level\ndat &lt;- readRDS('data/tree_dat.rds') %&gt;% \n  mutate(Framework = 'Sustainability') %&gt;% \n  dplyr::select(Framework, Dimension:Indicator) %&gt;% \n  mutate(across(\n    everything(), \n    ~ str_trim(str_replace_all(., ';|%|/|\\\\.|\\\"|,|\\\\(|\\\\)', '_'))\n  ))\n# print(dat, n = 100)\n# get_str(dat)\n\ndat$pathString &lt;- paste(\n  dat$Framework,\n  dat$Dimension,\n  dat$Index,\n  dat$Indicator,\n  sep = '/'\n)\ntree &lt;- as.Node(dat)\n\n# Convert the data.tree structure to Newick format\ntree_newick &lt;- ToNewick(tree)\n\n# Read the Newick tree into ape\nphylo_tree &lt;- read.tree(text = tree_newick)\n\n# Make all edge lengths 1\nphylo_tree$edge.length &lt;- rep(1, length(phylo_tree$edge.length))\n\n# Add a space to end of node labels so it isn't cut off\nphylo_tree$node.label &lt;- paste0(phylo_tree$node.label, ' ')\n\n# Plot it\nplot(\n  phylo_tree, \n  type = 'c',\n  cex = 0.75,\n  edge.width = 2,\n  show.tip.label = TRUE,\n  label.offset = 0,\n  no.margin = TRUE,\n  tip.color = 'black',\n  edge.color = viridis(181),\n  x.lim = c(-0.1, 5)\n)\n\nnodelabels(\n  phylo_tree$node.label,\n  cex = 0.8,\n  bg = 'white'\n)\n\n\n\n\n\nPhylogeny tree diagram",
+    "section": "Phylogenic Tree",
+    "text": "Phylogenic Tree\nHere is a more practical but less visually appealing version of the same framework. Still kind of a monster. To do: fix the color scheme so it is colored by dimension and matches the radial plot above. Might also be better off using ggraph package as above and fiddling with the layout.\n\n\nCode\npacman::p_load(\n  ggtree,\n  dplyr,\n  ape,\n  data.tree,\n  viridisLite,\n  stringr\n)\n\n## Load data and add an origin level\ndat &lt;- readRDS('data/tree_dat.rds') %&gt;% \n  mutate(Framework = 'Sustainability') %&gt;% \n  dplyr::select(Framework, Dimension:Indicator) %&gt;% \n  mutate(across(\n    everything(), \n    ~ str_trim(str_replace_all(., ';|%|/|\\\\.|\\\"|,|\\\\(|\\\\)', '_'))\n  ))\n# print(dat, n = 100)\n# get_str(dat)\n\ndat$pathString &lt;- paste(\n  dat$Framework,\n  dat$Dimension,\n  dat$Index,\n  dat$Indicator,\n  sep = '/'\n)\ntree &lt;- as.Node(dat)\n\n# Convert the data.tree structure to Newick format\ntree_newick &lt;- ToNewick(tree)\n\n# Read the Newick tree into ape\nphylo_tree &lt;- read.tree(text = tree_newick)\n\n# Make all edge lengths 1\nphylo_tree$edge.length &lt;- rep(1, length(phylo_tree$edge.length))\n\n# Add a space to end of node labels so it isn't cut off\nphylo_tree$node.label &lt;- paste0(phylo_tree$node.label, ' ')\n\n# Plot it\nplot(\n  phylo_tree, \n  type = 'c',\n  cex = 0.75,\n  edge.width = 2,\n  show.tip.label = TRUE,\n  label.offset = 0,\n  no.margin = TRUE,\n  tip.color = 'black',\n  edge.color = viridis(181),\n  x.lim = c(-0.1, 5)\n)\n\nnodelabels(\n  phylo_tree$node.label,\n  cex = 0.8,\n  bg = 'white'\n)\n\n\n\n\n\nPhylogeny tree diagram",
     "crumbs": [
       "Framework"
     ]
@@ -190,7 +200,7 @@
     "href": "pages/01_home.html#sec-intro",
     "title": "Sustainability Metrics",
     "section": "Introduction",
-    "text": "Introduction\nFood systems are increasingly recognized as an essential piece of sustainable development (Nations 2015). Approximately 42% of world’s population depend on agriculture for employment, which is increasingly challenging in the face of farm consolidation, changing consumption patterns, and climate change (Giller et al. 2021; Aznar-Sánchez et al. 2019). Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years (Crippa et al. 2021; Ortiz-Bobea et al. 2021). [Add line about hunger, nutrition, food security.]\nConsequently, the sustainability of food systems is paramount in meeting the needs of the population without exceeding planetary boundaries. However, there is little consensus on how to define, let alone measure food system sustainability (Allen and Prosperi 2016; Béné et al. 2019). And while there is an abundance of research at the global level (Bathaei and Štreimikienė 2023; Chaudhary, Gustafson, and Mathys 2018), there exists a conspicuous gap in understanding at the local, regional, or landscape level (Dale et al. 2012).\nThe Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The work is led by the Food Systems Research Center at the University of Vermont in partnership with the USDA Agricultural Research Service in Burlington, Vermont. Primary research in developing and measuring indicators of sustainability is ongoing. For now, what you will find here is a growing collection of secondary data, visualizations, and preliminary analyses to help inform the project as well as the public on the sustainability of the New England food system.\nMetadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS Food and Agriculture Mapper and Explorer in particular, as many of the data shown here were cleaned and compiled in their data warehouse.",
+    "text": "Introduction\n\n\n\nSpread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRC.\n\n\nResilient food systems are increasingly recognized as essential, not only in meeting human needs, but in doing so within planetary bounds (Conijn et al. 2018). Approximately 42% of world’s population depend on agriculture for employment, which is a challenging endeavor in the face of farm consolidation, changing consumption patterns, and climate change (Giller et al. 2021; Aznar-Sánchez et al. 2019). Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years (Crippa et al. 2021; Ortiz-Bobea et al. 2021). [Add line about hunger, nutrition, food security.]\nMonitoring and adaptively managing the sustainability of food systems is thus vital. However, there is little consensus on how to define, let alone measure food system sustainability (Allen and Prosperi 2016; Béné et al. 2019). And while there is an abundance of research at the global level (Bathaei and Štreimikienė 2023; Chaudhary, Gustafson, and Mathys 2018), there exists a conspicuous gap in understanding at the local, regional, or landscape level (Dale et al. 2012).\nThe Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The work is led by the Food Systems Research Center at the University of Vermont in partnership with the USDA Agricultural Research Service in Burlington, Vermont. Primary research in developing and measuring indicators of sustainability is ongoing. For now, what you will find here is a growing collection of secondary data, visualizations, and preliminary analyses to help inform the project as well as the public on the sustainability of the New England food system.\nMetadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS Food and Agriculture Mapper and Explorer in particular, as many of the data shown here were cleaned and compiled in their data warehouse.",
     "crumbs": [
       "Home"
     ]
@@ -200,7 +210,7 @@
     "href": "pages/01_home.html#navigation",
     "title": "Sustainability Metrics",
     "section": "Navigation",
-    "text": "Navigation\nProvide info here about what is on the site.\n\nFramework: Describes the conceptual framework and includes some big picture visualizations.\nDimensions: More specifics about dimensions, indices, indicators, and metrics. Will also include metadata and sources for metrics.\nVisualizations: Note to rename this. It is exploratory analysis - distributions, time series, bivariate plots.\nCorrelations: Throwing together all the metrics to see how they relate.\nPCA, clustering, regression, others to come.",
+    "text": "Navigation\nMight provide an overview of what to find on the site here?\n\nFramework: Describes the conceptual framework and includes some big picture visualizations.\nIndicators: More specifics about dimensions, indices, indicators, and metrics. Will also include metadata and sources for metrics.\nExploratory Graphs: Note to rename this. It is exploratory analysis - distributions, time series, bivariate plots.\nCorrelations: Throwing together all the metrics to see how they relate.\nShiny App: Linked on this page, below.\nEventually to add PCA, clustering at the county level, regression, etc.",
     "crumbs": [
       "Home"
     ]
@@ -210,7 +220,7 @@
     "href": "pages/01_home.html#sm-explorer",
     "title": "Sustainability Metrics",
     "section": "SM Explorer",
-    "text": "SM Explorer\nWhile there are some client-side interactive plots on this site, the server-side interactions will be hosted on a separate Shiny App. They could be combined into this doc, but I think it makes for a better user experience to have it separate, and it is more approachable logistically as well. To do: provide link to Shiny App to explore spatial data here.",
+    "text": "SM Explorer\n\n\n\n\n\n\nWarning\n\n\n\n\n\nPlease be aware that the SM Explorer is early on in development. It currently includes limited features, limited metrics, and you will find more than a few bugs and missing data if you poke around enough.\n\n\n\nWhile there are some client-side interactive plots on this site, the server-side interactions are hosted on a separate Shiny App. They could be combined into this doc, but I think it makes for a better user experience to have it separate, and it is way more approachable logistically as well.\n\n\n\n\n\nSo, here is a link to the SM Explorer Shiny App. You can also just click on the image above. The vision here is to have an interactive way to explore spatial data, either at the county or state level. As I work through wrangling data, I plan to include proper spatial layers (points, rasters) rather than just county level data. I will also add an interactive bivariate plot system where you can explore relationships between metrics, much like what is available at the Food Systems Dashboard “Compare” feature. In addition, having a way to explore where each county or state sits as compared to others would be nice, much like the FSD “Profile” and “Indicators” pages.",
     "crumbs": [
       "Home"
     ]
@@ -220,7 +230,7 @@
     "href": "pages/01_home.html#to-do-on-this-page",
     "title": "Sustainability Metrics",
     "section": "To do on this page",
-    "text": "To do on this page\n\nLink Shiny App\nConsider putting something interactive up top\nDefinitely add some images to make this page less depressing\nRevamp color scheme, particularly the links\nConsider changing from APA style citations to whichever one just has the numbers to make it look more approachable and less technical.\nVastly improve on the introduction section.",
+    "text": "To do on this page\n\nRevamp color scheme, particularly the links\nConsider changing from APA style citations to whichever one just has the numbers to make it look more approachable and less technical.\nLink GitHub source, edits, issues",
     "crumbs": [
       "Home"
     ]
@@ -230,7 +240,7 @@
     "href": "pages/01_home.html#license",
     "title": "Sustainability Metrics",
     "section": "License",
-    "text": "License\n\nThis work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License.\n\nThe code is licensed under the GNU General Public License v3.",
+    "text": "License\n\n    This work is licensed under the Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License. \n\n\n    The code is licensed under the GNU General Public License v3.",
     "crumbs": [
       "Home"
     ]
@@ -280,56 +290,56 @@
   {
     "objectID": "pages/04.1_graphs.html",
     "href": "pages/04.1_graphs.html",
-    "title": "Visualization",
+    "title": "Exploratory Graphs",
     "section": "",
-    "text": "This is a first pass at making some interactive visualizations with metrics from secondary data.",
+    "text": "Connecticut Planning Regions\n\n\n\n\n\nThe state of Connecticut has operated under an alternative to the traditional county system known as the Councils of Governments since 1960. The U.S. Census Bureau has historically released figures on the county level. In 2022, the Census Bureau formally recognized the state’s nine governing regions. Unfortunately as it relates to data management, this means that data from before and after 2022 are challenging to compare at the county level. Some resources for understanding the shift can be found at the CT Data Collaborative.\n\n\n\nThis is a first pass at exploratory graphs with the metrics collected so far. We will explore time series trends, marginal distributions, and some bivariate plots. More exploration into correlation will be in the Correlations page.",
     "crumbs": [
       "Analysis",
-      "Visualization"
+      "Exploratory Graphs"
     ]
   },
   {
     "objectID": "pages/04.1_graphs.html#introduction",
     "href": "pages/04.1_graphs.html#introduction",
-    "title": "Visualization",
+    "title": "Exploratory Graphs",
     "section": "",
-    "text": "This is a first pass at making some interactive visualizations with metrics from secondary data.",
+    "text": "Connecticut Planning Regions\n\n\n\n\n\nThe state of Connecticut has operated under an alternative to the traditional county system known as the Councils of Governments since 1960. The U.S. Census Bureau has historically released figures on the county level. In 2022, the Census Bureau formally recognized the state’s nine governing regions. Unfortunately as it relates to data management, this means that data from before and after 2022 are challenging to compare at the county level. Some resources for understanding the shift can be found at the CT Data Collaborative.\n\n\n\nThis is a first pass at exploratory graphs with the metrics collected so far. We will explore time series trends, marginal distributions, and some bivariate plots. More exploration into correlation will be in the Correlations page.",
     "crumbs": [
       "Analysis",
-      "Visualization"
+      "Exploratory Graphs"
     ]
   },
   {
     "objectID": "pages/04.1_graphs.html#time-series",
     "href": "pages/04.1_graphs.html#time-series",
-    "title": "Visualization",
+    "title": "Exploratory Graphs",
     "section": "Time Series",
-    "text": "Time Series\nExploring the metrics that are clean and have 5 or more time points. First let’s clean up data and get it into the right format\n\n\nCode\npacman::p_load(\n  dplyr,\n  ggplot2,\n  plotly,\n  purrr,\n  RColorBrewer,\n  stringr\n)\n\ndat &lt;- readRDS('data/aggregated_metrics.rds')\nfips_key &lt;- readRDS('data/fips_key.rds')\n\n\n## Select metrics\n# Start with variables with &gt;= 5 time points\nts_vars &lt;- dat %&gt;% \n  group_by(variable_name) %&gt;% \n  dplyr::summarize(n_years = length(unique(year))) %&gt;% \n  filter(n_years &gt;= 5) %&gt;% \n  pull(variable_name)\n\n# Select a subset of them\nts_vars &lt;- str_subset(ts_vars, 'child|overall|^wic|^women')\n\n# Add a clean name for graphs\nts_vars &lt;- data.frame(\n  variable = ts_vars,\n  yaxis = c(\n    'Insecurity Rate',\n    'Insecurity Rate',\n    'Coverage Rate',\n    'Eligibility Rate',\n    'Percent',\n    'Percent'\n  ),\n  title = c(\n    'Child Food Insecurity Rate',\n    'Overall Food Insecurity Rate',\n    'WIC Coverage Rate',\n    'WIC Eligibility Rate',\n    'Womens Earnings as % of Men, Farming',\n    'Womens Earnings as % of Men, Food Service'\n  )\n)\n\n## Clean data frame\ndat &lt;- dat %&gt;% \n  mutate(\n    across(c(year, value), as.numeric),\n    state = str_sub(fips, end = 2),\n  ) %&gt;% \n  left_join(fips_key, by = 'fips') %&gt;% \n  mutate(county_name = str_remove(county_name, ' County'))\n\n\nNow we can plot a series of 6 metrics for which we have data for 5 or more years at the state level. Hover over the joints to see specific values for each state.\n\n\nCode\n# Mapping over our time series variables to make a list of plots\nplots &lt;- map(1:nrow(ts_vars), \\(row) {\n  sub_plot &lt;- dat %&gt;% \n    filter(variable_name == ts_vars$variable[row], str_length(fips) == 2) %&gt;% \n    ggplot(aes(\n      x = year, \n      y = value, \n      group = state_name, \n      color = state_name,\n      text = paste0(\n        'State: ', state_name, '\\n',\n        'Value: ', round(value, 3)\n      )\n    )) +\n    geom_line(\n      lwd = 1,\n      alpha = 0.6\n    ) +\n    theme_bw() +\n    scale_y_continuous(n.breaks = 10) +\n    labs(\n      x = 'Year',\n      y = ts_vars$yaxis[row],\n      color = 'State'\n    ) + \n    scale_color_manual(values = brewer.pal(6, 'Dark2'))\n  \n  ggplotly(sub_plot, tooltip = 'text') %&gt;% \n    add_annotations(\n      text = ~unique(ts_vars$title[row]),\n      x = 0,\n      y = 1.25,\n      yref = \"paper\",\n      xref = \"paper\",\n      xanchor = \"left\",\n      yanchor = \"top\",\n      showarrow = FALSE,\n      font = list(size = 15)\n    )\n})\n\n# Arrange the plots together in one frame\nsubplot(\n  plots[[1]],\n  style(plots[[2]], showlegend = FALSE),\n  style(plots[[3]], showlegend = FALSE),\n  style(plots[[4]], showlegend = FALSE),\n  style(plots[[5]], showlegend = FALSE),\n  style(plots[[6]], showlegend = FALSE),\n  nrows = 3,\n  margin = 0.06,\n  shareY = FALSE,\n  titleY = TRUE\n) %&gt;% \n  plotly::layout(\n    autosize = FALSE,\n    width = 900, \n    height= 700\n  )\n\n\n\n\nInteractive time series plots",
+    "text": "Time Series\nLet’s explore metrics that have 5 or more time points. First we will clean them up and give them cleaner names.\n\n\nCode\npacman::p_load(\n  dplyr,\n  ggplot2,\n  plotly,\n  purrr,\n  RColorBrewer,\n  stringr\n)\n\ndat &lt;- readRDS('data/aggregated_metrics.rds')\nfips_key &lt;- readRDS('data/fips_key.rds')\n\n\n## Select metrics\n# Start with variables with &gt;= 5 time points\nts_vars &lt;- dat %&gt;% \n  group_by(variable_name) %&gt;% \n  summarize(n_years = length(unique(year))) %&gt;% \n  filter(n_years &gt;= 5) %&gt;% \n  pull(variable_name)\n\n# Select a subset of them\nts_vars &lt;- str_subset(ts_vars, 'child|overall|^wic|^women')\n\n# Add a clean name for graphs\nts_vars &lt;- data.frame(\n  variable = ts_vars,\n  yaxis = c(\n    'Insecurity Rate',\n    'Insecurity Rate',\n    'Coverage Rate',\n    'Eligibility Rate',\n    'Percent',\n    'Percent'\n  ),\n  title = c(\n    'Child Food Insecurity Rate',\n    'Overall Food Insecurity Rate',\n    'WIC Coverage Rate',\n    'WIC Eligibility Rate',\n    'Women\\'s Earnings as % of Men, Farming',\n    'Women\\'s Earnings as % of Men, Food Service'\n  )\n)\n\n## Clean data frame\ndat &lt;- dat %&gt;% \n  mutate(\n    across(c(year, value), as.numeric),\n    state = str_sub(fips, end = 2),\n  ) %&gt;% \n  left_join(fips_key, by = 'fips') %&gt;% \n  mutate(county_name = str_remove(county_name, ' County'))\n\n\nNow we can plot a series of six metrics for which we have data for five or more years at the state level. Hover over the joints to see specific values for each state. You can also double click on a state to only show that state on all six graphs.\n\n\nCode\n# Mapping over our time series variables to make a list of plots\nplots &lt;- map(1:nrow(ts_vars), \\(row) {\n  sub_plot &lt;- dat %&gt;% \n    filter(variable_name == ts_vars$variable[row], str_length(fips) == 2) %&gt;% \n    ggplot(aes(\n      x = year, \n      y = value, \n      group = state_name, \n      color = state_name,\n      text = paste0(\n        'State: ', state_name, '\\n',\n        'Value: ', round(value, 3)\n      )\n    )) +\n    geom_line(\n      lwd = 1,\n      alpha = 0.6\n    ) +\n    theme_bw() +\n    scale_y_continuous(n.breaks = 10) +\n    labs(\n      x = 'Year',\n      y = ts_vars$yaxis[row],\n      color = 'State'\n    ) + \n    scale_color_manual(values = brewer.pal(6, 'Dark2'))\n  \n  ggplotly(\n    sub_plot, \n    tooltip = 'text',\n    width = 500,\n    height = 500\n  ) %&gt;% \n  add_annotations(\n    text = ~unique(ts_vars$title[row]),\n    x = -0.05,\n    y = 1.175,\n    yref = \"paper\",\n    xref = \"paper\",\n    xanchor = \"left\",\n    yanchor = \"top\",\n    showarrow = FALSE,\n    font = list(size = 15)\n  )\n})\n\n# Arrange the plots together in one frame\nsubplot(\n  plots[[1]],\n  style(plots[[2]], showlegend = FALSE),\n  style(plots[[3]], showlegend = FALSE),\n  style(plots[[4]], showlegend = FALSE),\n  style(plots[[5]], showlegend = FALSE),\n  style(plots[[6]], showlegend = FALSE),\n  nrows = 3,\n  heights = c(0.32, 0.36, 0.32),\n  margin = c(0.05, 0.06, 0.05, 0.06),\n  titleY = TRUE\n) %&gt;% \n  plotly::layout(\n    autosize = FALSE,\n    margin = list(l = 25, r = 10, t = 75, b = 75),\n    width = 800,\n    height= 600\n  )\n\n\n\n\nInteractive time series plots\n\n\nThere is certainly more to come in terms of time series data.",
     "crumbs": [
       "Analysis",
-      "Visualization"
+      "Exploratory Graphs"
     ]
   },
   {
     "objectID": "pages/04.1_graphs.html#distributions",
     "href": "pages/04.1_graphs.html#distributions",
-    "title": "Visualization",
+    "title": "Exploratory Graphs",
     "section": "Distributions",
-    "text": "Distributions\nTaking an exploratory look at the distributions of our variables at the county level. We are only using the latest years available for each metric. Note that y-axes are indepednent\n\n\nCode\npacman::p_load(\n  dplyr,\n  purrr,\n  ggplot2,\n  rlang,\n  ggpubr,\n  tidyr\n)\n\nsource('dev/data_pipeline_functions.R')\ndat &lt;- readRDS('data/aggregated_metrics.rds')\n# get_str(dat)\n\n# Get names of all vars\nvars &lt;- dat$variable_name %&gt;% unique\n\n# DF with only final years of all vars, states only, CT governing regions\ndat_latest &lt;- dat %&gt;% \n  dplyr::filter(\n1    !str_detect(fips, '^09.*[1-9]$'),\n2    str_length(fips) == 5\n  ) %&gt;% \n  get_latest_year() %&gt;%\n  mutate(\n    variable_name = str_sub(variable_name, end = 60),\n    variable_name = paste0(variable_name, '_', year), .keep = 'unused'\n  ) %&gt;%\n  unique() %&gt;% \n  tidyr::pivot_wider(\n    id_cols = fips,\n    names_from = 'variable_name',\n    values_from = 'value'\n  ) %&gt;% \n  mutate(across(everything(), as.numeric))\n# get_str(dat_latest)\n\nplots &lt;- map(names(dat_latest)[-1], \\(var){\n  dat_latest %&gt;% \n    ggplot(aes(x = !!sym(var))) + \n    geom_density() +\n    theme_classic()\n})\n\nggarrange(\n  plotlist = plots,\n  ncol = 3,\n  nrow = 23\n)\n\n\n\n1\n\nHere we are filtering out old county codes for CT which start with “09” and end in a “0”. We are left with only the governing regions.\n\n2\n\nFips codes are a 2 digit state identifier plus a 3 digit county identifier. By removing any 2-digit fips codes, we are filtering to keep only counties.\n\n\n\n\n\n\n\nDistributions of all metrics at the county level.",
+    "text": "Distributions\nTaking an exploratory look at the distributions of our variables at the county level. We are only using the latest years available for each metric. Note that y-axes are indepednent\n\n\nCode\npacman::p_load(\n  dplyr,\n  purrr,\n  ggplot2,\n  rlang,\n  ggpubr,\n  tidyr\n)\n\nsource('dev/data_pipeline_functions.R')\ndat &lt;- readRDS('data/aggregated_metrics.rds')\n# get_str(dat)\n\n# Get names of all vars\nvars &lt;- dat$variable_name %&gt;% unique\n\n# DF with only final years of all vars, states only, CT governing regions\ndat_latest &lt;- dat %&gt;% \n  filter(\n1    !str_detect(fips, '^09.*[1-9]$'),\n2    str_length(fips) == 5\n  ) %&gt;% \n  get_latest_year() %&gt;%\n  mutate(\n    variable_name = str_sub(variable_name, end = 60),\n    variable_name = paste0(variable_name, '_', year), .keep = 'unused'\n  ) %&gt;%\n  unique() %&gt;% \n  pivot_wider(\n    id_cols = fips,\n    names_from = 'variable_name',\n    values_from = 'value'\n  ) %&gt;% \n  mutate(across(everything(), as.numeric))\n\nplots &lt;- map(names(dat_latest)[-1], \\(var){\n  dat_latest %&gt;% \n    ggplot(aes(x = !!sym(var))) + \n    geom_density(\n      fill = 'lightblue',\n      color = 'royalblue',\n      alpha = 0.5\n    ) +\n    theme_classic() +\n    theme(plot.margin = unit(c(rep(0.5, 4)), 'cm'))\n})\n\nggarrange(\n  plotlist = plots,\n  ncol = 4,\n  nrow = 17\n)\n\n\n\n1\n\nHere we are filtering out old county codes for CT which start with “09” and end in a “0”. We are left with only the governing regions.\n\n2\n\nFips codes are a 2 digit state identifier plus a 3 digit county identifier. By removing any 2-digit fips codes, we are filtering to keep only counties.\n\n\n\n\n\n\n\nDistributions of all metrics at the county level.\n\n\n\n\nHere are a few things that stick out so far.\n\nMean producer age per county centers around 58 years. It would be worth diving more into the producer age demographic pyramid to see what this might look like moving forward.\nThere are disproportionately fewer female producers as compared to male, and women generally earn less than men in both “farming, fishing, and forestry”, as well as “food service and preparation”. (Some of these axis titles are too long and incomprehensible currently - it is on the to do list)\nWe can get a decent idea that while there are some normal-ish curves, like child food insecurity rate, snapspth, education_prop_bs, etc., many of the distributions better resemble power curves (total chemical expenses, total sales, really anything with totals).",
     "crumbs": [
       "Analysis",
-      "Visualization"
+      "Exploratory Graphs"
     ]
   },
   {
     "objectID": "pages/04.1_graphs.html#bivariate-plots",
     "href": "pages/04.1_graphs.html#bivariate-plots",
-    "title": "Visualization",
+    "title": "Exploratory Graphs",
     "section": "Bivariate Plots",
-    "text": "Bivariate Plots\nTaking a look at bivariate scatter plots for a selection fo variables at the county level.",
+    "text": "Bivariate Plots\nLet’s take a closer look at the relationships between a selection of metrics. Bivariate scatter plots with loess smoother lines are shown in the bottom half. The top half shows Pearson correlation coefficients that are colored by the value of the coefficient. Stars are shown when the correlation is significant. The diagonal shows the marginal distributions of each of the variables.\n\n\nCode\npacman::p_load(\n  GGally\n)\n\n# Neat function for mapping colors to ggpairs plots\n# https://stackoverflow.com/questions/45873483/ggpairs-plot-with-heatmap-of-correlation-values\nmap_colors &lt;- function(data,\n                       mapping,\n                       method = \"p\",\n                       use = \"pairwise\",\n                       ...) {\n  # grab data\n  x &lt;- eval_data_col(data, mapping$x)\n  y &lt;- eval_data_col(data, mapping$y)\n  \n  # calculate correlation\n  corr &lt;- cor(x, y, method = method, use = use)\n  colFn &lt;- colorRampPalette(c(\"blue\", \"white\", \"red\"), interpolate = 'spline')\n  fill &lt;- colFn(100)[findInterval(corr, seq(-1, 1, length = 100))]\n  \n  # correlation plot\n  ggally_cor(data = data, mapping = mapping, color = 'black', ...) +\n    theme_void() +\n    theme(panel.background = element_rect(fill = fill))\n}\n\nlower_function &lt;- function(data, mapping, ...) {\n  ggplot(data = data, mapping = mapping) +\n    geom_point(alpha = 0.5) +\n    geom_smooth(color = \"blue\", fill = \"grey\", ...) +\n    theme_bw()\n}\n\ndat_latest %&gt;%\n  select(\n    rent = median_rent_2022,\n    rent_burden = median_rent_as_perc_of_household_income_2022,\n    vacancy = vacancy_rate_2022,\n    edu = education_prop_bs_2022,\n    pay_equity = womens_earnings_as_perc_of_men_farming_fishing_forestry_2023,\n    age = mean_producer_age_2022,\n    groc = grocpth_2016,\n    wic = wicspth_2016,\n    snap = snapspth_2017,\n    insecurity = overall_food_insecurity_rate_2021\n  ) %&gt;%\n  ggpairs(\n    upper = list(continuous = map_colors),\n    lower = list(continuous = lower_function),\n    axisLabels = 'show'\n  )\n\n\n\n\n\nBivariate scatter plots and correlations for selected metrics.\n\n\n\n\nThere is lots to see here. The thing that sticks out to me is how tightly correlated all the metrics related to income and poverty are (wic, snap, food insecurity, median rent, and education).",
     "crumbs": [
       "Analysis",
-      "Visualization"
+      "Exploratory Graphs"
     ]
   },
   {
