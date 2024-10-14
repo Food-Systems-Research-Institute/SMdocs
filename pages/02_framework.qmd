@@ -4,9 +4,10 @@ execute:
     cache: true
 ---
 
-<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 30%;">
-  <img src="../images/josh_david.jpg" alt="description" style="width: 100%;">
-  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Dr. Josh Taylor (left) and Dr. David Conner (right) attending a Sustainability Metrics workshop. Photo credit: Colleen Goodhue, FSRC.</div>
+<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
+  <img src="../images/hort_farm_small.png" alt="description" style="width: 100%;">
+  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">UVM Horticultural Research and Education Center in South Burlington, Vermont. Copyright: Sally McCay, UVM Photo.
+</div>
 </div>
 
 This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al. in that food system sustainability is still largely undefined [@beneWhenFoodSystems2019].
@@ -21,7 +22,7 @@ Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleife
 
 ```{r fig.dim=c(10, 10), fig.align='center'}
 #| label: radial_plot
-#| fig-cap: Radial plot of Sustainability Metrics framework
+#| fig-cap: Radial dendrogram of Sustainability Metrics framework
 #| code-fold: true
 #| warning: false
 
@@ -37,27 +38,27 @@ pacman::p_load(
 
 ## Load data and add an origin level
 dat <- readRDS('data/tree_dat.rds') %>% 
-  dplyr::mutate(Framework = 'Sustainability') %>% 
-  dplyr::select(Framework, Dimension:Indicator)
+  mutate(Framework = 'Sustainability') %>% 
+  select(Framework, Dimension:Indicator)
 
 
 ## Make edges
 # include groupings by dimension, then combine them
 edges <- list()
 edges$sm_dim <- dat %>% 
-  dplyr::select(Framework, Dimension) %>% 
+  select(Framework, Dimension) %>% 
   unique() %>% 
-  dplyr::rename(from = Framework, to = Dimension) %>% 
+  rename(from = Framework, to = Dimension) %>% 
   mutate(group = to)
 edges$dim_ind <- dat %>% 
-  dplyr::select(Dimension, Index) %>% 
+  select(Dimension, Index) %>% 
   unique() %>% 
-  dplyr::rename(from = Dimension, to = Index) %>% 
+  rename(from = Dimension, to = Index) %>% 
   mutate(group = from)
 edges$ind_ind <- dat %>% 
-  dplyr::select(Index, Indicator) %>% 
+  select(Index, Indicator) %>% 
   unique() %>% 
-  dplyr::rename(from = Index, to = Indicator) %>% 
+  rename(from = Index, to = Indicator) %>% 
   mutate(group = edges$dim_ind$from[match(.$from, edges$dim_ind$to)])
 edges <- bind_rows(edges)
 
@@ -145,13 +146,13 @@ ggraph(graph, layout = 'dendrogram', circular = TRUE) +
 
 Note that the size of the leaf nodes doesn't actually mean anything right now - they are just randomly generated. Eventually we could weight this by eigenvalues within dimensions.
 
-## Phylogenic Tree
+## Cladogram
 
 Here is a more practical but less visually appealing version of the same framework. Still kind of a monster. **To do: fix the color scheme so it is colored by dimension and matches the radial plot above.** Might also be better off using ggraph package as above and fiddling with the layout. 
 
 ```{r}
-#| label: tree
-#| fig-cap: Phylogeny tree diagram
+#| label: cladogram
+#| fig-cap: Cladogram of Sustainability Metrics framework
 #| fig-height: 20
 #| fig-width: 8
 pacman::p_load(
@@ -166,13 +167,11 @@ pacman::p_load(
 ## Load data and add an origin level
 dat <- readRDS('data/tree_dat.rds') %>% 
   mutate(Framework = 'Sustainability') %>% 
-  dplyr::select(Framework, Dimension:Indicator) %>% 
+  select(Framework, Dimension:Indicator) %>% 
   mutate(across(
     everything(), 
     ~ str_trim(str_replace_all(., ';|%|/|\\.|\"|,|\\(|\\)', '_'))
   ))
-# print(dat, n = 100)
-# get_str(dat)
 
 dat$pathString <- paste(
   dat$Framework,

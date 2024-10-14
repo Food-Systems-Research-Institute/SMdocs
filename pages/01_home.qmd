@@ -17,14 +17,19 @@ The Sustainability Metrics project, as well as this site itself, are both works 
 
 ## Introduction{#sec-intro}
 
-<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 50%;">
-  <img src="../images/harvest.jpg" alt="description" style="width: 100%;">
-  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Spread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRC.</div>
+<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
+  <img src="../images/intervale_small.png" alt="description" style="width: 100%;">
+  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Intervale Center, Burlington, Vermont. Copyright: Sally McCay, UVM Photo.</div>
 </div>
 
 Resilient food systems are increasingly recognized as essential, not only in meeting human needs, but in doing so within planetary bounds [@conijnCanOurGlobal2018]. Approximately 42% of world's population depend on agriculture for employment, which is a challenging endeavor in the face of farm consolidation, changing consumption patterns, and climate change [@gillerFutureFarmingWho2021; @aznar-sanchezWorldwideResearchTrends2019]. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years [@crippaFoodSystemsAre2021; @ortiz-bobeaAnthropogenicClimateChange2021]. [Add line about hunger, nutrition, food security.]
 
 Monitoring and adaptively managing the sustainability of food systems is thus vital. However, there is little consensus on how to define, let alone measure food system sustainability [@allen2016ModelingSustainableFood; @bene2019GlobalMapIndicators]. And while there is an abundance of research at the global level [@bathaei2023SystematicReviewAgricultural; @chaudhary2018MultiindicatorSustainabilityAssessment], there exists a conspicuous gap in understanding at the local, regional, or landscape level [@daleLandscapePerspectiveSustainability2012].
+
+<div style="float: left; margin-right: 1em; margin-bottom: 1em; margin-top: 1em; width: 40%;">
+  <img src="../images/harvest_small.png" alt="description" style="width: 100%;">
+  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Spread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRC.</div>
+</div>
 
 The Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The work is led by the Food Systems Research Center at the University of Vermont in partnership with the USDA Agricultural Research Service in Burlington, Vermont. Primary research in developing and measuring indicators of sustainability is ongoing. For now, what you will find here is a growing collection of secondary data, visualizations, and preliminary analyses to help inform the project as well as the public on the sustainability of the New England food system.
 

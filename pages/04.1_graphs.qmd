@@ -27,9 +27,9 @@ pacman::p_load(
   stringr
 )
 
-dat <- readRDS('data/aggregated_metrics.rds')
-fips_key <- readRDS('data/fips_key.rds')
-
+source('dev/filter_fips.R')
+dat <- readRDS('data/sm_data.rds')[['metrics']]
+fips_key <- readRDS('data/sm_data.rds')[['fips_key']]
 
 ## Select metrics
 # Start with variables with >= 5 time points
@@ -63,14 +63,10 @@ ts_vars <- data.frame(
   )
 )
 
-## Clean data frame
+## Keep only New England states, add state names from fips_key df
 dat <- dat %>% 
-  mutate(
-    across(c(year, value), as.numeric),
-    state = str_sub(fips, end = 2),
-  ) %>% 
-  left_join(fips_key, by = 'fips') %>% 
-  mutate(county_name = str_remove(county_name, ' County'))
+  filter_fips(scope = 'states') %>% 
+  left_join(fips_key, by = 'fips')
 ```
 
 Now we can plot a series of six metrics for which we have data for five or more years at the state level. Hover over the joints to see specific values for each state. You can also double click on a state to only show that state on all six graphs.
@@ -173,30 +169,26 @@ pacman::p_load(
 )
 
 source('dev/data_pipeline_functions.R')
-dat <- readRDS('data/aggregated_metrics.rds')
-# get_str(dat)
+source('dev/filter_fips.R')
+dat <- readRDS('data/sm_data.rds')[['metrics']]
 
 # Get names of all vars
 vars <- dat$variable_name %>% unique
 
 # DF with only final years of all vars, states only, CT governing regions
 dat_latest <- dat %>% 
-  filter(
-    !str_detect(fips, '^09.*[1-9]$'), # <1>
-    str_length(fips) == 5 # <2>
-  ) %>% 
-  get_latest_year() %>%
+  filter_fips(scope = 'new') %>% 
   mutate(
     variable_name = str_sub(variable_name, end = 60),
-    variable_name = paste0(variable_name, '_', year), .keep = 'unused'
+    value = as.numeric(value)
   ) %>%
+  get_latest_year() %>%
   unique() %>% 
   pivot_wider(
     id_cols = fips,
     names_from = 'variable_name',
     values_from = 'value'
-  ) %>% 
-  mutate(across(everything(), as.numeric))
+  )
 
 plots <- map(names(dat_latest)[-1], \(var){
   dat_latest %>% 
@@ -216,8 +208,6 @@ ggarrange(
   nrow = 17
 )
 ```
-1. Here we are filtering out old county codes for CT which start with "09" and end in a "0". We are left with only the governing regions. 
-2. Fips codes are a 2 digit state identifier plus a 3 digit county identifier. By removing any 2-digit fips codes, we are filtering to keep only counties.
 
 Here are a few things that stick out so far.
 

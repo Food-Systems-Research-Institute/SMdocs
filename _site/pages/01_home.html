@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Chris Donovan">
-<meta name="dcterms.date" content="2024-10-10">
+<meta name="dcterms.date" content="2024-10-14">
 
 <title>Sustainability Metrics – Food Systems Research Center</title>
 <style>
@@ -150,27 +150,44 @@ div.csl-indent {
  <span class="menu-text">Home</span></a>
   </div>
 </li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/02_framework.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Framework</span></a>
-  </div>
-</li>
-        <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/03_dimensions.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Indicators</span></a>
-  </div>
-</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Analysis</span></a>
+ <span class="menu-text">Framework</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/02_framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/03_dimensions.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Dimensions</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/03.1_metrics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Metrics</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+ <span class="menu-text">Analysis</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/04.1_graphs.html" class="sidebar-item-text sidebar-link">
@@ -235,7 +252,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">October 10, 2024</p>
+      <p class="date">October 14, 2024</p>
     </div>
   </div>
   
@@ -265,14 +282,20 @@ Caution
 </div>
 <section id="sec-intro" class="level2">
 <h2 class="anchored" data-anchor-id="sec-intro">Introduction</h2>
-<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 50%;">
-<img src="../images/harvest.jpg" alt="description" style="width: 100%;">
+<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
+<img src="../images/intervale_small.png" alt="description" style="width: 100%;">
 <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">
-Spread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRC.
+Intervale Center, Burlington, Vermont. Copyright: Sally McCay, UVM Photo.
 </div>
 </div>
 <p>Resilient food systems are increasingly recognized as essential, not only in meeting human needs, but in doing so within planetary bounds <span class="citation" data-cites="conijnCanOurGlobal2018">(<a href="#ref-conijnCanOurGlobal2018" role="doc-biblioref">Conijn et al. 2018</a>)</span>. Approximately 42% of world’s population depend on agriculture for employment, which is a challenging endeavor in the face of farm consolidation, changing consumption patterns, and climate change <span class="citation" data-cites="gillerFutureFarmingWho2021 aznar-sanchezWorldwideResearchTrends2019">(<a href="#ref-gillerFutureFarmingWho2021" role="doc-biblioref">Giller et al. 2021</a>; <a href="#ref-aznar-sanchezWorldwideResearchTrends2019" role="doc-biblioref">Aznar-Sánchez et al. 2019</a>)</span>. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years <span class="citation" data-cites="crippaFoodSystemsAre2021 ortiz-bobeaAnthropogenicClimateChange2021">(<a href="#ref-crippaFoodSystemsAre2021" role="doc-biblioref">Crippa et al. 2021</a>; <a href="#ref-ortiz-bobeaAnthropogenicClimateChange2021" role="doc-biblioref">Ortiz-Bobea et al. 2021</a>)</span>. [Add line about hunger, nutrition, food security.]</p>
 <p>Monitoring and adaptively managing the sustainability of food systems is thus vital. However, there is little consensus on how to define, let alone measure food system sustainability <span class="citation" data-cites="allen2016ModelingSustainableFood bene2019GlobalMapIndicators">(<a href="#ref-allen2016ModelingSustainableFood" role="doc-biblioref">Allen and Prosperi 2016</a>; <a href="#ref-bene2019GlobalMapIndicators" role="doc-biblioref">Béné et al. 2019</a>)</span>. And while there is an abundance of research at the global level <span class="citation" data-cites="bathaei2023SystematicReviewAgricultural chaudhary2018MultiindicatorSustainabilityAssessment">(<a href="#ref-bathaei2023SystematicReviewAgricultural" role="doc-biblioref">Bathaei and Štreimikienė 2023</a>; <a href="#ref-chaudhary2018MultiindicatorSustainabilityAssessment" role="doc-biblioref">Chaudhary, Gustafson, and Mathys 2018</a>)</span>, there exists a conspicuous gap in understanding at the local, regional, or landscape level <span class="citation" data-cites="daleLandscapePerspectiveSustainability2012">(<a href="#ref-daleLandscapePerspectiveSustainability2012" role="doc-biblioref">Dale et al. 2012</a>)</span>.</p>
+<div style="float: left; margin-right: 1em; margin-bottom: 1em; margin-top: 1em; width: 40%;">
+<img src="../images/harvest_small.png" alt="description" style="width: 100%;">
+<div style="text-align: left; margin-top: 0.5em; font-size: smaller;">
+Spread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRC.
+</div>
+</div>
 <p>The Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The work is led by the Food Systems Research Center at the University of Vermont in partnership with the USDA Agricultural Research Service in Burlington, Vermont. Primary research in developing and measuring indicators of sustainability is ongoing. For now, what you will find here is a growing collection of secondary data, visualizations, and preliminary analyses to help inform the project as well as the public on the sustainability of the New England food system.</p>
 <p>Metadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS <a href="https://www.ams.usda.gov/services/local-regional/research-publications/fame">Food and Agriculture Mapper and Explorer</a> in particular, as many of the data shown here were cleaned and compiled in their data warehouse.</p>
 </section>
@@ -799,8 +822,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   <div class="nav-page nav-page-previous">
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/02_framework.html" class="pagination-link" aria-label="Framework">
-        <span class="nav-page-text">Framework</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/02_framework.html" class="pagination-link" aria-label="Overview">
+        <span class="nav-page-text">Overview</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

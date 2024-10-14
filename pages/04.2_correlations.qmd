@@ -25,45 +25,35 @@ pacman::p_load(
   purrr
 )
 
-dat <- readRDS('data/aggregated_metrics.rds')
 source('dev/data_pipeline_functions.R')
+source('dev/filter_fips.R')
+dat <- readRDS('data/sm_data.rds')[['metrics']]
 
 # What variables should we use?
 # First let's just take the last year of everything
 dat <- dat %>%
-  dplyr::filter(stringr::str_length(fips) == 5) %>% 
+  filter_fips(scope = 'new') %>% 
   get_latest_year()
 
-# Pick vars
-# all_vars <- dat$variable_name %>%
-#   unique %>%
-#   sort
-# all_vars
-
-# Take anything mildly relevant
+# Put together a matching pattern for a selection of relevant variables
 pattern <- paste0(c(
   '^agri', 'd2c', '^edu', '^groc', 'insecurity', 'median_rent$', '^female',
   'median_rent_as_perc', '^n_house', '^number_', 'refrig', 'pth$', '_pct$',
   '^wic', '^hired', '^total', '^womens_earnings_as_perc', 'vacancy'
   ), collapse = '|')
 
+# Filter by variables, break out variables into separate columns, and make some variable names shorter so they fit in figures
 dat <- dat %>%
-  dplyr::filter(str_detect(variable_name, pattern)) %>%
-  mutate(variable_name = paste0(variable_name, '_', year), .keep = 'unused') %>%
+  filter(str_detect(variable_name, pattern)) %>%
   pivot_wider(
     names_from = 'variable_name',
     values_from = 'value'
   ) %>%
-  mutate(across(c(2:last_col()), as.numeric)) %>% 
   dplyr::rename(
     womens_earnings_perc_men_fff_2023 = womens_earnings_as_perc_of_men_farming_fishing_forestry_2023,
     womens_earnings_perc_men_service_2023 = 
     womens_earnings_as_perc_of_men_food_prep_and_serving_2023
   )
-
-# Filter for only CT governing regions.
-dat <- dplyr::filter(dat, !str_detect(fips, '^09.*[1-9]$')) %>%
-  tibble::column_to_rownames('fips')
 
 # Arrange variables in a sensible order by group
 # Housing, income, education, food security, infrastructure, localness, total sales, expenses
@@ -99,16 +89,22 @@ pacman::p_load(
   viridisLite
 )
 
-
+# Make a correlation matrix using all the selected variables
 cor <- dat %>% 
   as.matrix() %>% 
   rcorr()
 
+# Melt correlation values and rename columns
 cor_r <- melt(cor$r) %>% 
   setNames(c('var_1', 'var_2', 'value'))
+
+# Save p values
 cor_p <- melt(cor$P) 
 p.value <- cor_p$value
-plot <- ggplot(cor_r, aes(var_1, var_2, fill = value, text = paste0(
+
+# Make heatmap with custom text aesthetic for tooltip
+plot <- cor_r %>% 
+  ggplot(aes(var_1, var_2, fill = value, text = paste0(
   'Var 1: ', var_1, '\n',
   'Var 2: ', var_2, '\n',
   'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
@@ -123,6 +119,7 @@ plot <- ggplot(cor_r, aes(var_1, var_2, fill = value, text = paste0(
     fill = 'Correlation'
   )
 
+# Convert to interactive plotly figure with text tooltip
 ggplotly(
   plot, 
   tooltip = 'text',

@@ -1,8 +1,8 @@
 ---
-title: Indicators
+title: Dimensions
 ---
 
-The plan here is to describe the dimensions, indices, indicators, and metrics in detail. Waiting on most of this until it is slightly more clear what we are working with. At the end is an interactive table to explore metadata and sources of all the metrics that have been collected and cleaned so far.
+The plan here is to describe the dimensions, indices, and indicators in detail. Waiting on most of this until it is slightly more clear what we are working with. 
 
 ## Environment
 
@@ -13,73 +13,3 @@ The plan here is to describe the dimensions, indices, indicators, and metrics in
 ## Health
 
 ## Social
-
-## Metadata Table
-
-Using the table: 
-
-* Click headers to sort
-* Rearrange column widths at your leisure
-* Global search at top right, column search in headers
-* Change page length and page through results at the bottom
-
-To do:
-
-* Turn URLs into actual links, get rid of super long links that mess up the table
-* Make space to include a longer definition and proper citations somehow
-* Maybe put references section at bottom of page with links from table?
-
-```{r}
-#| label: metadata_table
-
-pacman::p_load(
-  dplyr,
-  reactable,
-  stringr
-)
-
-# Load full metadata table
-metadata <- readRDS('data/aggregated_meta.rds')
-
-# Pick out variables to display
-metadata <- metadata %>% 
-  select(
-    dimension,
-    index,
-    indicator,
-    metric,
-    year = latest_year,
-    source,
-    url
-  )
-
-names(metadata) <- str_to_title(names(metadata))
-
-reactable(
-  metadata,
-  sortable = TRUE,
-  resizable = TRUE,
-  filterable = TRUE,
-  searchable = TRUE,
-  pagination = TRUE,
-  bordered = TRUE,
-  wrap = TRUE,
-  rownames = FALSE,
-  onClick = 'select',
-  striped = TRUE,
-  defaultPageSize = 5,
-  pageSizeOptions = c(5, 10, 25, 50, 100),
-  showPageSizeOptions = TRUE,
-  highlight = TRUE,
-  style = list(fontSize = "12px"),
-  compact = TRUE,
-  columns = list(
-    Dimension = colDef(minWidth = 50),
-    Index = colDef(minWidth = 50),
-    Indicator = colDef(minWidth = 50),
-    Metric = colDef(minWidth = 75),
-    Year = colDef(minWidth = 35)
-  )
-)
-
-```

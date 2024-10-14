@@ -31,21 +31,14 @@ website:
     contents:
       - text: Home
         href: pages/01_home.qmd
-      - text: Framework
-        href: pages/02_framework.qmd
-      - text: Indicators
-        href: pages/03_dimensions.qmd
-        # contents:
-          # - text: 'Environment'
-          #   href: pages/03.1_environment.qmd
-          # - text: 'Economics'
-          #   href: pages/03.2_economics.qmd
-          # - text: 'Production'
-          #   href: pages/03.3_production.qmd
-          # - text: 'Health'
-          #   href: pages/03.4_health.qmd
-          # - text: 'Social'
-          #   href: pages/03.5_social.qmd
+      - section: Framework
+        contents:
+          - text: Overview
+            href: pages/02_framework.qmd
+          - text: 'Dimensions'
+            href: pages/03_dimensions.qmd
+          - text: 'Metrics'
+            href: pages/03.1_metrics.qmd
       - section: Analysis
         contents:
           - text: 'Exploratory Graphs'

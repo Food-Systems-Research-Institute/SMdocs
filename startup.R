@@ -6,7 +6,10 @@ conflicted::conflicts_prefer(
     dplyr::filter(),
     dplyr::select(),
     dplyr::summarize(),
-    dplyr::pivot_wider()
+    dplyr::pivot_wider(),
+    dplyr::rename(),
+    ape::rotate(),
+    .quiet = TRUE
 )
 
-print("startup.R loaded")
+cat("\nstartup.R loaded")
