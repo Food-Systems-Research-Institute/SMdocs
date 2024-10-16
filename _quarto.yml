@@ -22,9 +22,17 @@ website:
     search: true
     tools:
       - icon: tree
-        href: https://www.uvm.edu/cals/food-systems-research
+        menu:
+          - text: FSRC
+            href: https://www.uvm.edu/cals/food-systems-research
+          - text: UVM
+            href: https://www.uvm.edu
       - icon: github
-        href: https://github.com/ChrisDonovan307
+        menu:
+          - text: Source Code
+            href: https://github.com/Food-Systems-Research-Center/sm-docs
+          - text: FSRC GitHUb
+            href: https://github.com/Food-Systems-Research-Center
   sidebar:
     style: docked
     search: true

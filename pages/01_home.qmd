@@ -48,7 +48,7 @@ Might provide an overview of what to find on the site here?
 
 ## SM Explorer
 
-::: {.callout-warning collapse='false'}
+::: {.callout-note collapse='false' title='Caution'}
 Please be aware that the SM Explorer is early on in development. It currently includes limited features, limited metrics, and you will find more than a few bugs and missing data if you poke around enough. 
 :::
 
