@@ -1,5 +1,6 @@
 ---
 title: Exploratory Graphs
+code-link: true
 ---
 
 ## Introduction

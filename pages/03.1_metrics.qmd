@@ -6,16 +6,10 @@ title: 'Metrics'
 
 Using the table: 
 
-* Click headers to sort
-* Rearrange column widths at your leisure
-* Global search at top right, column search in headers
+* Click column headers to sort
+* Global search at top right, column search in each header
 * Change page length and page through results at the bottom
-
-To do:
-
-* Turn URLs into actual links, get rid of super long links that mess up the table
-* Make space to include a longer definition and proper citations somehow
-* Maybe put references section at bottom of page with links from table?
+* Use the download button to download a .csv file of the filtered table
 
 ```{r}
 #| label: metadata_table
@@ -39,7 +33,7 @@ metadata <- metadata_all %>%
     index,
     indicator,
     units,
-    year = latest_year,
+    'Year' = latest_year, # Note renaming latest year as year, not including year
     source,
     scope,
     resolution,
@@ -112,7 +106,8 @@ htmltools::browsable(
           minWidth = 250,
         ),
         # Units = colDef(minWidth = 50),
-        Year = colDef(minWidth = 75),
+        # Year = colDef(minWidth = 75),
+        'Latest Year' = colDef(minWidth = 75),
         Source = colDef(minWidth = 250),
         Scope = colDef(show = FALSE),
         Resolution = colDef(show = FALSE),
@@ -147,6 +142,10 @@ htmltools::browsable(
           tags$p(
             strong('Latest Year: '), 
             as.character(metadata_all[index, 'latest_year'])
+          ),
+          tags$p(
+            strong('All Years (cleaned, wrangled, and included here): '), 
+            as.character(metadata_all[index, 'year'])
           ),
           tags$p(
             strong('Updates: '), 

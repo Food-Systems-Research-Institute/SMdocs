@@ -1,0 +1,63 @@
+---
+title: PCA
+---
+
+## Something
+
+```{r}
+#| label: pca_prep
+
+# pacman::p_load(
+#   dplyr,
+#   tidyr,
+#   tibble,
+#   missForest
+# )
+# 
+# source('dev/data_pipeline_functions.R')
+# source('dev/filter_fips.R')
+# dat <- readRDS('data/sm_data.rds')[['metrics']]
+# get_str(dat)
+# 
+# # Wrangle dataset. Need all numeric vars, also have to remove CT because the 
+# # county change creates lots of missing data.
+# dat <- dat %>% 
+#   filter_fips(scope = 'new') %>% 
+#   get_latest_year() %>% 
+#   pivot_wider(
+#     names_from = 'variable_name',
+#     values_from = 'value'
+#   ) %>% 
+#   filter(str_detect(fips, '^09', negate = TRUE)) %>% 
+#   tibble::column_to_rownames('fips')
+# get_str(dat)
+# 
+# # Impute missing variables for now (revisit this, too much missing to go well)
+# mf_out <- dat %>% 
+#   missForest()
+# 
+# # Check OOB
+# mf_out$OOBerror
+# 
+# # Use imputed dataset
+# dat <- mf_out$ximp
+```
+
+```{r}
+#| label: pca
+#| warning: false
+
+# pacman::p_load(
+#   dplyr,
+#   psych
+# )
+# 
+# VSS(dat) # 7 
+# fa.parallel(dat) # 5
+# (pca_out <- pca(dat, nfactors = 5))
+# get_str(pca_out)
+# 
+# 
+# plot(pca_out$values)
+# abline(h = 1)
+```
