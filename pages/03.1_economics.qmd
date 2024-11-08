@@ -386,28 +386,40 @@ metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
 metrics <- readRDS('data/sm_data.rds')[['metrics']]
 fips_key <- readRDS('data/sm_data.rds')[['fips_key']]
 
+# Value formatting function based on units
+source('dev/format_values.R')
+
+# Filter to economics metrics, join with metadata and county fips codes
+econ_metrics <- metrics %>% 
+  left_join(metadata_all, by = join_by('variable_name')) %>% 
+  filter(dimension == 'economics') %>% 
+  left_join(fips_key, by = join_by('fips')) %>% 
+  mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>% 
+  format_values()
+
 # Join relevant metadata to metrics table
 econ_metrics <- metrics %>% 
   left_join(metadata_all, by = join_by('variable_name')) %>% 
   filter(dimension == 'economics') %>% 
   left_join(fips_key, by = join_by('fips')) %>% 
   mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>% 
-  mutate(
-    # Clean up value formatting
-    units = case_when(
-      units %in% c('count', 'acres', 'usd') & as.numeric(value) > 1e6 ~ paste(units, '(x1000)'),
-      .default = units
-    ),
-    value = case_when(
-      str_detect(units, '(x1000)') ~ as.character(round(as.numeric(value) / 1000)),
-      str_detect(units, 'count|acres|usd') ~ format(round(as.numeric(value), 1), big.mark = ','),
-      str_detect(units, 'usd') ~ paste0('$', value),
-      units == 'binary' ~ ifelse(value == 1, 'True', 'False'),
-      units == 'age' ~ paste(value, 'years'),
-      units == 'percentage' ~ paste('%', value),
-      .default = value
-    )
-  ) %>%
+  # mutate(
+  #   # Clean up value formatting
+  #   units = case_when(
+  #     units %in% c('count', 'acres', 'usd') & as.numeric(value) > 1e6 ~ paste(units, '(x1000)'),
+  #     .default = units
+  #   ),
+  #   value = case_when(
+  #     str_detect(units, '(x1000)') ~ as.character(round(as.numeric(value) / 1000)),
+  #     str_detect(units, 'count|acres|usd') ~ format(round(as.numeric(value), 1), big.mark = ','),
+  #     str_detect(units, 'usd') ~ paste0('$', value),
+  #     units == 'binary' ~ ifelse(value == 1, 'True', 'False'),
+  #     units == 'age' ~ paste(value, 'years'),
+  #     units == 'percentage' ~ paste('%', value),
+  #     .default = value
+  #   )
+  # ) %>%
+  format_values() %>% 
   select(
     metric,
     'Variable Name' = variable_name,
@@ -421,10 +433,7 @@ econ_metrics <- metrics %>%
   filter(!is.na(Value))
 
 get_str(econ_metrics)
-econ_metrics
-econ_metrics %>% 
-  select(Metric, Units) %>% 
-  print(n = 75)
+econ_metrics$Units %>% unique
 
 
 ## Reactable table

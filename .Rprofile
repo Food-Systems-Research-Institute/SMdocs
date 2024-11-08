@@ -12,6 +12,8 @@ conflicted::conflicts_prefer(
   .quiet = TRUE
 )
 
+options(scipen = 999)
+
 source('startup.R')
 
 cat("\n.Rprofile loaded")
