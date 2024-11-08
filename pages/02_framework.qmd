@@ -114,14 +114,14 @@ ggraph(graph, layout = 'dendrogram', circular = TRUE) +
   ) +
   
   # Make the points for indicators based on dimension groupings
-  geom_node_point(aes(
-    filter = leaf,
-    x = x * 1.07,
-    y = y * 1.07,
-    colour = group,
-    size = value,
-    alpha = 0.2
-  )) +
+  # geom_node_point(aes(
+  #   filter = leaf,
+  #   x = x * 1.07,
+  #   y = y * 1.07,
+  #   colour = group,
+  #   size = value,
+  #   alpha = 0.2
+  # )) +
   
   # Label the dimensions within the graph
   geom_node_label(
@@ -142,77 +142,5 @@ ggraph(graph, layout = 'dendrogram', circular = TRUE) +
     plot.margin = unit(c(0, 0, 0, 0), "cm")
   ) +
   expand_limits(x = c(-2, 2), y = c(-2, 2))
-```
-
-Note that the size of the leaf nodes doesn't actually mean anything right now - they are just randomly generated. Eventually we could weight this by eigenvalues within dimensions.
-
-## Cladogram
-
-Here is a more practical but less visually appealing version of the same framework. Still kind of a monster. **To do: fix the color scheme so it is colored by dimension and matches the radial plot above.** Might also be better off using ggraph package as above and fiddling with the layout. 
-
-```{r}
-#| label: cladogram
-#| fig-cap: Cladogram of Sustainability Metrics framework
-#| fig-height: 20
-#| fig-width: 8
-pacman::p_load(
-  ggtree,
-  dplyr,
-  ape,
-  data.tree,
-  viridisLite,
-  stringr
-)
-
-## Load data and add an origin level
-dat <- readRDS('data/tree_dat.rds') %>% 
-  mutate(Framework = 'Sustainability') %>% 
-  select(Framework, Dimension:Indicator) %>% 
-  mutate(across(
-    everything(), 
-    ~ str_trim(str_replace_all(., ';|%|/|\\.|\"|,|\\(|\\)', '_'))
-  ))
-
-dat$pathString <- paste(
-  dat$Framework,
-  dat$Dimension,
-  dat$Index,
-  dat$Indicator,
-  sep = '/'
-)
-tree <- as.Node(dat)
-
-# Convert the data.tree structure to Newick format
-tree_newick <- ToNewick(tree)
-
-# Read the Newick tree into ape
-phylo_tree <- read.tree(text = tree_newick)
-
-# Make all edge lengths 1
-phylo_tree$edge.length <- rep(1, length(phylo_tree$edge.length))
-
-# Add a space to end of node labels so it isn't cut off
-phylo_tree$node.label <- paste0(phylo_tree$node.label, ' ')
-
-# Plot it
-plot(
-  phylo_tree, 
-  type = 'c',
-  cex = 0.75,
-  edge.width = 2,
-  show.tip.label = TRUE,
-  label.offset = 0,
-  no.margin = TRUE,
-  tip.color = 'black',
-  edge.color = viridis(181),
-  x.lim = c(-0.1, 5)
-)
-
-nodelabels(
-  phylo_tree$node.label,
-  cex = 0.8,
-  bg = 'white'
-)
-
 ```
 

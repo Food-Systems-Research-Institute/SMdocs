@@ -6,11 +6,11 @@ suppressPackageStartupMessages(
   )
 )
 
-# conflicted::conflicts_prefer(
-#   dplyr::filter(),
-#   dplyr::select(),
-#   .quiet = TRUE
-# )
+conflicted::conflicts_prefer(
+  dplyr::filter(),
+  dplyr::select(),
+  .quiet = TRUE
+)
 
 source('startup.R')
 

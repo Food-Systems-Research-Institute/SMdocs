@@ -2,23 +2,26 @@
 title: 'Economics'
 ---
 
-## Diagram
-
 ## Correlation Heatmap
 
 First we have some data wrangle to do. Here, we choose a selection of 35 variables to work with. We also filter for the Connecticut governing regions rather than counties. Finally, we arrange the variables in sensible order so they appear in similar blocks on the correlation plot.
 
 ```{r}
 #| label: clean_data
-
 pacman::p_load(
   dplyr,
   tidyr,
   tibble,
   stringr,
-  purrr
+  purrr,
+  tidyr
 )
 
+conflicted::conflicts_prefer(
+  dplyr::filter(),
+  dplyr::select(),
+  .quiet = TRUE
+)
 source('dev/data_pipeline_functions.R')
 source('dev/filter_fips.R')
 metrics <- readRDS('data/sm_data.rds')[['metrics']]
@@ -31,37 +34,37 @@ econ_meta <- metadata %>%
 # Filter to economics dimension
 econ_metrics <- metrics %>% 
   filter(variable_name %in% econ_meta$variable_name)
-get_str(econ_metrics)
 
 # Filter to latest year and new (post-2024) counties
+# Also remove NAICS variables to leave us with an approachable number
+# And pivot wider so it is easier to get correlations
 econ_metrics_latest <- econ_metrics %>%
   filter_fips(scope = 'new') %>% 
-  get_latest_year()
+  get_latest_year() %>% 
+  filter(str_detect(variable_name, 'Naics|^lq|^avgEmpLvl', negate = TRUE))
 
-# Remove NAICS variables to leave us with an approachable number
-
-
-# Filter by variables, break out variables into separate columns, and make some variable names shorter so they fit in figures
-dat <- dat %>%
-  filter(str_detect(variable_name, pattern)) %>%
+# Pivot wider for easier correlations below
+econ_metrics_latest <- econ_metrics_latest %>% 
+  select(fips, variable_name, value) %>% 
+  unique() %>% 
   pivot_wider(
     names_from = 'variable_name',
     values_from = 'value'
-  )
-# [] stopped here
+  ) %>% 
+  unnest(!fips)
 
-# Arrange variables in a sensible order by group
-# Housing, income, education, food security, infrastructure, localness, total sales, expenses
-dat <- dat %>% 
+# Arrange in some reasonable order
+econ_metrics_latest <- econ_metrics_latest %>% 
   select(
-    matches('_rent_|vacancy'),
-    matches('income|earnings'),
-    matches('education'),
-    matches('insecurity|^wic|^snap'),
-    matches('^number|^groc'),
-    matches('agritourism|market|_csa_|d2c|valueadded|local_sales'),
-    matches('total_|^hired|producer')
+    matches('Code_|metro'),
+    matches('employ|abor|Worker'), # employment
+    matches('Sales'),
+    matches('Earn|Income'),
+    everything(),
+    -fips,
+    -matches('expHiredLaborPercOpExp')
   )
+
 ```
 
 Now we can build an interactive correlation plot. We are calculating correlations based on complete pairwise observations to account for missing data and the changes to Census Bureau reporting for Connecticut.
@@ -85,7 +88,7 @@ pacman::p_load(
 )
 
 # Make a correlation matrix using all the selected variables
-cor <- dat %>% 
+cor <- econ_metrics_latest %>% 
   as.matrix() %>% 
   rcorr()
 
@@ -94,7 +97,7 @@ cor_r <- melt(cor$r) %>%
   setNames(c('var_1', 'var_2', 'value'))
 
 # Save p values
-cor_p <- melt(cor$P) 
+cor_p <- melt(cor$P)
 p.value <- cor_p$value
 
 # Make heatmap with custom text aesthetic for tooltip
@@ -123,9 +126,78 @@ ggplotly(
 )
 ```
 
-I am in the midst of an argument with Quarto about formatting plotly graphs. I want this to show its full extent without the scroll bar, but it refuses. Will revisit this.
+## Cladogram
 
-## Metrics Explorer
+Show Wiltshire framework - what have we covered, what have we added.
+
+```{r cladogram}
+#| label: cladogram
+#| fig-cap: Cladogram of Sustainability Metrics framework
+#| fig-height: 20
+#| fig-width: 8
+pacman::p_load(
+  ggtree,
+  dplyr,
+  ape,
+  data.tree,
+  viridisLite,
+  stringr
+)
+
+## Load data and add an origin level
+dat <- readRDS('data/tree_dat.rds') %>% 
+  filter(Dimension == 'Economics') %>% 
+  mutate(Framework = 'Sustainability') %>% 
+  select(Framework, Dimension:Indicator) %>% 
+  mutate(across(
+    everything(), 
+    ~ str_trim(str_replace_all(., ';|%|/|\\.|\"|,|\\(|\\)', '_'))
+  ))
+
+dat$pathString <- paste(
+  dat$Framework,
+  dat$Dimension,
+  dat$Index,
+  dat$Indicator,
+  sep = '/'
+)
+tree <- as.Node(dat)
+
+# Convert the data.tree structure to Newick format
+tree_newick <- ToNewick(tree)
+
+# Read the Newick tree into ape
+phylo_tree <- read.tree(text = tree_newick)
+
+# Make all edge lengths 1
+phylo_tree$edge.length <- rep(1, length(phylo_tree$edge.length))
+
+# Add a space to end of node labels so it isn't cut off
+phylo_tree$node.label <- paste0(phylo_tree$node.label, ' ')
+
+# Plot it
+plot(
+  phylo_tree, 
+  type = 'c',
+  cex = 0.75,
+  edge.width = 2,
+  show.tip.label = TRUE,
+  label.offset = 0,
+  no.margin = TRUE,
+  tip.color = 'black',
+  edge.color = viridis(181),
+  x.lim = c(-0.1, 5)
+)
+
+nodelabels(
+  phylo_tree$node.label,
+  cex = 0.8,
+  bg = 'white'
+)
+
+```
+
+## Metadata Table
 
 Using the table: 
 
@@ -151,20 +223,20 @@ metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
 metadata <- metadata_all %>% 
   select(
     metric,
+    'Variable Name' = variable_name,
     definition,
     dimension,
     index,
     indicator,
     units,
-    'Year' = latest_year, # Note renaming latest year as year, not including year
+    'Year' = latest_year, # Renaming latest year as year, not including og year
     source,
     scope,
     resolution,
     url
-)
+) %>% 
+  setNames(c(str_to_title(names(.))))
 
-# Fix capitalization of column names
-names(metadata) <- str_to_title(names(metadata))
 
 ###
 htmltools::browsable(
@@ -177,7 +249,7 @@ htmltools::browsable(
         class = "btn btn-primary",
         style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
         tagList(fontawesome::fa("download"), "Show/hide more columns"),
-        onclick = "Reactable.setHiddenColumns('metrics_table', prevColumns => {
+        onclick = "Reactable.setHiddenColumns('metadata_table', prevColumns => {
           return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
         })"
       ),
@@ -186,7 +258,7 @@ htmltools::browsable(
         class = "btn btn-primary",
         style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
         tagList(fontawesome::fa("download"), "Download as CSV"),
-        onclick = "Reactable.downloadDataCSV('metrics_table', 'sustainability_metrics.csv')"
+        onclick = "Reactable.downloadDataCSV('metadata_table', 'sustainability_metadata.csv')"
       )
     ),
     
@@ -225,8 +297,11 @@ htmltools::browsable(
           minWidth = 200,
           sticky = 'left'
         ),
+        'Variable Name' = colDef(
+          minWidth = 150
+        ),
         Definition = colDef(
-          minWidth = 250,
+          minWidth = 250
         ),
         # Units = colDef(minWidth = 50),
         # Year = colDef(minWidth = 75),
@@ -240,7 +315,7 @@ htmltools::browsable(
         )
       ),
       defaultColDef = colDef(minWidth = 100),
-      elementId = "metrics_table",
+      elementId = "metadata_table",
       details = function(index) {
         div(
           style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
@@ -255,6 +330,10 @@ htmltools::browsable(
             as.character(metadata_all[index, 'metric']),
           ),
           tags$p(
+            strong('Variable Name: '), 
+            as.character(metadata_all[index, 'variable_name']),
+          ),
+          tags$p(
             strong('Definition: '), 
             as.character(metadata_all[index, 'definition']),
           ),
@@ -267,7 +346,7 @@ htmltools::browsable(
             as.character(metadata_all[index, 'latest_year'])
           ),
           tags$p(
-            strong('All Years (cleaned, wrangled, and included here): '), 
+            strong('All Years (cleaned, wrangled, and included): '), 
             as.character(metadata_all[index, 'year'])
           ),
           tags$p(
@@ -290,3 +369,114 @@ htmltools::browsable(
 
 ```
 
+## Data Table
+
+```{r}
+#| label: metric_table
+
+pacman::p_load(
+  dplyr,
+  reactable,
+  stringr,
+  htmltools
+)
+
+# Load metrics and metadata
+metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
+metrics <- readRDS('data/sm_data.rds')[['metrics']]
+fips_key <- readRDS('data/sm_data.rds')[['fips_key']]
+
+# Join relevant metadata to metrics table
+econ_metrics <- metrics %>% 
+  left_join(metadata_all, by = join_by('variable_name')) %>% 
+  filter(dimension == 'economics') %>% 
+  left_join(fips_key, by = join_by('fips')) %>% 
+  mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>% 
+  mutate(
+    # Clean up value formatting
+    units = case_when(
+      units %in% c('count', 'acres', 'usd') & as.numeric(value) > 1e6 ~ paste(units, '(x1000)'),
+      .default = units
+    ),
+    value = case_when(
+      str_detect(units, '(x1000)') ~ as.character(round(as.numeric(value) / 1000)),
+      str_detect(units, 'count|acres|usd') ~ format(round(as.numeric(value), 1), big.mark = ','),
+      str_detect(units, 'usd') ~ paste0('$', value),
+      units == 'binary' ~ ifelse(value == 1, 'True', 'False'),
+      units == 'age' ~ paste(value, 'years'),
+      units == 'percentage' ~ paste('%', value),
+      .default = value
+    )
+  ) %>%
+  select(
+    metric,
+    'Variable Name' = variable_name,
+    definition,
+    year = year.x,
+    Area = county_name,
+    units,
+    value
+  ) %>% 
+  setNames(c(str_to_title(names(.)))) %>% 
+  filter(!is.na(Value))
+
+get_str(econ_metrics)
+econ_metrics
+econ_metrics %>% 
+  select(Metric, Units) %>% 
+  print(n = 75)
+
+
+## Reactable table
+htmltools::browsable(
+  tagList(
+    
+    tags$div(
+      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Download as CSV"),
+        onclick = "Reactable.downloadDataCSV('metrics_table', 'sustainability_metrics.csv')"
+      )
+    ),
+    
+    reactable(
+      econ_metrics,
+      sortable = TRUE,
+      resizable = TRUE,
+      filterable = TRUE,
+      searchable = TRUE,
+      pagination = TRUE,
+      bordered = TRUE,
+      wrap = TRUE,
+      rownames = FALSE,
+      onClick = 'select',
+      striped = TRUE,
+      pageSizeOptions = c(5, 10, 25, 50, 100),
+      defaultPageSize = 5,
+      showPageSizeOptions = TRUE,
+      highlight = TRUE,
+      style = list(fontSize = "14px"),
+      compact = TRUE,
+      columns = list(
+        Metric = colDef(
+          minWidth = 125,
+          sticky = 'left'
+        ),
+        'Variable Name' = colDef(
+          minWidth = 125
+        ),
+        Definition = colDef(
+          minWidth = 250
+        ),
+        Units = colDef(minWidth = 100),
+        'Year' = colDef(minWidth = 100)
+      ),
+      defaultColDef = colDef(minWidth = 100),
+      elementId = "metrics_table"
+    )
+  )
+)
+
+```
