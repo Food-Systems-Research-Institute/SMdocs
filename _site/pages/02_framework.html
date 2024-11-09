@@ -54,27 +54,7 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-/* CSS for citations */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-  margin-bottom: 0em;
-}
-.hanging-indent div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}</style>
+</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -84,7 +64,7 @@ div.csl-indent {
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/03.1_economics.html" rel="next">
+<link href="../pages/02.1_sm-explorer.html" rel="next">
 <link href="../pages/01_home.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -211,46 +191,31 @@ div.csl-indent {
  <span class="menu-text">Home</span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Framework</span></span>
-  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/02_framework.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Framework</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/02.1_sm-explorer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SM-Explorer</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Dimensions</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/03.1_economics.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Economics</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/04.1_graphs.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Exploratory Graphs</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/04.2_correlations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Correlations</span></a>
   </div>
 </li>
       </ul>
@@ -265,7 +230,8 @@ div.csl-indent {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#radial-plot" id="toc-radial-plot" class="nav-link active" data-scroll-target="#radial-plot">Radial Plot</a></li>
+  <li><a href="#radial-plot" id="toc-radial-plot" class="nav-link active" data-scroll-target="#radial-plot"><span class="header-section-number">1</span> Radial Plot</a></li>
+  <li><a href="#cladogram" id="toc-cladogram" class="nav-link" data-scroll-target="#cladogram"><span class="header-section-number">2</span> Cladogram</a></li>
   </ul>
 </nav>
     </div>
@@ -291,18 +257,20 @@ div.csl-indent {
 </header>
 
 
-<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
-<img src="../images/hort_farm_small.png" alt="description" style="width: 100%;">
-<div style="text-align: left; margin-top: 0.5em; font-size: smaller;">
-<p>UVM Horticultural Research and Education Center in South Burlington, Vermont. Copyright: Sally McCay, UVM Photo.</p>
+<!-- <div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
+  <img src="../images/hort_farm_small.png" alt="description" style="width: 100%;">
+  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">UVM Horticultural Research and Education Center in South Burlington, Vermont. Copyright: Sally McCay, UVM Photo.
 </div>
-</div>
-<p>This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al.&nbsp;in that food system sustainability is still largely undefined <span class="citation" data-cites="beneWhenFoodSystems2019">(<a href="#ref-beneWhenFoodSystems2019" role="doc-biblioref">Béné et al. 2019</a>)</span>.</p>
-<p>[Including some more text here just so that it wraps around the photo.</p>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia eu nibh vel luctus. Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.</p>
-<p>Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.]</p>
-<section id="radial-plot" class="level2">
-<h2 class="anchored" data-anchor-id="radial-plot">Radial Plot</h2>
+</div> -->
+<p>Just including some visualizations of the framework here for now.</p>
+<!-- This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al. in that food system sustainability is still largely undefined [@beneWhenFoodSystems2019]. -->
+<!-- [Including some more text here just so that it wraps around the photo. 
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia eu nibh vel luctus. Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.
+
+Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.] -->
+<section id="radial-plot" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="radial-plot"><span class="header-section-number">1</span> Radial Plot</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
@@ -317,7 +285,7 @@ div.csl-indent {
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="do">## Load data and add an origin level</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/tree_dat.rds'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/trees/tree_dat.rds'</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Framework =</span> <span class="st">'Sustainability'</span>) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Framework, Dimension<span class="sc">:</span>Indicator)</span>
 <span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
@@ -381,8 +349,8 @@ div.csl-indent {
 <span id="cb1-73"><a href="#cb1-73" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Create text for indicators using angles, hjust, and dimension groupings</span></span>
 <span id="cb1-74"><a href="#cb1-74" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_node_text</span>(</span>
 <span id="cb1-75"><a href="#cb1-75" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(</span>
-<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> x <span class="sc">*</span> <span class="fl">1.15</span>,</span>
-<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> y <span class="sc">*</span> <span class="fl">1.15</span>,</span>
+<span id="cb1-76"><a href="#cb1-76" aria-hidden="true" tabindex="-1"></a>      <span class="at">x =</span> x <span class="sc">*</span> <span class="fl">1.04</span>,</span>
+<span id="cb1-77"><a href="#cb1-77" aria-hidden="true" tabindex="-1"></a>      <span class="at">y =</span> y <span class="sc">*</span> <span class="fl">1.04</span>,</span>
 <span id="cb1-78"><a href="#cb1-78" aria-hidden="true" tabindex="-1"></a>      <span class="at">filter =</span> leaf,</span>
 <span id="cb1-79"><a href="#cb1-79" aria-hidden="true" tabindex="-1"></a>      <span class="at">label =</span> name,</span>
 <span id="cb1-80"><a href="#cb1-80" aria-hidden="true" tabindex="-1"></a>      <span class="at">angle =</span> angle,</span>
@@ -432,16 +400,86 @@ div.csl-indent {
 </div>
 </div>
 </div>
-
+</section>
+<section id="cladogram" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="cladogram"><span class="header-section-number">2</span> Cladogram</h2>
+<p>A slightly more readable version of the diagram above.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  ggtree,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  dplyr,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  ape,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  data.tree,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  viridisLite,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  stringr</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Load data and add an origin level</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/trees/tree_dat.rds'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Framework =</span> <span class="st">'Sustainability'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Framework, Dimension<span class="sc">:</span>Indicator) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">everything</span>(), </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">str_trim</span>(<span class="fu">str_replace_all</span>(., <span class="st">';|%|/|</span><span class="sc">\\</span><span class="st">.|</span><span class="sc">\"</span><span class="st">|,|</span><span class="sc">\\</span><span class="st">(|</span><span class="sc">\\</span><span class="st">)'</span>, <span class="st">'_'</span>))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  ))</span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>pathString <span class="ot">&lt;-</span> <span class="fu">paste</span>(</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>Framework,</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>Dimension,</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>Index,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>Indicator,</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">'/'</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> <span class="fu">as.Node</span>(dat)</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the data.tree structure to Newick format</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>tree_newick <span class="ot">&lt;-</span> <span class="fu">ToNewick</span>(tree)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the Newick tree into ape</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>phylo_tree <span class="ot">&lt;-</span> <span class="fu">read.tree</span>(<span class="at">text =</span> tree_newick)</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Make all edge lengths 1</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>phylo_tree<span class="sc">$</span>edge.length <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(phylo_tree<span class="sc">$</span>edge.length))</span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a space to end of node labels so it isn't cut off</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>phylo_tree<span class="sc">$</span>node.label <span class="ot">&lt;-</span> <span class="fu">paste0</span>(phylo_tree<span class="sc">$</span>node.label, <span class="st">' '</span>)</span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot it</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  phylo_tree, </span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">'c'</span>,</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> <span class="fl">0.75</span>,</span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="at">edge.width =</span> <span class="dv">2</span>,</span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">show.tip.label =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">label.offset =</span> <span class="dv">0</span>,</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">no.margin =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">tip.color =</span> <span class="st">'black'</span>,</span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">edge.color =</span> <span class="fu">viridis</span>(<span class="dv">181</span>),</span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">x.lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.1</span>, <span class="dv">5</span>)</span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="fu">nodelabels</span>(</span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  phylo_tree<span class="sc">$</span>node.label,</span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> <span class="fl">0.8</span>,</span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>  <span class="at">bg =</span> <span class="st">'white'</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-left">
+<figure class="figure">
+<p><img src="02_framework_files/figure-html/cladogram-1.png" class="img-fluid figure-img" width="768"></p>
+<figcaption>Cladogram of Sustainability Metrics framework</figcaption>
+</figure>
+</div>
+</div>
+</div>
 
 
 </section>
 
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
-<div id="ref-beneWhenFoodSystems2019" class="csl-entry" role="listitem">
-Béné, Christophe, Peter Oosterveer, Lea Lamotte, Inge D. Brouwer, Stef de Haan, Steve D. Prager, Elise F. Talsma, and Colin K. Khoury. 2019. <span>“When Food Systems Meet Sustainability – <span>Current</span> Narratives and Implications for Actions.”</span> <em>World Development</em> 113 (January): 116–30. <a href="https://doi.org/10.1016/j.worlddev.2018.08.011">https://doi.org/10.1016/j.worlddev.2018.08.011</a>.
-</div>
-</div></section></div></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -874,8 +912,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/03.1_economics.html" class="pagination-link" aria-label="Economics">
-        <span class="nav-page-text">Economics</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/02.1_sm-explorer.html" class="pagination-link" aria-label="SM-Explorer">
+        <span class="nav-page-text">SM-Explorer</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

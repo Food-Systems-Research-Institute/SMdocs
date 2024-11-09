@@ -16,3 +16,10 @@ viridisLite
 ggtree
 ape
 data.tree
+ggraph
+igraph
+RColorBrewer
+ggrepel
+ggpubr
+missForest
+psych

@@ -9,6 +9,8 @@ suppressPackageStartupMessages(
 conflicted::conflicts_prefer(
   dplyr::filter(),
   dplyr::select(),
+  dplyr::rename(),
+  dplyr::as_data_frame(),
   .quiet = TRUE
 )
 

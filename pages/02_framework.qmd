@@ -4,19 +4,21 @@ execute:
     cache: true
 ---
 
-<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
+<!-- <div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
   <img src="../images/hort_farm_small.png" alt="description" style="width: 100%;">
   <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">UVM Horticultural Research and Education Center in South Burlington, Vermont. Copyright: Sally McCay, UVM Photo.
 </div>
-</div>
+</div> -->
 
-This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al. in that food system sustainability is still largely undefined [@beneWhenFoodSystems2019].
+Just including some visualizations of the framework here for now.
 
-[Including some more text here just so that it wraps around the photo. 
+<!-- This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al. in that food system sustainability is still largely undefined [@beneWhenFoodSystems2019]. -->
+
+<!-- [Including some more text here just so that it wraps around the photo. 
 
 Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia eu nibh vel luctus. Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.
 
-Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.]
+Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.] -->
 
 ## Radial Plot
 
@@ -37,7 +39,7 @@ pacman::p_load(
 
 
 ## Load data and add an origin level
-dat <- readRDS('data/tree_dat.rds') %>% 
+dat <- readRDS('data/trees/tree_dat.rds') %>% 
   mutate(Framework = 'Sustainability') %>% 
   select(Framework, Dimension:Indicator)
 
@@ -101,8 +103,8 @@ ggraph(graph, layout = 'dendrogram', circular = TRUE) +
   # Create text for indicators using angles, hjust, and dimension groupings
   geom_node_text(
     aes(
-      x = x * 1.15,
-      y = y * 1.15,
+      x = x * 1.04,
+      y = y * 1.04,
       filter = leaf,
       label = name,
       angle = angle,
@@ -144,3 +146,72 @@ ggraph(graph, layout = 'dendrogram', circular = TRUE) +
   expand_limits(x = c(-2, 2), y = c(-2, 2))
 ```
 
+## Cladogram
+
+A slightly more readable version of the diagram above.
+
+```{r cladogram}
+#| label: cladogram
+#| fig-cap: Cladogram of Sustainability Metrics framework
+#| fig-height: 20
+#| fig-width: 8
+pacman::p_load(
+  ggtree,
+  dplyr,
+  ape,
+  data.tree,
+  viridisLite,
+  stringr
+)
+
+## Load data and add an origin level
+dat <- readRDS('data/trees/tree_dat.rds') %>% 
+  mutate(Framework = 'Sustainability') %>% 
+  select(Framework, Dimension:Indicator) %>% 
+  mutate(across(
+    everything(), 
+    ~ str_trim(str_replace_all(., ';|%|/|\\.|\"|,|\\(|\\)', '_'))
+  ))
+
+dat$pathString <- paste(
+  dat$Framework,
+  dat$Dimension,
+  dat$Index,
+  dat$Indicator,
+  sep = '/'
+)
+tree <- as.Node(dat)
+
+# Convert the data.tree structure to Newick format
+tree_newick <- ToNewick(tree)
+
+# Read the Newick tree into ape
+phylo_tree <- read.tree(text = tree_newick)
+
+# Make all edge lengths 1
+phylo_tree$edge.length <- rep(1, length(phylo_tree$edge.length))
+
+# Add a space to end of node labels so it isn't cut off
+phylo_tree$node.label <- paste0(phylo_tree$node.label, ' ')
+
+# Plot it
+plot(
+  phylo_tree, 
+  type = 'c',
+  cex = 0.75,
+  edge.width = 2,
+  show.tip.label = TRUE,
+  label.offset = 0,
+  no.margin = TRUE,
+  tip.color = 'black',
+  edge.color = viridis(181),
+  x.lim = c(-0.1, 5)
+)
+
+nodelabels(
+  phylo_tree$node.label,
+  cex = 0.8,
+  bg = 'white'
+)
+
+```

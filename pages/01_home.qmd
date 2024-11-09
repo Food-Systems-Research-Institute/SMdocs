@@ -12,10 +12,10 @@ date: today
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
-The Sustainability Metrics project, as well as this site itself, are both works in progress. All data and analyses shown here are preliminary. All color schemes will be improved upon. If you have any questions, comments, or suggestions, feel free to reach out to Chris at [christopher.donovan@uvm.edu](mailto:christopher.donovan@uvm.edu), or find us at the [UVM Food Systems Research Center](https://www.uvm.edu/cals/food-systems-research) website.
+The Sustainability Metrics project, as well as this site itself, are both works in progress. All data and analyses shown here are preliminary. If you have any questions, comments, or suggestions, feel free to reach out to Chris at [christopher.donovan@uvm.edu](mailto:christopher.donovan@uvm.edu).
 :::
 
-## Introduction{#sec-intro}
+## Introduction {#sec-intro}
 
 <div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
   <img src="../images/intervale_small.png" alt="description" style="width: 100%;">
@@ -35,18 +35,15 @@ The Sustainability Metrics project is an effort to develop both the conceptual a
 
 Metadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS [Food and Agriculture Mapper and Explorer](https://www.ams.usda.gov/services/local-regional/research-publications/fame) in particular, as many of the data shown here were cleaned and compiled in their data warehouse. 
 
-## Navigation
+## About FSRC
 
-Might provide an overview of what to find on the site here?
+The Food Systems Research Center at the University of Vermont is transforming the research landscape by funding collaborative projects that put people and the planet first, break down traditional academic silos and are integrated with and responsive to the needs of the communities we serve, including decision-makers, farmers, and food systems actors. 
 
-* Framework: Describes the conceptual framework and includes some big picture visualizations.
-* Indicators: More specifics about dimensions, indices, indicators, and metrics. Will also include metadata and sources for metrics.
-* Exploratory Graphs: Note to rename this. It is exploratory analysis - distributions, time series, bivariate plots.
-* Correlations: Throwing together all the metrics to see how they relate. 
-* Shiny App: Linked on this page, below.
-* Eventually to add PCA, clustering at the county level, regression, etc.
+Rooted in the belief that no one group can find the answers alone, FSRC empowers researchers to work together across disciplines to address critical issues like soil health, food security, and climate resilience. Instead of funding research that leads to short-term fixes, our commitment is to give researchers the freedom, resources, and time they need to do relevant research that will inform policies, practices, and programs that will long outlast their work. 
 
-## SM Explorer
+FSRC considers the relationship of food systems across scales from local to global and is a partnership between UVM and the U.S. Department of Agriculture (USDA) Agricultural Research Service (ARS). FSRC’s transdisciplinary approach prioritizes research that studies food systems as a whole, including the networks of people, institutions, physical infrastructure, and natural resources through which food is grown, processed, distributed, sold, prepared, and eaten. 
+
+<!-- ## SM Explorer
 
 ::: {.callout-note collapse='false' title='Caution'}
 Please be aware that the SM Explorer is early on in development. It currently includes limited features, limited metrics, and you will find more than a few bugs and missing data if you poke around enough. 
@@ -56,13 +53,7 @@ While there are some client-side interactive plots on this site, the server-side
 
 [![](../images/sme.png){width=60% fig-align="center"}](https://chris-donovan.shinyapps.io/SMexplorer/)
 
-So, here is a link to the [SM Explorer Shiny App](https://chris-donovan.shinyapps.io/SMexplorer/). You can also just click on the image above. The vision here is to have an interactive way to explore spatial data, either at the county or state level. As I work through wrangling data, I plan to include proper spatial layers (points, rasters) rather than just county level data. I will also add an interactive bivariate plot system where you can explore relationships between metrics, much like what is available at the [Food Systems Dashboard "Compare" feature](https://www.foodsystemsdashboard.org/compare). In addition, having a way to explore where each county or state sits as compared to others would be nice, much like the [FSD "Profile" and "Indicators"](https://www.foodsystemsdashboard.org/countries/bhs) pages.
-
-## To do on this page
-
-* Revamp color scheme, particularly the links
-* Consider changing from APA style citations to whichever one just has the numbers to make it look more approachable and less technical. 
-* Link GitHub source, edits, issues
+So, here is a link to the [SM Explorer Shiny App](https://chris-donovan.shinyapps.io/SMexplorer/). You can also just click on the image above. The vision here is to have an interactive way to explore spatial data, either at the county or state level. As I work through wrangling data, I plan to include proper spatial layers (points, rasters) rather than just county level data. I will also add an interactive bivariate plot system where you can explore relationships between metrics, much like what is available at the [Food Systems Dashboard "Compare" feature](https://www.foodsystemsdashboard.org/compare). In addition, having a way to explore where each county or state sits as compared to others would be nice, much like the [FSD "Profile" and "Indicators"](https://www.foodsystemsdashboard.org/countries/bhs) pages. -->
 
 ## License
 

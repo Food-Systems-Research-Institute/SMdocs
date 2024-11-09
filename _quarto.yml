@@ -39,18 +39,20 @@ website:
     contents:
       - text: Home
         href: pages/01_home.qmd
-      - section: Framework
+      - text: Framework
         href: pages/02_framework.qmd
+      - text: SM-Explorer
+        href: pages/02.1_sm-explorer.qmd
       - section: Dimensions
         contents:
           - text: Economics
             href: pages/03.1_economics.qmd
-      - section: Analysis
-        contents:
-          - text: 'Exploratory Graphs'
-            href: pages/04.1_graphs.qmd
-          - text: 'Correlations'
-            href: pages/04.2_correlations.qmd
+      # - section: Exploratory Analysis
+        # contents:
+          # - text: 'Exploratory Graphs'
+            # href: pages/04.1_graphs.qmd
+          # - text: 'Correlations'
+            # href: pages/04.2_correlations.qmd
           # - text: 'Principal Components'
             # href: pages/04.3_pca.qmd
           # - text: 'Regression'
@@ -63,8 +65,8 @@ format:
     css: styles.css
     toc: true
     toc-depth: 3
-    # number-sections: true
-    # number-depth: 2
+    number-sections: true
+    number-depth: 2
     code-fold: true
     grid: 
       body-width: 900px

@@ -1,213 +1,201 @@
 ---
 title: 'Economics'
+fig-responsive: false
 ---
 
-## Correlation Heatmap
+## Dimension Overview
 
-First we have some data wrangle to do. Here, we choose a selection of 35 variables to work with. We also filter for the Connecticut governing regions rather than counties. Finally, we arrange the variables in sensible order so they appear in similar blocks on the correlation plot.
+Shown in the diagram below are a total of 45 indicators within the economics dimension. Indices are labeled within the diagram. 17 indicators are both included in the Wiltshire et al. framework as well as being studied by one or more teams (red), 9 are included in the Wiltshire et al. but not currently belong studied (green), while 19 were not in the original framework, but have been added by one or more teams (blue).
 
-```{r}
-#| label: clean_data
-pacman::p_load(
-  dplyr,
-  tidyr,
-  tibble,
-  stringr,
-  purrr,
-  tidyr
-)
+The points beside each indicator name represent the number of secondary data metrics that have been aggregated for each indicator. Sources include USDA NASS, BLS, ERS, Census Bureau, and others. The quality and appropiateness of these metrics vary widely - I do not mean to suggest that having more of them means an indicator is more accurately better represented. For more information on the data sources, head to the @sec-metadata section below.
 
-conflicted::conflicts_prefer(
-  dplyr::filter(),
-  dplyr::select(),
-  .quiet = TRUE
-)
-source('dev/data_pipeline_functions.R')
-source('dev/filter_fips.R')
-metrics <- readRDS('data/sm_data.rds')[['metrics']]
-metadata <- readRDS('data/sm_data.rds')[['metadata']]
+One other point to note here is that I removed several dozen metrics from BLS wage labor data broken down by NAICS industry code so as not to inflate that indicator relative to the others.
 
-# Use metadata to get help filter by dimension
-econ_meta <- metadata %>% 
-  filter(dimension == 'economics')
-
-# Filter to economics dimension
-econ_metrics <- metrics %>% 
-  filter(variable_name %in% econ_meta$variable_name)
-
-# Filter to latest year and new (post-2024) counties
-# Also remove NAICS variables to leave us with an approachable number
-# And pivot wider so it is easier to get correlations
-econ_metrics_latest <- econ_metrics %>%
-  filter_fips(scope = 'new') %>% 
-  get_latest_year() %>% 
-  filter(str_detect(variable_name, 'Naics|^lq|^avgEmpLvl', negate = TRUE))
-
-# Pivot wider for easier correlations below
-econ_metrics_latest <- econ_metrics_latest %>% 
-  select(fips, variable_name, value) %>% 
-  unique() %>% 
-  pivot_wider(
-    names_from = 'variable_name',
-    values_from = 'value'
-  ) %>% 
-  unnest(!fips)
-
-# Arrange in some reasonable order
-econ_metrics_latest <- econ_metrics_latest %>% 
-  select(
-    matches('Code_|metro'),
-    matches('employ|abor|Worker'), # employment
-    matches('Sales'),
-    matches('Earn|Income'),
-    everything(),
-    -fips,
-    -matches('expHiredLaborPercOpExp')
-  )
-
-```
-
-Now we can build an interactive correlation plot. We are calculating correlations based on complete pairwise observations to account for missing data and the changes to Census Bureau reporting for Connecticut.
-
-::: {.callout-note collapse='true' title='On Missing Data'}
-This is a reminder to do a deeper dive on missing data once more of the data have been wrangled. There is a substantial amount given the varying scales at which data are collected, not to mention the issues at the county level with Connecticut.
-:::
-
-```{r fig.align='center'}
-#| label: correlation_plot
-#| fig-cap: Interactive Correlation Plot
+```{r fig.dim=c(10, 8), fig.align='center'}
+#| label: radial_plot
+#| fig-cap: Radial dendrogram of Sustainability Metrics framework
+#| code-fold: true
 #| warning: false
 
+## Load packages
 pacman::p_load(
+  ggraph,
+  igraph,
   dplyr,
-  ggplot2,
-  plotly,
-  reshape,
-  Hmisc,
-  viridisLite
-)
-
-# Make a correlation matrix using all the selected variables
-cor <- econ_metrics_latest %>% 
-  as.matrix() %>% 
-  rcorr()
-
-# Melt correlation values and rename columns
-cor_r <- melt(cor$r) %>% 
-  setNames(c('var_1', 'var_2', 'value'))
-
-# Save p values
-cor_p <- melt(cor$P)
-p.value <- cor_p$value
-
-# Make heatmap with custom text aesthetic for tooltip
-plot <- cor_r %>% 
-  ggplot(aes(var_1, var_2, fill = value, text = paste0(
-  'Var 1: ', var_1, '\n',
-  'Var 2: ', var_2, '\n',
-  'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
-  'P-Value: ', format(round(p.value, 3), nsmall = 3)
-))) + 
-  geom_tile() + 
-  scale_fill_viridis_c() + 
-  theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = 'Correlation'
-  )
-
-# Convert to interactive plotly figure with text tooltip
-ggplotly(
-  plot, 
-  tooltip = 'text',
-  width = 1000,
-  height = 800
-)
-```
-
-## Cladogram
-
-Show Wiltshire framework - what have we covered, what have we added.
-
-```{r cladogram}
-#| label: cladogram
-#| fig-cap: Cladogram of Sustainability Metrics framework
-#| fig-height: 20
-#| fig-width: 8
-pacman::p_load(
-  ggtree,
-  dplyr,
-  ape,
-  data.tree,
+  RColorBrewer,
   viridisLite,
+  ggrepel,
   stringr
 )
 
-## Load data and add an origin level
-dat <- readRDS('data/tree_dat.rds') %>% 
-  filter(Dimension == 'Economics') %>% 
-  mutate(Framework = 'Sustainability') %>% 
-  select(Framework, Dimension:Indicator) %>% 
-  mutate(across(
-    everything(), 
-    ~ str_trim(str_replace_all(., ';|%|/|\\.|\"|,|\\(|\\)', '_'))
-  ))
-
-dat$pathString <- paste(
-  dat$Framework,
-  dat$Dimension,
-  dat$Index,
-  dat$Indicator,
-  sep = '/'
-)
-tree <- as.Node(dat)
-
-# Convert the data.tree structure to Newick format
-tree_newick <- ToNewick(tree)
-
-# Read the Newick tree into ape
-phylo_tree <- read.tree(text = tree_newick)
-
-# Make all edge lengths 1
-phylo_tree$edge.length <- rep(1, length(phylo_tree$edge.length))
-
-# Add a space to end of node labels so it isn't cut off
-phylo_tree$node.label <- paste0(phylo_tree$node.label, ' ')
-
-# Plot it
-plot(
-  phylo_tree, 
-  type = 'c',
-  cex = 0.75,
-  edge.width = 2,
-  show.tip.label = TRUE,
-  label.offset = 0,
-  no.margin = TRUE,
-  tip.color = 'black',
-  edge.color = viridis(181),
-  x.lim = c(-0.1, 5)
+conflicted::conflicts_prefer(
+  dplyr::as_data_frame(),
+  .quiet = TRUE
 )
 
-nodelabels(
-  phylo_tree$node.label,
-  cex = 0.8,
-  bg = 'white'
-)
+## Load data for tree and metrics
+dat <- readRDS('data/trees/econ_tree.rds') %>% 
+  select(Dimension:Source)
+metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
+meta <- metadata_all %>% 
+  filter(
+    dimension == 'economics'
+  )
 
+# Rename metadata so it fits into formatting of tree data
+# This is quite not ideal - Note to harmonize this properly later
+meta <- meta %>% 
+  mutate(
+    indicator = str_to_sentence(indicator),
+    indicator = case_when(
+      str_detect(indicator, '^Assets') ~ 'Balance sheet (assets and liabilities)',
+      str_detect(indicator, '^Business failure') ~ 'Business failure rate of food business',
+      str_detect(indicator, '^Direct') ~ '% direct-to-consumer sales',
+      str_detect(indicator, '^Job avail') ~ 'Availability of good-paying jobs in food systems',
+      str_detect(indicator, '^Local sales') ~ '% local sales',
+      str_detect(indicator, '^Operator salary') ~ 'Operator salary / wage',
+      str_detect(indicator, '^Total sales') ~ 'Total sales / revenue',
+      str_detect(indicator, '^Wealth/income') ~ 'Wealth / income distribution',
+      TRUE ~ indicator
+    )
+  ) 
+
+# Join counts of secondary data metrics to original dataset
+# Remove the NAICS variables - there are so many of them, don't add much
+counts <- meta %>% 
+  filter(str_detect(variable_name, '^lq|lvl|Lvl|Naics', negate = TRUE)) %>% 
+  group_by(indicator) %>% 
+  dplyr::summarize(count = n())
+
+
+## Make edges
+# include groupings by dimension, then combine them
+edges <- list()
+edges$dim_ind <- dat %>% 
+  select(Dimension, Index) %>% 
+  unique() %>% 
+  dplyr::rename(from = Dimension, to = Index) %>% 
+  mutate(group = to)
+edges$ind_ind <- dat %>% 
+  select(Index, Indicator) %>% 
+  unique() %>% 
+  dplyr::rename(from = Index, to = Indicator) %>% 
+  mutate(group = from)
+edges <- bind_rows(edges)
+
+# Add column for use (will use in colors of text?)
+edges$group <- c(rep(NA, 10), dat$Source)
+
+
+## Make vertices
+# Each line is a single vertex (dimension, index, or indicator)
+# We are just giving them random values to control point size for now
+vertices = data.frame(
+  name = unique(c(as.character(edges$from), as.character(edges$to)))
+) %>% 
+  left_join(counts, by = join_by(name == indicator)) %>% 
+  dplyr::rename('value' = count)
+
+# Add the dimension groupings to the vertices as well
+vertices$group = edges$group[match(vertices$name, edges$to)]
+
+# Calculate the angles to arrange indicator labels
+vertices$id = NA
+myleaves = which(is.na(match(vertices$name, edges$from)))
+nleaves = length(myleaves)
+vertices$id[myleaves] = seq(1:nleaves)
+vertices$angle = 90 - 360 * vertices$id / nleaves
+
+# Calculate alignment of indicator labels
+vertices$hjust <- ifelse(vertices$angle < -90, 1, 0)
+
+# Flip label angles around 180 degrees if they are facing the wrong way
+vertices$angle <- ifelse(vertices$angle < -90, vertices$angle + 180, vertices$angle)
+
+
+## Create graph
+# Make ggraph object from edges and vertices
+graph <- graph_from_data_frame(edges, vertices = vertices)
+
+# Plot the graph
+ggraph(graph, layout = 'dendrogram', circular = TRUE) +
+  
+  # Color edges by dimension
+  geom_edge_diagonal(color = 'black', width = 0.5) +
+  
+  # Create text for indicators using angles, hjust, and dimension groupings
+  geom_node_text(
+    aes(
+      x = x * 1.15,
+      y = y * 1.15,
+      filter = leaf,
+      label = name,
+      angle = angle,
+      hjust = hjust,
+      colour = group
+    ),
+    size = 3,
+    alpha = 1
+  ) +
+  
+  # Label indices within graph
+  geom_label_repel(
+    aes(
+      x = x,
+      y = y,
+      label = ifelse(name %in% unique(dat$Index), name, NA)
+    ),
+    label.padding = unit(0.15, "lines"),
+    label.r = unit(0.3, "lines"),
+    label.size = 0.05,
+    size = 2.25,
+    force = 0.1,    
+    force_pull = 1, 
+    max.overlaps = 10 
+  ) +
+  
+  # Make the points for indicators based on secondary metric count
+  geom_node_point(
+    aes(
+      filter = leaf,
+      x = x * 1.07,
+      y = y * 1.07,
+      colour = group,
+      size = value
+    ),
+    alpha = 0.4
+  ) +
+  
+  # Various formatting options
+  scale_colour_manual(values = brewer.pal(3, 'Set1')) +
+  # scale_size_continuous(range = c(0.1, 7)) +
+  theme_void() +
+  theme(
+    plot.margin = unit(c(0, 0, 0, 0), "cm")
+  ) +
+  scale_colour_manual(
+    name = "Indicator Use",
+    values = brewer.pal(3, 'Set1'),
+    labels = c("Both", "Current Only", "Wiltshire Only")
+  ) +
+  expand_limits(x = c(-2.5, 2.5), y = c(-2.5, 2.5))
 ```
 
-## Metadata Table
+## Metadata Table {#sec-metadata}
+
+This is table to explore metadata for secondary metrics data. It does not include the values or geographic areas themselves, but does include definitions, sources, and links to the data used.
 
 Using the table: 
 
 * Click column headers to sort
-* Global search at top right, column search in each header
+* Global search in the top right, or column search in each header
 * Change page length and page through results at the bottom
 * Use the download button to download a .csv file of the filtered table
+* Click the arrow on the left of each row for details, including a URL to the data source.
 
 ```{r}
 #| label: metadata_table
+#| warning: false
 
 pacman::p_load(
   dplyr,
@@ -281,18 +269,6 @@ htmltools::browsable(
       style = list(fontSize = "14px"),
       compact = TRUE,
       columns = list(
-        # Dimension = colDef(
-          # minWidth = 75,
-          # sticky = 'left'
-        # ),
-        # Index = colDef(
-          # minWidth = 75,
-          # sticky = 'left'
-        # ),
-        # Indicator = colDef(
-          # minWidth = 100,
-          # sticky = 'left'
-        # ),
         Metric = colDef(
           minWidth = 200,
           sticky = 'left'
@@ -303,8 +279,6 @@ htmltools::browsable(
         Definition = colDef(
           minWidth = 250
         ),
-        # Units = colDef(minWidth = 50),
-        # Year = colDef(minWidth = 75),
         'Latest Year' = colDef(minWidth = 75),
         Source = colDef(minWidth = 250),
         Scope = colDef(show = FALSE),
@@ -371,8 +345,11 @@ htmltools::browsable(
 
 ## Data Table
 
+This is another table that includes values. It takes some more legwork to navigate through years and counties, but all the secondary data is included here. Again, use the button to download the filtered view of the table.
+
 ```{r}
 #| label: metric_table
+#| warning: false
 
 pacman::p_load(
   dplyr,
@@ -395,30 +372,6 @@ econ_metrics <- metrics %>%
   filter(dimension == 'economics') %>% 
   left_join(fips_key, by = join_by('fips')) %>% 
   mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>% 
-  format_values()
-
-# Join relevant metadata to metrics table
-econ_metrics <- metrics %>% 
-  left_join(metadata_all, by = join_by('variable_name')) %>% 
-  filter(dimension == 'economics') %>% 
-  left_join(fips_key, by = join_by('fips')) %>% 
-  mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>% 
-  # mutate(
-  #   # Clean up value formatting
-  #   units = case_when(
-  #     units %in% c('count', 'acres', 'usd') & as.numeric(value) > 1e6 ~ paste(units, '(x1000)'),
-  #     .default = units
-  #   ),
-  #   value = case_when(
-  #     str_detect(units, '(x1000)') ~ as.character(round(as.numeric(value) / 1000)),
-  #     str_detect(units, 'count|acres|usd') ~ format(round(as.numeric(value), 1), big.mark = ','),
-  #     str_detect(units, 'usd') ~ paste0('$', value),
-  #     units == 'binary' ~ ifelse(value == 1, 'True', 'False'),
-  #     units == 'age' ~ paste(value, 'years'),
-  #     units == 'percentage' ~ paste('%', value),
-  #     .default = value
-  #   )
-  # ) %>%
   format_values() %>% 
   select(
     metric,
@@ -431,9 +384,6 @@ econ_metrics <- metrics %>%
   ) %>% 
   setNames(c(str_to_title(names(.)))) %>% 
   filter(!is.na(Value))
-
-get_str(econ_metrics)
-econ_metrics$Units %>% unique
 
 
 ## Reactable table
@@ -489,3 +439,259 @@ htmltools::browsable(
 )
 
 ```
+
+## Distributions
+
+We are taking out the abundant but largely redundant BLS NAICS wage data variables to leave us with a more approachable set of 46 variables to explore here. First just show univariate distributions by county.
+
+
+```{r}
+#| label: prep
+#| warning: false
+pacman::p_load(
+  dplyr,
+  purrr,
+  ggplot2,
+  rlang,
+  ggpubr,
+  tidyr
+)
+
+source('dev/data_pipeline_functions.R')
+source('dev/filter_fips.R')
+metrics <- readRDS('data/sm_data.rds')[['metrics']]
+metadata <- readRDS('data/sm_data.rds')[['metadata']]
+
+# Use metadata to get help filter by dimension
+econ_meta <- metadata %>% 
+  filter(dimension == 'economics')
+
+# Filter to economics dimension
+econ_metrics <- metrics %>% 
+  filter(variable_name %in% econ_meta$variable_name)
+
+# Filter to latest year and new (post-2024) counties
+# Also remove NAICS variables to leave us with an approachable number
+# And pivot wider so it is easier to get correlations
+econ_metrics_latest <- econ_metrics %>%
+  filter_fips(scope = 'new') %>% 
+  get_latest_year() %>% 
+  filter(
+    str_detect(
+      variable_name, 
+      'Naics|^lq|^avgEmpLvl|expHiredLaborPercOpExp', 
+      negate = TRUE
+    )
+  )
+
+# Pivot wider for easier correlations below
+econ_metrics_latest <- econ_metrics_latest %>% 
+  select(fips, variable_name, value) %>% 
+  unique() %>% 
+  mutate(variable_name = str_split_i(variable_name, '_', 1)) %>% 
+  pivot_wider(
+    names_from = 'variable_name',
+    values_from = 'value'
+  ) %>% 
+  unnest(!fips) %>% 
+  mutate(across(c(civLaborForce:last_col()), as.numeric))
+```
+
+```{r}
+#| label: distribution_plots
+#| fig-cap: Distributions of economic metrics at the county level.
+#| fig-height: 25
+#| fig-width: 10
+#| fig-align: center
+#| warning: false
+pacman::p_load(
+  dplyr,
+  purrr,
+  ggplot2,
+  rlang,
+  ggpubr,
+  tidyr
+)
+
+plots <- map(names(econ_metrics_latest)[-1], \(var){
+  if (is.character(econ_metrics_latest[[var]])) {
+    econ_metrics_latest %>% 
+      ggplot(aes(x = !!sym(var))) + 
+      geom_bar(
+        fill = 'lightblue',
+        color = 'royalblue',
+        alpha = 0.5
+      ) +
+      theme_classic() +
+      theme(plot.margin = unit(c(rep(0.5, 4)), 'cm'))
+  } else if (is.numeric(econ_metrics_latest[[var]])) {
+    econ_metrics_latest %>% 
+      ggplot(aes(x = !!sym(var))) + 
+      geom_density(
+        fill = 'lightblue',
+        color = 'royalblue',
+        alpha = 0.5
+      ) +
+      theme_classic() +
+      theme(plot.margin = unit(c(rep(0.5, 4)), 'cm'))
+  } else {
+    return(NULL)
+  }
+}) 
+
+
+# Arrange them in 4 columns
+ggarrange(
+  plotlist = plots,
+  ncol = 4,
+  nrow = 12
+)
+
+# ggsave(
+#   'images/distribution_plots.png',
+#   plot = out,
+#   dpi = 150,
+#   width = 1500,
+#   height = 3000,
+#   units = 'px'
+# )
+```
+
+## Correlation Heatmap
+
+Throwing those same variables into a correlation matrix. Hover to see variable names, Pearson correlationm, and p-values.
+
+```{r}
+#| label: correlation_plot
+#| fig-cap: Interactive Correlation Plot
+#| warning: false
+pacman::p_load(
+  dplyr,
+  tidyr,
+  tibble,
+  stringr,
+  purrr,
+  tidyr,
+  ggplot2,
+  plotly,
+  reshape,
+  Hmisc,
+  viridisLite
+)
+
+# Arrange variables in some halfway reasonable order
+cor_dat <- econ_metrics_latest %>% 
+  select(
+    matches('Code_|metro'),
+    matches('employ|abor|Worker'),
+    matches('Sales'),
+    matches('Earn|Income'),
+    everything(),
+    -fips,
+    -matches('expHiredLaborPercOpExp') # This one didn't come through
+  )
+
+# Make a correlation matrix using all the selected variables
+cor <- cor_dat %>% 
+  as.matrix() %>% 
+  rcorr()
+
+# Melt correlation values and rename columns
+cor_r <- melt(cor$r) %>% 
+  setNames(c('var_1', 'var_2', 'value'))
+
+# Save p values
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+# Make heatmap with custom text aesthetic for tooltip
+plot <- cor_r %>% 
+  ggplot(aes(var_1, var_2, fill = value, text = paste0(
+    'Var 1: ', var_1, '\n',
+    'Var 2: ', var_2, '\n',
+    'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
+    'P-Value: ', format(round(p.value, 3), nsmall = 3)
+  ))) + 
+  geom_tile() + 
+  scale_fill_viridis_c() + 
+  theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = 'Correlation'
+  )
+
+# Convert to interactive plotly figure with text tooltip
+ggplotly(
+  plot, 
+  tooltip = 'text',
+  width = 1000,
+  height = 800
+)
+```
+
+
+## PCA
+
+PCA is a popular tool in this area for explore unique variation with redundant variables. But it requires complete data, which we do not have. So I'm using missForest to impute here. This really warrants a deeper dive into the type and severity of missingness, but I'm just going to run with it for now.
+
+```{r}
+#| label: imputation
+#| warning: false
+pacman::p_load(
+  missForest
+)
+
+# Wrangle dataset. Need all numeric vars or factor vars. And can't be tibble
+# Also removing character vars - can't use these in PCA
+dat <- econ_metrics_latest %>%
+  select(where(is.numeric)) %>%
+  as.data.frame()
+# get_str(dat)
+
+# Check missing variables
+# skimr::skim(dat)
+
+# Impute missing variables
+set.seed(42)
+mf_out <- dat %>%
+  missForest(
+    ntree = 200,
+    mtry = 10,
+    verbose = FALSE,
+    variablewise = FALSE
+  )
+
+# Save imputed dataset
+imp <- mf_out$ximp
+
+# Print OOB
+mf_out$OOBerror
+
+```
+
+Out of bag error is shown as normalized root mean square error. Now we can explore how many composite factors is appropriate for the data.
+
+```{r}
+#| label: vss
+#| warning: false
+pacman::p_load(
+  psych
+)
+VSS(imp)
+fa.parallel(imp)
+```
+
+VSS gives a wide range from 2 to 8, MAP shows 7, parallel analysis shows 4. I tend to trust PA the most, so let's go with 4.
+
+```{r}
+#| label: pca
+#| warning: false
+(pca_out <- pca(imp, nfactors = 4))
+
+plot(pca_out$values)
+abline(h = 1)
+
+```
+
+From the scree plot and eigenvalues it looks like the first three composites bring lots of variance, but after that there is no clear elbow. Composite #2 looks like it is influenced by population more than anything, as the variables that are raw counts load the heaviest onto it (number employed, number of farmers markets, etc). Worth noting that it is probably best to use relative metrics here rather than raw numbers. Composite #3 has a curious collection of median earnings variables and per farm variables like acres, income per farm. 

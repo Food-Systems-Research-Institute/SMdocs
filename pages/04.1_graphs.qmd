@@ -3,17 +3,24 @@ title: Exploratory Graphs
 code-link: true
 ---
 
+::: {.callout-warning collapse='true' title='Outdated'}
+This section is outdated and uses an older, smaller dataset. To be reworked.
+:::
+
 ## Introduction
 
 ::: {.callout-note title='Connecticut Planning Regions' collapse='true'}
 The state of Connecticut has operated under an alternative to the traditional county system known as the Councils of Governments since 1960. The U.S. Census Bureau has historically released figures on the county level. In 2022, the Census Bureau formally recognized the state's nine governing regions. Unfortunately as it relates to data management, this means that data from before and after 2022 are challenging to compare at the county level. Some resources for understanding the shift can be found at the [CT Data Collaborative](https://www.ctdata.org/blog/geographic-resources-for-connecticuts-new-county-equivalent-geography).
 :::
 
-This is a first pass at exploratory graphs with the metrics collected so far. We will explore time series trends, marginal distributions, and some bivariate plots. More exploration into correlation will be in the [Correlations](04.2_correlations.qmd) page.
+This is a first pass at exploratory graphs with the metrics collected so far. We will explore time series trends, marginal distributions, and some bivariate plots and correlations.
+
+* Kate Schneider [@schneider2023StateFoodSystems] 
+* Allen and Prosperi [@allen2016ModelingSustainableFood].
 
 ## Time Series
 
-Let's explore metrics that have 5 or more time points. First we will clean them up and give them cleaner names.
+Explore a few metrics that have 5 or more time points at state level.
 
 ```{r}
 #| label: wrangle_ts_data
@@ -69,8 +76,6 @@ dat <- dat %>%
   filter_fips(scope = 'states') %>% 
   left_join(fips_key, by = 'fips')
 ```
-
-Now we can plot a series of six metrics for which we have data for five or more years at the state level. Hover over the joints to see specific values for each state. You can also double click on a state to only show that state on all six graphs.
 
 ```{r}
 #| label: time_series
@@ -150,7 +155,6 @@ There is certainly more to come in terms of time series data.
 
 Taking an exploratory look at the distributions of our variables at the county level. We are only using the latest years available for each metric. Note that y-axes are indepednent 
 
-
 ```{r}
 #| label: distributions
 #| fig-cap: Distributions of all metrics at the county level.
@@ -210,15 +214,15 @@ ggarrange(
 )
 ```
 
-Here are a few things that stick out so far.
+<!-- Here are a few things that stick out so far. -->
 
-* Mean producer age per county centers around 58 years. It would be worth diving more into the producer age demographic pyramid to see what this might look like moving forward.
-* There are disproportionately fewer female producers as compared to male, and women generally earn less than men in both "farming, fishing, and forestry", as well as "food service and preparation". (Some of these axis titles are too long and incomprehensible currently - it is on the to do list)
-* We can get a decent idea that while there are some normal-ish curves, like child food insecurity rate, snapspth, education_prop_bs, etc., many of the distributions better resemble power curves (total chemical expenses, total sales, really anything with totals). 
+<!-- * Mean producer age per county centers around 58 years. It would be worth diving more into the producer age demographic pyramid to see what this might look like moving forward. -->
+<!-- * There are disproportionately fewer female producers as compared to male, and women generally earn less than men in both "farming, fishing, and forestry", as well as "food service and preparation". (Some of these axis titles are too long and incomprehensible currently - it is on the to do list) -->
+<!-- * We can get a decent idea that while there are some normal-ish curves, like child food insecurity rate, snapspth, education_prop_bs, etc., many of the distributions better resemble power curves (total chemical expenses, total sales, really anything with totals).  -->
 
 ## Bivariate Plots
 
-Let's take a closer look at the relationships between a selection of metrics. Bivariate scatter plots with loess smoother lines are shown in the bottom half. The top half shows Pearson correlation coefficients that are colored by the value of the coefficient. Stars are shown when the correlation is significant. The diagonal shows the marginal distributions of each of the variables.
+<!-- Let's take a closer look at the relationships between a selection of metrics. Bivariate scatter plots with loess smoother lines are shown in the bottom half. The top half shows Pearson correlation coefficients that are colored by the value of the coefficient. Stars are shown when the correlation is significant. The diagonal shows the marginal distributions of each of the variables. -->
 
 ```{r}
 #| label: bivariate_plots
@@ -280,4 +284,5 @@ dat_latest %>%
     axisLabels = 'show'
   )
 ```
-There is lots to see here. The thing that sticks out to me is how tightly correlated all the metrics related to income and poverty are (wic, snap, food insecurity, median rent, and education). 
+
+## References

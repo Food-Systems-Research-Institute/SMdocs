@@ -51,7 +51,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../site_libs/quarto-nav/headroom.min.js"></script>
@@ -60,8 +80,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/04.2_correlations.html" rel="next">
-<link href="../pages/03.1_economics.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
 <script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
@@ -178,46 +196,31 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Home</span></a>
   </div>
 </li>
-        <li class="sidebar-item sidebar-item-section">
-      <span class="sidebar-item-text sidebar-link text-start">
- <span class="menu-text">Framework</span></span>
-  </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/02_framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Framework</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/02.1_sm-explorer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SM-Explorer</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
  <span class="menu-text">Dimensions</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">
 <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/03.1_economics.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">Economics</span></a>
-  </div>
-</li>
-      </ul>
-</li>
-        <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
- <span class="menu-text">Analysis</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">
-<li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/04.1_graphs.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Exploratory Graphs</span></a>
-  </div>
-</li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/04.2_correlations.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Correlations</span></a>
   </div>
 </li>
       </ul>
@@ -230,10 +233,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <nav id="TOC" role="doc-toc" class="toc-active"><h2 id="toc-title">On this page</h2>
    
   <ul>
-<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction">Introduction</a></li>
-  <li><a href="#time-series" id="toc-time-series" class="nav-link" data-scroll-target="#time-series">Time Series</a></li>
-  <li><a href="#distributions" id="toc-distributions" class="nav-link" data-scroll-target="#distributions">Distributions</a></li>
-  <li><a href="#bivariate-plots" id="toc-bivariate-plots" class="nav-link" data-scroll-target="#bivariate-plots">Bivariate Plots</a></li>
+<li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#time-series" id="toc-time-series" class="nav-link" data-scroll-target="#time-series"><span class="header-section-number">2</span> Time Series</a></li>
+  <li><a href="#distributions" id="toc-distributions" class="nav-link" data-scroll-target="#distributions"><span class="header-section-number">3</span> Distributions</a></li>
+  <li><a href="#bivariate-plots" id="toc-bivariate-plots" class="nav-link" data-scroll-target="#bivariate-plots"><span class="header-section-number">4</span> Bivariate Plots</a></li>
+  <li><a href="#references" id="toc-references" class="nav-link" data-scroll-target="#references"><span class="header-section-number">5</span> References</a></li>
   </ul></nav>
     </div>
 <!-- main -->
@@ -252,9 +256,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   
 
 
-</header><section id="introduction" class="level2"><h2 class="anchored" data-anchor-id="introduction">Introduction</h2>
-<div class="callout callout-style-default callout-note callout-titled" title="Connecticut Planning Regions">
+</header><div class="callout callout-style-default callout-warning callout-titled" title="Outdated">
 <div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-1-contents" aria-controls="callout-1" aria-expanded="false" aria-label="Toggle callout">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Outdated
+</div>
+<div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
+</div>
+<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div class="callout-body-container callout-body">
+<p>This section is outdated and uses an older, smaller dataset. To be reworked.</p>
+</div>
+</div>
+</div>
+<section id="introduction" class="level2" data-number="1"><h2 data-number="1" class="anchored" data-anchor-id="introduction">
+<span class="header-section-number">1</span> Introduction</h2>
+<div class="callout callout-style-default callout-note callout-titled" title="Connecticut Planning Regions">
+<div class="callout-header d-flex align-content-center" data-bs-toggle="collapse" data-bs-target=".callout-2-contents" aria-controls="callout-2" aria-expanded="false" aria-label="Toggle callout">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
@@ -263,15 +284,20 @@ Connecticut Planning Regions
 </div>
 <div class="callout-btn-toggle d-inline-block border-0 py-1 ps-1 pe-0 float-end"><i class="callout-toggle"></i></div>
 </div>
-<div id="callout-1" class="callout-1-contents callout-collapse collapse">
+<div id="callout-2" class="callout-2-contents callout-collapse collapse">
 <div class="callout-body-container callout-body">
 <p>The state of Connecticut has operated under an alternative to the traditional county system known as the Councils of Governments since 1960. The U.S. Census Bureau has historically released figures on the county level. In 2022, the Census Bureau formally recognized the state’s nine governing regions. Unfortunately as it relates to data management, this means that data from before and after 2022 are challenging to compare at the county level. Some resources for understanding the shift can be found at the <a href="https://www.ctdata.org/blog/geographic-resources-for-connecticuts-new-county-equivalent-geography">CT Data Collaborative</a>.</p>
 </div>
 </div>
 </div>
-<p>This is a first pass at exploratory graphs with the metrics collected so far. We will explore time series trends, marginal distributions, and some bivariate plots. More exploration into correlation will be in the <a href="../pages/04.2_correlations.html">Correlations</a> page.</p>
-</section><section id="time-series" class="level2"><h2 class="anchored" data-anchor-id="time-series">Time Series</h2>
-<p>Let’s explore metrics that have 5 or more time points. First we will clean them up and give them cleaner names.</p>
+<p>This is a first pass at exploratory graphs with the metrics collected so far. We will explore time series trends, marginal distributions, and some bivariate plots and correlations.</p>
+<ul>
+<li>Kate Schneider <span class="citation" data-cites="schneider2023StateFoodSystems">(<a href="#ref-schneider2023StateFoodSystems" role="doc-biblioref">Schneider et al. 2023</a>)</span>
+</li>
+<li>Allen and Prosperi <span class="citation" data-cites="allen2016ModelingSustainableFood">(<a href="#ref-allen2016ModelingSustainableFood" role="doc-biblioref">Allen and Prosperi 2016</a>)</span>.</li>
+</ul></section><section id="time-series" class="level2" data-number="2"><h2 data-number="2" class="anchored" data-anchor-id="time-series">
+<span class="header-section-number">2</span> Time Series</h2>
+<p>Explore a few metrics that have 5 or more time points at state level.</p>
 <div class="cell">
 <details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span></span>
 <span>  <span class="va">dplyr</span>,</span>
@@ -324,7 +350,6 @@ Connecticut Planning Regions
 <span>  <span class="fu">left_join</span><span class="op">(</span><span class="va">fips_key</span>, by <span class="op">=</span> <span class="st">'fips'</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>Now we can plot a series of six metrics for which we have data for five or more years at the state level. Hover over the joints to see specific values for each state. You can also double click on a state to only show that state on all six graphs.</p>
 <div class="cell">
 <details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Mapping over our time series variables to make a list of plots</span></span>
 <span><span class="va">plots</span> <span class="op">&lt;-</span> <span class="fu">map</span><span class="op">(</span><span class="fl">1</span><span class="op">:</span><span class="fu"><a href="https://rdrr.io/r/base/nrow.html">nrow</a></span><span class="op">(</span><span class="va">ts_vars</span><span class="op">)</span>, \<span class="op">(</span><span class="va">row</span><span class="op">)</span> <span class="op">{</span></span>
@@ -397,7 +422,8 @@ Connecticut Planning Regions
 </div>
 </div>
 <p>There is certainly more to come in terms of time series data.</p>
-</section><section id="distributions" class="level2"><h2 class="anchored" data-anchor-id="distributions">Distributions</h2>
+</section><section id="distributions" class="level2" data-number="3"><h2 data-number="3" class="anchored" data-anchor-id="distributions">
+<span class="header-section-number">3</span> Distributions</h2>
 <p>Taking an exploratory look at the distributions of our variables at the county level. We are only using the latest years available for each metric. Note that y-axes are indepednent</p>
 <div class="cell" data-layout-align="center" data-code-annotations="select">
 <details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span></span>
@@ -455,13 +481,13 @@ Connecticut Planning Regions
 </div>
 </div>
 </div>
-<p>Here are a few things that stick out so far.</p>
-<ul>
-<li>Mean producer age per county centers around 58 years. It would be worth diving more into the producer age demographic pyramid to see what this might look like moving forward.</li>
-<li>There are disproportionately fewer female producers as compared to male, and women generally earn less than men in both “farming, fishing, and forestry”, as well as “food service and preparation”. (Some of these axis titles are too long and incomprehensible currently - it is on the to do list)</li>
-<li>We can get a decent idea that while there are some normal-ish curves, like child food insecurity rate, snapspth, education_prop_bs, etc., many of the distributions better resemble power curves (total chemical expenses, total sales, really anything with totals).</li>
-</ul></section><section id="bivariate-plots" class="level2"><h2 class="anchored" data-anchor-id="bivariate-plots">Bivariate Plots</h2>
-<p>Let’s take a closer look at the relationships between a selection of metrics. Bivariate scatter plots with loess smoother lines are shown in the bottom half. The top half shows Pearson correlation coefficients that are colored by the value of the coefficient. Stars are shown when the correlation is significant. The diagonal shows the marginal distributions of each of the variables.</p>
+<!-- Here are a few things that stick out so far. -->
+<!-- * Mean producer age per county centers around 58 years. It would be worth diving more into the producer age demographic pyramid to see what this might look like moving forward. -->
+<!-- * There are disproportionately fewer female producers as compared to male, and women generally earn less than men in both "farming, fishing, and forestry", as well as "food service and preparation". (Some of these axis titles are too long and incomprehensible currently - it is on the to do list) -->
+<!-- * We can get a decent idea that while there are some normal-ish curves, like child food insecurity rate, snapspth, education_prop_bs, etc., many of the distributions better resemble power curves (total chemical expenses, total sales, really anything with totals).  -->
+</section><section id="bivariate-plots" class="level2" data-number="4"><h2 data-number="4" class="anchored" data-anchor-id="bivariate-plots">
+<span class="header-section-number">4</span> Bivariate Plots</h2>
+<!-- Let's take a closer look at the relationships between a selection of metrics. Bivariate scatter plots with loess smoother lines are shown in the bottom half. The top half shows Pearson correlation coefficients that are colored by the value of the coefficient. Stars are shown when the correlation is significant. The diagonal shows the marginal distributions of each of the variables. -->
 <div class="cell" data-layout-align="center">
 <details class="code-fold"><summary>Code</summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu">pacman</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/pacman/man/p_load.html">p_load</a></span><span class="op">(</span></span>
 <span>  <span class="va">GGally</span></span>
@@ -521,10 +547,19 @@ Connecticut Planning Regions
 </div>
 </div>
 </div>
-<p>There is lots to see here. The thing that sticks out to me is how tightly correlated all the metrics related to income and poverty are (wic, snap, food insecurity, median rent, and education).</p>
+</section><section id="references" class="level2" data-number="5">
 
 
-</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
+
+</section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">
+5 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-allen2016ModelingSustainableFood" class="csl-entry" role="listitem">
+Allen, Thomas, and Paolo Prosperi. 2016. <span>“Modeling <span>Sustainable Food Systems</span>.”</span> <em>Environmental Management</em> 57 (5): 956–75. <a href="https://doi.org/10.1007/s00267-016-0664-8">https://doi.org/10.1007/s00267-016-0664-8</a>.
+</div>
+<div id="ref-schneider2023StateFoodSystems" class="csl-entry" role="listitem">
+Schneider, Kate R., Jessica Fanzo, Lawrence Haddad, Mario Herrero, Jose Rosero Moncayo, Anna Herforth, Roseline Remans, et al. 2023. <span>“The State of Food Systems Worldwide in the Countdown to 2030.”</span> <em>Nature Food</em> 4 (12): 1090–110. <a href="https://doi.org/10.1038/s43016-023-00885-9">https://doi.org/10.1038/s43016-023-00885-9</a>.
+</div>
+</div></section></div></main><!-- /main --><script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
     const mode = bsSheetEl.getAttribute("data-mode");
@@ -616,7 +651,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
   }
     var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
     var mailtoRegex = new RegExp(/^mailto:/);
-      var filterRegex = new RegExp("https:\/\/christopher-donovan\.quarto\.pub\/food-system-sustainability-metrics");
+      var filterRegex = new RegExp('/' + window.location.host + '/');
     var isInternal = (href) => {
         return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
     }
@@ -948,17 +983,7 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
     }
   }
 });
-</script><nav class="page-navigation"><div class="nav-page nav-page-previous">
-      <a href="../pages/03.1_economics.html" class="pagination-link" aria-label="Economics">
-        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Economics</span>
-      </a>          
-  </div>
-  <div class="nav-page nav-page-next">
-      <a href="../pages/04.2_correlations.html" class="pagination-link" aria-label="Correlations">
-        <span class="nav-page-text">Correlations</span> <i class="bi bi-arrow-right-short"></i>
-      </a>
-  </div>
-</nav>
+</script>
 </div> <!-- /content -->
 
 
