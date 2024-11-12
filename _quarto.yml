@@ -10,12 +10,12 @@ website:
   page-navigation: true
   bread-crumbs: false
   back-to-top-navigation: true
-  # repo-url: https://github.com/quarto-dev/quarto-demo
-  announcement:
-    icon: info-circle
-    content: "This is a work in progress - all content and analyses are preliminary."
-    dismissable: true
-    position: below-navbar
+  repo-url: https://github.com/quarto-dev/quarto-demo
+  # announcement:
+  #   icon: info-circle
+  #   content: "This is a work in progress - all content and analyses are preliminary."
+  #   dismissable: true
+  #   position: below-navbar
   navbar:
     logo: images/uvm_logo.png
     logo-href: https://www.uvm.edu/cals/food-systems-research
@@ -31,7 +31,7 @@ website:
         menu:
           - text: Source Code
             href: https://github.com/Food-Systems-Research-Center/sm-docs
-          - text: FSRC GitHUb
+          - text: FSRC GitHub
             href: https://github.com/Food-Systems-Research-Center
   sidebar:
     style: docked
@@ -47,20 +47,11 @@ website:
         contents:
           - text: Economics
             href: pages/03.1_economics.qmd
-      # - section: Exploratory Analysis
-        # contents:
-          # - text: 'Exploratory Graphs'
-            # href: pages/04.1_graphs.qmd
-          # - text: 'Correlations'
-            # href: pages/04.2_correlations.qmd
-          # - text: 'Principal Components'
-            # href: pages/04.3_pca.qmd
-          # - text: 'Regression'
-            # href: pages/04.4_regression.qmd
 format:
   html:
     page-layout: article 
-    theme: sandstone
+    # theme: sandstone
+    theme: custom_theme.scss
     fig-align: left
     css: styles.css
     toc: true
@@ -83,3 +74,4 @@ bibliography: fsrc.bib
 execute:
   warning: false
   cache: true
+

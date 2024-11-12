@@ -12,7 +12,7 @@ date: today
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
-The Sustainability Metrics project, as well as this site itself, are both works in progress. All data and analyses shown here are preliminary. If you have any questions, comments, or suggestions, feel free to reach out to Chris at [christopher.donovan@uvm.edu](mailto:christopher.donovan@uvm.edu).
+The Sustainability Metrics project, as well as this site itself, are works in progress. All data and analyses shown here are preliminary. If you have any questions, comments, or suggestions about this site or the accompanying Shiny app, feel free to reach out to Chris at [christopher.donovan@uvm.edu](mailto:christopher.donovan@uvm.edu).
 :::
 
 ## Introduction {#sec-intro}
@@ -24,16 +24,20 @@ The Sustainability Metrics project, as well as this site itself, are both works 
 
 Resilient food systems are increasingly recognized as essential, not only in meeting human needs, but in doing so within planetary bounds [@conijnCanOurGlobal2018]. Approximately 42% of world's population depend on agriculture for employment, which is a challenging endeavor in the face of farm consolidation, changing consumption patterns, and climate change [@gillerFutureFarmingWho2021; @aznar-sanchezWorldwideResearchTrends2019]. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years [@crippaFoodSystemsAre2021; @ortiz-bobeaAnthropogenicClimateChange2021].
 
-Monitoring and adaptively managing the sustainability of food systems is thus vital. However, there is little consensus on how to define, let alone measure food system sustainability [@allen2016ModelingSustainableFood; @bene2019GlobalMapIndicators]. And while there is an abundance of research at the global level [@bathaei2023SystematicReviewAgricultural; @chaudhary2018MultiindicatorSustainabilityAssessment], there exists a conspicuous gap in understanding at the local, regional, or landscape level [@daleLandscapePerspectiveSustainability2012].
+Monitoring and adaptively managing the sustainability of food systems is thus vital. However, there is little consensus on how to define, let alone measure food system sustainability [@allen2016ModelingSustainableFood; @bene2019GlobalMapIndicators]. And while there is an abundance of research at the global level [@bathaei2023SystematicReviewAgricultural; @chaudhary2018MultiindicatorSustainabilityAssessment], there exist gaps in understanding at the local, regional, and landscape levels [@daleLandscapePerspectiveSustainability2012].
+
+## Sustainability Metrics
 
 <div style="float: left; margin-right: 1em; margin-bottom: 1em; margin-top: 1em; width: 40%;">
   <img src="../images/harvest_small.png" alt="description" style="width: 100%;">
   <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Spread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRC.</div>
 </div>
 
-The Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The work is led by the Food Systems Research Center at the University of Vermont in partnership with the USDA Agricultural Research Service in Burlington, Vermont. Primary research in developing and measuring indicators of sustainability is ongoing. For now, what you will find here is a growing collection of secondary data, visualizations, and preliminary analyses to help inform the project as well as the public on the sustainability of the New England food system.
+The Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The framework could be used to monitor sustainability over time and inform interventions at the policy and farm levels, creating a healthier and more resilient food system for both social and ecological ends. 
 
-Metadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS [Food and Agriculture Mapper and Explorer](https://www.ams.usda.gov/services/local-regional/research-publications/fame) in particular, as many of the data shown here were cleaned and compiled in their data warehouse. 
+The project is led by the Food Systems Research Center at the University of Vermont in partnership with, and funded by, the [USDA ARS Food Systems Research Unit](https://www.ars.usda.gov/northeast-area/burlington-vermont/food-systems-research-unit/) in Burlington, Vermont. Five teams of researchers and numerous community partners are currently conducting primary research on the development and measurement of indicators for food system sustainability. You can find more information about this work at the [UVM FSRC Sustainability Metrics](https://www.uvm.edu/cals/food-systems-research/sustainability-metrics-project) website. For now, what you will find here is a growing collection of secondary data, visualizations, and exploratory analyses to help support the project.
+
+Metadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS [Food and Agriculture Mapper and Explorer](https://www.ams.usda.gov/services/local-regional/research-publications/fame) in particular, as many of the data shown here were cleaned and compiled in their data warehouse. Considerable inspiration was also taken from the [Food Systems Dashboard](https://www.foodsystemsdashboard.org/), developed by the Global Alliance for Improved Nutrition. 
 
 ## About FSRC
 
@@ -43,17 +47,7 @@ Rooted in the belief that no one group can find the answers alone, FSRC empowers
 
 FSRC considers the relationship of food systems across scales from local to global and is a partnership between UVM and the U.S. Department of Agriculture (USDA) Agricultural Research Service (ARS). FSRC’s transdisciplinary approach prioritizes research that studies food systems as a whole, including the networks of people, institutions, physical infrastructure, and natural resources through which food is grown, processed, distributed, sold, prepared, and eaten. 
 
-<!-- ## SM Explorer
-
-::: {.callout-note collapse='false' title='Caution'}
-Please be aware that the SM Explorer is early on in development. It currently includes limited features, limited metrics, and you will find more than a few bugs and missing data if you poke around enough. 
-:::
-
-While there are some client-side interactive plots on this site, the server-side interactions are hosted on a separate Shiny App. They could be combined into this doc, but I think it makes for a better user experience to have it separate, and it is way more approachable logistically as well. 
-
-[![](../images/sme.png){width=60% fig-align="center"}](https://chris-donovan.shinyapps.io/SMexplorer/)
-
-So, here is a link to the [SM Explorer Shiny App](https://chris-donovan.shinyapps.io/SMexplorer/). You can also just click on the image above. The vision here is to have an interactive way to explore spatial data, either at the county or state level. As I work through wrangling data, I plan to include proper spatial layers (points, rasters) rather than just county level data. I will also add an interactive bivariate plot system where you can explore relationships between metrics, much like what is available at the [Food Systems Dashboard "Compare" feature](https://www.foodsystemsdashboard.org/compare). In addition, having a way to explore where each county or state sits as compared to others would be nice, much like the [FSD "Profile" and "Indicators"](https://www.foodsystemsdashboard.org/countries/bhs) pages. -->
+Learn more about us at the [Food Systems Research Center](https://www.uvm.edu/cals/food-systems-research) website.
 
 ## License
 

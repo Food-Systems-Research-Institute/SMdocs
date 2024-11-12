@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Chris Donovan">
-<meta name="dcterms.date" content="2024-11-11">
+<meta name="dcterms.date" content="2024-11-12">
 
 <title>Sustainability Metrics – Food Systems Research Center</title>
 <style>
@@ -135,7 +135,7 @@ div.csl-indent {
           </li>
           <li>
             <a class="dropdown-item quarto-navbar-tools-item" href="https://github.com/Food-Systems-Research-Center">
-            FSRC GitHUb
+            FSRC GitHub
             </a>
           </li>
       </ul>
@@ -157,9 +157,6 @@ div.csl-indent {
       </button>
     </div>
   </nav>
-  <div id="quarto-announcement" data-announcement-id="fcf8e680f83491677f509a384240eb60" class="alert alert-primary hidden"><i class="bi bi-info-circle quarto-announcement-icon"></i><div class="quarto-announcement-content">
-<p>This is a work in progress - all content and analyses are preliminary.</p>
-</div><i class="bi bi-x-lg quarto-announcement-action"></i></div>
 </header>
 <!-- content -->
 <div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
@@ -218,9 +215,10 @@ div.csl-indent {
    
   <ul>
   <li><a href="#sec-intro" id="toc-sec-intro" class="nav-link active" data-scroll-target="#sec-intro"><span class="header-section-number">1</span> Introduction</a></li>
-  <li><a href="#about-fsrc" id="toc-about-fsrc" class="nav-link" data-scroll-target="#about-fsrc"><span class="header-section-number">2</span> About FSRC</a></li>
-  <li><a href="#license" id="toc-license" class="nav-link" data-scroll-target="#license"><span class="header-section-number">3</span> License</a></li>
-  <li><a href="#sec-references" id="toc-sec-references" class="nav-link" data-scroll-target="#sec-references"><span class="header-section-number">4</span> References</a></li>
+  <li><a href="#sustainability-metrics" id="toc-sustainability-metrics" class="nav-link" data-scroll-target="#sustainability-metrics"><span class="header-section-number">2</span> Sustainability Metrics</a></li>
+  <li><a href="#about-fsrc" id="toc-about-fsrc" class="nav-link" data-scroll-target="#about-fsrc"><span class="header-section-number">3</span> About FSRC</a></li>
+  <li><a href="#license" id="toc-license" class="nav-link" data-scroll-target="#license"><span class="header-section-number">4</span> License</a></li>
+  <li><a href="#sec-references" id="toc-sec-references" class="nav-link" data-scroll-target="#sec-references"><span class="header-section-number">5</span> References</a></li>
   </ul>
 </nav>
     </div>
@@ -255,7 +253,7 @@ div.csl-indent {
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">November 11, 2024</p>
+      <p class="date">November 12, 2024</p>
     </div>
   </div>
   
@@ -279,7 +277,7 @@ Caution
 </div>
 <div id="callout-1" class="callout-1-contents callout-collapse collapse show">
 <div class="callout-body-container callout-body">
-<p>The Sustainability Metrics project, as well as this site itself, are both works in progress. All data and analyses shown here are preliminary. If you have any questions, comments, or suggestions, feel free to reach out to Chris at <a href="mailto:christopher.donovan@uvm.edu">christopher.donovan@uvm.edu</a>.</p>
+<p>The Sustainability Metrics project, as well as this site itself, are works in progress. All data and analyses shown here are preliminary. If you have any questions, comments, or suggestions about this site or the accompanying Shiny app, feel free to reach out to Chris at <a href="mailto:christopher.donovan@uvm.edu">christopher.donovan@uvm.edu</a>.</p>
 </div>
 </div>
 </div>
@@ -292,35 +290,29 @@ Intervale Center, Burlington, Vermont. Copyright: Sally McCay, UVM Photo.
 </div>
 </div>
 <p>Resilient food systems are increasingly recognized as essential, not only in meeting human needs, but in doing so within planetary bounds <span class="citation" data-cites="conijnCanOurGlobal2018">(<a href="#ref-conijnCanOurGlobal2018" role="doc-biblioref">Conijn et al. 2018</a>)</span>. Approximately 42% of world’s population depend on agriculture for employment, which is a challenging endeavor in the face of farm consolidation, changing consumption patterns, and climate change <span class="citation" data-cites="gillerFutureFarmingWho2021 aznar-sanchezWorldwideResearchTrends2019">(<a href="#ref-gillerFutureFarmingWho2021" role="doc-biblioref">Giller et al. 2021</a>; <a href="#ref-aznar-sanchezWorldwideResearchTrends2019" role="doc-biblioref">Aznar-Sánchez et al. 2019</a>)</span>. Food systems themselves are responsible for one-third of greenhouse gas emissions, while anthropogenic climate change has reduced agricultural output by 21% in the last 60 years <span class="citation" data-cites="crippaFoodSystemsAre2021 ortiz-bobeaAnthropogenicClimateChange2021">(<a href="#ref-crippaFoodSystemsAre2021" role="doc-biblioref">Crippa et al. 2021</a>; <a href="#ref-ortiz-bobeaAnthropogenicClimateChange2021" role="doc-biblioref">Ortiz-Bobea et al. 2021</a>)</span>.</p>
-<p>Monitoring and adaptively managing the sustainability of food systems is thus vital. However, there is little consensus on how to define, let alone measure food system sustainability <span class="citation" data-cites="allen2016ModelingSustainableFood bene2019GlobalMapIndicators">(<a href="#ref-allen2016ModelingSustainableFood" role="doc-biblioref">Allen and Prosperi 2016</a>; <a href="#ref-bene2019GlobalMapIndicators" role="doc-biblioref">Béné et al. 2019</a>)</span>. And while there is an abundance of research at the global level <span class="citation" data-cites="bathaei2023SystematicReviewAgricultural chaudhary2018MultiindicatorSustainabilityAssessment">(<a href="#ref-bathaei2023SystematicReviewAgricultural" role="doc-biblioref">Bathaei and Štreimikienė 2023</a>; <a href="#ref-chaudhary2018MultiindicatorSustainabilityAssessment" role="doc-biblioref">Chaudhary, Gustafson, and Mathys 2018</a>)</span>, there exists a conspicuous gap in understanding at the local, regional, or landscape level <span class="citation" data-cites="daleLandscapePerspectiveSustainability2012">(<a href="#ref-daleLandscapePerspectiveSustainability2012" role="doc-biblioref">Dale et al. 2012</a>)</span>.</p>
+<p>Monitoring and adaptively managing the sustainability of food systems is thus vital. However, there is little consensus on how to define, let alone measure food system sustainability <span class="citation" data-cites="allen2016ModelingSustainableFood bene2019GlobalMapIndicators">(<a href="#ref-allen2016ModelingSustainableFood" role="doc-biblioref">Allen and Prosperi 2016</a>; <a href="#ref-bene2019GlobalMapIndicators" role="doc-biblioref">Béné et al. 2019</a>)</span>. And while there is an abundance of research at the global level <span class="citation" data-cites="bathaei2023SystematicReviewAgricultural chaudhary2018MultiindicatorSustainabilityAssessment">(<a href="#ref-bathaei2023SystematicReviewAgricultural" role="doc-biblioref">Bathaei and Štreimikienė 2023</a>; <a href="#ref-chaudhary2018MultiindicatorSustainabilityAssessment" role="doc-biblioref">Chaudhary, Gustafson, and Mathys 2018</a>)</span>, there exist gaps in understanding at the local, regional, and landscape levels <span class="citation" data-cites="daleLandscapePerspectiveSustainability2012">(<a href="#ref-daleLandscapePerspectiveSustainability2012" role="doc-biblioref">Dale et al. 2012</a>)</span>.</p>
+</section>
+<section id="sustainability-metrics" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sustainability-metrics"><span class="header-section-number">2</span> Sustainability Metrics</h2>
 <div style="float: left; margin-right: 1em; margin-bottom: 1em; margin-top: 1em; width: 40%;">
 <img src="../images/harvest_small.png" alt="description" style="width: 100%;">
 <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">
 Spread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRC.
 </div>
 </div>
-<p>The Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The work is led by the Food Systems Research Center at the University of Vermont in partnership with the USDA Agricultural Research Service in Burlington, Vermont. Primary research in developing and measuring indicators of sustainability is ongoing. For now, what you will find here is a growing collection of secondary data, visualizations, and preliminary analyses to help inform the project as well as the public on the sustainability of the New England food system.</p>
-<p>Metadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS <a href="https://www.ams.usda.gov/services/local-regional/research-publications/fame">Food and Agriculture Mapper and Explorer</a> in particular, as many of the data shown here were cleaned and compiled in their data warehouse.</p>
+<p>The Sustainability Metrics project is an effort to develop both the conceptual and methodological frameworks to define and measure regional food system sustainability in New England. The framework could be used to monitor sustainability over time and inform interventions at the policy and farm levels, creating a healthier and more resilient food system for both social and ecological ends.</p>
+<p>The project is led by the Food Systems Research Center at the University of Vermont in partnership with, and funded by, the <a href="https://www.ars.usda.gov/northeast-area/burlington-vermont/food-systems-research-unit/">USDA ARS Food Systems Research Unit</a> in Burlington, Vermont. Five teams of researchers and numerous community partners are currently conducting primary research on the development and measurement of indicators for food system sustainability. You can find more information about this work at the <a href="https://www.uvm.edu/cals/food-systems-research/sustainability-metrics-project">UVM FSRC Sustainability Metrics</a> website. For now, what you will find here is a growing collection of secondary data, visualizations, and exploratory analyses to help support the project.</p>
+<p>Metadata and citations will be provided throughout the document, but it is worth appreciating the work of the folks at USDA AMS <a href="https://www.ams.usda.gov/services/local-regional/research-publications/fame">Food and Agriculture Mapper and Explorer</a> in particular, as many of the data shown here were cleaned and compiled in their data warehouse. Considerable inspiration was also taken from the <a href="https://www.foodsystemsdashboard.org/">Food Systems Dashboard</a>, developed by the Global Alliance for Improved Nutrition.</p>
 </section>
-<section id="about-fsrc" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="about-fsrc"><span class="header-section-number">2</span> About FSRC</h2>
+<section id="about-fsrc" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="about-fsrc"><span class="header-section-number">3</span> About FSRC</h2>
 <p>The Food Systems Research Center at the University of Vermont is transforming the research landscape by funding collaborative projects that put people and the planet first, break down traditional academic silos and are integrated with and responsive to the needs of the communities we serve, including decision-makers, farmers, and food systems actors.</p>
 <p>Rooted in the belief that no one group can find the answers alone, FSRC empowers researchers to work together across disciplines to address critical issues like soil health, food security, and climate resilience. Instead of funding research that leads to short-term fixes, our commitment is to give researchers the freedom, resources, and time they need to do relevant research that will inform policies, practices, and programs that will long outlast their work.</p>
 <p>FSRC considers the relationship of food systems across scales from local to global and is a partnership between UVM and the U.S. Department of Agriculture (USDA) Agricultural Research Service (ARS). FSRC’s transdisciplinary approach prioritizes research that studies food systems as a whole, including the networks of people, institutions, physical infrastructure, and natural resources through which food is grown, processed, distributed, sold, prepared, and eaten.</p>
-<!-- ## SM Explorer
-
-::: {.callout-note collapse='false' title='Caution'}
-Please be aware that the SM Explorer is early on in development. It currently includes limited features, limited metrics, and you will find more than a few bugs and missing data if you poke around enough. 
-:::
-
-While there are some client-side interactive plots on this site, the server-side interactions are hosted on a separate Shiny App. They could be combined into this doc, but I think it makes for a better user experience to have it separate, and it is way more approachable logistically as well. 
-
-[![](../images/sme.png){width=60% fig-align="center"}](https://chris-donovan.shinyapps.io/SMexplorer/)
-
-So, here is a link to the [SM Explorer Shiny App](https://chris-donovan.shinyapps.io/SMexplorer/). You can also just click on the image above. The vision here is to have an interactive way to explore spatial data, either at the county or state level. As I work through wrangling data, I plan to include proper spatial layers (points, rasters) rather than just county level data. I will also add an interactive bivariate plot system where you can explore relationships between metrics, much like what is available at the [Food Systems Dashboard "Compare" feature](https://www.foodsystemsdashboard.org/compare). In addition, having a way to explore where each county or state sits as compared to others would be nice, much like the [FSD "Profile" and "Indicators"](https://www.foodsystemsdashboard.org/countries/bhs) pages. -->
+<p>Learn more about us at the <a href="https://www.uvm.edu/cals/food-systems-research">Food Systems Research Center</a> website.</p>
 </section>
-<section id="license" class="level2" data-number="3">
-<h2 data-number="3" class="anchored" data-anchor-id="license"><span class="header-section-number">3</span> License</h2>
+<section id="license" class="level2" data-number="4">
+<h2 data-number="4" class="anchored" data-anchor-id="license"><span class="header-section-number">4</span> License</h2>
 <div style="display: flex; align-items: center;">
 <p><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> <img alt="Creative Commons Licence" style="border-width:0; margin-right: 10px;" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png"> </a> <span> This work is licensed under the <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License</a>. </span></p>
 </div>
@@ -328,14 +320,14 @@ So, here is a link to the [SM Explorer Shiny App](https://chris-donovan.shinyapp
 <p><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/"> <img alt="Creative Commons Licence" style="border-width:0; margin-right: 10px;" src="https://www.gnu.org/graphics/gplv3-or-later-sm.png"> </a> <span> The code is licensed under the <a rel="license" href="https://www.gnu.org/licenses/gpl-3.0.en.html#license-text">GNU General Public License v3</a>. </span></p>
 </div>
 </section>
-<section id="sec-references" class="level2" data-number="4">
+<section id="sec-references" class="level2" data-number="5">
 
 
 
 
 </section>
 
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">4 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">5 References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
 <div id="ref-allen2016ModelingSustainableFood" class="csl-entry" role="listitem">
 Allen, Thomas, and Paolo Prosperi. 2016. <span>“Modeling <span>Sustainable Food Systems</span>.”</span> <em>Environmental Management</em> 57 (5): 956–75. <a href="https://doi.org/10.1007/s00267-016-0664-8">https://doi.org/10.1007/s00267-016-0664-8</a>.
 </div>
