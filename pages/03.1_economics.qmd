@@ -7,7 +7,7 @@ fig-responsive: false
 
 Shown in the diagram below are a total of 45 indicators within the economics dimension. Indices are labeled within the diagram. 17 indicators are both included in the Wiltshire et al. framework as well as being studied by one or more teams (red), 9 are included in the Wiltshire et al. but not currently belong studied (green), while 19 were not in the original framework, but have been added by one or more teams (blue).
 
-The points beside each indicator name represent the number of secondary data metrics that have been aggregated for each indicator. Sources include USDA NASS, BLS, ERS, Census Bureau, and others. The quality and appropiateness of these metrics vary widely - I do not mean to suggest that having more of them means an indicator is more accurately better represented. For more information on the data sources, head to the @sec-metadata section below.
+The points beside each indicator name represent the number of secondary data metrics that have been aggregated for each indicator. Sources include USDA NASS, BLS, ERS, Census Bureau, and others. The quality and appropiateness of these metrics vary widely - I do not mean to suggest that having more of them means an indicator is more accurately better represented. For more information on the data sources, head to @sec-metadata below.
 
 One other point to note here is that I removed several dozen metrics from BLS wage labor data broken down by NAICS industry code so as not to inflate that indicator relative to the others.
 
@@ -345,7 +345,7 @@ htmltools::browsable(
 
 ## Data Table
 
-This is another table that includes values. It takes some more legwork to navigate through years and counties, but all the secondary data is included here. Again, use the button to download the filtered view of the table.
+This is another table that includes values. It takes some more legwork to navigate through years and counties, but all the secondary data collected for the economics dimension so far is included here. Again, use the button to download the filtered view of the table.
 
 ```{r}
 #| label: metric_table
@@ -559,7 +559,7 @@ ggarrange(
 
 ## Correlation Heatmap
 
-Throwing those same variables into a correlation matrix. Hover to see variable names, Pearson correlationm, and p-values.
+Throwing those same variables into a correlation matrix. Hover to see variable names, Pearson correlation, and p-values.
 
 ```{r}
 #| label: correlation_plot
@@ -633,7 +633,9 @@ ggplotly(
 
 ## PCA
 
-PCA is a popular tool in this area for explore unique variation with redundant variables. But it requires complete data, which we do not have. So I'm using missForest to impute here. This really warrants a deeper dive into the type and severity of missingness, but I'm just going to run with it for now.
+PCA is a popular tool in this area for exploring unique variation with many collinear variables. It is a way to reduce the dimensionality of the data into fewer, more interpretable principal components.
+
+It also requires complete data, which we do not have. So we either have to run a probabililistic PCA or run imputations. I'm using a random forest algorithm to impute data here as a first pass [@stekhovenMissForestNonparametricMissing2012a]. This really warrants a deeper dive into the type and severity of missingness though, and PPCA is likely the better option in the end.  
 
 ```{r}
 #| label: imputation
@@ -694,4 +696,14 @@ abline(h = 1)
 
 ```
 
-From the scree plot and eigenvalues it looks like the first three composites bring lots of variance, but after that there is no clear elbow. Composite #2 looks like it is influenced by population more than anything, as the variables that are raw counts load the heaviest onto it (number employed, number of farmers markets, etc). Worth noting that it is probably best to use relative metrics here rather than raw numbers. Composite #3 has a curious collection of median earnings variables and per farm variables like acres, income per farm. 
+From the scree plot and eigenvalues it looks like the first three components bear lots of unique variance, but after that there is no clear elbow where a qualitative decision can be made to choose a certain number of components. The Kaiser-Guttman rule suggests keeping any compents with an eigenvalue > 1 (at the horizontal line), but we can see here that this is a rather dubious distinction. 
+
+If we look at the output from the PCA call, we can see how closely each variable (row) correlates with each component (columns 1-4). The variables most associated with Component #1 are the farm labor variables - numbers of workers, labor expenses, etc. They also tend to be raw figures, and probably have more to do with population than anything else. 
+Component #2 is made up mostly of generic employment figures - total civilian labor force, total employed, total unemployed. These are not specific to food systems.
+Component #3 has a curious collection of median earnings variables and 'per farm' variables like acres per farm, income per farm, and local and direct-to-consumer sales. 
+Component #4 does not represent much unique variance, and loooks like a grab bag of variables. 
+
+A couple of early takeaways here are that the raw figures that are tied to population probably shouldn't be mixed with other variables like proportions. We could try normalizing all the variables so that raw variables are not disproportionately weighted. But it might make more sense to avoid raw counts and dollar amounts entirely.
+
+## References
+
