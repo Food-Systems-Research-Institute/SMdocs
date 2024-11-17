@@ -10,12 +10,7 @@ website:
   page-navigation: true
   bread-crumbs: false
   back-to-top-navigation: true
-  repo-url: https://github.com/quarto-dev/quarto-demo
-  # announcement:
-  #   icon: info-circle
-  #   content: "This is a work in progress - all content and analyses are preliminary."
-  #   dismissable: true
-  #   position: below-navbar
+  repo-url: https://github.com/Food-Systems-Research-Center/sm-docs
   navbar:
     logo: images/uvm_logo.png
     logo-href: https://www.uvm.edu/cals/food-systems-research
@@ -34,19 +29,23 @@ website:
           - text: FSRC GitHub
             href: https://github.com/Food-Systems-Research-Center
   sidebar:
-    style: docked
-    search: true
+    title: "Table of Contents"
+    style: "docked"
+    # search: true
     contents:
       - text: Home
         href: pages/01_home.qmd
       - text: Framework
         href: pages/02_framework.qmd
       - text: SM-Explorer
-        href: pages/02.1_sm-explorer.qmd
+        href: pages/03_sm-explorer.qmd
       - section: Dimensions
         contents:
           - text: Economics
-            href: pages/03.1_economics.qmd
+            href: pages/04.1_economics.qmd
+          - text: Environment
+            href: pages/04.2_environment.qmd
+
 format:
   html:
     page-layout: article 
@@ -55,6 +54,8 @@ format:
     fig-align: left
     css: styles.css
     toc: true
+    toc-title: "On This Page"
+    toc-location: right
     toc-depth: 3
     number-sections: true
     number-depth: 2
@@ -63,10 +64,9 @@ format:
       body-width: 900px
       sidebar-width: 200px
       margin-width: 200px
-    # mainfont: Garamond
+    mainfont: Roboto
     smooth-scroll: true
     link-external-newwindow: true
-    # linkcolor: DarkOliveGreen
     title-block-style: default
 
 bibliography: fsrc.bib

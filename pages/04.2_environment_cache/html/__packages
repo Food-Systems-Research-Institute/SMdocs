@@ -1,0 +1,11 @@
+dplyr
+conflicted
+projecter
+reactable
+stringr
+htmltools
+mapview
+sf
+viridisLite
+abind
+stars

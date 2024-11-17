@@ -24,23 +24,22 @@ fips_key <- readRDS('data/fips_key.rds')
 
 
 filter_fips <- function(df, 
-                        fips_col = 'fips',
-                        scope = c('all', 'new', 'old', 'states', 'us')) {
-  
-  # Load fips key to filter df
-  fips_key <- readRDS('data/fips_key.rds')
+                        scope = c('all', 'counties', 'new', 'old', 'states', 'us'),
+                        fips_col = 'fips') {
   
   # Match to one of arguments if it is a short version
   scope <- match.arg(scope)
   
   # Filter to set of fips numbers based on scope
   if (scope == 'all') {
+    out <- df %>% 
+      dplyr::filter(.data[[fips_col]] %in% fips_key$fips)
+  } else if (scope == 'counties') {
     subset <- fips_key %>% 
       dplyr::filter(str_length(fips) == 5) %>% 
       pull(fips)
     out <- df %>% 
       dplyr::filter(.data[[fips_col]] %in% subset)
-    
   } else if (scope == 'new') {
     subset <- fips_key %>% 
       dplyr::filter(
