@@ -10,7 +10,7 @@ execute:
 </div>
 </div> -->
 
-Just including some visualizations of the framework here for now.
+Just including some visualizations of the framework here for now. These include all the indicators currently in the matrix.
 
 <!-- This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al. in that food system sustainability is still largely undefined [@beneWhenFoodSystems2019]. -->
 

@@ -3,7 +3,7 @@ title: "SM-Explorer"
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
-The SM-Explorer is a work in progress. There are a small heap of bugs I'm already aware of, and it is using a dataset that outdated compared to the Quarto doc. If you find anything else that isn't working properly, feel free to let Chris know about it.
+The SM-Explorer is a work in progress. There are a small heap of bugs I'm already aware of, and about a hundred things I'd still like to add. If/when you find things that aren't working properly, please feel free to let Chris know!
 :::
 
 This is a Shiny app that allows for interactive exploration of metrics, mostly at the county level. It includes a map page, a bivariate plot explorer, and a metadata table much like what is included in this Quarto doc. It tends to work best if you open it in its own page using the button below:
