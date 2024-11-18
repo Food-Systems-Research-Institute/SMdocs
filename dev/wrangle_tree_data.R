@@ -191,6 +191,3 @@ ggraph(mygraph, layout = 'dendrogram', circular = TRUE) +
     plot.margin = unit(c(0, 0, 0, 0), "cm")
   ) +
   expand_limits(x = c(-1.75, 1.75), y = c(-1.75, 2))
-
-
-

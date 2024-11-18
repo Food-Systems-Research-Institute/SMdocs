@@ -1,5 +1,6 @@
 ---
 title: "Environment"
+fig-responsive: false
 ---
 
 ```{r}
@@ -18,58 +19,156 @@ conflicts_prefer(
 
 ## Dimension Overview
 
-Radial plot, what is covered and what is not.
+
+
+```{r}
+#| label: barplot
+#| fig-cap: Bar Plot of Indicators
+#| warning: false
+pacman::p_load(
+  dplyr,
+  ggplot2,
+  stringr,
+  plotly,
+  RColorBrewer
+)
+
+## Load data for tree and metrics
+env_tree <- readRDS('data/trees/env_tree.rds')
+
+meta <- readRDS('data/sm_data.rds')[['metadata']] %>% 
+  filter(dimension == 'environment')
+
+# Format to match Wiltshire framework
+meta <- meta %>% 
+  mutate(
+    indicator = str_to_sentence(indicator),
+    indicator = case_when(
+      str_detect(indicator, '^Above') ~ 'Aboveground biomass',
+      str_detect(indicator, '^Water') ~ 'Water use / irrigation efficiency',
+      TRUE ~ indicator
+    )
+  ) 
+
+# Counts of secondary data metrics
+counts <- meta %>% 
+  group_by(indicator) %>% 
+  dplyr::summarize(count = n())
+
+# Join to Wiltshire framework
+colors <- RColorBrewer::brewer.pal(n = 3, name = 'Dark2')
+dat <- full_join(env_tree, counts, by = join_by(Indicator == indicator)) %>% 
+  mutate(
+    count = ifelse(is.na(count), 0, count),
+    label_color = case_when(
+      Use == 'both' ~ colors[1],
+      Use == 'wiltshire_only' ~ colors[2],
+      Use == 'current_only' ~ colors[3],
+    )
+  )
+
+# Legend 
+# legend_data <- data.frame(
+#   Use = c("Both", "Wiltshire", "Current"),
+#   label_color = c(colors[1], colors[2], colors[3])
+# )
+
+# Plot
+dat %>%
+  ggplot(aes(x = Indicator, y = count)) +
+  geom_col(
+    color = 'black',
+    fill = 'grey'
+  ) +
+  geom_point(
+    data = dat,
+    aes(x = 1, y = 1, color = Use),
+    inherit.aes = FALSE
+  ) +
+  scale_color_manual(
+    name = "Text Colors:",
+    values = c(
+      "both" = colors[3], 
+      "wiltshire_only" = colors[2], 
+      "current_only" = colors[1]
+    ) 
+  ) +
+  theme_classic() +
+  theme(
+    axis.text.y = element_text(color = dat$label_color),
+    legend.position = "top"
+  ) +
+  guides(
+    color = guide_legend(override.aes = list(size = 3))
+  ) +
+  coord_flip() +
+  labs(y = 'Count')
+```
+
 
 ## Maps
 
-### LULC
-
-```{r}
-#| label: lulc
-#| fig-cap: Land use / land cover map from MRLC.
-```
-
-### LULC Change
-
 ### Land Use Diversity
 
+This is derived from the USGS MRLC 30m LULC layer for 2023. LULC types are aggregated by category (water, developed, barren, forest, shrubland, herbaceous, cultivated, wetlands) and Shannon diversity is calculated for each county.
+
+[More info about LULC codes can be found here](https://www.mrlc.gov/sites/default/files/docs/LSDS-2103%20Annual%20National%20Land%20Cover%20Database%20(NLCD)%20Collection%201%20Science%20Product%20User%20Guide%20-v1.0%202024_10_15.pdf).
+
 ```{r}
 #| label: lulc
-#| fig-cap: Land Use Land Cover Map
+#| fig-cap: Land Use Land Cover Diversity
+#| out.width: 100%
+pacman::p_load(
+  mapview,
+  dplyr,
+  sf,
+  leaflet,
+  leafpop,
+  viridisLite
+)
+
+div <- readRDS('data/sm_data.rds')[['lulc_div']]
+
+mapview(
+  div,
+  zcol = 'lulc_div',
+  label = 'county_name',
+  layer.name = 'LULC Diversity',
+  popup = popupTable(
+    div,
+    zcol = c(
+      'county_name',
+      'lulc_div'
+    ),
+    row.numbers = FALSE,
+    feature.id = FALSE
+  )
+)
+```
+
+### Species Atlas
+
+The next couple of maps are not only ancient, but can't easily be aggregated at the county level. I'm all ears if folks know if better datasets out there that cover biodiversity across New England.
+
+The species atlas has counts of plant and animal species by town. Apart from being pretty far out of date (2000), we can't aggregate by county or state without having more granular data.
+
+```{r}
+#| label: species_atlas
+#| fig-cap: Species Atlas
+#| out.width: 100%
 pacman::p_load(
   mapview,
   dplyr,
   sf,
   viridisLite,
-  stars
-)
-
-# Have to pull this from sm-data
-# atlas <- readRDS('data/sm_data.rds')[['atlas']]
-
-
-```
-
-### VT Biodiversity Project
-
-The next couple of maps are not only ancient, but can't easily be aggregated at the county level. I'm all ears if folks know if better datasets out there that cover biodiversity across New England.
-
-#### Species Atlas
-
-```{r}
-#| label: species_atlas
-#| fig-cap: Species Atlas
-pacman::p_load(
-  mapview,
-  dplyr,
-  sf,
-  viridisLite
+  leaflet,
+  leafpop
 )
 
 atlas <- readRDS('data/sm_data.rds')[['atlas']]
-get_str(atlas)
 
 atlas <- atlas %>% 
+  select(-starts_with('SHAPEST')) %>% 
   rename(
     TOWN = TOWNNAME,
     BRYOPHYTE = BRYOP,
@@ -78,52 +177,81 @@ atlas <- atlas %>%
   mutate(
     TOTAL_SPP = rowSums(across(c(
       PLANT, BRYOPHYTE, FERN, TREE, HERP, MAMMAL, FISH
-    )))
-  )
+  )))
+)
     
 mapview(
   atlas,
   zcol = 'TOTAL_SPP',
-  layer.name = 'Species Richness',
-  label = 'TOWN'
+  layer.name = 'Species<br>Richness',
+  label = 'TOWN',
+  popup = popupTable(
+    atlas,
+    zcol = c(
+      'TOWN',
+      'PLANT',
+      'BRYOPHYTE',
+      'FERN',
+      'TREE',
+      'HERP',
+      'MAMMAL',
+      'FISH',
+      'TOTAL_SPP'
+    )
+  )
 )
 ```
-#### Core Habitats
 
-```{r}
-#| label: core_habitat
-#| fig-cap: Core Habitats of Vermont
-pacman::p_load(
-  stars,
-  sf,
-  mapview
-)
-  
-```
+### Biodiversity Hotspots
 
-
-#### Biodiversity Hotspots
+Again, this biodiversity hotspot map was being put together around the same time as the Y2k crisis. Even if this were more recent and throughout New England, incoporating this kind of data into the framework seems a bit fraught.
 
 ```{r}
 #| label: hotspots
 #| fig-cap: Biodiversity Hotspots Map
+#| out.width: 100%
 hotspots <- readRDS('data/sm_data.rds')[['hotspots']]
-mapview(hotspots)
+mapview(hotspots, col.regions = '#154734')
 
 ```
 
-
-
 ### Forest Biomass
+
+The TreeMap 2016 dataset is quite comprehensive national survey of forest health and diversity. Updates are infrequent, but this is the best layer I've found to address biomass. The raster is at 30m. Shown below is the mean live above-ground biomass aggregated by county so that it plays well with other metrics.
 
 ```{r}
 #| label: biomass
 #| fig-cap: Map of aboveground forest biomass by county
+#| out.width: 100%
+pacman::p_load(
+  mapview,
+  dplyr,
+  sf,
+  viridisLite,
+  leaflet,
+  leafpop
+)
+biomass <- readRDS('data/sm_data.rds')[['mean_biomass']]
+mapview(
+  biomass,
+  zcol = 'mean_biomass',
+  layer.name = 'Mean Live Above<br>Ground Biomass<br>(tons per acre)',
+  label = 'county_name',
+  popup = popupTable(
+    biomass,
+    zcol = c(
+      'county_name',
+      'mean_biomass'
+    ),
+    feature.id = FALSE,
+    row.numbers = FALSE
+  )
+)
 ```
-
 
 ## Metadata Table
 
+This table includes all secondary data metrics. Filter by dimension to get just environment metrics.
 
 Using the table: 
 
@@ -307,7 +435,7 @@ source('dev/format_values.R')
 # Filter to economics metrics, join with metadata and county fips codes
 env_metrics <- metrics %>% 
   left_join(metadata_all, by = join_by('variable_name')) %>% 
-  filter(dimension == 'economics') %>% 
+  filter(dimension == 'environment') %>% 
   left_join(fips_key, by = join_by('fips')) %>% 
   mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>% 
   format_values() %>% 
@@ -379,9 +507,209 @@ htmltools::browsable(
 ```
 
 
-## Bivariate Plots
+## Distribution Plots
+
+Note that we're just filtering to data at the county level here. A fair amount of the environmental data is at the state level, like greenhouse gas emissions and water quality surveys. At this point they are hard to compare without aggregating to state.
+
+```{r}
+#| label: distribution_plots
+#| fig-cap: Distributions of economic metrics at the county level.
+#| fig-height: 12
+#| fig-width: 10
+#| fig-align: center
+#| warning: false
+pacman::p_load(
+  dplyr,
+  purrr,
+  ggplot2,
+  rlang,
+  ggpubr,
+  tidyr
+)
+source('dev/data_pipeline_functions.R')
+source('dev/filter_fips.R')
+metrics <- readRDS('data/sm_data.rds')[['metrics']]
+metadata <- readRDS('data/sm_data.rds')[['metadata']]
+
+# Use metadata to get help filter by dimension
+env_meta <- metadata %>% 
+  filter(dimension == 'environment')
+
+# Filter to economics dimension
+env_metrics <- metrics %>% 
+  filter(variable_name %in% env_meta$variable_name)
+
+env_metrics$variable_name %>% unique
+get_str(env_metrics)
+
+# Filter to latest year and new (post-2024) counties
+# And pivot wider so it is easier to get correlations
+env_metrics_latest <- env_metrics %>%
+  filter_fips(scope = 'counties') %>% 
+  get_latest_year() %>% 
+  select(fips, variable_name, value) %>% 
+  mutate(variable_name = str_split_i(variable_name, '_', 1)) %>% 
+  pivot_wider(
+    names_from = 'variable_name',
+    values_from = 'value'
+  ) %>% 
+  unnest(!fips) %>% 
+  mutate(across(c(2:last_col()), as.numeric))
+get_str(env_metrics_latest)
+
+## Plot
+plots <- map(names(env_metrics_latest)[-1], \(var){
+  if (is.character(env_metrics_latest[[var]])) {
+    env_metrics_latest %>% 
+      ggplot(aes(x = !!sym(var))) + 
+      geom_bar(
+        fill = 'lightblue',
+        color = 'royalblue',
+        alpha = 0.5
+      ) +
+      theme_classic() +
+      theme(plot.margin = unit(c(rep(0.5, 4)), 'cm'))
+  } else if (is.numeric(env_metrics_latest[[var]])) {
+    env_metrics_latest %>% 
+      ggplot(aes(x = !!sym(var))) + 
+      geom_density(
+        fill = 'lightblue',
+        color = 'royalblue',
+        alpha = 0.5
+      ) +
+      theme_classic() +
+      theme(plot.margin = unit(c(rep(0.5, 4)), 'cm'))
+  } else {
+    return(NULL)
+  }
+}) 
+
+
+# Arrange them in 4 columns
+ggarrange(
+  plotlist = plots,
+  ncol = 4,
+  nrow = 7
+)
+```
 
 ## Correlations
 
+
+```{r}
+#| label: correlation_plot
+#| fig-cap: Interactive Correlation Plot
+#| warning: false
+pacman::p_load(
+  dplyr,
+  tidyr,
+  tibble,
+  stringr,
+  purrr,
+  tidyr,
+  ggplot2,
+  plotly,
+  reshape,
+  Hmisc,
+  viridisLite
+)
+
+get_str(env_metrics_latest)
+
+cor <- env_metrics_latest %>% 
+  as.matrix() %>% 
+  rcorr()
+
+# Melt correlation values and rename columns
+cor_r <- melt(cor$r) %>% 
+  setNames(c('var_1', 'var_2', 'value'))
+
+# Save p values
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+# Make heatmap with custom text aesthetic for tooltip
+plot <- cor_r %>% 
+  ggplot(aes(var_1, var_2, fill = value, text = paste0(
+    'Var 1: ', var_1, '\n',
+    'Var 2: ', var_2, '\n',
+    'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
+    'P-Value: ', format(round(p.value, 3), nsmall = 3)
+  ))) + 
+  geom_tile() + 
+  scale_fill_viridis_c() + 
+  theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = 'Correlation'
+  )
+
+# Convert to interactive plotly figure with text tooltip
+ggplotly(
+  plot, 
+  tooltip = 'text',
+  width = 1000,
+  height = 800
+)
+```
+
 ## PCA
 
+```{r}
+#| label: imputation
+#| warning: false
+pacman::p_load(
+  missForest
+)
+
+# Wrangle dataset. Need all numeric vars or factor vars. And can't be tibble
+# Also removing character vars - can't use these in PCA
+dat <- env_metrics_latest %>%
+  select(where(is.numeric)) %>%
+  as.data.frame()
+# get_str(dat)
+
+# Impute missing variables
+set.seed(42)
+mf_out <- dat %>%
+  missForest(
+    ntree = 200,
+    mtry = 10,
+    verbose = FALSE,
+    variablewise = FALSE
+  )
+
+# Save imputed dataset
+imp <- mf_out$ximp
+
+# Print OOB
+mf_out$OOBerror
+
+```
+
+```{r}
+#| label: vss
+#| warning: false
+pacman::p_load(
+  psych
+)
+VSS(imp)
+fa.parallel(imp)
+```
+
+VSS suggests 1 or 2, MAP suggests 7, parallel analysis shows 2 or 3. Let's go with 3 for now.
+
+```{r}
+#| label: pca
+#| warning: false
+(pca_out <- pca(imp, nfactors = 3))
+
+plot(pca_out$values)
+abline(h = 1)
+
+```
+
+The scree plot makes a pretty good case for 3 components here as well, as it has a nice elbow.
+
+It looks like the first component is made up of most of the conservation agriculture practices from the NASS datasets, namely acres of conservation tillage, cover cropping, and draining. Fertilizer expenses loads surprisingly strongly here too. The second component seems to have the most to do with county size or population; anything measured by the number of operations does well here, as does mean above-ground forest biomass. The last component is a grab-bag - conservation easement acres load the strongest onto ti, but I don't see a coherent pattern among metrics here.

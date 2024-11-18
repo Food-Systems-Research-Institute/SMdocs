@@ -9,3 +9,17 @@ sf
 viridisLite
 abind
 stars
+leaflet
+leafpop
+ggplot2
+plotly
+RColorBrewer
+purrr
+rlang
+ggpubr
+tidyr
+tibble
+reshape
+Hmisc
+missForest
+psych

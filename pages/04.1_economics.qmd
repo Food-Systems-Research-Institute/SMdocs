@@ -470,7 +470,6 @@ pacman::p_load(
   ggpubr,
   tidyr
 )
-# conflicts_prefer(dplyr::select())
 
 source('dev/data_pipeline_functions.R')
 source('dev/filter_fips.R')
@@ -554,22 +553,12 @@ plots <- map(names(econ_metrics_latest)[-1], \(var){
   }
 }) 
 
-
 # Arrange them in 4 columns
 ggarrange(
   plotlist = plots,
   ncol = 4,
   nrow = 12
 )
-
-# ggsave(
-#   'images/distribution_plots.png',
-#   plot = out,
-#   dpi = 150,
-#   width = 1500,
-#   height = 3000,
-#   units = 'px'
-# )
 ```
 
 ## Correlation Heatmap
