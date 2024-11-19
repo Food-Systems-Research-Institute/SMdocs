@@ -805,7 +805,7 @@ ggplotly(
 Again, this is only at the county level. First, imputing missing data.
 
 ```{r}
-#| label: imputation
+#| label: imputation.x
 #| warning: false
 pacman::p_load(
   missForest
@@ -813,7 +813,7 @@ pacman::p_load(
 
 # Wrangle dataset. Need all numeric vars or factor vars. And can't be tibble
 # Also removing character vars - can't use these in PCA
-dat <- env_metrics_latest %>%
+dat <- env_county %>%
   select(where(is.numeric)) %>%
   as.data.frame()
 # get_str(dat)
@@ -837,7 +837,7 @@ mf_out$OOBerror
 ```
 
 ```{r}
-#| label: vss
+#| label: vss.x
 #| warning: false
 pacman::p_load(
   psych
@@ -849,7 +849,7 @@ fa.parallel(imp)
 VSS suggests 1 or 2 components, MAP suggests 7, parallel analysis shows 2 or 3. Let's go with 3 for now.
 
 ```{r}
-#| label: pca
+#| label: pca.x
 #| warning: false
 (pca_out <- pca(imp, nfactors = 3))
 
@@ -861,3 +861,157 @@ abline(h = 1)
 The scree plot makes a pretty good case for 3 components here as well, as it has a nice elbow after the third.
 
 It looks like the first component is made up of most of the conservation agriculture practices from the NASS datasets, namely acres of conservation tillage, cover cropping, and draining. Fertilizer expenses loads surprisingly strongly here too. The second component seems to have the most to do with county size or population; anything measured by the number of operations does well here, as does mean above-ground forest biomass. The last component is a grab-bag - conservation easement acres load the strongest onto it, but I don't see a coherent pattern among metrics here.
+
+## Analysis
+
+### Imputation
+
+```{r}
+#| label: imputation
+#| warning: false
+pacman::p_load(
+  missForest
+)
+# Wrangle dataset. Need all numeric vars or factor vars. And can't be tibble
+# Also removing character vars - can't use these in PCA
+# Using old Connecticut counties - some lulc data is missing for them though
+dat <- env_county %>%
+  filter_fips('old') %>% 
+  select(fips, where(is.numeric)) %>%
+  column_to_rownames('fips') %>% 
+  as.data.frame()
+# get_str(dat)
+# skimr::skim(dat)
+
+# Remove variables with most missing data - too much to impute.
+# Also remove the proportional LULC values - keeping diversity though
+dat <- dat %>% 
+  select(-matches('consIncome'), -matches('^lulcProp'))
+
+# Impute missing variables
+set.seed(42)
+mf_out <- dat %>%
+  missForest(
+    ntree = 200,
+    mtry = 10,
+    verbose = FALSE,
+    variablewise = FALSE
+  )
+
+# Save imputed dataset
+imp <- mf_out$ximp
+
+# Print OOB
+mf_out$OOBerror
+
+```
+
+
+### Normalization
+
+Using min-max normalization to put all indicators on an arbitrary 0-1 scale
+
+```{r}
+#| label: normalization
+#| warnings: false
+# get_str(imp)
+
+# Function to normalize data
+normalize <- function(x) {
+    (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
+}
+
+# Normalize all variables
+dat <- map_dfc(imp, normalize)
+```
+
+Now that we have normalized variables, we have to make normative decisions about what constitutes a good or bad value of those variables. This will eventually be a collaborative process where we will seek input from teams to come to some kind of consensus. But until then, I'm going to make some heroic assumptions that LULC diversity is good, above ground forest biomass is good, conservation practices and easements are good, and fertilizer expenses are bad. Open to thoughts here as always.
+
+With that, we can recode our normalized variables accordingly.
+
+```{r}
+#| label: norms
+# Flip 'bad' variables by subtracting them from 1
+normed <- dat %>% 
+  mutate(across(c(matches('^fert')), ~ 1 - .x))
+# get_str(normed)
+```
+
+### Component Extraction
+
+Determine the number of components to extract using a few tools: very simple structure (VSS), Velicer's minimum average partial (MAP) test, parallel analysis, and a scree plot.
+
+```{r}
+#| label: extraction
+#| warning: false
+pacman::p_load(
+  psych
+)
+VSS(normed)
+fa.parallel(normed)
+pca_out <- pca(normed, nfactors = 3, rotate = 'varimax')
+plot(pca_out$values)
+abline(h = 1)
+```
+
+This scree plot shows the eigenvalues (variance explained) of each principal component (y-axis) against each component (x-axis). The first few components explain lots of variance, but there is a decent elbow around the fourth component.
+
+VSS suggests 1 or 2, MAP suggests 8, parallel analysis shows 3. I'm going with 3 here, which will be explained further below.
+
+### Principal Components Analysis
+
+Using an oblique varimax rotation that allows for correlations between principal components. First we just observe the scree plot to see how the components play out.
+
+```{r}
+#| label: pca_scree
+#| warning: false
+pca_out <- pca(normed, nfactors = 3, rotate = 'varimax')
+plot(pca_out$values)
+abline(h = 1)
+```
+
+Now we let's look at PCA results.
+
+```{r}
+#| label: pca
+#| warnings: false
+pca_out
+```
+
+Recommendations for creating composite indices are to extract components that each have eigenvalues > 1, explained variance > 0.10, and such that the proportion of explained variance for the total set is > 0.60 [@nicolettiSummaryIndicatorsProduct2000; @oecdHandbookConstructingComposite2008]. 
+
+Our total cumulative variance is explained is 0.74, and our component that explains the least variance is RC4 with 0.11. Note that extracting four or more components here gives us a component with less than 0.10, so this is why we are sticking to three. The first component (RC1) explains 38% of the variance in the data. The second component is respectable at 0.26, while the third is barely above the threshold at 0.11.
+
+Looking at the metrics, we can see that the first component loads mostly onto the conservation practices, no-till acres, cover cropping, drainage, and total fertilizer expenses. The second component leads onto mean aboveground biomass (although there is crossloading with the first component), operations wtih silvapasture, operations with easements, rotational grazing operations, and operations with fertilizer expenses. This seems to be catching more of the population-related metrics. The last component only loads onto a few metrics: easement acres, easement acres per farm, and silvpasture operations (which has some heavy crossloading). 
+
+### Aggregation
+
+To aggregate data by county, we can use loadings to weight metrics and proportion of unique variance explained to weight components. Here, we extract those loadings and calculate the normalized sum of square factor loadings to weight each component.
+
+```{r}
+#| label: get_weights
+#| warnings: false
+## Get metric weights
+# Pull out metric loadings
+loadings <- pca_out$weights %>% 
+  as.data.frame()
+
+# For each set of loadings, get squares, and then normalized proportions
+sq_loadings <- map(loadings, ~ .x^2)
+metric_weights <- map(sq_loadings, ~ .x / sum(.x))
+
+
+## Get component weights
+factor_weights <- map(metric_weights, ~ {
+  sum_sq_loadings <- c(sum(.x), sum)
+})
+
+(sum_sq_loadings <- map_dbl(sq_loadings, ~ sum(.x)))
+(factor_weights <- map(sum_sq_loadings, ~ .x / (sum(sum_sq_loadings))))
+```
+
+Notes:
+
+- Why is the weight for factor 3 the highest? I thought factor 1 should be
+- First, do extraction/scree with as many factors as there are metrics (this doesnt matter actually, we good with 3)
+- what is going on with calcs, is it weighting each factor the same??
