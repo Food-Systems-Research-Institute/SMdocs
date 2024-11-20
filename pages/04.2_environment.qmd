@@ -1,19 +1,28 @@
 ---
 title: "Environment"
 fig-responsive: false
+execute:
+  cache: false
 ---
 
 ```{r}
 #| label: setup
 #| include: false
 pacman::p_load(
- conflicted
+  conflicted,
+  mapview,
+  dplyr,
+  sf,
+  viridisLite,
+  leaflet,
+  leafpop,
+  stars
 )
 
 conflicts_prefer(
- dplyr::select(),
- dplyr::filter(),
- .quiet = TRUE
+  dplyr::select(),
+  dplyr::filter(),
+  .quiet = TRUE
 )
 ```
 
@@ -114,25 +123,120 @@ dat %>%
 
 ## Maps
 
-Taking a quick tour through some of the spatial data here. I'm not including full rasters of LULC or TreeMap layers to conserve space, but I have included some derived metrics by county. With the exception of hotspot and species atlas data, these will also be up on the Shiny app along with all the other metrics.
+Taking a quick tour through some of the spatial data here. Most of these metrics will also be available to peruse on the Shiny app, with the exception of those that are hard to aggregate, like biodiversity hotspots.
 
 ### Land Use Diversity
 
-This is derived from the USGS MRLC 30m LULC layer for 2023. LULC types are aggregated by category (water, developed, barren, forest, shrubland, herbaceous, cultivated, wetlands) and Shannon diversity is calculated for each county.
+This is the MRLC 30m LULC layer from 2023. Below the map, you can find a table with codes and descriptions. Sort or expand to see all the values.
+
+```{r}
+#| label: lulc_raster
+#| fig-cap: Land use land cover map
+#| out.width: 100%
+lulc <- readRDS('data/sm_data.rds')[['mrlc_lulc_ne']]
+counties <- readRDS('data/sm_data.rds')[['ne_counties_2024']]
+
+lulc %>% 
+  mapview(
+    layer.name = 'LULC'
+  ) + 
+  mapview(
+    counties,
+    alpha.regions = 0,
+    color = 'black',
+    col.regions = 'black',
+    lwd = 1.25,
+    layer.name = 'Counties'
+  )
+```
+
+```{r}
+#| label: lulc_code_table
+#| warnings: false
+pacman::p_load(
+  reactable,
+  dplyr,
+  stringr
+)
+
+meta <- readRDS('data/sm_data.rds')[['metadata']]
+
+lulc_codes <- meta %>% 
+  filter(
+    str_detect(variable_name, '^lulc'),
+    str_detect(variable_name, 'NoData|Diversity', negate = TRUE)
+  ) %>% 
+  select(definition) %>% 
+  mutate(
+    Value = c(11, 21, 22, 23, 24, 31, 41, 42, 43, 52, 71, 81, 82, 90, 95),
+    Class = c(
+      'Water',
+      rep('Developed', 4),
+      'Barren',
+      rep('Forest', 3),
+      'Shrubland',
+      'Herbaceous',
+      rep('Planted/Cultivated', 2),
+      rep('Wetlands', 2)
+    ),
+    Type = c(
+      'Open Water',
+      'Developed, Open Space',
+      'Developed, Low Intensity',
+      'Developed, Medium Intensity',
+      'Developed, High Intensity',
+      'Barren Land (Rock / Sand / Clay)',
+      'Deciduous Forest',
+      'Evergreen Forest',
+      'Mixed Forest',
+      'Shrub / Scrub',
+      'Grassland / Herbaceous',
+      'Pasture / Hay',
+      'Cultivated Crops',
+      'Woody Wetlands',
+      'Emergent Herbaceous Wetlands'
+    )
+  ) %>% 
+  select(
+    Value,
+    Class,
+    Type,
+    Description = definition
+  )
+
+reactable(
+  lulc_codes,
+  sortable = TRUE,
+  resizable = TRUE,
+  filterable = TRUE,
+  searchable = FALSE,
+  pagination = TRUE,
+  bordered = TRUE,
+  wrap = TRUE,
+  rownames = FALSE,
+  striped = TRUE,
+  defaultPageSize = 5,
+  showPageSizeOptions = FALSE,
+  highlight = TRUE,
+  style = list(fontSize = "14px"),
+  compact = TRUE,
+  columns = list(
+    Value = colDef(minWidth = 40),
+    Class = colDef(minWidth = 100),
+    Type = colDef(minWidth = 100),
+    Description = colDef(minWidth = 500)
+  )
+)
+```
+
+### LULC Diversity
+
+LULC Diversity is derived from the MRLC LULC layer above. LULC types are aggregated by category (water, developed, barren, forest, shrubland, herbaceous, cultivated, wetlands) and Shannon diversity is calculated for each county. It makes for an interesting metric, but I'm not sure it makes for a strong normative metric. If anyone has thoughts on what the "right" amount of LULC diversity is, I'd love to hear from you. 
 
 ```{r}
 #| label: lulc
 #| fig-cap: Land Use Land Cover Diversity
 #| out.width: 100%
-pacman::p_load(
-  mapview,
-  dplyr,
-  sf,
-  leaflet,
-  leafpop,
-  viridisLite
-)
-
 div <- readRDS('data/sm_data.rds')[['lulc_div']]
 
 mapview(
@@ -209,10 +313,9 @@ mapview(
 <!-- ) -->
 <!-- ``` -->
 
-
 ### Biodiversity Hotspots
 
-Again, this biodiversity hotspot map was being put together around the same time as the Y2k crisis. Even if this were more recent and throughout New England, incoporating this kind of data into the framework seems a bit fraught.
+This biodiversity hotspot map was being put together around the same time as the Y2k crisis. Even if this were more recent and throughout New England, incoporating this kind of data into the framework seems a bit fraught.
 
 ```{r}
 #| label: hotspots
@@ -225,7 +328,32 @@ mapview(hotspots, col.regions = '#154734')
 
 ### Forest Biomass
 
-The TreeMap 2016 dataset is quite comprehensive national survey of forest health and diversity. Updates are infrequent, but this is the best layer I've found to address biomass. The raster is at 30m. Shown below is the mean live above-ground biomass aggregated by county so that it plays well with other metrics. Note that it is measured in tons *per acre of forest*, non-forest cells were removed from analysis. So, it is not showing density of forest, just biomass in existing forest. This is why the more urban counties still show a reasonable density of live biomass. There is lots more that can be pulled out of this dataset, like dead/down carbon, tree stocking, live canopy cover, height, volume, tree per acre, etc. More info can be found [here](https://research.fs.usda.gov/treesearch/65597).
+The TreeMap 2016 dataset is quite comprehensive national survey of forest health and diversity. Updates are infrequent, but this is the best layer I've found to address biomass. The raster is at 30m. 
+
+```{r}
+#| label: treemap_biomass_raster
+#| fig-cap: Map of aboveground forest biomass
+#| out.width: 100%
+treemap <- readRDS('data/sm_data.rds')[['treemap_biomass']]
+counties <- readRDS('data/sm_data.rds')[['ne_counties_2024']]
+
+treemap %>% 
+  mapview(
+    layer.name = 'Biomass (tons per acre)',
+    col.regions = viridis(n = 256)
+  ) + 
+  mapview(
+    counties,
+    alpha.regions = 0,
+    color = 'black',
+    col.regions = 'black',
+    lwd = 1.25,
+    layer.name = 'Counties'
+  )
+
+```
+
+Shown below is the mean live above-ground biomass aggregated by county so that it plays well with other metrics. Note that it is measured in tons *per acre of forest*, non-forest cells were removed from analysis. So, it is not showing density of forest, just biomass in existing forest. This is why the more urban counties still show a reasonable density of live biomass. There is lots more that can be pulled out of this dataset, like dead/down carbon, tree stocking, live canopy cover, height, volume, tree per acre, etc. More info can be found [here](https://research.fs.usda.gov/treesearch/65597).
 
 ```{r}
 #| label: biomass
@@ -237,8 +365,10 @@ pacman::p_load(
   sf,
   viridisLite,
   leaflet,
-  leafpop
+  leafpop,
+  stars
 )
+
 biomass <- readRDS('data/sm_data.rds')[['mean_biomass']]
 mapview(
   biomass,
@@ -257,263 +387,6 @@ mapview(
 )
 ```
 
-## Metadata Table
-
-This table includes all secondary data metrics. Filter by dimension to get just environment metrics.
-
-Using the table: 
-
-* Click column headers to sort
-* Global search in the top right, or column search in each header
-* Change page length and page through results at the bottom
-* Use the download button to download a .csv file of the filtered table
-* Click the arrow on the left of each row for details, including a URL to the data source.
-
-```{r}
-#| label: metadata_table
-#| warning: false
-
-pacman::p_load(
-  dplyr,
-  reactable,
-  stringr,
-  htmltools
-)
-
-# Load full metadata table
-metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
-
-# Pick out variables to display
-metadata <- metadata_all %>% 
-  select(
-    metric,
-    'Variable Name' = variable_name,
-    definition,
-    dimension,
-    index,
-    indicator,
-    units,
-    'Year' = latest_year, # Renaming latest year as year, not including og year
-    source,
-    scope,
-    resolution,
-    url
-) %>% 
-  setNames(c(str_to_title(names(.))))
-
-###
-htmltools::browsable(
-  tagList(
-    
-    tags$div(
-      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
-      
-      tags$button(
-        class = "btn btn-primary",
-        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
-        tagList(fontawesome::fa("download"), "Show/hide more columns"),
-        onclick = "Reactable.setHiddenColumns('metadata_table', prevColumns => {
-          return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
-        })"
-      ),
-      
-      tags$button(
-        class = "btn btn-primary",
-        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
-        tagList(fontawesome::fa("download"), "Download as CSV"),
-        onclick = "Reactable.downloadDataCSV('metadata_table', 'sustainability_metadata.csv')"
-      )
-    ),
-    
-    reactable(
-      metadata,
-      sortable = TRUE,
-      resizable = TRUE,
-      filterable = TRUE,
-      searchable = TRUE,
-      pagination = TRUE,
-      bordered = TRUE,
-      wrap = TRUE,
-      rownames = FALSE,
-      onClick = 'select',
-      striped = TRUE,
-      pageSizeOptions = c(5, 10, 25, 50, 100),
-      defaultPageSize = 5,
-      showPageSizeOptions = TRUE,
-      highlight = TRUE,
-      style = list(fontSize = "14px"),
-      compact = TRUE,
-      columns = list(
-        Metric = colDef(
-          minWidth = 200,
-          sticky = 'left'
-        ),
-        'Variable Name' = colDef(
-          minWidth = 150
-        ),
-        Definition = colDef(
-          minWidth = 250
-        ),
-        'Latest Year' = colDef(minWidth = 75),
-        Source = colDef(minWidth = 250),
-        Scope = colDef(show = FALSE),
-        Resolution = colDef(show = FALSE),
-        Url = colDef(
-          minWidth = 300,
-          show = FALSE
-        )
-      ),
-      defaultColDef = colDef(minWidth = 100),
-      elementId = "metadata_table",
-      details = function(index) {
-        div(
-          style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
-             background-color: #E0EEEE; border-radius: 10px; border-color: black;
-             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);",
-          
-          tags$h4(
-            strong("Details"), 
-          ),
-          tags$p(
-            strong('Metric Name: '), 
-            as.character(metadata_all[index, 'metric']),
-          ),
-          tags$p(
-            strong('Variable Name: '), 
-            as.character(metadata_all[index, 'variable_name']),
-          ),
-          tags$p(
-            strong('Definition: '), 
-            as.character(metadata_all[index, 'definition']),
-          ),
-          tags$p(
-            strong('Source: '), 
-            as.character(metadata_all[index, 'source'])
-          ),
-          tags$p(
-            strong('Latest Year: '), 
-            as.character(metadata_all[index, 'latest_year'])
-          ),
-          tags$p(
-            strong('All Years (cleaned, wrangled, and included): '), 
-            as.character(metadata_all[index, 'year'])
-          ),
-          tags$p(
-            strong('Updates: '), 
-            str_to_title(as.character(metadata_all[index, 'updates']))
-          ),
-          tags$p(
-            strong('URL: '), 
-            tags$a(
-              href = as.character(metadata_all[index, 'url']),
-              target = '_blank',
-              as.character(metadata_all[index, 'url'])
-            )
-          )
-        )
-      }
-    )
-  )
-)
-
-```
-
-## Data Table
-
-```{r}
-#| label: metric_table
-#| warning: false
-
-pacman::p_load(
-  dplyr,
-  reactable,
-  stringr,
-  htmltools
-)
-
-# Load metrics and metadata
-metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
-metrics <- readRDS('data/sm_data.rds')[['metrics']]
-fips_key <- readRDS('data/sm_data.rds')[['fips_key']]
-
-# Value formatting function based on units
-source('dev/format_values.R')
-
-# Filter to economics metrics, join with metadata and county fips codes
-env_metrics <- metrics %>% 
-  left_join(metadata_all, by = join_by('variable_name')) %>% 
-  filter(dimension == 'environment') %>% 
-  left_join(fips_key, by = join_by('fips')) %>% 
-  mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>% 
-  format_values() %>% 
-  select(
-    metric,
-    'Variable Name' = variable_name,
-    definition,
-    year = year.x,
-    Area = county_name,
-    units,
-    value
-  ) %>% 
-  setNames(c(str_to_title(names(.)))) %>% 
-  filter(!is.na(Value))
-
-
-## Reactable table
-htmltools::browsable(
-  tagList(
-    
-    tags$div(
-      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
-      tags$button(
-        class = "btn btn-primary",
-        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
-        tagList(fontawesome::fa("download"), "Download as CSV"),
-        onclick = "Reactable.downloadDataCSV('metrics_table', 'sustainability_metrics.csv')"
-      )
-    ),
-    
-    reactable(
-      env_metrics,
-      sortable = TRUE,
-      resizable = TRUE,
-      filterable = TRUE,
-      searchable = TRUE,
-      pagination = TRUE,
-      bordered = TRUE,
-      wrap = TRUE,
-      rownames = FALSE,
-      onClick = 'select',
-      striped = TRUE,
-      pageSizeOptions = c(5, 10, 25, 50, 100),
-      defaultPageSize = 5,
-      showPageSizeOptions = TRUE,
-      highlight = TRUE,
-      style = list(fontSize = "14px"),
-      compact = TRUE,
-      columns = list(
-        Metric = colDef(
-          minWidth = 125,
-          sticky = 'left'
-        ),
-        'Variable Name' = colDef(
-          minWidth = 125
-        ),
-        Definition = colDef(
-          minWidth = 250
-        ),
-        Units = colDef(minWidth = 100),
-        'Year' = colDef(minWidth = 100)
-      ),
-      defaultColDef = colDef(minWidth = 100),
-      elementId = "metrics_table"
-    )
-  )
-)
-
-```
-
-
 ## Distribution Plots
 
 ### By County
@@ -523,7 +396,7 @@ Note that while most of the available secondary data is at the county level, the
 ```{r}
 #| label: dist_plots_county
 #| fig-cap: Distributions of economic metrics at the county level.
-#| fig-height: 12
+#| fig-height: 18
 #| fig-width: 10
 #| fig-align: center
 #| warning: false
@@ -598,7 +471,7 @@ plots <- map(names(env_county)[-1], \(var){
 ggarrange(
   plotlist = plots,
   ncol = 4,
-  nrow = 7
+  nrow = 11
 )
 ```
 
@@ -607,7 +480,7 @@ ggarrange(
 ```{r}
 #| label: dist_plots_state
 #| fig-cap: Distributions of environmental variables at state level
-#| fig-height: 40
+#| fig-height: 32
 #| fig-width: 10
 #| fig-align: center
 #| warning: false
@@ -735,7 +608,7 @@ env_county %>%
   )
 ```
 
-
+It looks like there are a few non-linear relationships, conservation income per farm in particular, but for the most part, linear relationships do a decent job here.
 
 ## Correlations {#sec-correlations}
 
@@ -762,7 +635,7 @@ pacman::p_load(
 # get_str(env_county)
 
 cor <- env_county %>% 
-  select(-fips) %>% 
+  select(-fips, -lulcPropNoData) %>% 
   as.matrix() %>% 
   rcorr()
 
@@ -800,77 +673,20 @@ ggplotly(
 )
 ```
 
-## PCA
-
-Again, this is only at the county level. First, imputing missing data.
-
-```{r}
-#| label: imputation.x
-#| warning: false
-pacman::p_load(
-  missForest
-)
-
-# Wrangle dataset. Need all numeric vars or factor vars. And can't be tibble
-# Also removing character vars - can't use these in PCA
-dat <- env_county %>%
-  select(where(is.numeric)) %>%
-  as.data.frame()
-# get_str(dat)
-
-# Impute missing variables
-set.seed(42)
-mf_out <- dat %>%
-  missForest(
-    ntree = 200,
-    mtry = 10,
-    verbose = FALSE,
-    variablewise = FALSE
-  )
-
-# Save imputed dataset
-imp <- mf_out$ximp
-
-# Print OOB
-mf_out$OOBerror
-
-```
-
-```{r}
-#| label: vss.x
-#| warning: false
-pacman::p_load(
-  psych
-)
-VSS(imp)
-fa.parallel(imp)
-```
-
-VSS suggests 1 or 2 components, MAP suggests 7, parallel analysis shows 2 or 3. Let's go with 3 for now.
-
-```{r}
-#| label: pca.x
-#| warning: false
-(pca_out <- pca(imp, nfactors = 3))
-
-plot(pca_out$values)
-abline(h = 1)
-
-```
-
-The scree plot makes a pretty good case for 3 components here as well, as it has a nice elbow after the third.
-
-It looks like the first component is made up of most of the conservation agriculture practices from the NASS datasets, namely acres of conservation tillage, cover cropping, and draining. Fertilizer expenses loads surprisingly strongly here too. The second component seems to have the most to do with county size or population; anything measured by the number of operations does well here, as does mean above-ground forest biomass. The last component is a grab-bag - conservation easement acres load the strongest onto it, but I don't see a coherent pattern among metrics here.
-
 ## Analysis
 
+This section will serve as a first pass at using some methods in the literature to aggregate metrics. I should say at the start that we have a pretty narrow selection of metrics to work with so far, which do not do a great job at capturing the breadth of the dimension. I'm also working with just the county-level data here. This provides some opportunities to use data-driven analyses like PCA, but it is worth noting that these will not get us to the holistic, system-wide measurements of sustainability we are after without including some normative judgments as to how to combine geographic areas as well as our five dimensions. So, let's just go through the motions here, see how the process unfolds, and note anything worth digging into more down the road.
+
 ### Imputation
+
+PCA requires complete data, so we either have to impute, delete, or use PPCA. I'm choosing to impute with missing forest here as it is pretty good at handling MAR and non-linear data, but PPCA is certainly worth exploring.
 
 ```{r}
 #| label: imputation
 #| warning: false
 pacman::p_load(
-  missForest
+  missForest,
+  tibble
 )
 # Wrangle dataset. Need all numeric vars or factor vars. And can't be tibble
 # Also removing character vars - can't use these in PCA
@@ -903,38 +719,26 @@ imp <- mf_out$ximp
 
 # Print OOB
 mf_out$OOBerror
-
 ```
 
+### Standardization
 
-### Normalization
-
-Using min-max normalization to put all indicators on an arbitrary 0-1 scale
+Centering and scaling to give every variable a mean of 0 and SD of 1. 
 
 ```{r}
-#| label: normalization
+#| label: standardization
 #| warnings: false
-# get_str(imp)
-
-# Function to normalize data
-normalize <- function(x) {
-    (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
-}
-
-# Normalize all variables
-dat <- map_dfc(imp, normalize)
+dat <- map_dfc(imp, ~ scale(.x, center = TRUE, scale = TRUE))
 ```
 
-Now that we have normalized variables, we have to make normative decisions about what constitutes a good or bad value of those variables. This will eventually be a collaborative process where we will seek input from teams to come to some kind of consensus. But until then, I'm going to make some heroic assumptions that LULC diversity is good, above ground forest biomass is good, conservation practices and easements are good, and fertilizer expenses are bad. Open to thoughts here as always.
+Now that we have standardized variables, we have to make normative decisions about what constitutes a good or bad value. This will certainly be a collaborative process where we seek input from teams to come to some kind of consensus once we have primary data. But until then, I'm going to make some heroic assumptions that LULC diversity is good, above ground forest biomass is good, conservation practices and easements are good, and fertilizer expenses are bad. Open to thoughts here as always.
 
 With that, we can recode our normalized variables accordingly.
 
 ```{r}
 #| label: norms
-# Flip 'bad' variables by subtracting them from 1
 normed <- dat %>% 
-  mutate(across(c(matches('^fert')), ~ 1 - .x))
-# get_str(normed)
+  mutate(across(c(matches('^fert')), ~ -.x))
 ```
 
 ### Component Extraction
@@ -954,44 +758,35 @@ plot(pca_out$values)
 abline(h = 1)
 ```
 
-This scree plot shows the eigenvalues (variance explained) of each principal component (y-axis) against each component (x-axis). The first few components explain lots of variance, but there is a decent elbow around the fourth component.
+This scree plot shows the eigenvalues (unit variance explained) of each principal component (y-axis) against each component (x-axis). The first few components explain lots of variance, but there is a decent elbow around the fourth component.
 
 VSS suggests 1 or 2, MAP suggests 8, parallel analysis shows 3. I'm going with 3 here, which will be explained further below.
 
 ### Principal Components Analysis
 
-Using an oblique varimax rotation that allows for correlations between principal components. First we just observe the scree plot to see how the components play out.
-
-```{r}
-#| label: pca_scree
-#| warning: false
-pca_out <- pca(normed, nfactors = 3, rotate = 'varimax')
-plot(pca_out$values)
-abline(h = 1)
-```
-
-Now we let's look at PCA results.
+Now we let's look run the PCA.
 
 ```{r}
 #| label: pca
-#| warnings: false
-pca_out
+#| warning: false
+(pca_out <- pca(normed, nfactors = 3, rotate = 'varimax'))
+
 ```
 
 Recommendations for creating composite indices are to extract components that each have eigenvalues > 1, explained variance > 0.10, and such that the proportion of explained variance for the total set is > 0.60 [@nicolettiSummaryIndicatorsProduct2000; @oecdHandbookConstructingComposite2008]. 
 
 Our total cumulative variance is explained is 0.74, and our component that explains the least variance is RC4 with 0.11. Note that extracting four or more components here gives us a component with less than 0.10, so this is why we are sticking to three. The first component (RC1) explains 38% of the variance in the data. The second component is respectable at 0.26, while the third is barely above the threshold at 0.11.
 
-Looking at the metrics, we can see that the first component loads mostly onto the conservation practices, no-till acres, cover cropping, drainage, and total fertilizer expenses. The second component leads onto mean aboveground biomass (although there is crossloading with the first component), operations wtih silvapasture, operations with easements, rotational grazing operations, and operations with fertilizer expenses. This seems to be catching more of the population-related metrics. The last component only loads onto a few metrics: easement acres, easement acres per farm, and silvpasture operations (which has some heavy crossloading). 
+Looking at the metrics, we can see that the first component loads mostly onto the conservation practices, no-till acres, cover cropping, drainage, and total fertilizer expenses. The second component leads onto mean above-ground biomass (although there is cross-loading with the first component), operations with silvapasture, operations with easements, rotational grazing operations, and operations with fertilizer expenses. This seems to be catching more of the population-related metrics. The last component only loads onto a few metrics: easement acres, easement acres per farm, and silvapasture operations (which has some heavy cross-loading). 
 
 ### Aggregation
 
-To aggregate data by county, we can use loadings to weight metrics and proportion of unique variance explained to weight components. Here, we extract those loadings and calculate the normalized sum of square factor loadings to weight each component.
+Here, we follow Nicoletti and calculate the normalized sum of square factor loadings, which represent the proportion of total unit variance of the metrics that is explained by the component.
 
 ```{r}
 #| label: get_weights
 #| warnings: false
-## Get metric weights
+## Get metric weights following Nicoletti 2000
 # Pull out metric loadings
 loadings <- pca_out$weights %>% 
   as.data.frame()
@@ -999,19 +794,107 @@ loadings <- pca_out$weights %>%
 # For each set of loadings, get squares, and then normalized proportions
 sq_loadings <- map(loadings, ~ .x^2)
 metric_weights <- map(sq_loadings, ~ .x / sum(.x))
-
-
-## Get component weights
-factor_weights <- map(metric_weights, ~ {
-  sum_sq_loadings <- c(sum(.x), sum)
-})
-
-(sum_sq_loadings <- map_dbl(sq_loadings, ~ sum(.x)))
-(factor_weights <- map(sum_sq_loadings, ~ .x / (sum(sum_sq_loadings))))
+head(as.data.frame(metric_weights))
 ```
 
-Notes:
+Now we can use these to weight metrics and aggregate them into a component score for each county.
 
-- Why is the weight for factor 3 the highest? I thought factor 1 should be
-- First, do extraction/scree with as many factors as there are metrics (this doesnt matter actually, we good with 3)
-- what is going on with calcs, is it weighting each factor the same??
+```{r}
+# Component scores for each component across each county
+component_scores <- map(metric_weights, \(x) {
+  as.matrix(normed) %*% x
+}) %>% 
+  as.data.frame()
+head(component_scores)
+```
+
+An alternative method here is regression scores, which are native to PCA. I'll calculate these as well to compare to the component scores above.
+
+```{r}
+#| label: regression_scores
+#| warnings: false
+# Get regression scores from pca output
+regression_scores <- as.data.frame(pca_out$scores)
+head(regression_scores)
+```
+
+Running a correlation to see how similar they are:
+
+```{r}
+#| label: score_correlation
+#| warnings: false
+coefs <- map2_dbl(component_scores, regression_scores, \(x, y) cor(x, y)) %>% 
+  round(3)
+cat(paste0(
+  'Pearson Correlation Coefficients:\n',
+  'RC1: ', coefs[1], '\n',
+  'RC2: ', coefs[2], '\n',
+  'RC3: ', coefs[3]
+))
+```
+
+It looks like they are reasonably similar, although RC2 and RC3 have substantially lower correlation coefficients. It will be worth noting this and coming back to explore the differences at some point.
+
+For now, let's keep following Nicoletti and aggregate the component scores into a single variable.
+
+```{r}
+sum_sq_loadings <- map_dbl(sq_loadings, ~ sum(.x))
+(factor_weights <- map_dbl(sum_sq_loadings, ~ .x / (sum(sum_sq_loadings))))
+```
+
+Curious that the component that accounted for the most variance is weighted the lowest. Worth doing a dive here at some point and figuring out why that is.
+
+We will use these to weight each component to combine them.
+
+```{r}
+dimension_scores <- component_scores %>% 
+  rowwise() %>% 
+  mutate(
+    dimension_score = sum(RC1, RC2, RC3),
+    across(everything(), ~ round(.x, 3))
+  ) %>% 
+  bind_cols(rownames(imp)) %>% 
+  select(fips = 5, everything())
+head(dimension_scores)  
+```
+
+Now that we have all three component scores and the dimension score, let's take a look at a map. Select the data to display with the layer button on the left.
+
+```{r}
+#| out.width: 100%
+map_dat <- readRDS('data/sm_data.rds')[['ne_counties_2021']] %>% 
+  right_join(dimension_scores) %>% 
+  left_join(fips_key) %>% 
+  select(
+    fips, 
+    RC1:RC3, 
+    'Dimension Score' = dimension_score,
+    County = county_name,
+    State = state_name,
+    geometry
+  )
+
+map_dat %>% 
+  mapview(
+    zcol = c(
+      'Dimension Score',
+      'RC1',
+      'RC2',
+      'RC3'
+    ),
+    burst = FALSE,
+    hide = c(FALSE, rep(TRUE, 3)),
+    popup = popupTable(
+      map_dat,
+      zcol = names(map_dat)[-length(map_dat)],
+      row.numbers = FALSE,
+      feature.id = FALSE
+  )
+)
+```
+
+Keep in mind there are lots of caveats with this very preliminary analysis, the most egregious being a set of metrics that does not well represent the dimension it purports to measure. Missing data and various branching paths of decisions in the index scoring also deserve further scrutiny.
+
+Still, there is plenty to look at here as a first pass at aggregating dimension scores. The first component, RC1, was heavily influenced by the geography - it loads the strongest onto metrics measuring acres or acres per farm. I presume this is why Aroostook county shows up so high on this scale. RC2 loaded strongly onto the number of operations using various conservation practices (easements, no-till, rotational grazing). It seems to track a little bit with county size, but is highest near relatively urban areas. RC3 was most associated with conservation easement acres and easement acres per farm, and consequently seems to track with rural areas.
+
+I don't think that the dimension score inspires much confidence as it is now. The weighting method for combining components is hard to interpret intuitively, and I think more expert driven normative decisions might make more sense at that point. On the bright side, it is a good expedition into the kinds of ambiguous decisions that will need to be made to aggregate this data across the whole system.

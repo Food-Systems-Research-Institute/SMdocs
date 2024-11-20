@@ -39,6 +39,8 @@ website:
         href: pages/02_framework.qmd
       - text: SM-Explorer
         href: pages/03_sm-explorer.qmd
+      - text: Tables
+        href: pages/04.0_tables.qmd
       - section: Dimensions
         contents:
           - text: Economics
