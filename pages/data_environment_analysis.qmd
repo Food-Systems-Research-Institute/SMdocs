@@ -1,0 +1,254 @@
+---
+title: "Environment: Analysis"
+---
+
+```{r}
+#| label: setup
+#| include: false
+pacman::p_load(
+  conflicted,
+  viridisLite,
+  purrr
+)
+
+conflicts_prefer( 
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::mutate(),
+  dplyr::rename(),
+  .quiet = TRUE
+)
+```
+
+
+This section will serve as a first pass at using some methods in the literature to aggregate metrics. I should say at the start that we have a pretty narrow selection of metrics to work with so far, which do not do a great job at capturing the breadth of the dimension. I'm also working with just the county-level data here. This provides some opportunities to use data-driven analyses like PCA, but it is worth noting that these will not get us to the holistic, system-wide measurements of sustainability we are after without including some normative judgments as to how to combine geographic areas as well as our five dimensions. So, let's just go through the motions here, see how the process unfolds, and note anything worth digging into more down the road.
+
+## Imputation
+
+PCA requires complete data, so we either have to impute, delete, or use PPCA. I'm choosing to impute with missing forest here as it is pretty good at handling MAR and non-linear data, but PPCA is certainly worth exploring.
+
+```{r}
+#| label: imputation
+#| warning: false
+pacman::p_load(
+  missForest,
+  tibble
+)
+source('dev/filter_fips.R')
+env_county <- readRDS('data/temp/env_county.rds')
+
+# Wrangle dataset. Need all numeric vars or factor vars. And can't be tibble
+# Also removing character vars - can't use these in PCA
+# Using old Connecticut counties - some lulc data is missing for them though
+dat <- env_county %>%
+  filter_fips('old') %>%
+  select(fips, where(is.numeric)) %>%
+  column_to_rownames('fips') %>%
+  as.data.frame()
+# get_str(dat)
+# skimr::skim(dat)
+
+# Remove variables with most missing data - too much to impute.
+# Also remove the proportional LULC values - keeping diversity though
+dat <- dat %>%
+  select(-matches('consIncome'), -matches('^lulcProp'))
+
+# Impute missing variables
+set.seed(42)
+mf_out <- dat %>%
+  missForest(
+    ntree = 200,
+    mtry = 10,
+    verbose = FALSE,
+    variablewise = FALSE
+  )
+
+# Save imputed dataset
+imp <- mf_out$ximp
+
+# Print OOB
+mf_out$OOBerror
+```
+
+## Standardization
+
+Centering and scaling to give every variable a mean of 0 and SD of 1.
+
+```{r}
+#| label: standardization
+#| warnings: false
+dat <- map_dfc(imp, ~ scale(.x, center = TRUE, scale = TRUE))
+```
+
+Now that we have standardized variables, we have to make normative decisions about what constitutes a good or bad value. This will certainly be a collaborative process where we seek input from teams to come to some kind of consensus once we have primary data. But until then, I'm going to make some heroic assumptions that LULC diversity is good, above ground forest biomass is good, conservation practices and easements are good, and fertilizer expenses are bad. Open to thoughts here as always.
+
+With that, we can recode our normalized variables accordingly.
+
+```{r}
+#| label: norms
+normed <- dat %>%
+  mutate(across(c(matches('^fert')), ~ -.x))
+```
+
+## Component Extraction
+
+Determine the number of components to extract using a few tools: very simple structure (VSS), Velicer's minimum average partial (MAP) test, parallel analysis, and a scree plot.
+
+```{r}
+#| label: extraction
+#| warning: false
+pacman::p_load(
+  psych
+)
+VSS(normed)
+fa.parallel(normed)
+pca_out <- pca(normed, nfactors = 3, rotate = 'varimax')
+plot(pca_out$values)
+abline(h = 1)
+```
+
+This scree plot shows the eigenvalues (unit variance explained) of each principal component (y-axis) against each component (x-axis). The first few components explain lots of variance, but there is a decent elbow around the fourth component.
+
+VSS suggests 1 or 2, MAP suggests 8, parallel analysis shows 3. I'm going with 3 here, which will be explained further below.
+
+## Principal Components Analysis
+
+Now we let's look run the PCA.
+
+```{r}
+#| label: pca
+#| warning: false
+(pca_out <- pca(normed, nfactors = 3, rotate = 'varimax'))
+
+```
+
+Recommendations for creating composite indices are to extract components that each have eigenvalues > 1, explained variance > 0.10, and such that the proportion of explained variance for the total set is > 0.60 [@nicolettiSummaryIndicatorsProduct2000; @oecdHandbookConstructingComposite2008].
+
+Our total cumulative variance is explained is 0.74, and our component that explains the least variance is RC4 with 0.11. Note that extracting four or more components here gives us a component with less than 0.10, so this is why we are sticking to three. The first component (RC1) explains 38% of the variance in the data. The second component is respectable at 0.26, while the third is barely above the threshold at 0.11.
+
+Looking at the metrics, we can see that the first component loads mostly onto the conservation practices, no-till acres, cover cropping, drainage, and total fertilizer expenses. The second component leads onto mean above-ground biomass (although there is cross-loading with the first component), operations with silvapasture, operations with easements, rotational grazing operations, and operations with fertilizer expenses. This seems to be catching more of the population-related metrics. The last component only loads onto a few metrics: easement acres, easement acres per farm, and silvapasture operations (which has some heavy cross-loading).
+
+## Aggregation
+
+Here, we follow Nicoletti and calculate the normalized sum of square factor loadings, which represent the proportion of total unit variance of the metrics that is explained by the component.
+
+```{r}
+#| label: get_weights
+#| warnings: false
+## Get metric weights following Nicoletti 2000
+# Pull out metric loadings
+loadings <- pca_out$weights %>%
+  as.data.frame()
+
+# For each set of loadings, get squares, and then normalized proportions
+sq_loadings <- map(loadings, ~ .x^2)
+metric_weights <- map(sq_loadings, ~ .x / sum(.x))
+head(as.data.frame(metric_weights))
+```
+
+Now we can use these to weight metrics and aggregate them into a component score for each county.
+
+```{r}
+# Component scores for each component across each county
+component_scores <- map(metric_weights, \(x) {
+  as.matrix(normed) %*% x
+}) %>%
+  as.data.frame()
+head(component_scores)
+```
+
+An alternative method here is regression scores, which are native to PCA. I'll calculate these as well to compare to the component scores above.
+
+```{r}
+#| label: regression_scores
+#| warnings: false
+# Get regression scores from pca output
+regression_scores <- as.data.frame(pca_out$scores)
+head(regression_scores)
+```
+
+Running a correlation to see how similar they are:
+
+```{r}
+#| label: score_correlation
+#| warnings: false
+coefs <- map2_dbl(component_scores, regression_scores, \(x, y) cor(x, y)) %>%
+  round(3)
+cat(paste0(
+  'Pearson Correlation Coefficients:\n',
+  'RC1: ', coefs[1], '\n',
+  'RC2: ', coefs[2], '\n',
+  'RC3: ', coefs[3]
+))
+```
+
+It looks like they are reasonably similar, although RC2 and RC3 have substantially lower correlation coefficients. It will be worth noting this and coming back to explore the differences at some point.
+
+For now, let's keep following Nicoletti and aggregate the component scores into a single variable.
+
+```{r}
+sum_sq_loadings <- map_dbl(sq_loadings, ~ sum(.x))
+(factor_weights <- map_dbl(sum_sq_loadings, ~ .x / (sum(sum_sq_loadings))))
+```
+
+Curious that the component that accounted for the most variance is weighted the lowest. Worth doing a dive here at some point and figuring out why that is.
+
+We will use these to weight each component to combine them.
+
+```{r}
+dimension_scores <- component_scores %>%
+  rowwise() %>%
+  mutate(
+    dimension_score = sum(RC1, RC2, RC3),
+    across(everything(), ~ round(.x, 3))
+  ) %>%
+  bind_cols(rownames(imp)) %>%
+  select(fips = 5, everything())
+head(dimension_scores)
+```
+
+Now that we have all three component scores and the dimension score, let's take a look at a map. Select the data to display with the layer button on the left.
+
+```{r}
+#| out.width: 100%
+pacman::p_load(
+  mapview,
+  leaflet,
+  leafpop
+)
+map_dat <- readRDS('data/sm_data.rds')[['ne_counties_2021']] %>%
+  right_join(dimension_scores) %>%
+  left_join(fips_key) %>%
+  select(
+    fips,
+    RC1:RC3,
+    'Dimension Score' = dimension_score,
+    County = county_name,
+    State = state_name,
+    geometry
+  )
+
+map_dat %>%
+  mapview(
+    zcol = c(
+      'Dimension Score',
+      'RC1',
+      'RC2',
+      'RC3'
+    ),
+    burst = FALSE,
+    hide = c(FALSE, rep(TRUE, 3)),
+    popup = popupTable(
+      map_dat,
+      zcol = names(map_dat)[-length(map_dat)],
+      row.numbers = FALSE,
+      feature.id = FALSE
+  )
+)
+```
+
+Keep in mind there are lots of caveats with this very preliminary analysis, the most egregious being a set of metrics that does not well represent the dimension it purports to measure. Missing data and various branching paths of decisions in the index scoring also deserve further scrutiny.
+
+Still, there is plenty to look at here as a first pass at aggregating dimension scores. The first component, RC1, was heavily influenced by the geography - it loads the strongest onto metrics measuring acres or acres per farm. I presume this is why Aroostook county shows up so high on this scale. RC2 loaded strongly onto the number of operations using various conservation practices (easements, no-till, rotational grazing). It seems to track a little bit with county size, but is highest near relatively urban areas. RC3 was most associated with conservation easement acres and easement acres per farm, and consequently seems to track with rural areas.
+
+I don't think that the dimension score inspires much confidence as it is now. The weighting method for combining components is hard to interpret intuitively, and I think more expert driven normative decisions might make more sense at that point. On the bright side, it is a good expedition into the kinds of ambiguous decisions that will need to be made to aggregate this data across the whole system.

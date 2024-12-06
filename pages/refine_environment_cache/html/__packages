@@ -1,0 +1,17 @@
+dplyr
+conflicted
+projecter
+skimr
+readr
+stringr
+purrr
+ggplot2
+ggpubr
+reactable
+tidyr
+forcats
+paletteer
+ggraph
+igraph
+RColorBrewer
+viridisLite

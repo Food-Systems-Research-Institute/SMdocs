@@ -192,6 +192,13 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;70
   }
 }
 
+.centered-table {
+  display: flex;
+  justify-content: center;
+  //margin-left: auto;
+  //margin-right: auto;
+}
+
 // Forms
 
 input,

@@ -1,0 +1,10 @@
+dplyr
+conflicted
+projecter
+skimr
+readr
+stringr
+purrr
+ggplot2
+ggpubr
+reactable

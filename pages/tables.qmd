@@ -1,0 +1,276 @@
+---
+title: "Metric Tables"
+---
+
+```{r}
+#| label: setup
+#| warnings: false
+#| echo: false
+pacman::p_load(
+  conflicted
+)
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  .quiet = TRUE
+)
+```
+
+This page contains a couple of tables for exploring the secondary data metrics that have been collected. The first contains the metadata and links to sources. The second contains the actual data. This one is harder to navigate, as it will take a few filters to get results that are comprehensible. You can also just download a .csv from the table to work with. 
+
+## Metadata Table
+
+Using the table: 
+
+* Click column headers to sort
+* Global search in the top right, or column search in each header
+* Change page length and page through results at the bottom
+* Use the download button to download a .csv file of the filtered table
+* Click the arrow on the left of each row for details, including a URL to the data source.
+
+```{r}
+#| label: metadata_table
+#| warning: false
+
+pacman::p_load(
+  dplyr,
+  reactable,
+  stringr,
+  htmltools
+)
+
+# Load full metadata table
+metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
+
+# Pick out variables to display
+metadata <- metadata_all %>% 
+  select(
+    metric,
+    'Variable Name' = variable_name,
+    definition,
+    dimension,
+    index,
+    indicator,
+    units,
+    'Year' = latest_year, # Renaming latest year as year, not including og year
+    source,
+    scope,
+    resolution,
+    url
+) %>% 
+  setNames(c(str_to_title(names(.))))
+
+###
+htmltools::browsable(
+  tagList(
+    
+    tags$div(
+      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
+      
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Show/hide more columns"),
+        onclick = "Reactable.setHiddenColumns('metadata_table', prevColumns => {
+          return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
+        })"
+      ),
+      
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Download as CSV"),
+        onclick = "Reactable.downloadDataCSV('metadata_table', 'sustainability_metadata.csv')"
+      )
+    ),
+    
+    reactable(
+      metadata,
+      sortable = TRUE,
+      resizable = TRUE,
+      filterable = TRUE,
+      searchable = TRUE,
+      pagination = TRUE,
+      bordered = TRUE,
+      wrap = TRUE,
+      rownames = FALSE,
+      onClick = 'select',
+      striped = TRUE,
+      pageSizeOptions = c(5, 10, 25, 50, 100),
+      defaultPageSize = 5,
+      showPageSizeOptions = TRUE,
+      highlight = TRUE,
+      style = list(fontSize = "14px"),
+      compact = TRUE,
+      fullWidth = TRUE,
+      columns = list(
+        Metric = colDef(
+          minWidth = 200,
+          sticky = 'left'
+        ),
+        'Variable Name' = colDef(
+          minWidth = 150
+        ),
+        Definition = colDef(
+          minWidth = 250
+        ),
+        'Latest Year' = colDef(minWidth = 75),
+        Source = colDef(minWidth = 250),
+        Scope = colDef(show = FALSE),
+        Resolution = colDef(show = FALSE),
+        Url = colDef(
+          minWidth = 300,
+          show = FALSE
+        )
+      ),
+      defaultColDef = colDef(minWidth = 100),
+      elementId = "metadata_table",
+      details = function(index) {
+        div(
+          style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
+             background-color: #E0EEEE; border-radius: 10px; border-color: black;
+             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);",
+          
+          tags$h4(
+            strong("Details"), 
+          ),
+          tags$p(
+            strong('Metric Name: '), 
+            as.character(metadata_all[index, 'metric']),
+          ),
+          tags$p(
+            strong('Variable Name: '), 
+            as.character(metadata_all[index, 'variable_name']),
+          ),
+          tags$p(
+            strong('Definition: '), 
+            as.character(metadata_all[index, 'definition']),
+          ),
+          tags$p(
+            strong('Source: '), 
+            as.character(metadata_all[index, 'source'])
+          ),
+          tags$p(
+            strong('Latest Year: '), 
+            as.character(metadata_all[index, 'latest_year'])
+          ),
+          tags$p(
+            strong('All Years (cleaned, wrangled, and included): '), 
+            as.character(metadata_all[index, 'year'])
+          ),
+          tags$p(
+            strong('Updates: '), 
+            str_to_title(as.character(metadata_all[index, 'updates']))
+          ),
+          tags$p(
+            strong('URL: '), 
+            tags$a(
+              href = as.character(metadata_all[index, 'url']),
+              target = '_blank',
+              as.character(metadata_all[index, 'url'])
+            )
+          )
+        )
+      }
+    )
+  )
+)
+
+```
+
+## Data Table
+
+```{r}
+#| label: metric_table
+#| warning: false
+
+pacman::p_load(
+  dplyr,
+  reactable,
+  stringr,
+  htmltools
+)
+
+# Load metrics and metadata
+metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
+metrics <- readRDS('data/sm_data.rds')[['metrics']]
+fips_key <- readRDS('data/sm_data.rds')[['fips_key']]
+
+# Value formatting function based on units
+source('dev/format_values.R')
+
+# Join with metadata and county fips codes
+metrics <- metrics %>% 
+  left_join(metadata_all, by = join_by('variable_name')) %>% 
+  left_join(fips_key, by = join_by('fips')) %>% 
+  mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>% 
+  format_values() %>% 
+  select(
+    metric,
+    'Variable Name' = variable_name,
+    definition,
+    year = year.x,
+    Area = county_name,
+    units,
+    value
+  ) %>% 
+  setNames(c(str_to_title(names(.)))) %>% 
+  dplyr::filter(!is.na(Value))
+
+
+## Reactable table
+htmltools::browsable(
+  tagList(
+    
+    tags$div(
+      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Download as CSV"),
+        onclick = "Reactable.downloadDataCSV('metrics_table', 'sustainability_metrics.csv')"
+      )
+    ),
+    
+    reactable(
+      metrics,
+      sortable = TRUE,
+      resizable = TRUE,
+      filterable = TRUE,
+      searchable = TRUE,
+      pagination = TRUE,
+      bordered = TRUE,
+      wrap = TRUE,
+      rownames = FALSE,
+      onClick = 'select',
+      striped = TRUE,
+      pageSizeOptions = c(5, 10, 25, 50, 100),
+      defaultPageSize = 5,
+      showPageSizeOptions = TRUE,
+      highlight = TRUE,
+      style = list(fontSize = "14px"),
+      compact = TRUE,
+      fullWidth = TRUE,
+      columns = list(
+        Metric = colDef(
+          minWidth = 125,
+          sticky = 'left'
+        ),
+        'Variable Name' = colDef(
+          minWidth = 125
+        ),
+        Definition = colDef(
+          minWidth = 250
+        ),
+        Units = colDef(minWidth = 100),
+        'Year' = colDef(minWidth = 100)
+      ),
+      defaultColDef = colDef(minWidth = 100),
+      elementId = "metrics_table"
+    )
+  )
+)
+
+```
+
+

@@ -1,8 +1,8 @@
 project:
   type: website
   execute-dir: project
-  preview:
-    browser: false
+  preview: 
+    browser: true
 
 website:
   title: "Food Systems Research Center"
@@ -34,38 +34,51 @@ website:
     # search: true
     contents:
       - text: Home
-        href: pages/01_home.qmd
-      - text: Framework
-        href: pages/02_framework.qmd
-      - text: SM-Explorer
-        href: pages/03_sm-explorer.qmd
-      - text: Tables
-        href: pages/04.0_tables.qmd
-      - section: Dimensions
+        href: pages/home.qmd
+      - section: Framework
+        contents: 
+          - text: Overview
+            href: pages/framework.qmd
+          - section: Indicator Refinement
+            contents: 
+              - text: Economics
+                href: pages/refine_economics.qmd
+              - text: Environment
+                href: pages/refine_environment.qmd
+      - section: Secondary Data
         contents:
           - text: Economics
-            href: pages/04.1_economics.qmd
-          - text: Environment
-            href: pages/04.2_environment.qmd
+            href: pages/data_economics.qmd
+          - section: Environment
+            contents:
+              - text: Overview
+                href: pages/data_environment_overview.qmd
+              - text: Maps
+                href: pages/data_environment_maps.qmd
+              - text: Analysis
+                href: pages/data_environment_analysis.qmd
+          - text: SM-Explorer
+            href: pages/sm-explorer.qmd
+          - text: Tables
+            href: pages/tables.qmd
 
 format:
   html:
     page-layout: article 
-    # theme: sandstone
-    theme: custom_theme.scss
+    theme: custom_theme.scss # modified sandstone
     fig-align: left
     css: styles.css
     toc: true
     toc-title: "On This Page"
     toc-location: right
-    toc-depth: 3
+    toc-depth: 4
     number-sections: true
-    number-depth: 2
+    number-depth: 4
     code-fold: true
     grid: 
       body-width: 900px
-      sidebar-width: 200px
-      margin-width: 200px
+      sidebar-width: 250px
+      margin-width: 250px
     mainfont: Roboto
     smooth-scroll: true
     link-external-newwindow: true
@@ -77,3 +90,5 @@ execute:
   warning: false
   cache: true
 
+editor_options:
+  chunk_output_type: console

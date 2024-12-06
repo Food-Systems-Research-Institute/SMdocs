@@ -1,0 +1,276 @@
+---
+title: "Environment: Maps"
+execute:
+  cache: false
+---
+
+```{r}
+#| label: setup
+#| echo: false
+pacman::p_load(
+  conflicted,
+  mapview,
+  dplyr,
+  sf,
+  viridisLite,
+  leaflet,
+  leaflet.extras,
+  leafpop,
+  stars
+)
+
+conflicts_prefer( 
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::mutate(),
+  dplyr::rename(),
+  .quiet = TRUE
+)
+```
+
+
+Taking a quick tour through some of the spatial data here. Most of these metrics will also be available to peruse on the Shiny app, with the exception of those that are hard to aggregate, like biodiversity hotspots.
+
+## Land Use
+
+This is the MRLC 30m LULC layer from 2023. Below the map, you can find a table with codes and descriptions. Sort or expand to see all the values.
+
+```{r}
+#| label: lulc_raster
+#| fig-cap: Land use land cover map
+#| out.width: 100%
+lulc <- readRDS('data/sm_data.rds')[['mrlc_lulc_ne']]
+counties <- readRDS('data/sm_data.rds')[['ne_counties_2024']]
+
+lulc_map <- lulc %>% 
+  mapview(
+    layer.name = 'LULC'
+  ) + 
+  mapview(
+    counties,
+    alpha.regions = 0,
+    color = 'black',
+    col.regions = 'black',
+    lwd = 1.25,
+    layer.name = 'Counties'
+  )
+
+lulc_map@map %>% 
+  addFullscreenControl()
+```
+
+```{r}
+#| label: lulc_code_table
+#| warnings: false
+pacman::p_load(
+  reactable,
+  dplyr,
+  stringr
+)
+
+meta <- readRDS('data/sm_data.rds')[['metadata']]
+
+lulc_codes <- meta %>% 
+  filter(
+    str_detect(variable_name, '^lulc'),
+    str_detect(variable_name, 'NoData|Diversity', negate = TRUE)
+  ) %>% 
+  select(definition) %>% 
+  mutate(
+    Value = c(11, 21, 22, 23, 24, 31, 41, 42, 43, 52, 71, 81, 82, 90, 95),
+    Class = c(
+      'Water',
+      rep('Developed', 4),
+      'Barren',
+      rep('Forest', 3),
+      'Shrubland',
+      'Herbaceous',
+      rep('Planted/Cultivated', 2),
+      rep('Wetlands', 2)
+    ),
+    Type = c(
+      'Open Water',
+      'Developed, Open Space',
+      'Developed, Low Intensity',
+      'Developed, Medium Intensity',
+      'Developed, High Intensity',
+      'Barren Land (Rock / Sand / Clay)',
+      'Deciduous Forest',
+      'Evergreen Forest',
+      'Mixed Forest',
+      'Shrub / Scrub',
+      'Grassland / Herbaceous',
+      'Pasture / Hay',
+      'Cultivated Crops',
+      'Woody Wetlands',
+      'Emergent Herbaceous Wetlands'
+    )
+  ) %>% 
+  select(
+    Value,
+    Class,
+    Type,
+    Description = definition
+  )
+
+reactable(
+  lulc_codes,
+  sortable = TRUE,
+  resizable = TRUE,
+  filterable = TRUE,
+  searchable = FALSE,
+  pagination = TRUE,
+  bordered = TRUE,
+  wrap = TRUE,
+  rownames = FALSE,
+  striped = TRUE,
+  defaultPageSize = 5,
+  showPageSizeOptions = FALSE,
+  highlight = TRUE,
+  style = list(fontSize = "14px"),
+  compact = TRUE,
+  columns = list(
+    Value = colDef(minWidth = 40),
+    Class = colDef(minWidth = 100),
+    Type = colDef(minWidth = 100),
+    Description = colDef(minWidth = 500)
+  )
+)
+```
+
+## Land Use Diversity
+
+LULC Diversity is derived from the MRLC LULC layer above. LULC types are aggregated by category (water, developed, barren, forest, shrubland, herbaceous, cultivated, wetlands) and Shannon diversity is calculated for each county. It makes for an interesting metric, but I'm not sure it makes for a strong normative metric. If anyone has thoughts on what the "right" amount of LULC diversity is, I'd love to hear from you. 
+
+```{r}
+#| label: lulc
+#| fig-cap: Land Use Land Cover Diversity
+#| out.width: 100%
+div <- readRDS('data/sm_data.rds')[['lulc_div']]
+
+div_map <- mapview(
+  div,
+  zcol = 'lulc_div',
+  label = 'county_name',
+  layer.name = 'LULC Diversity',
+  popup = popupTable(
+    div,
+    zcol = c(
+      'county_name',
+      'lulc_div'
+    ),
+    row.numbers = FALSE,
+    feature.id = FALSE
+  )
+)
+
+div_map@map %>% 
+  addFullscreenControl()
+```
+
+## Rare, Threatened and Endangered Species
+
+The Vermont ANR Biofinder has lots of great layers. Technical abstracts for these layers can be found [here](https://anr.vermont.gov/sites/anr/files/documents/Technical_%20Abstracts_for_BioFinder_4______2023.pdf). Below is a map of rare, threatened, and endangered species polygons statewide. Note that these are lumped together into a multi-polygon to save some space, but the individual polygons didn't provide a whole lot useful information anyway.
+
+```{r}
+#| label: rte
+#| fig-cap: Map of Rare, Threatened, and Endangered Species
+#| out.width: 100%
+#| cache: false
+pacman::p_load(
+  mapview,
+  leaflet.extras,
+  sf
+)
+rte <- readRDS('data/sm_data.rds')[['biofinder_rte_spp']] %>% 
+  summarize()
+rte_map <- mapview(
+  rte,
+  layer.name = 'RTE Species',
+  col.regions = '#154734'
+)
+rte_map@map %>%
+  addFullscreenControl()
+```
+
+
+## Uncommon Species
+
+Biofinder also lists uncommon species as those facing a "moderate risk of extinction or extirpation due to restricted range, relatively few populations (often 80 or fewer), recent widespread declines, and other factors." Same as above, these are lumped together into a single polygon for convenience.
+
+```{r}
+#| label: uncommon
+#| fig-cap: Map of Uncommon Species Distributions
+#| out.width: 100%
+uncommon <- readRDS('data/sm_data.rds')[['biofinder_uncommon_spp']] %>% 
+  summarize()
+uncommon_map <- mapview(
+  uncommon,
+  layer.name = 'Uncommon Species',
+  col.regions = '#154734'
+)
+uncommon_map@map %>%
+  addFullscreenControl()
+```
+
+## Forest Biomass
+
+The TreeMap 2016 dataset is quite comprehensive national survey of forest health and diversity. Updates are infrequent, but this is the best layer I've found to address biomass. The raster is at 30m.
+
+```{r}
+#| label: treemap_biomass_raster
+#| fig-cap: Map of aboveground forest biomass
+#| out.width: 100%
+treemap <- readRDS('data/sm_data.rds')[['treemap_biomass']]
+counties <- readRDS('data/sm_data.rds')[['ne_counties_2024']]
+
+treemap_map <- treemap %>%
+  mapview(
+    layer.name = 'Biomass (tons per acre)',
+    col.regions = viridis(n = 256)
+  ) +
+  mapview(
+    counties,
+    alpha.regions = 0,
+    color = 'black',
+    col.regions = 'black',
+    lwd = 1.25,
+    layer.name = 'Counties'
+  )
+treemap_map@map %>%
+  addFullscreenControl()
+```
+
+Shown below is the mean live above-ground biomass aggregated by county so that it plays well with other metrics. Note that it is measured in tons *per acre of forest*, non-forest cells were removed from analysis. So, it is not showing density of forest, just biomass in existing forest. This is why the more urban counties still show a reasonable density of live biomass. There is lots more that can be pulled out of this dataset, like dead/down carbon, tree stocking, live canopy cover, height, volume, tree per acre, etc. More info can be found [here](https://research.fs.usda.gov/treesearch/65597).
+
+```{r}
+#| label: biomass
+#| fig-cap: Map of aboveground forest biomass by county
+#| out.width: 100%
+pacman::p_load(
+  mapview,
+  dplyr,
+  sf,
+  viridisLite,
+  leaflet,
+  leafpop,
+  stars
+)
+
+biomass <- readRDS('data/sm_data.rds')[['mean_biomass']]
+biomass_map <- mapview(
+  biomass,
+  zcol = 'mean_biomass',
+  layer.name = 'Mean Live Above<br>Ground Biomass<br>(tons per acre)',
+  label = 'county_name',
+  popup = popupTable(
+    biomass,
+    zcol = c(
+      'county_name',
+      'mean_biomass'
+    ),
+    feature.id = FALSE,
+    row.numbers = FALSE
+  )
+)
+```

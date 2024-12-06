@@ -1,0 +1,16 @@
+dplyr
+conflicted
+projecter
+ggplot2
+stringr
+plotly
+RColorBrewer
+purrr
+rlang
+ggpubr
+tidyr
+GGally
+tibble
+reshape
+Hmisc
+viridisLite
