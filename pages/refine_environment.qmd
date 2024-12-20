@@ -62,9 +62,10 @@ This graph shows the original framework for the dimension as described in the Wi
 # Use custom function in SMDO repo
 source('dev/get_dimension_ggraph.R')
 get_dimension_ggraph(
-  'data/trees/wiltshire_tree.csv',
-  'Environment',
-  y_limits = c(-1.5, 2.1)
+  csv_path = 'data/trees/wiltshire_tree.csv',
+  dimension_in = 'Environment',
+  y_limits = c(-1.5, 2.1),
+  palette = "ggthemes::stata_s2color"
 )
 
 ```
@@ -83,9 +84,10 @@ Here is the current set of indicators in the matrix, following the Sustainabilit
 # Use custom function in SMDO repo
 source('dev/get_dimension_ggraph.R')
 get_dimension_ggraph(
-  'data/trees/matrix_tree.csv',
-  'Environment',
-  y_limits = c(-1.5, 2.1)
+  csv_path = 'data/trees/matrix_tree.csv',
+  dimension_in = 'Environment',
+  y_limits = c(-1.5, 2.1),
+  palette = "ggthemes::stata_s2color"
 )
 ```
 
@@ -103,9 +105,10 @@ Finally, the tentative set of indicators following the indicator refinement meet
 # Use custom function in SMDO repo
 source('dev/get_dimension_ggraph.R')
 get_dimension_ggraph(
-  'data/trees/env_meeting_tree.csv',
-  'Environment',
-  y_limits = c(-1.5, 2.1)
+  csv_path = 'data/trees/env_meeting_tree.csv',
+  dimension_in = 'Environment',
+  y_limits = c(-1.5, 2.1),
+  palette = "ggthemes::stata_s2color"
 )
 ```
 

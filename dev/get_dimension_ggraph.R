@@ -11,7 +11,8 @@ pacman::p_load(
   dplyr,
   readr,
   RColorBrewer,
-  paletteer
+  paletteer,
+  snakecase
 )
 
 conflicts_prefer(
@@ -22,39 +23,76 @@ conflicts_prefer(
   .quiet = TRUE
 )
 
-get_dimension_ggraph <- function(path, 
-                                 dimension,
+get_dimension_ggraph <- function(csv_path = NULL,
+                                 framework_df = NULL,
+                                 dimension_in,
+                                 include_metrics = FALSE,
                                  x_limits = c(0, 0), 
                                  y_limits = c(-1.5, 2.1),
                                  leaf_font_size = 4,
                                  index_label_size = 0.1,
                                  index_font_size = 4,
                                  palette = 'basetheme::royal') {
-  df <- readr::read_csv(path) %>% 
-    dplyr::filter(Dimension == dimension) %>% 
-    dplyr::arrange(desc(Index), desc(Indicator))
+  
+  # Put input in lower case for consistency
+  dimension_in <- stringr::str_to_lower(dimension_in)
+  
+  # Logic to take either path to csv 
+  if (!is.null(csv_path)) {
+    df <- readr::read_csv(csv_path)
+  } else if (!is.null(framework_df)) {
+    df <- framework_df
+  } else {
+    stop('\nMust provide either path or framework as a dataframe.')
+  }
+  
+  # Filter to dimension
+  df <- df %>% 
+    setNames(c(stringr::str_to_lower(names(.)))) %>%
+    mutate(across(any_of(c('dimension', 'index', 'indicator')), ~ stringr::str_to_lower(.x))) %>% 
+    dplyr::filter(dimension == dimension_in)
+  
+  # Metric logic
+  if (include_metrics == TRUE) {
+    df <- df %>% 
+      dplyr::select(dimension, index, indicator, metric) %>% 
+      dplyr::arrange(desc(index), desc(indicator), desc(metric))
+  } else {
+    df <- df %>% 
+      select(dimension, index, indicator) %>% 
+      dplyr::arrange(desc(index), desc(indicator))
+  }
   
   ## Make edges
   # Include groupings by dimension, then combine them
   edges <- list()
   edges$dim_ind <- df %>% 
-    dplyr::select(Dimension, Index) %>% 
+    dplyr::select(dimension, index) %>% 
     unique() %>% 
-    dplyr::rename(from = Dimension, to = Index) %>% 
+    dplyr::rename(from = dimension, to = index) %>% 
     dplyr::mutate(group = to)
   edges$ind_ind <- df %>% 
-    dplyr::select(Index, Indicator) %>% 
+    dplyr::select(index, indicator) %>% 
     unique() %>% 
-    dplyr::rename(from = Index, to = Indicator) %>% 
+    dplyr::rename(from = index, to = indicator) %>% 
     dplyr::mutate(group = from)
+  
+  # Logic for include_metrics
+  if (include_metrics == TRUE) {
+    edges$ind_met <- df %>% 
+      dplyr::select(indicator, metric) %>% 
+      unique() %>% 
+      dplyr::rename(from = indicator, to = metric) %>% 
+      dplyr::mutate(group = edges$ind_ind$group[match(.$from, edges$ind_ind$to)])
+  }
   edges <- bind_rows(edges)
   
   ## Make vertices
   # Each line is a single vertex (dimension, index, or indicator)
   # We are just giving them random values to control point size for now
   vertices = data.frame(
-    name = unique(c(as.character(edges$from), as.character(edges$to))),
-    value = runif(nrow(edges) + 1)
+    name = unique(c(as.character(edges$from), as.character(edges$to)))
+    # value = runif(nrow(edges) + 1)
   )
   
   # Add the dimension groupings to the vertices as well
@@ -76,6 +114,12 @@ get_dimension_ggraph <- function(path,
   edges <- edges %>%
     mutate(group = factor(group, levels = names(group_colors)))
   
+  # If including metrics, save names of indicators, used later for labeling
+  if (include_metrics == TRUE) {
+    indicator_names <- unique(df$indicator)
+  } else {
+    indicator_names <- NULL
+  }
   
   ## Create graph
   # Make ggraph object from edges and vertices
@@ -104,7 +148,11 @@ get_dimension_ggraph <- function(path,
     
     # Label the Indices within the graph
     geom_node_label(
-      aes(label = ifelse(name == group | name == dimension, name, NA)),
+      aes(label = ifelse(
+        name == group | name == dimension_in | name %in% indicator_names, 
+        name, 
+        NA
+      )),
       label.padding = unit(0.2, "lines"),
       label.r = unit(0.3, "lines"),
       label.size = index_label_size,

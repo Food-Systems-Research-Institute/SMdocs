@@ -61,6 +61,10 @@ website:
             href: pages/sm-explorer.qmd
           - text: Tables
             href: pages/tables.qmd
+      - section: Secondary Data Rework
+        contents:
+          - text: Framework
+            href: pages/refined_framework.qmd
 
 format:
   html:

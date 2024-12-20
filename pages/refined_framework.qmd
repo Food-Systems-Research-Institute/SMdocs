@@ -1,0 +1,342 @@
+---
+title: "Refined Secondary Data Framework"
+format:
+  html:
+    fig-dpi: 200
+---
+
+```{r}
+#| context: setup
+#| echo: false
+pacman::p_load(
+  conflicted,
+  dplyr,
+  purrr,
+  stringr,
+  readr
+)
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::mutate(),
+  dplyr::select(),
+  dplyr::full_join(),
+  dplyr::arrange(),
+  dplyr::bind_rows(),
+  dplyr::group_by(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
+
+source('dev/get_dimension_ggraph.R')
+raw <- readRDS('data/sm_data.rds')[['refined_tree']]
+
+# Clean up the framework df 
+frame <- raw %>% 
+  select(dimension:variable_name, resolution, use) %>% 
+  rename(index = 2) %>% 
+  dplyr::filter(use == 'x') %>% 
+  select(-use) %>% 
+  mutate(
+    metric = ifelse(
+      str_length(metric) > 50,
+      paste0(str_sub(metric, end = 50), '...'),
+      metric
+    )
+  )
+
+```
+
+This page shows the partially refined framework as it stands after two dimension meetings: economics and environment. It also includes a selection of secondary data metrics to match those indicators. We have collected around 1500 metrics so far, although many of those are fluff. Effectively, we have around 250 meaningful metrics. Here, we are using a selection of 95 of them to make a preliminary framework for preliminary analyses. This is more than we have been planning for the refined framework, which will give us a chance to see how aggregate scores change with different combinations of metrics and under different methods of aggregation. 
+
+There are still a few gaps I would have liked to fill by now:
+
+1. I have found next to nothing on the soil index (biology, chemistry, structure)
+2. There is precious little to represent Environment > Carbon > embodied/footprint. 
+3. The whole social dimension is certainly slim, but honestly not as slim as I expected.
+
+Another issue that is on our radar is that I have been trying to collect data at the county level whenever possible, giving us a sample of ~68 counties (depending on the year) with which to run PCA and exploratory analyses. Unfortunately, some crucial data is only available at the state level. We can aggregate back up to the state if need be, but then we are left with only 6 units of analysis. The longer-term solution I think will be to start around back again and collect all data at the state level across all states. This will let us use all the metrics at our disposal while still having a big enough sample size to do some empirical work.
+
+## Partially Refined Framework
+
+Here is the framework with a selection of secondary metrics, split into each dimension for ease of reading.
+
+<!-- ```{r} -->
+<!-- #| label: cleaning -->
+<!-- #| code-fold: true -->
+<!-- #| warning: false -->
+<!-- raw <- readRDS('data/sm_data.rds')[['refined_tree']] -->
+
+<!-- # Clean up the framework df  -->
+<!-- frame <- raw %>%  -->
+<!--   select(dimension:variable_name, resolution, use) %>%  -->
+<!--   rename(index = 2) %>%  -->
+<!--   dplyr::filter(use == 'x') %>%  -->
+<!--   select(-use) %>%  -->
+<!--   mutate( -->
+<!--     metric = ifelse( -->
+<!--       str_length(metric) > 50, -->
+<!--       paste0(str_sub(metric, end = 50), '...'), -->
+<!--       metric -->
+<!--     ) -->
+<!--   ) -->
+<!-- ``` -->
+
+### Environment
+
+We are missing any soils data in the environment dimension. We have a reasonable spread of metrics for carbon, ghg, and nutrients, although the stocks are only coming from the TreeMap 2016 dataset. Belowground carbon would be great to add here if I can find it. Fluxes are from a great EPA dataset, filtered down to agricultural emissions only. Here, I have aggregated by the type of emission, but we also have very specific breakdowns. Species and habitat is not great - I have more rare species and habitat layers, but I haven't sorted out how to make sense of them at this scale. 
+
+```{r}
+#| label: environment
+#| code-fold: true
+#| warning: false
+#| fig-height: 6
+#| fig-width: 10
+#| fig-align: center
+source('dev/get_dimension_ggraph.R')
+get_dimension_ggraph(
+  framework_df = frame,
+  dimension_in = 'environment',
+  include_metrics = TRUE,
+  y_limits = c(-2, 3.25),
+  palette = "ggthemes::stata_s2color"
+)
+```
+
+### Economics
+
+It has definitely been easier to find economics data than other dimensions. Worth noting here is that the access to land indicator is not ideal. I'm using value and farm size as a proxy for access. Use of crop insurance is also a proxy, since I could not find direct insurance claim data from FSA. So for now, we are just using the presidential and ag secretary declarations of disasters that allow for insurance claims. 
+
+```{r}
+#| label: economics
+#| code-fold: true
+#| warning: false
+#| fig-height: 7
+#| fig-width: 12
+#| fig-align: center
+get_dimension_ggraph(
+  framework_df = frame,
+  dimension_in = 'economics',
+  include_metrics = TRUE,
+  y_limits = c(-1.5, 3.1),
+  palette = "ggthemes::stata_s2color"
+)
+```
+
+### Production
+
+The production dimension looks slim at first glance, but is better than it looks. Agricultural exports are a pretty robust dataset at the state level from ERS, although the import data only includes the values of the top five imports for each state - not ideal. Crop diversity is based on the Cropland Data Layer, a USDA NASS estimate of crop types, which I used to calculate Shannon diversity at the county level. The rest of the metrics come from NASS. Production is an area in which I feel better about using NASS data than usual. 
+
+```{r}
+#| label: production
+#| code-fold: true
+#| warning: false
+#| fig-height: 3
+#| fig-width: 10
+#| fig-align: center
+get_dimension_ggraph(
+  framework_df = frame,
+  dimension_in = 'production',
+  include_metrics = TRUE,
+  y_limits = c(-1.75, 3),
+  palette = "ggthemes::stata_s2color"
+)
+```
+
+### Health
+
+The Food Environment Atlas has lots of data on access and nutrition, which accounts for much of the food security data, along with NASS. The 'food security tbd' index is just pulled out because this is already an index of food security that encompasses access and affordability. I will use this to explore how redundant they are. I also threw in a slew of metrics for physical health. The Factor and Outcome Z-Scores are already composite indices from the County Health Rankings, a great dataset. This is another area I want to explore with PCA to see how much unique variation these little metrics bring compared to a composite. 
+
+```{r}
+#| label: health
+#| code-fold: true
+#| warning: false
+#| fig-height: 6
+#| fig-width: 10
+#| fig-align: center
+get_dimension_ggraph(
+  framework_df = frame,
+  dimension_in = 'health',
+  include_metrics = TRUE,
+  y_limits = c(-1.9, 3),
+  palette = "ggthemes::stata_s2color"
+)
+```
+
+### Social
+
+The social dimension is admittedly slim, but it could have been a lot worse. The County Health Rankings dataset brings a few useful metrics here, like social associations and disconnected youth. Census participation and voter turnout are proxies for participatory governance in food systems - I can't imagine finding something much more specific than that at this point. I also plan on replacing mean producer age with a diversity index for age structure among producers.
+
+```{r}
+#| label: social
+#| code-fold: true
+#| warning: false
+#| fig-height: 3
+#| fig-width: 10
+#| fig-align: center
+get_dimension_ggraph(
+  framework_df = frame,
+  dimension_in = 'social',
+  include_metrics = TRUE,
+  y_limits = c(-1.9, 3),
+  palette = "ggthemes::stata_s2color"
+)
+```
+
+## Metadata
+
+Here is the metadata for this refined set of secondary metrics.
+
+```{r}
+#| label: metadata_table
+#| warning: false
+pacman::p_load(
+  dplyr,
+  reactable,
+  stringr,
+  htmltools
+)
+
+# Load full metadata table
+metadata <- readRDS('data/sm_data.rds')[['metadata']]
+
+# Pull var names out of frame df, extract from all metadata
+vars <- frame$variable_name
+metadata <- filter(metadata, variable_name %in% vars)
+
+# Pick out variables to display
+meta <- metadata %>% 
+  select(
+    metric,
+    'Variable Name' = variable_name,
+    definition,
+    dimension,
+    index,
+    indicator,
+    units,
+    'Year' = latest_year, # Renaming latest year as year, not including og year
+    source,
+    scope,
+    resolution,
+    url
+) %>% 
+  setNames(c(str_to_title(names(.))))
+
+###
+htmltools::browsable(
+  tagList(
+    
+    tags$div(
+      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
+      
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Show/hide more columns"),
+        onclick = "Reactable.setHiddenColumns('metadata_table', prevColumns => {
+          return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
+        })"
+      ),
+      
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Download as CSV"),
+        onclick = "Reactable.downloadDataCSV('metadata_table', 'sustainability_metadata.csv')"
+      )
+    ),
+    
+    reactable(
+      meta,
+      sortable = TRUE,
+      resizable = TRUE,
+      filterable = TRUE,
+      searchable = TRUE,
+      pagination = TRUE,
+      bordered = TRUE,
+      wrap = TRUE,
+      rownames = FALSE,
+      onClick = 'select',
+      striped = TRUE,
+      pageSizeOptions = c(5, 10, 25, 50, 100),
+      defaultPageSize = 5,
+      showPageSizeOptions = TRUE,
+      highlight = TRUE,
+      style = list(fontSize = "14px"),
+      compact = TRUE,
+      fullWidth = TRUE,
+      columns = list(
+        Metric = colDef(
+          minWidth = 200,
+          sticky = 'left'
+        ),
+        'Variable Name' = colDef(
+          minWidth = 150
+        ),
+        Definition = colDef(
+          minWidth = 250
+        ),
+        'Latest Year' = colDef(minWidth = 75),
+        Source = colDef(minWidth = 250),
+        Scope = colDef(show = FALSE),
+        Resolution = colDef(show = FALSE),
+        Url = colDef(
+          minWidth = 300,
+          show = FALSE
+        )
+      ),
+      defaultColDef = colDef(minWidth = 100),
+      elementId = "metadata_table",
+      details = function(index) {
+        div(
+          style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
+             background-color: #E0EEEE; border-radius: 10px; border-color: black;
+             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);",
+          
+          tags$h4(
+            strong("Details"), 
+          ),
+          tags$p(
+            strong('Metric Name: '), 
+            as.character(metadata[index, 'metric']),
+          ),
+          tags$p(
+            strong('Variable Name: '), 
+            as.character(metadata[index, 'variable_name']),
+          ),
+          tags$p(
+            strong('Definition: '), 
+            as.character(metadata[index, 'definition']),
+          ),
+          tags$p(
+            strong('Source: '), 
+            as.character(metadata[index, 'source'])
+          ),
+          tags$p(
+            strong('Latest Year: '), 
+            as.character(metadata[index, 'latest_year'])
+          ),
+          tags$p(
+            strong('All Years (cleaned, wrangled, and included): '), 
+            as.character(metadata[index, 'year'])
+          ),
+          tags$p(
+            strong('Updates: '), 
+            str_to_title(as.character(metadata[index, 'updates']))
+          ),
+          tags$p(
+            strong('URL: '), 
+            tags$a(
+              href = as.character(metadata[index, 'url']),
+              target = '_blank',
+              as.character(metadata[index, 'url'])
+            )
+          )
+        )
+      }
+    )
+  )
+)
+
+```

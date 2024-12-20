@@ -58,9 +58,11 @@ This graph shows the original framework as described in the Wiltshire et al. pap
 #| fig-height: 6
 #| fig-width: 10
 #| fig-align: center
+source('dev/get_dimension_ggraph.R')
 get_dimension_ggraph(
-  'data/trees/econ_wiltshire_tree.csv',
-  'Economics',
+  csv_path = 'data/trees/econ_wiltshire_tree.csv',
+  dimension_in = 'economics',
+  include_metrics = FALSE,
   y_limits = c(-1.5, 2.1)
 )
 
@@ -77,9 +79,10 @@ Here is the current set of indicators in the matrix, following the Sustainabilit
 #| fig-height: 8
 #| fig-width: 10
 #| fig-align: center
+source('dev/get_dimension_ggraph.R')
 get_dimension_ggraph(
-  'data/trees/econ_tree.csv',
-  'Economics',
+  csv_path = 'data/trees/econ_tree.csv',
+  dimension_in = 'economics',
   y_limits = c(-1.5, 2.1)
 )
 ```
@@ -95,9 +98,10 @@ Finally, the tentative set of indicators following the indicator refinement meet
 #| fig-height: 3
 #| fig-width: 10
 #| fig-align: center
+source('dev/get_dimension_ggraph.R')
 get_dimension_ggraph(
-  'data/trees/econ_meeting_tree.csv',
-  'Economics',
+  csv_path = 'data/trees/econ_meeting_tree.csv',
+  dimension_in = 'economics',
   y_limits = c(-1.5, 2.1)
 )
 ```
