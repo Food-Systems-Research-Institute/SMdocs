@@ -4,7 +4,7 @@ fig-responsive: false
 ---
 
 ```{r}
-#| label: setup
+#| label: prep
 #| echo: false
 pacman::p_load(
   conflicted,
@@ -216,7 +216,7 @@ ggarrange(
 ```{r}
 #| label: dist_plots_state
 #| fig-cap: Distributions of environmental variables at state level
-#| fig-height: 32
+#| fig-height: 40
 #| fig-width: 10
 #| fig-align: center
 #| warning: false
@@ -226,37 +226,48 @@ pacman::p_load(
   ggplot2,
   rlang,
   ggpubr,
-  tidyr
+  tidyr,
+  stringr
+)
+
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::mutate(),
+  dplyr::summarize(),
+  dplyr::rename(),
+  .quiet = TRUE
 )
 
 state_codes <- readRDS('data/sm_data.rds')[['fips_key']] %>%
-  select(fips, state_code)
+  dplyr::select(fips, state_code)
 
 env_state <- env_metrics %>%
-  filter_fips(scope = 'state') %>%
+  filter_fips(scope = 'states') %>%
   get_latest_year() %>%
-  select(fips, variable_name, value) %>%
-  mutate(variable_name = str_split_i(variable_name, '_', 1)) %>%
-  pivot_wider(
+  dplyr::select(fips, variable_name, value) %>%
+  dplyr::mutate(variable_name = stringr::str_split_i(variable_name, '_', 1)) %>% 
+  tidyr::complete(fips, variable_name) %>% 
+  tidyr::pivot_wider(
+    id_cols = fips,
     names_from = 'variable_name',
     values_from = 'value'
-  ) %>%
-  unnest(!fips) %>%
-  mutate(across(c(2:last_col()), as.numeric)) %>%
-  left_join(state_codes, by = 'fips')
+  ) %>% 
+  dplyr::left_join(state_codes, by = 'fips') %>% 
+  dplyr::mutate(across(!c(fips, state_code), as.numeric))
 
 # Save temp data file for use in analysis script
 saveRDS(env_state, 'data/temp/env_state.rds')
 
 # Variables to map. Take out some that didn't come through well.
 vars <- names(env_state)[-1] %>%
-  str_subset(
+  stringr::str_subset(
     'lakesAcidCond|lakesCylsperEpaCond|lakesMicxEpaCond|state_code|waterIrrSrcOffFarmExp|waterIrrReclaimedAcreFt|waterIrrReclaimedOpenAcres',
     negate = TRUE
-  )
+  ) %>% 
+  stringr::str_subset('^CH4(?!FromAg)|^N2O(?!FromAg)|^CO2(?!FromAg)|^SubSector', negate = TRUE)
 
 ## Plot
-plots <- map(vars, \(var){
+state_plots <- purrr::map(vars, \(var){
   env_state %>%
     ggplot(aes(y = !!sym(var), x = state_code, color = state_code)) +
     geom_point(
@@ -274,10 +285,10 @@ plots <- map(vars, \(var){
 })
 
 # Arrange them in 4 columns
-ggarrange(
-  plotlist = plots,
+ggpubr::ggarrange(
+  plotlist = state_plots,
   ncol = 4,
-  nrow = 17
+  nrow = 22
 )
 ```
 
@@ -327,7 +338,7 @@ lower_function <- function(data, mapping, ...) {
 env_county %>%
   select(
     LULC = lulcDiversity,
-    Biomass = meanAboveGrndForBiomass,
+    # Biomass = meanAboveGrndForBiomass,
     consIncomePF,
     consEasementAcresPF,
     consTillNoTillAcresPF,
@@ -340,8 +351,8 @@ env_county %>%
     axisLabels = 'show'
   ) +
   theme(
-    strip.text = element_text(size =  5),
-    axis.text = element_text(size =   5),
+    strip.text = element_text(size = 5),
+    axis.text = element_text(size = 5),
     legend.text = element_text(size = 5)
   )
 ```
@@ -373,7 +384,7 @@ pacman::p_load(
 # get_str(env_county)
 
 cor <- env_county %>%
-  select(-fips, -lulcPropNoData) %>%
+  select(-fips) %>%
   as.matrix() %>%
   rcorr()
 

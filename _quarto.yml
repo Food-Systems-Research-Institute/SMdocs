@@ -57,6 +57,8 @@ website:
                 href: pages/data_environment_maps.qmd
               - text: Analysis
                 href: pages/data_environment_analysis.qmd
+          - text: Production
+            href: pages/data_production.qmd
           - text: SM-Explorer
             href: pages/sm-explorer.qmd
           - text: Tables

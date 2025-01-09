@@ -35,7 +35,6 @@ raw <- readRDS('data/sm_data.rds')[['refined_tree']]
 # Clean up the framework df 
 frame <- raw %>% 
   select(dimension:variable_name, resolution, use) %>% 
-  rename(index = 2) %>% 
   dplyr::filter(use == 'x') %>% 
   select(-use) %>% 
   mutate(
@@ -62,27 +61,6 @@ Another issue that is on our radar is that I have been trying to collect data at
 
 Here is the framework with a selection of secondary metrics, split into each dimension for ease of reading.
 
-<!-- ```{r} -->
-<!-- #| label: cleaning -->
-<!-- #| code-fold: true -->
-<!-- #| warning: false -->
-<!-- raw <- readRDS('data/sm_data.rds')[['refined_tree']] -->
-
-<!-- # Clean up the framework df  -->
-<!-- frame <- raw %>%  -->
-<!--   select(dimension:variable_name, resolution, use) %>%  -->
-<!--   rename(index = 2) %>%  -->
-<!--   dplyr::filter(use == 'x') %>%  -->
-<!--   select(-use) %>%  -->
-<!--   mutate( -->
-<!--     metric = ifelse( -->
-<!--       str_length(metric) > 50, -->
-<!--       paste0(str_sub(metric, end = 50), '...'), -->
-<!--       metric -->
-<!--     ) -->
-<!--   ) -->
-<!-- ``` -->
-
 ### Environment
 
 We are missing any soils data in the environment dimension. We have a reasonable spread of metrics for carbon, ghg, and nutrients, although the stocks are only coming from the TreeMap 2016 dataset. Belowground carbon would be great to add here if I can find it. Fluxes are from a great EPA dataset, filtered down to agricultural emissions only. Here, I have aggregated by the type of emission, but we also have very specific breakdowns. Species and habitat is not great - I have more rare species and habitat layers, but I haven't sorted out how to make sense of them at this scale. 
@@ -106,7 +84,7 @@ get_dimension_ggraph(
 
 ### Economics
 
-It has definitely been easier to find economics data than other dimensions. Worth noting here is that the access to land indicator is not ideal. I'm using value and farm size as a proxy for access. Use of crop insurance is also a proxy, since I could not find direct insurance claim data from FSA. So for now, we are just using the presidential and ag secretary declarations of disasters that allow for insurance claims. 
+  It has definitely been easier to find economics data than other dimensions. Worth noting here is that the access to land indicator is not ideal. I'm using value and farm size as a proxy for access. Use of crop in    surance is also a proxy, since I could not find direct insurance claim data from FSA. So for now, we are just using the presidential and ag secretary declarations of disasters that allow for insurance claims. 
 
 ```{r}
 #| label: economics

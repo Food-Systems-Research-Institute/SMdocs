@@ -10,9 +10,9 @@ ggpubr
 reactable
 tidyr
 forcats
+paletteer
 ggraph
 igraph
 RColorBrewer
 viridisLite
-paletteer
 snakecase

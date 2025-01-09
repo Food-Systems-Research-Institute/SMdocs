@@ -1,0 +1,23 @@
+Dimension,Index,Indicator,Use
+Production,Production margins,"Production inputs (fertilizer, pesticides)",current
+Production,Production margins,Total qty. food products,both
+Production,Production margins,Total qty. forest products,wiltshire
+Production,Production margins,Total qty. non-food ag. products,wiltshire
+Production,Production margins,Value-added market,current
+Production,Waste/losses,Food wasted,both
+Production,Waste/losses,Food losses,both
+Production,Waste/losses,Crop failure,both
+Production,Waste/losses,"""Waste"" converted to useable byproduct",wiltshire
+Production,Product quality,Marketability,both
+Production,Product quality,Livestock product safety,wiltshire
+Production,Product quality,Recalls in each industry,wiltshire
+Production,Product quality,Certificates of assurance,wiltshire
+Production,Product quality,Food safety,wiltshire
+Production,Product quality,Nutrition,current
+Production,Product quality,Agrochemical residue on crops,wiltshire
+Production,Production diversity,Richness,both
+Production,Production diversity,Nutritional staples,wiltshire
+Production,Production diversity,Crop rotations,current
+Production,Imports vs. exports,Total qty. imported,both
+Production,Imports vs. exports,Total qty. exported,both
+Production,Production efficiency,"Techology adoption (reverse osmosis, tapping practices)",current

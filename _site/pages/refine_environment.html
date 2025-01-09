@@ -282,6 +282,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
+  <a href="../pages/data_production.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Production</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
   <a href="../pages/sm-explorer.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">SM-Explorer</span></a>
   </div>
@@ -564,9 +570,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>We are coding this so “Must Include” is worth 3 points, “Probably Include” is worth 2 points, “Probably Not Include” is worth 1 point, and “Must Not Include” is worth 0 points. Note that the last column is the sum of proportions of “Must Include” and “Probably Include”. You can sort, search, expand, or page through the table below.</p>
 <div class="cell centered-table" data-warnings="false">
+<div class="cell-output cell-output-stdout">
+<pre><code>Called from: clean_refine_surveys(tables = ind_tables, scope = "indicator", 
+    cat_must = "indi_must", cat_probably = "indi_probably", n_votes = 5)
+debug: props &lt;- tables %&gt;% imap(~.x %&gt;% mutate(cat = .y)) %&gt;% bind_rows() %&gt;% 
+    select(-score)
+debug: prop_prob_or_must_include &lt;- props %&gt;% filter(cat %in% c(cat_must, 
+    cat_probably)) %&gt;% group_by(.[[scope]]) %&gt;% summarize(prop_include = sum(freq)/n_votes) %&gt;% 
+    arrange(desc(prop_include))
+debug: prop_must_include &lt;- props %&gt;% filter(cat == cat_must) %&gt;% group_by(.[[scope]]) %&gt;% 
+    summarize(prop_must = sum(freq)/n_votes) %&gt;% arrange(desc(prop_must))
+debug: scores &lt;- tables %&gt;% bind_rows() %&gt;% group_by(.[[scope]]) %&gt;% 
+    summarize(score = sum(score, na.rm = TRUE)) %&gt;% arrange(desc(score))
+debug: scores_table &lt;- scores %&gt;% full_join(prop_must_include) %&gt;% full_join(prop_prob_or_must_include) %&gt;% 
+    arrange(desc(score)) %&gt;% mutate(across(where(is.numeric), 
+    ~ifelse(is.na(.x), 0, .x)), across(c(3:4), ~format(round(.x, 
+    2), nsmall = 2))) %&gt;% setNames(c(str_to_sentence(scope), 
+    "Score", "Proportion Must Include", "Proportion Must OR Probably Include"))</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>debug: return(scores_table)</code></pre>
+</div>
 <div class="cell-output-display">
-<div class="reactable html-widget html-fill-item" id="htmlwidget-70f3c2b65c18ebb1ee00" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-70f3c2b65c18ebb1ee00">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Indicator":["NEW - Carbon fluxes","NEW - Carbon stocks","NEW - Soil biology","NEW - Forest complexity","NEW - Soil chemistry","NEW - Soil structure","NEW - Water quantity and trends","Biodiversity/species diversity","Land-use diversity","NEW - Water quality","Tree vigor","NEW - Embodied carbon/carbon footprint","Sensitive/rare habitats","Greenhouse gas emissions","energy efficiency","Waste generated/disposed of; contaminated (PFAS/PFOS)","Aboveground biomass"," Soil loss/sedimentation","Quality/quantity of surface and shallow subsurface water","Soil cover","Water quality of runoff","Water stability","External nutrient use efficiency","Forest pest populations","Protected waterways","Environmental impacts of land use","Acres in conservation practices","Enrollment in certification program","Regeneration of maple","Water use/irrigation efficiency","Adoption of BMPs","Bacterial and fungal biomass","Open Acres","Pollinators","Soil aggregate stability","Soil carbon pools and flows","Alpha and beta microbial diversity","Climate change","Microinvertebrate composition"],"Score":[15,15,15,14,14,14,14,13,12,12,12,11,10,9,8,8,7,6,6,6,6,6,6,6,6,5,5,5,5,5,4,4,4,4,4,4,3,3,3],"Proportion Must Include":["1.00","1.00","1.00","0.80","0.80","0.80","0.80","0.80","0.60","0.60","0.60","0.60","0.40","0.40","0.20","0.20","0.00","0.20","0.20","0.20","0.20","0.20","0.00","0.00","0.00","0.20","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"],"Proportion Must OR Probably Include":["1.00","1.00","1.00","1.00","1.00","1.00","1.00","0.80","0.80","0.80","0.80","0.80","0.60","0.40","0.40","0.40","0.40","0.20","0.20","0.20","0.20","0.20","0.20","0.20","0.20","0.20","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"]},"columns":[{"id":"Indicator","name":"Indicator","type":"factor","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"left"},{"id":"Score","name":"Score","type":"numeric","format":{"cell":{"digits":0},"aggregated":{"digits":0}},"minWidth":75,"align":"right"},{"id":"Proportion Must Include","name":"Proportion Must Include","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"right"},{"id":"Proportion Must OR Probably Include","name":"Proportion Must OR Probably Include","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"right"}],"resizable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"pageSizeOptions":[5,10,25,50,100],"bordered":true,"striped":true,"compact":true,"inline":true,"dataKey":"54e49a28a8420428c5f592c90c7a6b99"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-c48294313f322767b89f" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c48294313f322767b89f">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Indicator":["NEW - Carbon fluxes","NEW - Carbon stocks","NEW - Soil biology","NEW - Forest complexity","NEW - Soil chemistry","NEW - Soil structure","NEW - Water quantity and trends","Biodiversity/species diversity","Land-use diversity","NEW - Water quality","Tree vigor","NEW - Embodied carbon/carbon footprint","Sensitive/rare habitats","Greenhouse gas emissions","energy efficiency","Waste generated/disposed of; contaminated (PFAS/PFOS)","Aboveground biomass"," Soil loss/sedimentation","Quality/quantity of surface and shallow subsurface water","Soil cover","Water quality of runoff","Water stability","External nutrient use efficiency","Forest pest populations","Protected waterways","Environmental impacts of land use","Acres in conservation practices","Enrollment in certification program","Regeneration of maple","Water use/irrigation efficiency","Adoption of BMPs","Bacterial and fungal biomass","Open Acres","Pollinators","Soil aggregate stability","Soil carbon pools and flows","Alpha and beta microbial diversity","Climate change","Microinvertebrate composition"],"Score":[15,15,15,14,14,14,14,13,12,12,12,11,10,9,8,8,7,6,6,6,6,6,6,6,6,5,5,5,5,5,4,4,4,4,4,4,3,3,3],"Proportion Must Include":["1.00","1.00","1.00","0.80","0.80","0.80","0.80","0.80","0.60","0.60","0.60","0.60","0.40","0.40","0.20","0.20","0.00","0.20","0.20","0.20","0.20","0.20","0.00","0.00","0.00","0.20","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"],"Proportion Must OR Probably Include":["1.00","1.00","1.00","1.00","1.00","1.00","1.00","0.80","0.80","0.80","0.80","0.80","0.60","0.40","0.40","0.40","0.40","0.20","0.20","0.20","0.20","0.20","0.20","0.20","0.20","0.20","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00","0.00"]},"columns":[{"id":"Indicator","name":"Indicator","type":"factor","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"left"},{"id":"Score","name":"Score","type":"numeric","format":{"cell":{"digits":0},"aggregated":{"digits":0}},"minWidth":75,"align":"right"},{"id":"Proportion Must Include","name":"Proportion Must Include","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"right"},{"id":"Proportion Must OR Probably Include","name":"Proportion Must OR Probably Include","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"right"}],"resizable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"pageSizeOptions":[5,10,25,50,100],"bordered":true,"striped":true,"compact":true,"inline":true,"dataKey":"54e49a28a8420428c5f592c90c7a6b99"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
@@ -575,84 +602,84 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-layout-align="center" data-warnings="false">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add scores by multipliers</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>multipliers <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">0</span>)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>idx_tables <span class="ot">&lt;-</span> <span class="fu">map2</span>(idx_out, multipliers, <span class="sc">~</span> {</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  .x <span class="sc">%&gt;%</span> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">freq =</span> <span class="fu">as.numeric</span>(freq),</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">multiplier =</span> .y,</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">score =</span> freq <span class="sc">*</span> multiplier,</span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="at">index =</span> indicator, freq, score)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up DF for color graph </span></span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>graph_table <span class="ot">&lt;-</span> <span class="fu">imap</span>(idx_tables, <span class="sc">~</span> {</span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  col_name <span class="ot">&lt;-</span> <span class="fu">str_remove</span>(.y, <span class="st">'idx_'</span>)</span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  .x <span class="sc">%&gt;%</span> </span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="sc">!!</span><span class="fu">sym</span>(col_name) <span class="sc">:</span><span class="er">=</span> freq) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>score)</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reduce</span>(full_join) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(.x), <span class="dv">0</span>, .x)),</span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">sort_key =</span> must <span class="sc">*</span> <span class="fl">1e6</span> <span class="sc">+</span> probably <span class="sc">*</span> <span class="fl">1e4</span> <span class="sc">+</span> probably_not,</span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">sort_key =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(index, <span class="st">'Carbon'</span>), <span class="fl">5e6</span>, sort_key),</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">index =</span> <span class="fu">fct_reorder</span>(index, sort_key, <span class="at">.desc =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> must<span class="sc">:</span>must_not,</span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"category"</span>,</span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"count"</span></span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">category =</span> <span class="fu">fct_relevel</span>(</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>      category, </span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>      <span class="st">"must_not"</span>,</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>      <span class="st">"probably_not"</span>, </span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>      <span class="st">"probably"</span>, </span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>      <span class="st">"must"</span></span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(index) <span class="sc">%&gt;%</span></span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proportion =</span> count <span class="sc">/</span> <span class="fu">sum</span>(count)) <span class="sc">%&gt;%</span></span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> RColorBrewer<span class="sc">::</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>, <span class="st">'RdBu'</span>)</span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(graph_table, <span class="fu">aes</span>(</span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">reorder</span>(index, sort_key),</span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> proportion, </span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">fill =</span> category</span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>)) <span class="sc">+</span></span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span>  </span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Index"</span>,</span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Proportion"</span>,</span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Category"</span></span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),</span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">'top'</span></span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">rev</span>(colors),</span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(</span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>      <span class="st">"must"</span>,</span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a>      <span class="st">"probably"</span>,</span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a>      <span class="st">"probably_not"</span>,</span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a>      <span class="st">'must_not'</span></span>
-<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
-<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Must Include"</span>,</span>
-<span id="cb6-74"><a href="#cb6-74" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Probably Include"</span>,</span>
-<span id="cb6-75"><a href="#cb6-75" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Probably Not Include"</span>,</span>
-<span id="cb6-76"><a href="#cb6-76" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Must Not Include"</span></span>
-<span id="cb6-77"><a href="#cb6-77" aria-hidden="true" tabindex="-1"></a>    )</span>
-<span id="cb6-78"><a href="#cb6-78" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Add scores by multipliers</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>multipliers <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">3</span><span class="sc">:</span><span class="dv">0</span>)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>idx_tables <span class="ot">&lt;-</span> <span class="fu">map2</span>(idx_out, multipliers, <span class="sc">~</span> {</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  .x <span class="sc">%&gt;%</span> </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">freq =</span> <span class="fu">as.numeric</span>(freq),</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>      <span class="at">multiplier =</span> .y,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>      <span class="at">score =</span> freq <span class="sc">*</span> multiplier,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="at">index =</span> indicator, freq, score)</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Set up DF for color graph </span></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>graph_table <span class="ot">&lt;-</span> <span class="fu">imap</span>(idx_tables, <span class="sc">~</span> {</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>  col_name <span class="ot">&lt;-</span> <span class="fu">str_remove</span>(.y, <span class="st">'idx_'</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>  .x <span class="sc">%&gt;%</span> </span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rename</span>(<span class="sc">!!</span><span class="fu">sym</span>(col_name) <span class="sc">:</span><span class="er">=</span> freq) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="fu">select</span>(<span class="sc">-</span>score)</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reduce</span>(full_join) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">across</span>(<span class="fu">where</span>(is.numeric), <span class="sc">~</span> <span class="fu">ifelse</span>(<span class="fu">is.na</span>(.x), <span class="dv">0</span>, .x)),</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">sort_key =</span> must <span class="sc">*</span> <span class="fl">1e6</span> <span class="sc">+</span> probably <span class="sc">*</span> <span class="fl">1e4</span> <span class="sc">+</span> probably_not,</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">sort_key =</span> <span class="fu">ifelse</span>(<span class="fu">str_detect</span>(index, <span class="st">'Carbon'</span>), <span class="fl">5e6</span>, sort_key),</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">index =</span> <span class="fu">fct_reorder</span>(index, sort_key, <span class="at">.desc =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">cols =</span> must<span class="sc">:</span>must_not,</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">"category"</span>,</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">"count"</span></span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>    <span class="at">category =</span> <span class="fu">fct_relevel</span>(</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>      category, </span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a>      <span class="st">"must_not"</span>,</span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>      <span class="st">"probably_not"</span>, </span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>      <span class="st">"probably"</span>, </span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a>      <span class="st">"must"</span></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(index) <span class="sc">%&gt;%</span></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">proportion =</span> count <span class="sc">/</span> <span class="fu">sum</span>(count)) <span class="sc">%&gt;%</span></span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ungroup</span>()</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>colors <span class="ot">&lt;-</span> RColorBrewer<span class="sc">::</span><span class="fu">brewer.pal</span>(<span class="dv">4</span>, <span class="st">'RdBu'</span>)</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a><span class="fu">ggplot</span>(graph_table, <span class="fu">aes</span>(</span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">y =</span> <span class="fu">reorder</span>(index, sort_key),</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">x =</span> proportion, </span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">fill =</span> category</span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>)) <span class="sc">+</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_col</span>(<span class="at">position =</span> <span class="st">"stack"</span>) <span class="sc">+</span>  </span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb8-55"><a href="#cb8-55" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">"Index"</span>,</span>
+<span id="cb8-56"><a href="#cb8-56" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">"Proportion"</span>,</span>
+<span id="cb8-57"><a href="#cb8-57" aria-hidden="true" tabindex="-1"></a>    <span class="at">fill =</span> <span class="st">"Category"</span></span>
+<span id="cb8-58"><a href="#cb8-58" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb8-59"><a href="#cb8-59" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb8-60"><a href="#cb8-60" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb8-61"><a href="#cb8-61" aria-hidden="true" tabindex="-1"></a>    <span class="at">text =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">20</span>),</span>
+<span id="cb8-62"><a href="#cb8-62" aria-hidden="true" tabindex="-1"></a>    <span class="at">legend.position =</span> <span class="st">'top'</span></span>
+<span id="cb8-63"><a href="#cb8-63" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">+</span></span>
+<span id="cb8-64"><a href="#cb8-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_fill_manual</span>(</span>
+<span id="cb8-65"><a href="#cb8-65" aria-hidden="true" tabindex="-1"></a>    <span class="at">values =</span> <span class="fu">rev</span>(colors),</span>
+<span id="cb8-66"><a href="#cb8-66" aria-hidden="true" tabindex="-1"></a>    <span class="at">limits =</span> <span class="fu">c</span>(</span>
+<span id="cb8-67"><a href="#cb8-67" aria-hidden="true" tabindex="-1"></a>      <span class="st">"must"</span>,</span>
+<span id="cb8-68"><a href="#cb8-68" aria-hidden="true" tabindex="-1"></a>      <span class="st">"probably"</span>,</span>
+<span id="cb8-69"><a href="#cb8-69" aria-hidden="true" tabindex="-1"></a>      <span class="st">"probably_not"</span>,</span>
+<span id="cb8-70"><a href="#cb8-70" aria-hidden="true" tabindex="-1"></a>      <span class="st">'must_not'</span></span>
+<span id="cb8-71"><a href="#cb8-71" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb8-72"><a href="#cb8-72" aria-hidden="true" tabindex="-1"></a>    <span class="at">labels =</span> <span class="fu">c</span>(</span>
+<span id="cb8-73"><a href="#cb8-73" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Must Include"</span>,</span>
+<span id="cb8-74"><a href="#cb8-74" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Probably Include"</span>,</span>
+<span id="cb8-75"><a href="#cb8-75" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Probably Not Include"</span>,</span>
+<span id="cb8-76"><a href="#cb8-76" aria-hidden="true" tabindex="-1"></a>      <span class="st">"Must Not Include"</span></span>
+<span id="cb8-77"><a href="#cb8-77" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb8-78"><a href="#cb8-78" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -664,9 +691,30 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p>The indices are going through the same treatment as indicators above - scored from 3 to 0. Note here that the “Carbon ($ GHGs/nutrients)” index seems to be missing a vote. So, it only has 12 points, but the proportion of votes for “Must Include” is 1.</p>
 <div class="cell centered-table" data-warnings="false">
+<div class="cell-output cell-output-stdout">
+<pre><code>Called from: clean_refine_surveys(tables = idx_tables, scope = "index", cat_must = "idx_must", 
+    cat_probably = "idx_probably", n_votes = 5)
+debug: props &lt;- tables %&gt;% imap(~.x %&gt;% mutate(cat = .y)) %&gt;% bind_rows() %&gt;% 
+    select(-score)
+debug: prop_prob_or_must_include &lt;- props %&gt;% filter(cat %in% c(cat_must, 
+    cat_probably)) %&gt;% group_by(.[[scope]]) %&gt;% summarize(prop_include = sum(freq)/n_votes) %&gt;% 
+    arrange(desc(prop_include))
+debug: prop_must_include &lt;- props %&gt;% filter(cat == cat_must) %&gt;% group_by(.[[scope]]) %&gt;% 
+    summarize(prop_must = sum(freq)/n_votes) %&gt;% arrange(desc(prop_must))
+debug: scores &lt;- tables %&gt;% bind_rows() %&gt;% group_by(.[[scope]]) %&gt;% 
+    summarize(score = sum(score, na.rm = TRUE)) %&gt;% arrange(desc(score))
+debug: scores_table &lt;- scores %&gt;% full_join(prop_must_include) %&gt;% full_join(prop_prob_or_must_include) %&gt;% 
+    arrange(desc(score)) %&gt;% mutate(across(where(is.numeric), 
+    ~ifelse(is.na(.x), 0, .x)), across(c(3:4), ~format(round(.x, 
+    2), nsmall = 2))) %&gt;% setNames(c(str_to_sentence(scope), 
+    "Score", "Proportion Must Include", "Proportion Must OR Probably Include"))</code></pre>
+</div>
+<div class="cell-output cell-output-stdout">
+<pre><code>debug: return(scores_table)</code></pre>
+</div>
 <div class="cell-output-display">
-<div class="reactable html-widget html-fill-item" id="htmlwidget-fa9eec8f08d609de1eb0" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-fa9eec8f08d609de1eb0">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Index":["NEW - Forest","NEW - Soils","NEW - Water","NEW - Species & Habitat","NEW - Carbon (& GHGs/nutrients)","Air quality","Solid waste","Biodiversity","Best management","Forest health","Soil biology","Soil health","Water quality","Resource use efficiency"],"Score":[15,15,15,13,12,8,8,7,6,5,5,5,5,4],"Proportion Must Include":["1.00","1.00","1.00","0.80","1.00","0.20","0.20","0.20","0.00","0.00","0.00","0.00","0.00","0.00"],"Proportion Must OR Probably Include":["1.00","1.00","1.00","0.80","1.00","0.40","0.40","0.20","0.20","0.00","0.00","0.00","0.00","0.00"]},"columns":[{"id":"Index","name":"Index","type":"factor","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"left"},{"id":"Score","name":"Score","type":"numeric","format":{"cell":{"digits":0},"aggregated":{"digits":0}},"minWidth":75,"align":"right"},{"id":"Proportion Must Include","name":"Proportion Must Include","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"right"},{"id":"Proportion Must OR Probably Include","name":"Proportion Must OR Probably Include","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"right"}],"resizable":true,"searchable":true,"pagination":false,"defaultPageSize":10,"showPageSizeOptions":false,"bordered":true,"striped":true,"compact":true,"inline":true,"dataKey":"0a3a23f958c480eb5785ceb146589cf5"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-7fc965689994f4b81abb" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-7fc965689994f4b81abb">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Index":["NEW - Forest","NEW - Soils","NEW - Water","NEW - Species & Habitat","NEW - Carbon (& GHGs/nutrients)","Air quality","Solid waste","Biodiversity","Best management","Forest health","Soil biology","Soil health","Water quality","Resource use efficiency"],"Score":[15,15,15,13,12,8,8,7,6,5,5,5,5,4],"Proportion Must Include":["1.00","1.00","1.00","0.80","1.00","0.20","0.20","0.20","0.00","0.00","0.00","0.00","0.00","0.00"],"Proportion Must OR Probably Include":["1.00","1.00","1.00","0.80","1.00","0.40","0.40","0.20","0.20","0.00","0.00","0.00","0.00","0.00"]},"columns":[{"id":"Index","name":"Index","type":"factor","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"left"},{"id":"Score","name":"Score","type":"numeric","format":{"cell":{"digits":0},"aggregated":{"digits":0}},"minWidth":75,"align":"right"},{"id":"Proportion Must Include","name":"Proportion Must Include","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"right"},{"id":"Proportion Must OR Probably Include","name":"Proportion Must OR Probably Include","type":"character","format":{"cell":{"digits":2},"aggregated":{"digits":2}},"minWidth":200,"align":"right"}],"resizable":true,"searchable":true,"pagination":false,"defaultPageSize":10,"showPageSizeOptions":false,"bordered":true,"striped":true,"compact":true,"inline":true,"dataKey":"0a3a23f958c480eb5785ceb146589cf5"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 
