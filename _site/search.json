@@ -532,5 +532,16 @@
       "Secondary Data",
       "SM-Explorer"
     ]
+  },
+  {
+    "objectID": "pages/aggregation.html",
+    "href": "pages/aggregation.html",
+    "title": "Metric Aggregation",
+    "section": "",
+    "text": "Exploring methods of aggregating data into index and dimension scores.\n\n\n\n Back to top",
+    "crumbs": [
+      "Secondary Data Rework",
+      "Aggregation"
+    ]
   }
 ]
