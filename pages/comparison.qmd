@@ -1,0 +1,17 @@
+---
+title: "Comparison of Aggregation Methods"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+---
+
+In the last page we created six sets of scores by state based on combinations of three normalization methods (z-scores, min max, box cox) and two aggregation methods (arithmetic, geometric). Here, we will explore differences between them in terms of state distributions and rankings.
+
+To do:
+
+-   Distributions of values for each method
+-   Distributions of rankings for each method
+-   Aggregate six New England states into a system-level set for each method and explore values.
+-   Sensitivity analysis - what happens when indicators are removed? What happens when states are removed?

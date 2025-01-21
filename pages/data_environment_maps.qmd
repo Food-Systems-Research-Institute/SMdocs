@@ -1,7 +1,7 @@
 ---
 title: "Environment: Maps"
 execute:
-  cache: false
+  freeze: auto
 ---
 
 ```{r}

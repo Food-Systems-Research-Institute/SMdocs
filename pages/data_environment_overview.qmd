@@ -1,6 +1,8 @@
 ---
 title: "Environment: Overview"
 fig-responsive: false
+execute:
+  freeze: auto
 ---
 
 ```{r}

@@ -1,5 +1,7 @@
 ---
 title: "Environment: Analysis"
+execute:
+  freeze: auto
 ---
 
 ```{r}

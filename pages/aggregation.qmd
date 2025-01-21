@@ -26,6 +26,8 @@ conflicted::conflicts_prefer(
 )
 ```
 
+# Explore
+
 Explore the data we have, make sure it checks out
 
 ```{r}
@@ -37,9 +39,9 @@ pacman::p_load(
 )
 
 # Explore our set of state level metrics from refined secondary framework
-sm_data <- readRDS('data/sm_data.rds')
+sm_data <- readRDS('data/sm_data_slim.rds')
 raw_tree <- sm_data[['refined_tree']]
-get_str(raw_tree)
+# get_str(raw_tree)
 
 # Clean up the framework df 
 frame <- raw_tree %>% 
@@ -53,26 +55,26 @@ frame <- raw_tree %>%
       metric
     )
   )
-get_str(frame)
+# get_str(frame)
 
 
 ## Join with metadata to double check the resolution of our metrics
 meta <- sm_data$metadata
-get_str(meta)
+# get_str(meta)
 
 dat <- frame %>% 
   select(variable_name) %>% 
   left_join(meta, by = 'variable_name') %>% 
   unique()
-get_str(dat)
+# get_str(dat)
 
 # check resolution
-dat$resolution
-str_detect(dat$resolution, 'state')
+# dat$resolution
+# str_detect(dat$resolution, 'state')
 # Looks good, everything is at state level
 
 # Pull it from the actual metrics data
-sm_data$state_key %>% get_str
+# sm_data$state_key %>% get_str
 metrics <- sm_data$metrics %>% 
   filter(
     variable_name %in% frame$variable_name,
@@ -82,9 +84,12 @@ get_str(metrics)
 
 ```
 
+# Prep
+
+Get latest years of each metric, check out missing data, make sure nothing is broken.
 
 ```{r}
-#| label: prep_pca
+#| label: prep
 #| warnings: false
 pacman::p_load(
   dplyr,
@@ -120,11 +125,13 @@ get_str(metrics_df)
 metrics_df$waterIrrSrcOffFarmExp_2023 <- NULL
 
 get_str(metrics_df)
-# Note that we have 75 variables and 51 states. can't have that many.
-# 
+# Note that we have 75 variables and 51 states. Can't do PCA with that
+
+# Let's get rid of the years so they are easier to work with
+names(metrics_df) <- str_split_i(names(metrics_df), '_', 1)
 ```
 
-
+# Imputation
 
 ```{r}
 #| label: imputation
@@ -135,9 +142,9 @@ pacman::p_load(
 )
 
 # Check for missing data
-get_str(metrics_df)
 skimr::skim(metrics_df)
-sum(is.na(metrics_df))
+sum(is.na(metrics_df))/(nrow(metrics_df)*(ncol(metrics_df) - 1)) * 100
+# 1.59% missing data. 
 # only 60 missing from value - that's not half bad
 
 # Change fips from column to rowname so we can impute without losing it
@@ -158,16 +165,355 @@ mf_out <- metrics_df %>%
 mf_out$OOBerror
 # NRMSE 0.5906362
 
+# Check missing again
+skimr::skim(mf_out$ximp)
+# Looks good
+
 # Save just imputed data
 imp_dat <- mf_out$ximp
-
-# Norming
-imp_normed <- imp_dat %>% 
-  mutate(across(everything(), ~ as.numeric(scale(.x, scale = TRUE, center = TRUE))))
-get_str(imp_normed)
 ```
 
+# Normalization
+
+Normalizing in three ways: min max, box cox, and z-score standardization. (Could also consider Winsorizing?) Results will be saved to a list of three normalized datasets so we can compare outcomes of each one.
+
 ```{r}
+#| label: normalization
+#| warnings: false
+pacman::p_load(
+  forecast
+)
+
+# List of results
+normed <- list()
+get_str(imp_dat)
+
+# Z scores
+normed$zscore <- imp_dat %>% 
+  mutate(across(everything(), ~ as.numeric(scale(.x, scale = TRUE, center = TRUE))))
+
+# Min Max
+min_max <- function(x) {
+  (x - min(x)) / (max(x) - min(x))
+}
+normed$minmax <- imp_dat %>% 
+  mutate(across(everything(), min_max))
+
+# Box Cox. Adding 1 as constant to remove zeroes
+normed$boxcox <- imp_dat %>% 
+  mutate(across(everything(), ~ BoxCox(.x + 1, lambda = 'auto')))
+
+map(normed, get_str)
+```
+
+# Directional Values
+
+Here, we are assuming that each metric is has a directional value. Either more of it is better, or less of it is better. This is rather problematic in that just about any metric becomes negative with too much of it. What might make more sense in the long run would be to consult the expertise of our teams and develop acceptable ranges for some metrics once they are settled. Still, just about every sustainability indicator framework does some variation of this one-way value system [@schneider2023StateFoodSystems; @bene2019GlobalMapIndicators; @nicolettiSummaryIndicatorsProduct2000; @jacobi2020NewUnderstandingEvaluation; @gomez-limon2010EmpiricalEvaluationAgricultural]. Alas, for now, we will invert variables in each of the transformed datasets as necessary so that larger numbers are more sustainable, and smaller numbers are less sustainable.
+
+```{r eval=FALSE}
+#| label: directional_values
+#| warnings: false
+map(normed, get_str)
+
+# Explore variables
+names(normed[[1]])
+# Higher numbers should be better. Reverse metrics that are the opposite, where lower numbers are better:
+reverse <- c(
+  'unemploymentRate',
+  'gini',
+  'lowBirthweight',
+  'teenBirths',
+  'uninsured',
+  'incomeInequality',
+  'injuryDeaths',
+  'drinkingWaterViolations',
+  'prematureAgeAgjustedMortality',
+  'infantMortality',
+  'foodInsecurity',
+  'drugOverdoseDeaths',
+  'disconnectedYouth',
+  'residentialSegregationBlackWhite',
+  'motorVehicleCrashDeaths',
+  'severeHousingCostBurden',
+  'schoolSegregation',
+  'foodInsecOverall',
+  'foodInsecChild',
+  'droughtMeanPercArea',
+  'expChemicalPct',
+  'waterIrrSrcOffFarmExpPerAcreFt',
+  'ageProducers' # Could be better to use age diversity?
+)
+
+# Some are unclear - without clear direction, better to remove:
+remove <- c(
+  'vacancyRate',
+  'salesAnimalPctSales'
+)
+
+# Remove from all three datasets
+normed <- map(normed, ~ {
+  .x %>% 
+    select(-matches(remove))
+})
+map(normed, get_str)
+
+## Do reversals separately for each dataset depending on normalization method
+names(normed)
+
+# For z-scores, multiply by -1 
+normed$zscore <- normed$zscore %>% 
+  mutate(across(matches(reverse), ~ .x * -1))
+
+# For min max, subtract from 1
+normed$minmax <- normed$minmax %>% 
+  mutate(across(matches(reverse), ~ 1 - .x))
+
+# For BoxCox, multiply by -1, then subtract the minimum
+# This should preserve rank and transformation
+normed$boxcox <- normed$boxcox %>% 
+  mutate(across(matches(reverse), ~ (.x * -1) - min(.x * -1)))
+
+map(normed, get_str)
+```
+
+# Aggregation
+
+Here we are combining values in each indicator, index, and dimension using several different methods: arithmetic means, geometric means, and rank order. We might also consider PCA here, but the n:p ratio is not in our favor for PCA as we have more metrics than states.
+
+## Rank Order?
+
+First we will try just ranking states relative to others, as was done by in the Food Systems Global Countdown [@schneider2023StateFoodSystems].
+
+## Indicator Means
+
+This one is pretty straight forward - just take the arithmetic mean of metrics in each indicator, indicators in each index, and indices in each dimension. This is a compensable method, where a good score in one index indicator will make up for a bad score in another.
+
+```{r}
+#| label: arithmetic_means
+#| warnings: false
+# We need to attach these back to framework from metadata
+# Filter frame from earlier down to our current metrics
+filtered_frame <- frame %>% 
+  filter(variable_name %in% names(normed[[1]])) %>% 
+  select(variable_name, indicator, index, dimension)
+get_str(filtered_frame)
+
+# Make a list where we hold scores for indicators, indices, and dimensions
+scores <- list()
+
+# Function for geometric mean
+geometric_mean = function(x, na.rm = TRUE){
+  exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
+}
+
+# Get indicator scores across all three normalization methods
+indicator_scores <- map(normed, \(df) {
+  
+  # For each df, calculate indicator means
+  indicators_out <- map(unique(filtered_frame$indicator), \(ind) {
+  
+    # Column name based on indicator
+    # ind_snake <- snakecase::to_snake_case(ind)
+    ind_snake <- ind
+    # ind_arithmetic <- paste0(ind_snake, '_arithmetic')
+    # ind_geometric <- paste0(ind_snake, '_geometric')
+    
+    # Split into groups by indicator, with one or more metrics each
+    variables <- filtered_frame %>% 
+      filter(indicator == ind) %>% 
+      pull(variable_name) %>% 
+      unique()
+    indicator_metrics <- df %>% 
+      select(all_of(variables))
+    
+    # Get arithmetic and geo means for each indicator
+    # indicator_metrics %>%
+    #   rowwise() %>%
+    #   mutate(
+    #     !!sym(ind_arithmetic) := mean(c_across(everything())),
+    #     !!sym(ind_geometric) := geometric_mean(c_across(everything()))
+    #   ) %>%
+    #   select(!!sym(ind_arithmetic), !!sym(ind_geometric))
+    dfs <- list()
+    dfs$arithmetic <- indicator_metrics %>%
+      rowwise() %>%
+      mutate(
+        !!sym(ind_snake) := mean(c_across(everything())),
+      ) %>%
+      select(!!sym(ind_snake))
+    dfs$geometric <- indicator_metrics %>% 
+      rowwise() %>% 
+      mutate(
+        !!sym(ind_snake) := geometric_mean(c_across(everything())),
+      ) %>%
+      select(!!sym(ind_snake))
+    return(dfs) 
+  })
+  
+  # Rearrange so we put each aggregation method (arith, geo) together
+  norm_out <- list()
+  norm_out$arithmetic <- map(indicators_out, ~ {
+    .x[grep("arithmetic", names(.x))]
+  }) %>% 
+    bind_cols()
+  norm_out$geometric <- map(indicators_out, ~ {
+    .x[grep("geometric", names(.x))]
+  }) %>% 
+    bind_cols()
+  return(norm_out) 
+})
+  
+get_str(indicator_scores, 4)
+```
+
+## Index Means
+
+```{r}
+#| label: index_means
+#| warnings: false
+# For each set of indicator scores, calculate index scores
+get_str(indicator_scores, 4)
+indices <- unique(filtered_frame$index)
+
+# Choose aggregation function based on agg_type
+agg_function <- function(x, agg_type) {
+   if (agg_type == 'geometric') {
+    geometric_mean(x)
+  } else if (agg_type == 'arithmetic') {
+    mean(x)
+  }
+}
+
+index_scores <- map(indicator_scores, \(norm_type) {
+  imap(norm_type, \(agg_df, agg_type) {
+    map(indices, \(index_) {
+      # Get names of indicators for this index
+      index_indicators <- filtered_frame %>% 
+        filter(index == index_) %>% 
+        pull(indicator) %>% 
+        unique()
+      # Get DF of indicators for this index
+      index_indicator_df <- agg_df %>% 
+        select(all_of(index_indicators))
+      # Get arithmetic or geometric mean, based on agg_type
+      index_indicator_df %>% 
+        rowwise() %>% 
+        # mutate(mean = across(everything(), agg_function(agg_type)))
+        mutate(!!sym(index_) := agg_function(c_across(everything()), agg_type)) %>% 
+        select(!!sym(index_))
+    }) %>% 
+      bind_cols()
+  })
+})
+# get_str(index_scores, 4)
+```
+
+# Dimension Means
+
+```{r}
+#| label: dimension_means
+#| warnings: false
+get_str(index_scores, 4)
+
+# Same process for dimensions
+dimensions <- unique(filtered_frame$dimension)
+
+dimension_scores <- map(index_scores, \(norm_type) {
+  imap(norm_type, \(agg_df, agg_type) {
+    map(dimensions, \(dimension_) {
+      # Get names of indices for this dimension
+      dimension_indices <- filtered_frame %>% 
+        filter(dimension == dimension_) %>% 
+        pull(index) %>% 
+        unique()
+      # Get DF of indice for this dimension
+      dimension_index_df <- agg_df %>% 
+        select(all_of(dimension_indices))
+      # Get arithmetic or geometric mean, based on agg_type
+      dimension_index_df %>% 
+        rowwise() %>% 
+        mutate(!!sym(dimension_) := agg_function(
+          c_across(everything()), 
+          agg_type
+        )) %>% 
+        select(!!sym(dimension_))
+    }) %>% 
+      bind_cols()
+  })
+})
+# get_str(dimension_scores, 4)
+```
+
+# Wrangle
+
+Organize arithmetic and geometric means for each level of the framework (indicator, index, dimension) in a way that is easier to work with.
+
+```{r}
+#| label: wrangle
+#| warnings: false
+get_str(indicator_scores, 4)
+get_str(index_scores, 4)
+get_str(dimension_scores, 4)
+
+# Want to end up with 6 lists: 3 norm types * 2 mean types
+# Put them all together in one list to work with
+all_scores <- mget(c(
+  'indicator_scores',
+  'index_scores',
+  'dimension_scores'
+))
+get_str(all_scores, 3)
+
+# Function to pull out the pieces we want
+# Also put state names back in as a column and with real names, not codes
+get_output <- function(norm_type, agg_type) {
+  # Get list of each df (dimension, index, indicator) for combo
+  dfs <- all_scores %>% 
+    map(\(level) level[[norm_type]]) %>% 
+    map(\(norm) norm[[agg_type]])
+  # Get state back into a proper column for each df
+  out <- map(dfs, ~ {
+    .x %>% 
+      rownames_to_column('state_code') %>% 
+      # Leading zeroes lost from rowname transition. Put them back here
+      mutate(state_code = case_when(
+        str_length(state_code) == 1 ~ paste0('0', state_code),
+        .default = state_code
+      )) %>% 
+      left_join(select(sm_data$state_key, state, state_code)) %>% 
+      select(-state_code)
+  })
+  return(out)
+}
+
+# All combinations, also a name
+combos <- expand.grid(
+  c('zscore', 'minmax', 'boxcox'), 
+  c('arithmetic', 'geometric')
+) %>% 
+  mutate(name = paste0(Var1, '_', Var2))
+
+# Map to pull them all out
+final_scores <- map2(combos[[1]], combos[[2]], ~ {
+  get_output(.x, .y)
+}) %>% 
+  setNames(c(combos$name))
+get_str(final_scores, 3)
+get_str(final_scores, 4)
+
+# Save this for use elsewhere
+saveRDS(final_scores, 'data/state_score_iterations.rds')
+```
+
+This gives us a list of 6 elements, one for each combination of normalization method and aggregation method. Each element has three data frames, one for indicator, index, and dimension. Now we can compare these 6 outputs to see how the methodological differences affect scores and ranks.
+
+Could consider aggregating the 6 New England states here by population as well? Or by arithmetic / geometric mean. TBD
+
+# PCA
+
+## Extraction
+
+```{r eval=FALSE}
 #| label: extraction
 #| warning: false
 pacman::p_load(
@@ -236,7 +582,9 @@ plot(pca_out$values)
 abline(h = 1)
 ```
 
-```{r}
+## Run PCA
+
+```{r eval=FALSE}
 #| label: pca
 #| warnings: false
 # Test it with 49 variables to see if that is the problem
@@ -252,4 +600,3 @@ fa.parallel(small_set)
 
 pca(small_set, nfactors = 10, rotate = 'varimax')
 ```
-
