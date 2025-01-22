@@ -49,14 +49,14 @@ website:
         contents:
           - text: Economics
             href: pages/data_economics.qmd
-          # - section: Environment
-          #   contents:
-          #     - text: Overview
-          #       href: pages/data_environment_overview.qmd
-          #     - text: Maps
-          #       href: pages/data_environment_maps.qmd
-          #     - text: Analysis
-          #       href: pages/data_environment_analysis.qmd
+          - section: Environment
+            contents:
+              - text: Overview
+                href: pages/data_environment_overview.qmd
+              # - text: Maps
+                # href: pages/data_environment_maps.qmd
+              - text: Analysis
+                href: pages/data_environment_analysis.qmd
           - text: Production
             href: pages/data_production.qmd
           - text: SM-Explorer
@@ -69,6 +69,8 @@ website:
             href: pages/refined_framework.qmd
           - text: Aggregation
             href: pages/aggregation.qmd
+          - text: Comparison
+            href: pages/comparison.qmd
 
 format:
   html:

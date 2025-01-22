@@ -1,6 +1,8 @@
 ---
 title: "Production"
 fig-responsive: false
+execute:
+  freeze: auto
 ---
 
 ```{r}

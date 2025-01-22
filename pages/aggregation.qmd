@@ -80,7 +80,7 @@ metrics <- sm_data$metrics %>%
     variable_name %in% frame$variable_name,
     fips %in% sm_data$state_key$state_code
   )
-get_str(metrics)
+# get_str(metrics)
 
 ```
 
@@ -100,7 +100,7 @@ pacman::p_load(
 # Get latest year function
 source('dev/data_pipeline_functions.R')
 names(sm_data)
-get_str(metrics)
+# get_str(metrics)
 
 # Filter to latest year for each metric, and pivot wider
 # Also removing census participation - don't really have data at state level
@@ -119,12 +119,12 @@ metrics_df <- metrics %>%
   # Note that we are getting dupes here for some reason. Explore this
   unnest(cols = !fips) %>% 
   unique()
-get_str(metrics_df)
+# get_str(metrics_df)
 
 # Get rid of one variable that didn't come through properly
 metrics_df$waterIrrSrcOffFarmExp_2023 <- NULL
 
-get_str(metrics_df)
+# get_str(metrics_df)
 # Note that we have 75 variables and 51 states. Can't do PCA with that
 
 # Let's get rid of the years so they are easier to work with
@@ -142,7 +142,7 @@ pacman::p_load(
 )
 
 # Check for missing data
-skimr::skim(metrics_df)
+# skimr::skim(metrics_df)
 sum(is.na(metrics_df))/(nrow(metrics_df)*(ncol(metrics_df) - 1)) * 100
 # 1.59% missing data. 
 # only 60 missing from value - that's not half bad
@@ -161,12 +161,12 @@ mf_out <- metrics_df %>%
     verbose = FALSE,
     variablewise = FALSE
   )
-# get_str(mf_out)
-mf_out$OOBerror
+get_str(mf_out)
+# mf_out$OOBerror
 # NRMSE 0.5906362
 
 # Check missing again
-skimr::skim(mf_out$ximp)
+# skimr::skim(mf_out$ximp)
 # Looks good
 
 # Save just imputed data
@@ -186,7 +186,7 @@ pacman::p_load(
 
 # List of results
 normed <- list()
-get_str(imp_dat)
+# get_str(imp_dat)
 
 # Z scores
 normed$zscore <- imp_dat %>% 
@@ -213,10 +213,11 @@ Here, we are assuming that each metric is has a directional value. Either more o
 ```{r eval=FALSE}
 #| label: directional_values
 #| warnings: false
-map(normed, get_str)
+# map(normed, get_str)
 
 # Explore variables
-names(normed[[1]])
+# names(normed[[1]])
+
 # Higher numbers should be better. Reverse metrics that are the opposite, where lower numbers are better:
 reverse <- c(
   'unemploymentRate',
@@ -255,10 +256,10 @@ normed <- map(normed, ~ {
   .x %>% 
     select(-matches(remove))
 })
-map(normed, get_str)
+# map(normed, get_str)
 
 ## Do reversals separately for each dataset depending on normalization method
-names(normed)
+# names(normed)
 
 # For z-scores, multiply by -1 
 normed$zscore <- normed$zscore %>% 
@@ -273,16 +274,12 @@ normed$minmax <- normed$minmax %>%
 normed$boxcox <- normed$boxcox %>% 
   mutate(across(matches(reverse), ~ (.x * -1) - min(.x * -1)))
 
-map(normed, get_str)
+# map(normed, get_str)
 ```
 
 # Aggregation
 
 Here we are combining values in each indicator, index, and dimension using several different methods: arithmetic means, geometric means, and rank order. We might also consider PCA here, but the n:p ratio is not in our favor for PCA as we have more metrics than states.
-
-## Rank Order?
-
-First we will try just ranking states relative to others, as was done by in the Food Systems Global Countdown [@schneider2023StateFoodSystems].
 
 ## Indicator Means
 
@@ -296,7 +293,7 @@ This one is pretty straight forward - just take the arithmetic mean of metrics i
 filtered_frame <- frame %>% 
   filter(variable_name %in% names(normed[[1]])) %>% 
   select(variable_name, indicator, index, dimension)
-get_str(filtered_frame)
+# get_str(filtered_frame)
 
 # Make a list where we hold scores for indicators, indices, and dimensions
 scores <- list()
@@ -372,7 +369,7 @@ get_str(indicator_scores, 4)
 #| label: index_means
 #| warnings: false
 # For each set of indicator scores, calculate index scores
-get_str(indicator_scores, 4)
+# get_str(indicator_scores, 4)
 indices <- unique(filtered_frame$index)
 
 # Choose aggregation function based on agg_type
@@ -413,7 +410,7 @@ index_scores <- map(indicator_scores, \(norm_type) {
 ```{r}
 #| label: dimension_means
 #| warnings: false
-get_str(index_scores, 4)
+# get_str(index_scores, 4)
 
 # Same process for dimensions
 dimensions <- unique(filtered_frame$dimension)
@@ -451,9 +448,9 @@ Organize arithmetic and geometric means for each level of the framework (indicat
 ```{r}
 #| label: wrangle
 #| warnings: false
-get_str(indicator_scores, 4)
-get_str(index_scores, 4)
-get_str(dimension_scores, 4)
+# get_str(indicator_scores, 4)
+# get_str(index_scores, 4)
+# get_str(dimension_scores, 4)
 
 # Want to end up with 6 lists: 3 norm types * 2 mean types
 # Put them all together in one list to work with
@@ -462,7 +459,7 @@ all_scores <- mget(c(
   'index_scores',
   'dimension_scores'
 ))
-get_str(all_scores, 3)
+# get_str(all_scores, 3)
 
 # Function to pull out the pieces we want
 # Also put state names back in as a column and with real names, not codes
@@ -474,14 +471,17 @@ get_output <- function(norm_type, agg_type) {
   # Get state back into a proper column for each df
   out <- map(dfs, ~ {
     .x %>% 
-      rownames_to_column('state_code') %>% 
-      # Leading zeroes lost from rowname transition. Put them back here
-      mutate(state_code = case_when(
-        str_length(state_code) == 1 ~ paste0('0', state_code),
-        .default = state_code
-      )) %>% 
-      left_join(select(sm_data$state_key, state, state_code)) %>% 
-      select(-state_code)
+      # Note that we are binding fips back in - this is hinky, note to fix
+      bind_cols(
+        metrics_df %>% 
+          rownames_to_column('fips') %>% 
+          select(fips)
+      ) %>% 
+      left_join(
+        select(sm_data$state_key, state, state_code),
+        by = join_by(fips == state_code) 
+      ) %>% 
+      select(-fips)
   })
   return(out)
 }
@@ -498,8 +498,8 @@ final_scores <- map2(combos[[1]], combos[[2]], ~ {
   get_output(.x, .y)
 }) %>% 
   setNames(c(combos$name))
-get_str(final_scores, 3)
-get_str(final_scores, 4)
+# get_str(final_scores, 3)
+# get_str(final_scores, 4)
 
 # Save this for use elsewhere
 saveRDS(final_scores, 'data/state_score_iterations.rds')
@@ -509,11 +509,11 @@ This gives us a list of 6 elements, one for each combination of normalization me
 
 Could consider aggregating the 6 New England states here by population as well? Or by arithmetic / geometric mean. TBD
 
-# PCA
+<!-- # PCA -->
 
-## Extraction
+<!-- ## Extraction -->
 
-```{r eval=FALSE}
+```{r eval=FALSE, include=FALSE}
 #| label: extraction
 #| warning: false
 pacman::p_load(
@@ -566,7 +566,7 @@ imp_normed <- imp_normed %>%
     starts_with('forestCarbonDead'),
     womenEarnPercMaleFood_2021
   ))
-get_str(imp_normed)
+# get_str(imp_normed)
 
 # Check VIF to find out where the problem is
 vif_values <- lm(gini_2022 ~ ., data = imp_normed)
@@ -582,15 +582,15 @@ plot(pca_out$values)
 abline(h = 1)
 ```
 
-## Run PCA
+<!-- ## Run PCA -->
 
-```{r eval=FALSE}
+```{r eval=FALSE, include=FALSE}
 #| label: pca
 #| warnings: false
 # Test it with 49 variables to see if that is the problem
-get_str(imp_normed)
+# get_str(imp_normed)
 small_set <- select(imp_normed, 1:50)
-get_str(small_set)
+# get_str(small_set)
 
 # 
 VSS(small_set, n = 10, fm = 'pc')

@@ -1,6 +1,13 @@
+base
+methods
 dplyr
 conflicted
 projecter
+datasets
+utils
+grDevices
+graphics
+stats
 mapview
 sf
 viridisLite
@@ -9,5 +16,3 @@ leaflet.extras
 leafpop
 abind
 stars
-reactable
-stringr

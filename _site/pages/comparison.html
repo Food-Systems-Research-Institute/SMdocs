@@ -1,0 +1,991 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.5.57">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>Comparison of Aggregation Methods – Food Systems Research Center</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="../site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="../site_libs/quarto-nav/headroom.min.js"></script>
+<script src="../site_libs/clipboard/clipboard.min.js"></script>
+<script src="../site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="../site_libs/quarto-search/fuse.min.js"></script>
+<script src="../site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="../">
+<link href="../pages/aggregation.html" rel="prev">
+<script src="../site_libs/quarto-html/quarto.js"></script>
+<script src="../site_libs/quarto-html/popper.min.js"></script>
+<script src="../site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="../site_libs/quarto-html/anchor.min.js"></script>
+<link href="../site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="../site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="../site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="../site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "navbar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "end",
+  "type": "overlay",
+  "limit": 50,
+  "keyboard-shortcut": [
+    "f",
+    "/",
+    "s"
+  ],
+  "show-item-context": false,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-text-placeholder": "",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+<style>html{ scroll-behavior: smooth; }</style>
+<script src="../site_libs/core-js-2.5.3/shim.min.js"></script>
+
+<script src="../site_libs/react-18.2.0/react.min.js"></script>
+
+<script src="../site_libs/react-18.2.0/react-dom.min.js"></script>
+
+<script src="../site_libs/reactwidget-2.0.0/react-tools.js"></script>
+
+<link href="../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<link href="../site_libs/reactable-0.4.4/reactable.css" rel="stylesheet">
+
+<script src="../site_libs/reactable-binding-0.4.4/reactable.js"></script>
+
+
+
+<link rel="stylesheet" href="../styles.css">
+</head>
+
+<body class="nav-sidebar docked nav-fixed">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+    <nav class="navbar navbar-expand-lg " data-bs-theme="dark">
+      <div class="navbar-container container-fluid">
+      <div class="navbar-brand-container mx-auto">
+    <a href="https://www.uvm.edu/cals/food-systems-research" class="navbar-brand navbar-brand-logo">
+    <img src="../images/uvm_logo.png" alt="" class="navbar-logo">
+    </a>
+    <a class="navbar-brand" href="https://www.uvm.edu/cals/food-systems-research">
+    <span class="navbar-title">Food Systems Research Center</span>
+    </a>
+  </div>
+        <div class="quarto-navbar-tools tools-end">
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-0" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label=""><i class="bi bi-tree"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-0">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools-item" href="https://www.uvm.edu/cals/food-systems-research">
+            FSRC
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools-item" href="https://www.uvm.edu">
+            UVM
+            </a>
+          </li>
+      </ul>
+    </div>
+    <div class="dropdown">
+      <a href="" title="" id="quarto-navigation-tool-dropdown-1" class="quarto-navigation-tool dropdown-toggle px-1" data-bs-toggle="dropdown" aria-expanded="false" role="link" aria-label=""><i class="bi bi-github"></i></a>
+      <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="quarto-navigation-tool-dropdown-1">
+          <li>
+            <a class="dropdown-item quarto-navbar-tools-item" href="https://github.com/Food-Systems-Research-Center/sm-docs">
+            Source Code
+            </a>
+          </li>
+          <li>
+            <a class="dropdown-item quarto-navbar-tools-item" href="https://github.com/Food-Systems-Research-Center">
+            FSRC GitHub
+            </a>
+          </li>
+      </ul>
+    </div>
+</div>
+          <div id="quarto-search" class="" title="Search"></div>
+      </div> <!-- /container-fluid -->
+    </nav>
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+        <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+          <h1 class="quarto-secondary-nav-title">Comparison of Aggregation Methods</h1>
+        </a>     
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article page-navbar">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal quarto-sidebar-collapse-item sidebar-navigation docked overflow-auto">
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/home.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Home</span></a>
+  </div>
+</li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
+ <span class="menu-text">Framework</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
+ <span class="menu-text">Indicator Refinement</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/refine_economics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Economics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/refine_environment.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Environment</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Secondary Data</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/data_economics.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Economics</span></a>
+  </div>
+</li>
+          <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
+ <span class="menu-text">Environment</span></a>
+          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/data_environment_overview.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/data_environment_analysis.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Analysis</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/data_production.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Production</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/sm-explorer.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">SM-Explorer</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/tables.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Tables</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+        <li class="sidebar-item sidebar-item-section">
+      <div class="sidebar-item-container"> 
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
+ <span class="menu-text">Secondary Data Rework</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <i class="bi bi-chevron-right ms-2"></i>
+          </a> 
+      </div>
+      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/refined_framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Framework</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/aggregation.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Aggregation</span></a>
+  </div>
+</li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/comparison.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Comparison</span></a>
+  </div>
+</li>
+      </ul>
+  </li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On This Page</h2>
+   
+  <ul>
+  <li><a href="#min-max" id="toc-min-max" class="nav-link active" data-scroll-target="#min-max"><span class="header-section-number">1</span> Min Max</a>
+  <ul>
+  <li><a href="#arithmetic-table" id="toc-arithmetic-table" class="nav-link" data-scroll-target="#arithmetic-table"><span class="header-section-number">1.1</span> Arithmetic Table</a></li>
+  <li><a href="#geometric-table" id="toc-geometric-table" class="nav-link" data-scroll-target="#geometric-table"><span class="header-section-number">1.2</span> Geometric Table</a></li>
+  </ul></li>
+  <li><a href="#z-scores" id="toc-z-scores" class="nav-link" data-scroll-target="#z-scores"><span class="header-section-number">2</span> Z-Scores</a>
+  <ul>
+  <li><a href="#arithmetic-table-1" id="toc-arithmetic-table-1" class="nav-link" data-scroll-target="#arithmetic-table-1"><span class="header-section-number">2.1</span> Arithmetic Table</a></li>
+  <li><a href="#geometric-table-1" id="toc-geometric-table-1" class="nav-link" data-scroll-target="#geometric-table-1"><span class="header-section-number">2.2</span> Geometric Table</a></li>
+  </ul></li>
+  <li><a href="#box-cox" id="toc-box-cox" class="nav-link" data-scroll-target="#box-cox"><span class="header-section-number">3</span> Box Cox</a>
+  <ul>
+  <li><a href="#arithmetic-table-2" id="toc-arithmetic-table-2" class="nav-link" data-scroll-target="#arithmetic-table-2"><span class="header-section-number">3.1</span> Arithmetic Table</a></li>
+  <li><a href="#geometric-table-2" id="toc-geometric-table-2" class="nav-link" data-scroll-target="#geometric-table-2"><span class="header-section-number">3.2</span> Geometric Table</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title d-none d-lg-block">Comparison of Aggregation Methods</h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+
+</header>
+
+
+<p>In the last page we created six sets of scores by state based on combinations of three normalization methods (z-scores, min max, box cox) and two aggregation methods (arithmetic, geometric). Here, we will explore differences between them in terms of state distributions and rankings.</p>
+<p>Note that each set of spider plots are scaled to the minimum and maximum of any single state in that dimension, given the normalization and aggregation methods. This means in the case of min-max normalization, for example, raw metrics are scaled from 0 to 1, arithmetic and geometric means consolidate values to dimension scores, and these sets of dimension scores are scaled on the plot from the lowest to the highest value of any state. A “perfect” score here means that it is the best of any state. Plots show dimension values for Vermont in green. The dotted purple polygon behind it is the US average by state. Arithmetic means are on the left, and geometric on the right.</p>
+<p>Be aware that spider/radar charts can be hard to interpret, and sometimes misleading <a href="https://www.data-to-viz.com/caveat/spider.html">The Radar Chart and its Caveats</a>. The order of variables makes a big impact on the area of chart, and area is not a terribly reliable way to show differences, as it increases quadratically as variables increase linearly. Will explore some other ways to show this information, but using these for now as they are quite popular in the literature for sustainability metrics.</p>
+<section id="min-max" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Min Max</h1>
+<p>We are starting with min max normalization, which is probably the most intuitive transformation. Every metric is scaled from 0 to 1, so the lowest value from any state becomes 0, and the highest value from any state becomes 1. Indicators, indices, and dimensions are then aggregated using arithmetic or geometric means.</p>
+<p>The transformation is easy to understand, but has some drawbacks, including being quite sensitive to outliers. Strong outliers in either direction could condense the rest of the distribution, making it seem like most states are very low or very high.</p>
+<div class="cell" data-warnings="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  tidyr,</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  ggplot2,</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  ggpubr,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  fmsb</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load state score data</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/state_score_iterations.rds'</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Custom function to create spider plots</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="fu">get_vt_spiders</span>(dat, <span class="st">'minmax'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comparison_files/figure-html/minmax_spider-1.png" class="img-fluid figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The difference in the production dimension between arithmetic and geometric averages suggests Vermont is scoring highly in some production, but low in others. Arithmetic means are fully compensable such that a high score in one area can fully make up for a low score in another. The geometric mean seems be applying quite a penalty to Vermont production here. In either case, Vermont comes out looking pretty good in terms of the health and social dimensions.</p>
+<section id="arithmetic-table" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="arithmetic-table"><span class="header-section-number">1.1</span> Arithmetic Table</h2>
+<div class="cell" data-warnings="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_reactable</span>(dat, <span class="st">'minmax_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-ae4de88b1ffee7341cf7" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-ae4de88b1ffee7341cf7">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"state":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"economics":["0.179","0.360","0.266","0.205","0.460","0.241","0.397","0.251","0.444","0.296","0.220","0.496","0.183","0.277","0.191","0.225","0.218","0.211","0.197","0.276","0.248","0.494","0.209","0.221","0.209","0.184","0.327","0.257","0.378","0.287","0.383","0.272","0.334","0.200","0.334","0.203","0.168","0.275","0.243","0.494","0.205","0.335","0.194","0.231","0.178","0.218","0.221","0.319","0.185","0.172","0.342"],"environment":["0.357","0.302","0.211","0.320","0.396","0.277","0.340","0.393","0.511","0.251","0.324","0.393","0.359","0.418","0.423","0.446","0.332","0.377","0.436","0.458","0.521","0.367","0.446","0.535","0.345","0.438","0.375","0.257","0.106","0.434","0.299","0.246","0.424","0.404","0.176","0.388","0.380","0.397","0.369","0.339","0.345","0.242","0.400","0.335","0.192","0.412","0.408","0.464","0.382","0.368","0.356"],"health":["0.391","0.469","0.397","0.359","0.530","0.595","0.530","0.458","0.614","0.461","0.482","0.609","0.378","0.443","0.352","0.369","0.423","0.326","0.388","0.521","0.492","0.543","0.458","0.499","0.323","0.382","0.476","0.418","0.346","0.513","0.572","0.354","0.530","0.493","0.414","0.391","0.369","0.526","0.439","0.479","0.424","0.375","0.403","0.465","0.494","0.603","0.513","0.504","0.332","0.422","0.384"],"production":["0.507","0.338","0.437","0.398","0.672","0.421","0.281","0.351","0.297","0.521","0.561","0.404","0.510","0.206","0.244","0.178","0.432","0.334","0.441","0.375","0.354","0.256","0.409","0.288","0.400","0.347","0.491","0.297","0.265","0.158","0.352","0.477","0.451","0.473","0.441","0.289","0.395","0.569","0.417","0.249","0.488","0.376","0.378","0.487","0.336","0.214","0.383","0.535","0.150","0.355","0.331"],"social":["0.434","0.552","0.533","0.412","0.490","0.568","0.458","0.329","0.604","0.518","0.456","0.383","0.426","0.492","0.343","0.445","0.385","0.384","0.418","0.587","0.472","0.531","0.551","0.495","0.415","0.487","0.659","0.414","0.406","0.551","0.534","0.485","0.455","0.441","0.326","0.429","0.307","0.583","0.471","0.373","0.374","0.406","0.444","0.439","0.387","0.470","0.455","0.566","0.343","0.531","0.450"]},"columns":[{"id":"state","name":"state","type":"character"},{"id":"economics","name":"economics","type":"character"},{"id":"environment","name":"environment","type":"character"},{"id":"health","name":"health","type":"character"},{"id":"production","name":"production","type":"character"},{"id":"social","name":"social","type":"character"}],"resizable":true,"filterable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"dataKey":"367000247d6bf6fab2e60bea405aba28"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="geometric-table" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="geometric-table"><span class="header-section-number">1.2</span> Geometric Table</h2>
+<div class="cell" data-warnings="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_reactable</span>(dat, <span class="st">'minmax_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-841f6e9fd9da4f0e69f3" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-841f6e9fd9da4f0e69f3">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"state":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"economics":["0.093","0.171","0.108","0.101","0.301","0.189","0.232","0.172","0.361","0.152","0.152","0.470","0.137","0.164","0.120","0.099","0.127","0.125","0.125","0.195","0.191","0.263","0.167","0.135","0.103","0.120","0.201","0.087","0.206","0.217","0.225","0.244","0.245","0.130","0.264","0.136","0.110","0.209","0.188","0.393","0.154","0.220","0.127","0.166","0.149","0.156","0.181","0.224","0.196","0.123","0.218"],"environment":["0.179","0.240","0.089","0.169","0.247","0.187","0.253","0.355","0.438","0.151","0.222","0.244","0.192","0.372","0.369","0.358","0.231","0.295","0.266","0.272","0.363","0.262","0.409","0.458","0.208","0.393","0.186","0.191","0.359","0.263","0.209","0.110","0.359","0.324","0.117","0.331","0.338","0.232","0.295","0.165","0.225","0.181","0.305","0.251","0.102","0.298","0.314","0.278","0.257","0.271","0.162"],"health":["0.344","0.464","0.331","0.272","0.423","0.472","0.434","0.408","0.572","0.417","0.465","0.549","0.313","0.437","0.307","0.293","0.342","0.259","0.297","0.458","0.400","0.454","0.418","0.360","0.218","0.346","0.439","0.364","0.309","0.376","0.447","0.295","0.482","0.452","0.445","0.316","0.353","0.427","0.405","0.413","0.384","0.310","0.360","0.383","0.379","0.507","0.440","0.467","0.529","0.368","0.343"],"production":["0.338","0.165","0.169","0.242","0.578","0.234","0.224","0.154","0.289","0.397","0.445","0.332","0.335","0.119","0.177","0.102","0.209","0.265","0.281","0.331","0.289","0.224","0.365","0.205","0.247","0.274","0.318","0.118","0.303","0.065","0.355","0.212","0.425","0.383","0.222","0.235","0.204","0.528","0.384","0.173","0.428","0.139","0.322","0.339","0.128","0.059","0.361","0.454","0.381","0.302","0.156"],"social":["0.409","0.495","0.415","0.199","0.423","0.503","0.405","0.355","0.571","0.462","0.427","0.338","0.343","0.559","0.300","0.404","0.376","0.371","0.384","0.513","0.444","0.472","0.475","0.382","0.341","0.467","0.636","0.339","0.280","0.443","0.470","0.406","0.392","0.400","0.290","0.379","0.497","0.518","0.538","0.447","0.332","0.368","0.398","0.380","0.425","0.380","0.411","0.503","0.228","0.455","0.423"]},"columns":[{"id":"state","name":"state","type":"character"},{"id":"economics","name":"economics","type":"character"},{"id":"environment","name":"environment","type":"character"},{"id":"health","name":"health","type":"character"},{"id":"production","name":"production","type":"character"},{"id":"social","name":"social","type":"character"}],"resizable":true,"filterable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"dataKey":"b8bc8763d9630d0d8d85c13547584782"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+</section>
+<section id="z-scores" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Z-Scores</h1>
+<p>Z-scores are standardized values. We subtract the mean from every metric to center it at 0, then divide by the standard deviation to get units in terms of standard deviations. This should be more robust to outliers than the min-max method; extreme values have no effect on values. However, rescaling Z-scores to fit the spider plots might have a similar effect.</p>
+<div class="cell" data-warnings="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_vt_spiders</span>(dat, <span class="st">'zscore'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comparison_files/figure-html/zscore_spider-1.png" class="img-fluid figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>The arithmetic plot is functionally identical to the min-max plots. The difference might be in the scaling of the spider plot itself - it shouldn’t make much of a difference whether scores are on a 0-1 scale or z-score scale. The geometric will have to get dropped or reworked here - geometric means of z-scores that includes negatives doesn’t make sense. We could try logarithmic means, or skipping the centering step so that all the z-scores stay positive. Either way, I don’t find the z-scores particularly convincing, and they are less approachable than min-maxing.</p>
+<section id="arithmetic-table-1" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="arithmetic-table-1"><span class="header-section-number">2.1</span> Arithmetic Table</h2>
+<div class="cell" data-warnings="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_reactable</span>(dat, <span class="st">'zscore_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-a7cd07b508344a0ce29b" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-a7cd07b508344a0ce29b">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"state":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"economics":["-0.400","0.321","-0.067","-0.285","0.906","-0.146","0.528","-0.051","0.790","0.080","-0.223","0.929","-0.407","0.062","-0.353","-0.160","-0.192","-0.276","-0.345","-0.030","-0.113","0.959","-0.311","-0.204","-0.268","-0.391","0.281","0.002","0.452","-0.026","0.458","-0.042","0.261","-0.331","0.404","-0.318","-0.475","-0.033","-0.137","1.010","-0.305","0.386","-0.366","-0.180","-0.468","-0.294","-0.252","0.174","-0.400","-0.463","0.310"],"environment":["0.020","-0.355","-0.652","-0.162","0.197","-0.343","-0.163","0.155","0.663","-0.513","-0.189","0.151","0.027","0.216","0.257","0.384","-0.109","0.039","0.241","0.475","0.634","-0.015","0.402","0.748","-0.053","0.314","0.130","-0.482","-1.182","0.304","-0.300","-0.472","0.236","0.194","-0.841","0.105","0.055","0.205","0.011","-0.177","-0.084","-0.536","0.174","-0.062","-0.760","0.199","0.217","0.504","0.093","0.064","0.037"],"health":["-0.273","0.107","-0.258","-0.439","0.324","0.661","0.374","0.045","0.717","0.031","0.155","0.781","-0.327","-0.059","-0.459","-0.377","-0.134","-0.577","-0.304","0.338","0.178","0.402","0.010","0.232","-0.596","-0.317","0.127","-0.146","-0.491","0.297","0.533","-0.413","0.324","0.164","-0.157","-0.296","-0.382","0.315","-0.056","0.135","-0.124","-0.338","-0.221","0.034","0.198","0.728","0.280","0.228","-0.524","-0.141","-0.307"],"production":["0.559","-0.199","0.316","0.051","1.474","0.184","-0.434","-0.177","-0.388","0.728","0.820","0.214","0.638","-0.801","-0.646","-0.972","0.241","-0.227","0.329","-0.009","-0.140","-0.550","0.155","-0.417","0.058","-0.159","0.556","-0.396","-0.544","-1.071","-0.039","0.469","0.322","0.405","0.360","-0.441","0.039","0.945","0.155","-0.553","0.500","0.007","-0.004","0.487","-0.217","-0.864","-0.003","0.790","-1.150","-0.140","-0.263"],"social":["-0.092","0.429","0.268","-0.149","0.059","0.412","-0.040","-0.582","0.848","0.193","-0.042","-0.312","-0.174","0.099","-0.481","-0.038","-0.289","-0.314","-0.177","0.541","0.011","0.264","0.342","0.113","-0.150","0.129","0.887","-0.192","-0.284","0.378","0.251","0.108","-0.055","-0.093","-0.523","-0.145","-0.595","0.516","0.035","-0.384","-0.346","-0.177","-0.051","-0.109","-0.400","0.058","-0.036","0.412","-0.421","0.274","0.026"]},"columns":[{"id":"state","name":"state","type":"character"},{"id":"economics","name":"economics","type":"character"},{"id":"environment","name":"environment","type":"character"},{"id":"health","name":"health","type":"character"},{"id":"production","name":"production","type":"character"},{"id":"social","name":"social","type":"character"}],"resizable":true,"filterable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"dataKey":"5b7430dd79def5a6f194f307d2d9437e"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="geometric-table-1" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="geometric-table-1"><span class="header-section-number">2.2</span> Geometric Table</h2>
+<div class="cell" data-warnings="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_reactable</span>(dat, <span class="st">'zscore_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-37d76a01d6983812e46f" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-37d76a01d6983812e46f">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"state":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"economics":["0.987","0.965","0.811","0.662","1.106","0.558","0.906","0.891","0.642","0.863","0.883","1.056","0.872","0.610","0.912","0.978","0.709","0.944","0.955","0.910","0.696","1.224","0.637","0.629","0.815","0.822","1.041","1.056","0.957","0.919","0.673","0.646","0.702","0.796","1.032","0.854","0.820","0.610","0.736","1.419","0.758","1.224","0.849","0.392","0.561","0.934","0.751","0.865","0.885","0.508","1.151"],"environment":["0.825","0.596","1.121","0.890","0.996","0.906","0.865","0.398","0.706","1.011","0.714","0.398","0.821","0.712","0.280","0.754","0.825","0.495","0.950","1.058","0.669","0.515","0.443","1.125","0.749","0.514","1.251","0.524","1.000","0.960","0.585","1.025","0.625","0.424","0.897","0.624","0.740","0.925","0.875","0.871","0.528","0.589","0.666","1.019","0.810","0.718","0.576","1.124","0.636","0.489","1.211"],"health":["1.061","0.768","0.762","1.018","0.635","1.007","0.863","0.735","1.189","0.567","0.562","0.854","0.935","0.502","0.694","0.946","0.460","0.935","0.937","0.523","0.627","0.969","0.701","1.131","1.144","0.683","0.543","0.658","0.948","0.835","0.846","0.915","0.567","0.499","0.723","0.751","1.015","0.680","0.710","0.585","0.943","0.398","0.699","0.258","0.913","1.147","0.784","0.712","0.945","0.380","0.579"],"production":["0.871","0.832","0.722","0.828","1.350","0.790","1.034","1.044","0.844","1.212","0.756","0.582","1.058","1.110","0.752","0.876","0.626","0.592","0.890","0.010","0.852","1.015","0.518","0.888","1.002","0.925","1.107","0.629","0.827","1.067","0.656","1.142","0.415","0.700","1.084","0.911","0.493","0.973","0.031","1.092","0.558","0.547","0.971","0.837","0.041","1.058","0.963","0.933","1.034","0.771","1.044"],"social":["0.723","0.861","0.903","0.650","0.426","0.757","0.641","0.703","1.083","0.619","0.808","1.118","0.634","0.987","0.731","0.955","0.704","0.973","0.962","0.350","0.520","0.784","0.816","0.884","0.942","0.681","0.768","0.557","0.409","1.066","0.763","0.947","1.118","0.345","1.032","0.629","0.682","0.800","0.751","0.641","0.727","0.830","0.550","0.783","0.862","0.715","0.684","0.904","0.875","0.808","0.816"]},"columns":[{"id":"state","name":"state","type":"character"},{"id":"economics","name":"economics","type":"character"},{"id":"environment","name":"environment","type":"character"},{"id":"health","name":"health","type":"character"},{"id":"production","name":"production","type":"character"},{"id":"social","name":"social","type":"character"}],"resizable":true,"filterable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"dataKey":"07972f68bdead1d50839675d62c284dc"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+</section>
+<section id="box-cox" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Box Cox</h1>
+<p>The Box-Cox procedure explores a range of lambda values with which to transform a distribution, choosing the value that leads to the most “normal” distribution. It has been used on skewed sustainability indicators, sometimes before a min-max scaling procedure <span class="citation" data-cites="bene2019GlobalMapIndicators">(<a href="#ref-bene2019GlobalMapIndicators" role="doc-biblioref">Béné et al. 2019</a>)</span>. It should have the effect of smoothing out some of the outlying data. On the other hand, since this is a non-linear transformation, it will also fundamentally change the relationships between variables.</p>
+<div class="cell" data-warnings="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_vt_spiders</span>(dat, <span class="st">'boxcox'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="comparison_files/figure-html/boxcox_spider-1.png" class="img-fluid figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+<p>We can see that all values are less extreme - both the lows and highs and pulled toward the center. The underlying US averages are also quite well centered. However, interpreting correlations between metrics, indicators, indices, and dimensions will be harder here.</p>
+<section id="arithmetic-table-2" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="arithmetic-table-2"><span class="header-section-number">3.1</span> Arithmetic Table</h2>
+<div class="cell" data-warnings="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_reactable</span>(dat, <span class="st">'boxcox_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-14c3aa326f57923a04de" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-14c3aa326f57923a04de">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"state":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"economics":["1.794","1.672","1.622","1.829","1.815","1.796","1.773","1.787","1.876","1.763","1.812","1.710","1.767","1.854","1.815","1.862","1.830","1.813","1.786","1.795","1.801","1.781","1.800","1.853","1.825","1.830","1.848","1.862","1.749","1.770","1.760","1.733","1.822","1.794","1.878","1.816","1.809","1.747","1.822","1.763","1.791","1.883","1.795","1.787","1.733","1.797","1.805","1.760","1.800","1.823","1.834"],"environment":["218.852","163.536","45.866","224.228","183.135","88.725","252.454","249.786","297.084","170.032","220.165","216.839","144.897","247.365","262.360","223.381","184.180","266.954","209.043","188.851","264.130","248.246","207.265","168.876","216.334","240.700","115.699","122.931","37.713","236.160","201.492","50.271","224.245","249.324","68.421","238.484","172.554","193.076","252.503","244.967","228.257","95.982","264.199","135.138","55.331","223.603","264.422","228.741","281.377","206.602","94.812"],"health":["86.409","106.109","108.829","80.803","129.388","172.043","134.147","110.476","157.030","113.985","113.350","131.955","113.317","126.537","96.272","114.482","122.932","80.445","86.265","121.500","129.581","153.807","103.180","152.128","73.269","103.980","129.675","125.623","92.764","141.291","156.334","84.183","125.531","120.472","129.453","100.905","93.468","125.918","112.808","123.371","102.288","117.804","99.342","116.101","142.824","146.588","135.385","138.026","68.841","119.932","98.661"],"production":["18.686","12.570","10.173","14.440","8.390","15.975","7.186","17.314","9.819","6.788","15.918","6.742","13.674","5.011","8.620","10.748","15.095","12.424","8.290","8.778","13.617","6.584","10.559","9.707","14.031","11.235","11.379","11.998","11.999","9.578","4.234","16.104","14.346","17.376","4.858","10.402","18.520","8.773","15.332","5.972","15.051","9.949","10.365","18.029","15.502","15.105","15.158","8.207","16.613","14.280","17.369"],"social":["213.666","212.580","161.890","274.622","218.010","274.523","243.254","127.725","285.102","208.632","207.204","236.523","389.805","329.119","300.675","253.946","224.076","249.063","207.846","366.226","258.441","253.416","343.605","254.181","173.643","323.441","416.728","270.976","157.216","311.103","269.538","183.948","354.814","177.825","220.031","311.538","208.456","268.963","332.848","255.754","152.514","290.559","287.904","198.349","313.882","266.195","169.734","233.955","243.110","377.778","310.043"]},"columns":[{"id":"state","name":"state","type":"character"},{"id":"economics","name":"economics","type":"character"},{"id":"environment","name":"environment","type":"character"},{"id":"health","name":"health","type":"character"},{"id":"production","name":"production","type":"character"},{"id":"social","name":"social","type":"character"}],"resizable":true,"filterable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"dataKey":"d4a2d86bfcd25d6a45da41075e9e3738"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="geometric-table-2" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="geometric-table-2"><span class="header-section-number">3.2</span> Geometric Table</h2>
+<div class="cell" data-warnings="false">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_reactable</span>(dat, <span class="st">'boxcox_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-116da3b6b4e1f09a6681" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-116da3b6b4e1f09a6681">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"state":["AL","AK","AZ","AR","CA","CO","CT","DE","DC","FL","GA","HI","ID","IL","IN","IA","KS","KY","LA","ME","MD","MA","MI","MN","MS","MO","MT","NE","NV","NH","NJ","NM","NY","NC","ND","OH","OK","OR","PA","RI","SC","SD","TN","TX","UT","VT","VA","WA","WV","WI","WY"],"economics":["0.544","0.888","0.638","0.492","0.755","0.687","0.923","0.657","0.924","0.700","0.659","0.972","0.565","0.568","0.590","0.471","0.478","0.614","0.573","0.914","0.754","1.040","0.749","0.530","0.521","0.605","0.679","0.452","0.657","0.947","0.925","0.726","0.863","0.633","0.423","0.680","0.590","0.763","0.778","0.987","0.717","0.481","0.684","0.662","0.689","0.837","0.823","0.730","0.691","0.630","0.720"],"environment":["9.695","6.818","6.803","9.243","10.089","8.489","9.423","9.839","11.900","8.664","9.688","10.137","9.387","10.886","10.984","10.907","9.264","10.449","9.550","9.288","11.138","10.085","10.887","10.654","9.334","11.116","9.144","9.192","5.610","9.739","9.568","7.561","10.221","10.636","7.527","10.665","10.147","10.502","10.516","9.298","9.861","8.777","10.847","9.279","7.343","9.897","10.801","11.100","10.605","10.128","8.599"],"health":["4.077","4.551","4.337","3.916","4.980","5.484","4.993","4.461","5.422","4.602","4.619","4.980","4.321","4.728","4.134","4.304","4.579","3.826","4.141","4.794","4.766","5.169","4.481","4.925","3.689","4.352","4.810","4.657","4.075","4.877","5.341","4.001","4.993","4.801","4.371","4.323","4.219","4.942","4.571","4.699","4.297","4.309","4.240","4.684","4.901","5.211","4.863","4.989","3.560","4.512","4.251"],"production":["1.927","1.956","2.111","1.595","3.106","2.073","1.952","1.844","1.969","2.117","2.238","2.388","2.217","1.110","1.357","1.126","1.862","1.690","1.827","2.287","2.141","1.860","2.227","1.622","1.526","1.719","2.269","1.472","1.682","1.358","1.940","2.169","2.584","2.223","1.403","1.559","1.756","2.683","2.295","1.834","2.371","1.549","1.875","2.126","1.729","1.436","2.219","2.572","1.094","1.941","1.734"],"social":["1.397","1.521","1.378","1.437","1.388","1.467","1.361","1.175","1.536","1.402","1.394","1.251","1.395","1.456","1.383","1.377","1.330","1.386","1.399","1.516","1.425","1.425","1.557","1.408","1.355","1.485","1.613","1.366","1.297","1.401","1.446","1.388","1.480","1.360","1.301","1.452","1.296","1.473","1.504","1.317","1.280","1.390","1.427","1.366","1.311","1.352","1.332","1.439","1.316","1.511","1.391"]},"columns":[{"id":"state","name":"state","type":"character"},{"id":"economics","name":"economics","type":"character"},{"id":"environment","name":"environment","type":"character"},{"id":"health","name":"health","type":"character"},{"id":"production","name":"production","type":"character"},{"id":"social","name":"social","type":"character"}],"resizable":true,"filterable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"dataKey":"4917adcaf9c1652a2040d3d762d185e1"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+
+
+
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-bene2019GlobalMapIndicators" class="csl-entry" role="listitem">
+Béné, Christophe, Steven D. Prager, Harold A. E. Achicanoy, Patricia Alvarez Toro, Lea Lamotte, Camila Bonilla, and Brendan R. Mapes. 2019. <span>“Global Map and Indicators of Food System Sustainability.”</span> <em>Scientific Data</em> 6 (1): 279. <a href="https://doi.org/10.1038/s41597-019-0301-5">https://doi.org/10.1038/s41597-019-0301-5</a>.
+</div>
+</div></section></div></main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const onCopySuccess = function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  }
+  const getTextToCopy = function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button:not([data-in-quarto-modal])', {
+    text: getTextToCopy
+  });
+  clipboard.on('success', onCopySuccess);
+  if (window.document.getElementById('quarto-embedded-source-code-modal')) {
+    // For code content inside modals, clipBoardJS needs to be initialized with a container option
+    // TODO: Check when it could be a function (https://github.com/zenorocha/clipboard.js/issues/860)
+    const clipboardModal = new window.ClipboardJS('.code-copy-button[data-in-quarto-modal]', {
+      text: getTextToCopy,
+      container: window.document.getElementById('quarto-embedded-source-code-modal')
+    });
+    clipboardModal.on('success', onCopySuccess);
+  }
+    var localhostRegex = new RegExp(/^(?:http|https):\/\/localhost\:?[0-9]*\//);
+    var mailtoRegex = new RegExp(/^mailto:/);
+      var filterRegex = new RegExp('/' + window.location.host + '/');
+    var isInternal = (href) => {
+        return filterRegex.test(href) || localhostRegex.test(href) || mailtoRegex.test(href);
+    }
+    // Inspect non-navigation links and adorn them if external
+ 	var links = window.document.querySelectorAll('a[href]:not(.nav-link):not(.navbar-brand):not(.toc-action):not(.sidebar-link):not(.sidebar-item-toggle):not(.pagination-link):not(.no-external):not([aria-hidden]):not(.dropdown-item):not(.quarto-navigation-tool):not(.about-link)');
+    for (var i=0; i<links.length; i++) {
+      const link = links[i];
+      if (!isInternal(link.href)) {
+        // undo the damage that might have been done by quarto-nav.js in the case of
+        // links that we want to consider external
+        if (link.dataset.originalHref !== undefined) {
+          link.href = link.dataset.originalHref;
+        }
+          // target, if specified
+          link.setAttribute("target", "_blank");
+          if (link.getAttribute("rel") === null) {
+            link.setAttribute("rel", "noopener");
+          }
+      }
+    }
+  function tippyHover(el, contentFn, onTriggerFn, onUntriggerFn) {
+    const config = {
+      allowHTML: true,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start',
+    };
+    if (contentFn) {
+      config.content = contentFn;
+    }
+    if (onTriggerFn) {
+      config.onTrigger = onTriggerFn;
+    }
+    if (onUntriggerFn) {
+      config.onUntrigger = onUntriggerFn;
+    }
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      if (note) {
+        return note.innerHTML;
+      } else {
+        return "";
+      }
+    });
+  }
+  const xrefs = window.document.querySelectorAll('a.quarto-xref');
+  const processXRef = (id, note) => {
+    // Strip column container classes
+    const stripColumnClz = (el) => {
+      el.classList.remove("page-full", "page-columns");
+      if (el.children) {
+        for (const child of el.children) {
+          stripColumnClz(child);
+        }
+      }
+    }
+    stripColumnClz(note)
+    if (id === null || id.startsWith('sec-')) {
+      // Special case sections, only their first couple elements
+      const container = document.createElement("div");
+      if (note.children && note.children.length > 2) {
+        container.appendChild(note.children[0].cloneNode(true));
+        for (let i = 1; i < note.children.length; i++) {
+          const child = note.children[i];
+          if (child.tagName === "P" && child.innerText === "") {
+            continue;
+          } else {
+            container.appendChild(child.cloneNode(true));
+            break;
+          }
+        }
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(container);
+        }
+        return container.innerHTML
+      } else {
+        if (window.Quarto?.typesetMath) {
+          window.Quarto.typesetMath(note);
+        }
+        return note.innerHTML;
+      }
+    } else {
+      // Remove any anchor links if they are present
+      const anchorLink = note.querySelector('a.anchorjs-link');
+      if (anchorLink) {
+        anchorLink.remove();
+      }
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(note);
+      }
+      // TODO in 1.5, we should make sure this works without a callout special case
+      if (note.classList.contains("callout")) {
+        return note.outerHTML;
+      } else {
+        return note.innerHTML;
+      }
+    }
+  }
+  for (var i=0; i<xrefs.length; i++) {
+    const xref = xrefs[i];
+    tippyHover(xref, undefined, function(instance) {
+      instance.disable();
+      let url = xref.getAttribute('href');
+      let hash = undefined; 
+      if (url.startsWith('#')) {
+        hash = url;
+      } else {
+        try { hash = new URL(url).hash; } catch {}
+      }
+      if (hash) {
+        const id = hash.replace(/^#\/?/, "");
+        const note = window.document.getElementById(id);
+        if (note !== null) {
+          try {
+            const html = processXRef(id, note.cloneNode(true));
+            instance.setContent(html);
+          } finally {
+            instance.enable();
+            instance.show();
+          }
+        } else {
+          // See if we can fetch this
+          fetch(url.split('#')[0])
+          .then(res => res.text())
+          .then(html => {
+            const parser = new DOMParser();
+            const htmlDoc = parser.parseFromString(html, "text/html");
+            const note = htmlDoc.getElementById(id);
+            if (note !== null) {
+              const html = processXRef(id, note);
+              instance.setContent(html);
+            } 
+          }).finally(() => {
+            instance.enable();
+            instance.show();
+          });
+        }
+      } else {
+        // See if we can fetch a full url (with no hash to target)
+        // This is a special case and we should probably do some content thinning / targeting
+        fetch(url)
+        .then(res => res.text())
+        .then(html => {
+          const parser = new DOMParser();
+          const htmlDoc = parser.parseFromString(html, "text/html");
+          const note = htmlDoc.querySelector('main.content');
+          if (note !== null) {
+            // This should only happen for chapter cross references
+            // (since there is no id in the URL)
+            // remove the first header
+            if (note.children.length > 0 && note.children[0].tagName === "HEADER") {
+              note.children[0].remove();
+            }
+            const html = processXRef(null, note);
+            instance.setContent(html);
+          } 
+        }).finally(() => {
+          instance.enable();
+          instance.show();
+        });
+      }
+    }, function(instance) {
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            div.style.left = 0;
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+        // Handle positioning of the toggle
+    window.addEventListener(
+      "resize",
+      throttle(() => {
+        elRect = undefined;
+        if (selectedAnnoteEl) {
+          selectCodeLines(selectedAnnoteEl);
+        }
+      }, 10)
+    );
+    function throttle(fn, ms) {
+    let throttle = false;
+    let timer;
+      return (...args) => {
+        if(!throttle) { // first call gets through
+            fn.apply(this, args);
+            throttle = true;
+        } else { // all the others get throttled
+            if(timer) clearTimeout(timer); // cancel #2
+            timer = setTimeout(() => {
+              fn.apply(this, args);
+              timer = throttle = false;
+            }, ms);
+        }
+      };
+    }
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="../pages/aggregation.html" class="pagination-link" aria-label="Aggregation">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Aggregation</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+
+<script src="../site_libs/quarto-html/zenscroll-min.js"></script>
+</body></html>

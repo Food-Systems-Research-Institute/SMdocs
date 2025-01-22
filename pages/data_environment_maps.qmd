@@ -40,6 +40,7 @@ This is the MRLC 30m LULC layer from 2023. Below the map, you can find a table w
 #| fig-cap: Land use land cover map
 #| out.width: 100%
 lulc <- readRDS('data/sm_data.rds')[['mrlc_lulc_ne']]
+# sm_data <- readRDS('data/sm_data.rds')
 counties <- readRDS('data/sm_data.rds')[['ne_counties_2024']]
 
 lulc_map <- lulc %>% 
