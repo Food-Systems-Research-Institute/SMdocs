@@ -99,7 +99,7 @@ pacman::p_load(
 
 # Get latest year function
 source('dev/data_pipeline_functions.R')
-names(sm_data)
+# names(sm_data)
 # get_str(metrics)
 
 # Filter to latest year for each metric, and pivot wider
@@ -161,7 +161,7 @@ mf_out <- metrics_df %>%
     verbose = FALSE,
     variablewise = FALSE
   )
-get_str(mf_out)
+# get_str(mf_out)
 # mf_out$OOBerror
 # NRMSE 0.5906362
 
@@ -203,7 +203,7 @@ normed$minmax <- imp_dat %>%
 normed$boxcox <- imp_dat %>% 
   mutate(across(everything(), ~ BoxCox(.x + 1, lambda = 'auto')))
 
-map(normed, get_str)
+# map(normed, get_str)
 ```
 
 # Directional Values
@@ -360,7 +360,7 @@ indicator_scores <- map(normed, \(df) {
   return(norm_out) 
 })
   
-get_str(indicator_scores, 4)
+# get_str(indicator_scores, 4)
 ```
 
 ## Index Means
