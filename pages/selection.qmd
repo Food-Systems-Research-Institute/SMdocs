@@ -1,0 +1,259 @@
+---
+title: "Variable Selection and Regression"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+```{r}
+#| label: prep
+#| warnings: false
+#| include: false
+pacman::p_load(
+  dplyr,
+  purrr,
+  conflicted
+)
+
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
+```
+
+On this page we will take our min-max normalized, geometrically averaged scores, which look like the most reliable and approachable so far, and take a deeper dive into variable selection, regression, and PCA. From the dimension meetings, it sounds like we may have some indicators with a couple of metrics, and potentially others with dozens. Because of this, and because of our focus on developing sensible indicators, I think it will be best to do any weighting at the indicator level or above. This also reduces our variable count substantially in relation to our state count of 51, opening more doors for PCA.
+
+It is worth emphasizing at the top that the metrics that are making up this secondary data framework are not a great representation of the system. There are some important holes, as well as a heap of metrics that are serving as rather uninspiring proxies. So, extrapolation of these results beyond the confines of the exercise is not recommended. The purpose here is to explore strengths and tradeoffs in methods for aggregating the data. As primary data come in and make up the bulk of the framework and secondary data are used to fill in the gaps, this should start becoming more interpretable. 
+
+# Wrangling
+
+First we will combine our indicator, index, and dimension values into one data frame to work with.
+
+```{r}
+#| label: wrangle
+#| warnings: false
+#| output: false
+pacman::p_load(
+  dplyr, 
+  readr, 
+  stringr, 
+  caret, 
+  purrr, 
+  DHARMa, 
+  lmtest,
+  snakecase
+)
+
+# Load data
+minmax_dat <- readRDS('data/state_score_iterations.rds')[['minmax_geometric']]
+get_str(minmax_dat, 3)
+
+# Rename columns to specify what level of framework they are
+# then combine them into a single DF
+dat <- imap(minmax_dat, ~ {
+  new_names <- c(
+    paste0(
+      str_sub(.y, end = 5),
+      '_',
+      snakecase::to_snake_case(names(.x[-length(.x)]))
+    ),
+    'state'
+  )
+  .x %>% 
+    setNames(c(new_names))
+}) %>% 
+  reduce(inner_join) %>% 
+  select(state, everything())
+get_str(dat)
+
+# Remove national average and New England average, leave just states
+dat <- filter(dat, !state %in% c('US', 'NewEng'))
+
+# Get filtered frame, which shows which indicators belong to which dimensions
+frame <- readRDS('data/filtered_frame.rds')
+```
+
+# PCA
+
+Similar procedure to what we have been doing, but now we will just use our indicators, which have been aggregating with geometric means.
+
+## Component Extraction
+
+```{r}
+#| label: extraction
+#| warning: false
+pacman::p_load(
+  psych
+)
+
+# Filter down to just indicators for PCA
+pca_dat <- dat %>% 
+  select(starts_with('indic')) %>% 
+  setNames(c(str_remove(names(.), 'indic_')))
+# get_str(pca_dat)
+
+# Explore how many factors to extract
+VSS(pca_dat, n = 8, rotate = 'varimax')
+fa.parallel(pca_dat)
+```
+
+Both MAP and Parallel Analysis determine that there should be 5 components.
+
+```{r}
+#| label: scree
+pca_out <- pca(pca_dat, nfactors = 5)
+plot(pca_out$values)
+abline(h = 1)
+```
+
+The scree plot is not all that convincing, though. One could make an argument for seven components.
+
+## Run PCA
+
+Let's go ahead with the recommended components from MAP and PA, which are generally more reliable than scree plots.
+
+```{r}
+#| label: pca
+#| warning: false
+pca_out
+```
+
+There is a lot to look at here, but here are some impressions.
+
+Most of our current economics indicators (access to land to income stability), are coalescing into RC1. However, access to land splits out into RC3, alongside environment indicators like carbon stocks and forest health, as well as production indicators like inputs and total quantity of food products. The access to land indicator does not have an ideal set of metrics under it currently - it is made up of land and building value per farm and acreage per farm as a proxy for access. So it seems reasonable enough that this indicator is pulling away from the rest of the economics indicators.
+
+The environment indicators (carbon stocks to water quantity) mostly make up RC5, but are also split between several other components. The carbon stocks and forest health indicators are currently both derived from the USFS TreeMap dataset, so it makes sense they fall together in RC5. This is a particularly scattered dimension though - perhaps partly from hinky proxy metrics and partly for the diversity of the dimension itself.
+
+Health indicators (education to physical health) fall pretty consistently into RC2. A notable exception is food access, which falls into RC5 along with TreeMap data. I have a hunch that RC5 is measuring the rural/urban divide at this point. The culturally appropriate food indicator also moves over to RC1 alongside economics indicators. Given that this indicator currently consists only of the ability of School Food Authorities to provide culturally appropriate foods, this is probably tracking with wealth.
+
+Production indicators (richness to value added markets) fall mostly into RC2. However, richness (measured by crop diversity) swings out into RC4, which is a bit of a grab bag but does contain some forest indicators. The economics dimension RC1 also loads strongly onto the value added markets indicator.
+
+Finally, the social dimension is scattered all over the place. I can't make much sense of it as a whole, given that it has a pretty unsatisfactory set of metrics behind it at this point.
+
+The next step for this PCA path is to see how things look if we aggregate our indices and dimensions based on these PCA loadings in the style of @nicolettiSummaryIndicatorsProduct2000, rather than working with the arithmetic/geometric means as we do below.
+
+# Regression
+
+Now that we have a preliminary framework and set of scores, we can try regressing our dimension scores onto our indicators to see which indicators are the most highly associated with dimensions. We can use this information to help inform weighting. Since we have more indicators per dimension than are easy to interpret, we will use variable selection procedures with GLMnet and Random Forest regressions.
+
+## Economics
+
+### Linear Model
+
+First we can try a plain old linear model to see how economics loads onto its indicators.
+
+```{r}
+#| label: econ_lm
+# Reduce data down to dimen_economics and all indicators
+econ_dat <- select(dat, dimen_economics, starts_with('indic')) %>% 
+  setNames(c(names(.) %>% str_remove('indic_|dimen_')))
+get_str(econ_dat)
+
+lm <- lm(economics ~ ., data = econ_dat)
+summary(lm)
+```
+
+We can see that most of the economics indicators (access to land, wealth and income distribution, income stability) are significant predictors, while operations diversification is close. But some surprises are access to culturally appropriate food (school food authorities serving culturally relevant food), housing supply and quality, as well as a few production indicators, like richness (crop diversity), production inputs, and value-added markets. Social connectedness from the social dimension also makes it on the list. The largest coefficients by a wide margin are for access to land and wealth and income distribution.
+
+### Splitting Data
+
+Here we split out data into a 60/40 training/test set for cross validation with GLMnet and Random Forest models. Note that we are pushing the limits of our sample size. But this should help protect against overfitting.
+
+```{r}
+#| label: split_econ
+#| output: false
+# Split data 60/40
+set.seed(42)
+indices <- createDataPartition(econ_dat$economics, p = 0.60, list = FALSE)
+training_data <- econ_dat[indices, ]
+testing_data <- econ_dat[-indices,]
+
+my_folds <- createFolds(training_data$economics, k = 5, list = TRUE)
+
+# Control
+my_control <- trainControl(
+  method = 'cv',
+  number = 5,
+  verboseIter = TRUE,
+  index = my_folds
+)
+
+# Check for zero variance or near zero variance indicators
+nearZeroVar(dat, names = TRUE, saveMetrics = TRUE)
+# All clear
+```
+
+### GLMnet
+
+Here we use a GLMnet to find an optimal balance between a ridge regression, which penalizes variables based on the magnitude of coefficients, and lasso regression, which adds a penalty based on the absolute value of coefficients. We use a tuning grid to find optimal values of alpha (0 = ridge, 1 = lasso) and lambda (the penalty parameter). Both this and the random forest model are particularly good at prediction, but also provide a metric for variable importance that can help us interpret our indicators.
+
+```{r}
+#| label: econ_glmnet
+set.seed(42)
+econ_glmnet <- train(
+  economics ~ .,
+  data = training_data, 
+  tuneGrid = expand.grid(
+    alpha = seq(0.1, 1, length = 5),
+    lambda = seq(0.0001, 0.1, length = 100)
+  ),
+  method = "glmnet",
+  trControl = my_control,
+  preProcess = c('zv', 'center', 'scale')
+)
+
+importance <- varImp(econ_glmnet, scale = TRUE)
+plot(importance)
+
+# Predict
+# p <- predict(econ_glmnet, testing_data)
+# postResample(pred = p, obs = testing_data$economics)
+
+```
+
+The optimal hyperparameters from the tuning grid were alpha = 0.1 (mostly ridge regression) and lambda = 0.00313. The variable importance plot is on a relative scale of 0 (unimportant) to 100 (most important) in terms of predictive power. Curiously, it is showing that the value added market indicator from the production dimension is a better predictor of economics than any economics indicator.
+
+### Random Forest
+
+Now we can try a random forest, which is particularly good at handling non-linear relationships. Here we use the RMSE to determine the optimal combination of mtry (the number of variables selected at each node in the decision tree), the split rule, and the minimum node size.
+
+```{r}
+#| label: econ_rf
+set.seed(42)
+econ_rf <- train(
+  economics ~ .,
+  data = training_data, 
+  tuneLength = 7,
+  method = "ranger",
+  trControl = my_control,
+  importance = 'impurity'
+)
+
+# econ_rf
+# plot(econ_rf)
+
+importance <- varImp(econ_rf, scale = TRUE)
+plot(importance)
+
+# Predict
+# p <- predict(model_mf, testing_data)
+# postResample(pred = p, obs = testing_data$rebl_tpm)
+```
+
+The random forest model is also picking out the value-added market indicator as the best predictor of economics dimension scores, followed closely by operations diversification, wealth and income distribution, and income stability.
+
+Very curious how value-added markets keep sticking out. The two metrics making up this indicator are both from NASS: the percentage of farms reporting value-added sales, and of those farms, the percentage of value-added sales out of total sales. 
+
+# Next steps
+
+Lots of directions to go from here, but the plan for now is:
+
+-   Far more visualization and exploration of indicator distributions and normalization methods. Show how VT specifically and New England as a whole compare to national averages in each dimension, index, and key indicators.
+-   Explore aggregation using PCA loadings as weights and compare this to our more simply aggregated current frameworks. Might make sense to try PCA within each dimension individually instead of all together, although doing them together does allow us to find unusual behavior of indicators.
+-   Continue regression analysis across other four dimensions to help inform indicator weighting. Consider trying double-censored tobit regression in place of the linear model [@gomez-limon2010EmpiricalEvaluationAgricultural].
+-   Sensitivity analysis - quantify the effect of different normalization, aggregation methods. Bootstrap confidence intervals around dimension scores. Quantify effect of changing the number of metrics under each indicator. 

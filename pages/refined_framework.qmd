@@ -47,7 +47,7 @@ frame <- raw %>%
 
 ```
 
-This page shows the partially refined framework as it stands after two dimension meetings: economics and environment. It also includes a selection of secondary data metrics to match those indicators. We have collected around 1500 metrics so far, although many of those are fluff. Effectively, we have around 250 meaningful metrics. Here, we are using a selection of 95 of them to make a preliminary framework for preliminary analyses. This is more than we have been planning for the refined framework, which will give us a chance to see how aggregate scores change with different combinations of metrics and under different methods of aggregation. 
+This page shows the partially refined framework as it stands after two dimension meetings: economics and environment. (Note - this page has not been updated to reflect the decisions made in the production dimension meeting yet.) It also includes a selection of secondary data metrics to match those indicators. We have collected around 1500 metrics so far, although many of those are fluff. Effectively, we have around 250 meaningful metrics. Here, we are using a selection of 95 of them to make a preliminary framework for preliminary analyses. This is more than we have been planning for the refined framework, which will give us a chance to see how aggregate scores change with different combinations of metrics and under different methods of aggregation. 
 
 There are still a few gaps I would have liked to fill by now:
 

@@ -1,3 +1,7 @@
+pacman::p_load(
+  fmsb
+)
+
 get_vt_spiders <- function(df_list,
                            norm_type) {
   
@@ -24,9 +28,9 @@ get_vt_spiders <- function(df_list,
       dim_max <- map_dbl(.x[1:5], max)
       
       # National average
-      nat_avg <- colMeans(
-        select(.x, -state)
-      )
+      nat_avg <- .x %>% 
+        filter(state == 'US') %>% 
+        select(-state)
       
       # Vermont scores
       vt_dims <- .x %>% 

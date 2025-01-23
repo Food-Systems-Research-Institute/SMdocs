@@ -71,6 +71,9 @@ website:
             href: pages/aggregation.qmd
           - text: Comparison
             href: pages/comparison.qmd
+          - text: Selection and Regression
+            href: pages/selection.qmd
+            
 
 format:
   html:

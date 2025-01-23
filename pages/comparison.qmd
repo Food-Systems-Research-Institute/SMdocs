@@ -72,6 +72,7 @@ get_reactable(dat, 'minmax_arithmetic')
 ```
 
 ## Geometric Table
+
 ```{r}
 #| label: minmax_ari_table
 #| warnings: false
@@ -101,6 +102,7 @@ get_reactable(dat, 'zscore_arithmetic')
 ```
 
 ## Geometric Table
+
 ```{r}
 #| label: zscore_geo_table
 #| warnings: false
@@ -130,8 +132,11 @@ get_reactable(dat, 'boxcox_arithmetic')
 ```
 
 ## Geometric Table
+
 ```{r}
 #| label: boxcox_geo_table
 #| warnings: false
 get_reactable(dat, 'boxcox_geometric')
 ```
+
+# References
