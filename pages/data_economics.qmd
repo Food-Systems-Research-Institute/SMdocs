@@ -438,7 +438,6 @@ VSS gives a wide range from 2 to 8, MAP shows 7, parallel analysis shows 4. I te
 
 plot(pca_out$values)
 abline(h = 1)
-
 ```
 
 From the scree plot and eigenvalues it looks like the first three components bear lots of unique variance, but after that there is no clear elbow where a qualitative decision can be made to choose a certain number of components. The Kaiser-Guttman rule suggests keeping any compents with an eigenvalue > 1 (at the horizontal line), but we can see here that this is a rather dubious distinction. 

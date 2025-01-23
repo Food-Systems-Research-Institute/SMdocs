@@ -10,8 +10,8 @@ editor_options:
 Exploring methods of aggregating data into index and dimension scores.
 
 ```{r}
-#| context: setup
 #| label: setup
+#| include: false
 pacman::p_load(
   dplyr,
   purrr,
@@ -32,6 +32,8 @@ Explore the data we have, make sure it checks out
 
 ```{r}
 #| label: explore
+#| warnings: false
+#| output: false
 pacman::p_load(
   dplyr,
   stringr,
@@ -41,7 +43,7 @@ pacman::p_load(
 # Explore our set of state level metrics from refined secondary framework
 sm_data <- readRDS('data/sm_data_slim.rds')
 raw_tree <- sm_data[['refined_tree']]
-# get_str(raw_tree)
+get_str(raw_tree)
 
 # Clean up the framework df 
 frame <- raw_tree %>% 
@@ -55,33 +57,31 @@ frame <- raw_tree %>%
       metric
     )
   )
-# get_str(frame)
+get_str(frame)
 
 
 ## Join with metadata to double check the resolution of our metrics
 meta <- sm_data$metadata
-# get_str(meta)
+get_str(meta)
 
 dat <- frame %>% 
   select(variable_name) %>% 
   left_join(meta, by = 'variable_name') %>% 
   unique()
-# get_str(dat)
+get_str(dat)
 
 # check resolution
-# dat$resolution
-# str_detect(dat$resolution, 'state')
+dat$resolution
+str_detect(dat$resolution, 'state')
 # Looks good, everything is at state level
 
 # Pull it from the actual metrics data
-# sm_data$state_key %>% get_str
 metrics <- sm_data$metrics %>% 
   filter(
     variable_name %in% frame$variable_name,
     fips %in% sm_data$state_key$state_code
   )
-# get_str(metrics)
-
+get_str(metrics)
 ```
 
 # Prep
@@ -91,6 +91,7 @@ Get latest years of each metric, check out missing data, make sure nothing is br
 ```{r}
 #| label: prep
 #| warnings: false
+#| output: false
 pacman::p_load(
   dplyr,
   tidyr,
@@ -99,8 +100,8 @@ pacman::p_load(
 
 # Get latest year function
 source('dev/data_pipeline_functions.R')
-# names(sm_data)
-# get_str(metrics)
+names(sm_data)
+get_str(metrics)
 
 # Filter to latest year for each metric, and pivot wider
 # Also removing census participation - don't really have data at state level
@@ -119,12 +120,12 @@ metrics_df <- metrics %>%
   # Note that we are getting dupes here for some reason. Explore this
   unnest(cols = !fips) %>% 
   unique()
-# get_str(metrics_df)
+get_str(metrics_df)
 
 # Get rid of one variable that didn't come through properly
 metrics_df$waterIrrSrcOffFarmExp_2023 <- NULL
 
-# get_str(metrics_df)
+get_str(metrics_df)
 # Note that we have 75 variables and 51 states. Can't do PCA with that
 
 # Let's get rid of the years so they are easier to work with
@@ -133,9 +134,12 @@ names(metrics_df) <- str_split_i(names(metrics_df), '_', 1)
 
 # Imputation
 
+First, check how much missing data there are. If it is within reason, use missForest algorithm to impute missing data [@stekhovenMissForestNonparametricMissing2012a]. This is particularly good at handling MAR data, and does a decent job at handling MNAR data and non-linear relationships as well. If less than 5% of data are missing, just about any method for handling it is reasonable, even listwise deletion [@beaujean2013].
+
 ```{r}
 #| label: imputation
 #| warnings: false
+#| output: false
 pacman::p_load(
   missForest,
   tibble
@@ -150,7 +154,7 @@ sum(is.na(metrics_df))/(nrow(metrics_df)*(ncol(metrics_df) - 1)) * 100
 # Change fips from column to rowname so we can impute without losing it
 metrics_df <- metrics_df %>% 
   column_to_rownames('fips')
-# get_str(metrics_df)
+get_str(metrics_df)
 
 # Impute missing variables
 set.seed(42)
@@ -162,20 +166,22 @@ mf_out <- metrics_df %>%
     variablewise = FALSE
   )
 # get_str(mf_out)
-# mf_out$OOBerror
+mf_out$OOBerror
 # NRMSE 0.5906362
 
 # Check missing again
-# skimr::skim(mf_out$ximp)
+skimr::skim(mf_out$ximp)
 # Looks good
 
 # Save just imputed data
 imp_dat <- mf_out$ximp
 ```
 
+We had 1.59% missing data, which is very little, and gives us flexibility in handling it. The out of bag error estimate from the missForest algorithm was 0.591.
+
 # Normalization
 
-Normalizing in three ways: min max, box cox, and z-score standardization. (Could also consider Winsorizing?) Results will be saved to a list of three normalized datasets so we can compare outcomes of each one.
+We are normalizing with three methods: min-max, Box-Cox, and Z-scores. (We might also consider Winsorizing at some point.) Results will be saved to a list of three normalized datasets so we can compare outcomes of each one and see what the consequences are.
 
 ```{r}
 #| label: normalization
@@ -202,13 +208,12 @@ normed$minmax <- imp_dat %>%
 # Box Cox. Adding 1 as constant to remove zeroes
 normed$boxcox <- imp_dat %>% 
   mutate(across(everything(), ~ BoxCox(.x + 1, lambda = 'auto')))
-
 # map(normed, get_str)
 ```
 
 # Directional Values
 
-Here, we are assuming that each metric is has a directional value. Either more of it is better, or less of it is better. This is rather problematic in that just about any metric becomes negative with too much of it. What might make more sense in the long run would be to consult the expertise of our teams and develop acceptable ranges for some metrics once they are settled. Still, just about every sustainability indicator framework does some variation of this one-way value system [@schneider2023StateFoodSystems; @bene2019GlobalMapIndicators; @nicolettiSummaryIndicatorsProduct2000; @jacobi2020NewUnderstandingEvaluation; @gomez-limon2010EmpiricalEvaluationAgricultural]. Alas, for now, we will invert variables in each of the transformed datasets as necessary so that larger numbers are more sustainable, and smaller numbers are less sustainable.
+Here, we are assuming that each metric is has a directional value. Either more of it is better, or less of it is better. This is rather problematic in that just about any metric becomes negative with too much or too little of it. What might make more sense in the long run would be to consult the expertise of our teams and develop acceptable ranges for some metrics once they are settled. Still, just about every sustainability indicator framework does some variation of this one-way value system [@schneider2023StateFoodSystems; @bene2019GlobalMapIndicators; @nicolettiSummaryIndicatorsProduct2000; @jacobi2020NewUnderstandingEvaluation; @gomez-limon2010EmpiricalEvaluationAgricultural]. Alas, for now, we will invert variables in each of the transformed datasets as necessary so that larger numbers are more sustainable, and smaller numbers are less sustainable.
 
 ```{r eval=FALSE}
 #| label: directional_values
@@ -273,17 +278,18 @@ normed$minmax <- normed$minmax %>%
 # This should preserve rank and transformation
 normed$boxcox <- normed$boxcox %>% 
   mutate(across(matches(reverse), ~ (.x * -1) - min(.x * -1)))
-
 # map(normed, get_str)
 ```
 
 # Aggregation
 
-Here we are combining values in each indicator, index, and dimension using several different methods: arithmetic means, geometric means, and rank order. We might also consider PCA here, but the n:p ratio is not in our favor for PCA as we have more metrics than states.
+Here we are combining values in each indicator, index, and dimension using both arithmetic and geometric means [@oecdHandbookConstructingComposite2008]. Arithmetic means are fully compensable, in that a strong score in one area can make up for a weak score in another. Geometric means are only somewhat compensable - it effectively applies a penalty for unbalanced scores. 
+
+We might also consider PCA here, as we have done with the preliminary dimension metrics previously. But the n:p ratio is not in our favor for PCA as we have more metrics than states. Will revisit this, perhaps by splitting it up into dimensions again rather than trying the whole framework at once, or possible using a sparse PCA procedure that incorporates variable selection.
+
+We will end up with 6 iterations of our data (3 normalization methods * 2 aggregation methods). 
 
 ## Indicator Means
-
-This one is pretty straight forward - just take the arithmetic mean of metrics in each indicator, indicators in each index, and indices in each dimension. This is a compensable method, where a good score in one index indicator will make up for a bad score in another.
 
 ```{r}
 #| label: arithmetic_means
@@ -294,6 +300,9 @@ filtered_frame <- frame %>%
   filter(variable_name %in% names(normed[[1]])) %>% 
   select(variable_name, indicator, index, dimension)
 # get_str(filtered_frame)
+
+# Save this for later - use in regression and variable selection 
+saveRDS(filtered_frame, 'data/filtered_frame.rds')
 
 # Make a list where we hold scores for indicators, indices, and dimensions
 scores <- list()
@@ -310,10 +319,7 @@ indicator_scores <- map(normed, \(df) {
   indicators_out <- map(unique(filtered_frame$indicator), \(ind) {
   
     # Column name based on indicator
-    # ind_snake <- snakecase::to_snake_case(ind)
     ind_snake <- ind
-    # ind_arithmetic <- paste0(ind_snake, '_arithmetic')
-    # ind_geometric <- paste0(ind_snake, '_geometric')
     
     # Split into groups by indicator, with one or more metrics each
     variables <- filtered_frame %>% 
@@ -324,13 +330,6 @@ indicator_scores <- map(normed, \(df) {
       select(all_of(variables))
     
     # Get arithmetic and geo means for each indicator
-    # indicator_metrics %>%
-    #   rowwise() %>%
-    #   mutate(
-    #     !!sym(ind_arithmetic) := mean(c_across(everything())),
-    #     !!sym(ind_geometric) := geometric_mean(c_across(everything()))
-    #   ) %>%
-    #   select(!!sym(ind_arithmetic), !!sym(ind_geometric))
     dfs <- list()
     dfs$arithmetic <- indicator_metrics %>%
       rowwise() %>%
@@ -405,7 +404,7 @@ index_scores <- map(indicator_scores, \(norm_type) {
 # get_str(index_scores, 4)
 ```
 
-# Dimension Means
+## Dimension Means
 
 ```{r}
 #| label: dimension_means
@@ -448,6 +447,7 @@ Organize arithmetic and geometric means for each level of the framework (indicat
 ```{r}
 #| label: wrangle
 #| warnings: false
+#| output: false
 # get_str(indicator_scores, 4)
 # get_str(index_scores, 4)
 # get_str(dimension_scores, 4)
@@ -494,11 +494,35 @@ combos <- expand.grid(
   mutate(name = paste0(Var1, '_', Var2))
 
 # Map to pull them all out
-final_scores <- map2(combos[[1]], combos[[2]], ~ {
+scores <- map2(combos[[1]], combos[[2]], ~ {
   get_output(.x, .y)
 }) %>% 
   setNames(c(combos$name))
-# get_str(final_scores, 3)
+# get_str(scores, 4)
+
+
+## Add averages for New England states and US
+final_scores <- map(scores, \(method) {
+  map(method, \(level) {
+    # Mean of every US state and DC
+    us_means <- level %>%
+      select(-state) %>% 
+      colMeans() %>% 
+      as.list()
+    us_means$state <- 'US'
+    # Mean of just New England states
+    ne_means <- level %>% 
+      filter(state %in% c('VT', 'NH', 'ME', 'MA', 'CT', 'RI')) %>% 
+      select(-state) %>% 
+      colMeans() %>% 
+      as.list()
+    ne_means$state <- 'NewEng'
+    # Return the level + US + NewEng means
+    level %>% 
+      bind_rows(us_means) %>% 
+      bind_rows(ne_means)
+  })
+})
 # get_str(final_scores, 4)
 
 # Save this for use elsewhere
@@ -600,3 +624,5 @@ fa.parallel(small_set)
 
 pca(small_set, nfactors = 10, rotate = 'varimax')
 ```
+
+# References
