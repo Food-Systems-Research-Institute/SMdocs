@@ -1,5 +1,5 @@
 ---
-title: "Metric Tables"
+title: "Metrics Table"
 ---
 
 ```{r}
@@ -16,9 +16,7 @@ conflicts_prefer(
 )
 ```
 
-This page contains a couple of tables for exploring the secondary data metrics that have been collected. The first contains the metadata and links to sources. The second contains the actual data. This one is harder to navigate, as it will take a few filters to get results that are comprehensible. You can also just download a .csv from the table to work with. 
-
-## Metadata Table
+This page contains a metadata table for exploring the sources of secondary data used throughout this project.
 
 Using the table: 
 
@@ -178,11 +176,11 @@ htmltools::browsable(
 
 ```
 
-## Data Table
 
-```{r}
+```{r eval=FALSE}
 #| label: metric_table
 #| warning: false
+#| include: false
 
 pacman::p_load(
   dplyr,
