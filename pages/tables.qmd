@@ -1,5 +1,7 @@
 ---
 title: "Metrics Table"
+filters:
+  - shinylive
 ---
 
 ```{r}
@@ -270,5 +272,4 @@ htmltools::browsable(
 )
 
 ```
-
 
