@@ -46,6 +46,7 @@ pacman::p_load(
   purrr, 
   DHARMa, 
   lmtest,
+  purrr, 
   snakecase
 )
 
@@ -167,6 +168,11 @@ Here we split out data into a 60/40 training/test set for cross validation with 
 ```{r}
 #| label: split_econ
 #| output: false
+pacman::p_load(
+  caret,
+  ranger
+)
+
 # Split data 60/40
 set.seed(42)
 indices <- createDataPartition(econ_dat$economics, p = 0.60, list = FALSE)
