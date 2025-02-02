@@ -1,0 +1,155 @@
+---
+title: "Indicator Distributions"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: inline
+warnings: false
+---
+
+```{r}
+#| label: prep
+#| include: false
+pacman::p_load(
+  dplyr,
+  conflicted
+)
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
+```
+
+Now that our metrics have been aggregated into indicators, we can observe the univariate distributions of the indicators themselves. We will do this for all six sets of transformations.
+
+# Summary
+
+Below are counts of skewed indicator distributions for each transformation. 
+
+::: {style="display: flex; justify-content: center;"}
+```{r}
+#| label: summary
+#| fig.align: center
+pacman::p_load(
+  purrr,
+  dplyr,
+  tibble
+)
+
+# Load reactable custom function
+source('dev/get_reactable.R')
+
+# Load scores data for all transformations
+scores <- readRDS('data/state_score_iterations.rds')
+# get_str(scores)
+
+# Rearrange data to make a single DF as table
+out <- map_vec(scores, ~ {
+  .x[['indicator_scores']] %>% 
+    filter(!state %in% c('US_mean', 'US_median', 'NewEng')) %>% 
+    select(-state) %>% 
+    psych::describe() %>% 
+    select(skew) %>% 
+    filter(abs(skew) > 2) %>% 
+    nrow()
+}) %>% 
+  as.data.frame() %>% 
+  rownames_to_column() %>% 
+  setNames(c('Transformation', 'Indicators with Skew > 2')) %>% 
+  arrange(Transformation)
+# out
+
+get_reactable(
+  out, 
+  fullWidth = FALSE,
+  searchable = FALSE,
+  defaultColDef = colDef(
+    minWidth = 200
+  )
+)
+```
+:::
+
+It looks like the Box Cox procedure transformed distributions at the metric level enough that there are no skewed distributions at the indicator level. Both the min-max and z-score transformations left us with only three skewed indicators: access to culturally appropriate food, total quantity exported, and total quantity imported. The latter two are not surprising, as big agricultural states likely have a disproportionate impact. The Z-score with geometric aggregation is a slightly nonsensical combination of methods that we will ignore for now.
+
+This is providing some evidence that Box-Cox transformations could be warranted on at least these three problematic indicators (or the metrics therein). Below are the indicator distributions for each transformation. Inidicators with skew > 2 are shown in red.
+
+# Min Max Arithmetic
+
+```{r}
+#| label: minmax_arithmetic
+#| fig-cap: Distributions of indicators at the state level for the min-max arithmetic transformations.
+#| fig-height: 12
+#| fig-width: 10
+#| fig-align: center
+pacman::p_load(
+  ggplot2,
+  purrr,
+  ggpubr
+)
+
+# Load custom function
+source('dev/get_indicator_distributions.R')
+
+# Plot them
+get_indicator_distributions(scores, 'minmax_arithmetic')
+```
+
+# Min Max Geometric
+
+```{r}
+#| label: minmax_geo
+#| fig-cap: Distributions of indicators at the state level for the min-max geometric transformations
+#| fig-height: 12
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'minmax_geometric')
+```
+
+# Z-Score Arithmetic
+
+```{r}
+#| label: zscore_arithmetic
+#| fig-cap: Distributions of indicators at the state level for the Z-score arithmetic transformations 
+#| fig-height: 12
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'zscore_arithmetic')
+```
+
+# Z-Score Geometric
+
+```{r}
+#| label: zscore_geometric
+#| fig-cap: Distributions of indicators at the state level for the Z-score geometric transformations 
+#| fig-height: 12
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'zscore_geometric')
+```
+
+# Box Cox Arithmetic
+
+```{r}
+#| label: boxcox_arithmetic
+#| fig-cap: Distributions of indicators at the state level for the Box Cox arithmetic transformations 
+#| fig-height: 12
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'boxcox_arithmetic')
+```
+
+# Box Cox Geometric
+
+```{r}
+#| label: boxcox_geometric
+#| fig-cap: Distributions of indicators at the state level for the Box Cox geometric transformations 
+#| fig-height: 12
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'boxcox_geometric')
+```

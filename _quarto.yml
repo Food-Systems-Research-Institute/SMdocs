@@ -67,13 +67,16 @@ website:
         contents:
           - text: Framework
             href: pages/refined_framework.qmd
+          - text: Metric Distributions
+            href: pages/metric_distributions.qmd
           - text: Aggregation
             href: pages/aggregation.qmd
-          - text: Comparison
+          - text: Comparisons
             href: pages/comparison.qmd
+          - text: Indicator Correlations
+            href: pages/indicator_correlations.qmd
           - text: Selection and Regression
             href: pages/selection.qmd
-            
 
 format:
   html:
@@ -101,7 +104,6 @@ bibliography: fsrc.bib
 
 execute:
   warning: false
-  cache: true
 
 editor_options:
   chunk_output_type: console

@@ -1,0 +1,182 @@
+---
+title: "Indicator Correlations"
+# format:
+  # html:
+    # fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+warnings: false
+execute:
+  cache: false
+fig-responsive: false
+---
+
+```{r}
+#| label: prep
+pacman::p_load(
+  dplyr,
+  conflicted
+)
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
+
+```
+
+This page will explore correlations between variables at the indicator level.
+
+To Do:
+
+- Correlation matrix between our 27 indicators
+- Consider a chord diagram showing strength of correlations
+- Use results to inform how we want to weight or otherwise deal with our indicators. High correlations between indicators would suggest some aspects of the system will be double-counted. If so, either the framework should be revised, or indicators should be weighted accordingly. 
+
+
+# Correlation Matrix
+
+```{r}
+#| label: correlation_plot
+#| fig-cap: Interactive Correlation Plot
+pacman::p_load(
+  dplyr,
+  tidyr,
+  tibble,
+  stringr,
+  purrr,
+  tidyr,
+  ggplot2,
+  plotly,
+  reshape,
+  Hmisc,
+  viridisLite
+)
+
+# Load indicator data.
+final_scores <- readRDS('data/state_score_iterations.rds')
+# get_str(final_scores)
+
+# Pull out minmax geo indicators only
+minmax_geo_indicators <- final_scores$minmax_geometric$indicator_scores
+# get_str(minmax_geo_indicators)
+
+# Make a correlation matrix using all the selected variables
+cor <- minmax_geo_indicators %>% 
+  select(-state) %>% 
+  as.matrix() %>% 
+  rcorr()
+
+# Melt correlation values and rename columns
+cor_r <- melt(cor$r) %>% 
+  setNames(c('var_1', 'var_2', 'value'))
+
+# Save p values
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+# Make heatmap with custom text aesthetic for tooltip
+plot <- cor_r %>% 
+  ggplot(aes(var_1, var_2, fill = value, text = paste0(
+    'Var 1: ', var_1, '\n',
+    'Var 2: ', var_2, '\n',
+    'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
+    'P-Value: ', format(round(p.value, 3), nsmall = 3)
+  ))) + 
+  geom_tile() + 
+  scale_fill_distiller(palette = 'PRGn') +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = 'Correlation'
+  )
+
+# Convert to interactive plotly figure with text tooltip
+ggplotly(
+  plot, 
+  tooltip = 'text',
+  width = 1000,
+  height = 800
+)
+```
+
+# Strong Correlations
+
+We have many significant correlations between indicators, but we probably don't care too much about weak correlations. Let's isolate the correlations that are significant and > 0.5. These are the ones that might suggest we are double-counting certain aspects of the food system.
+
+```{r}
+#| label: explore_correlations
+pacman::p_load(
+  reactable,
+  Hmisc
+)
+
+# Isolate all significant correlations
+# get_str(cor_r)
+
+# Save p values
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+# Add p values to dataframe with correlations
+cor_r$p <- cor_p$value
+# get_str(cor_r)
+
+# filter for correlations over 0.5
+sig <- cor_r %>% 
+  rowwise() %>%
+  mutate(pair = paste(sort(c(var_1, var_2)), collapse = "_")) %>%
+  ungroup() %>%
+  distinct(pair, .keep_all = TRUE) %>%
+  select(-pair) %>% 
+  filter(!is.na(p), abs(value) > 0.5)
+
+# Clean up columns for table
+sig <- sig %>% 
+  mutate(
+    value = abs(value),
+    across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))
+  ) %>% 
+  setNames(c('Indicator 1', 'Indicator 2', 'Correlation', 'P Value'))
+# get_str(sig)
+
+reactable(
+  sig,
+  sortable = TRUE,
+  resizable = TRUE,
+  filterable = TRUE,
+  searchable = TRUE,
+  pagination = TRUE,
+  bordered = TRUE,
+  wrap = TRUE,
+  rownames = FALSE,
+  onClick = 'select',
+  striped = TRUE,
+  pageSizeOptions = c(5, 10, 25, 50, 100),
+  defaultPageSize = 25,
+  showPageSizeOptions = TRUE,
+  highlight = TRUE,
+  style = list(fontSize = "14px"),
+  compact = TRUE,
+  fullWidth = TRUE
+)
+```
+
+The wealth/income distribution indicator (economics) is correlating strongly with several indicators, some from the economics dimension and some from health. Note that there are several metrics in that indicator related to median earnings, which might be a proxy for gdp per capita. Now that I look at this, it might be worth including gdp per capita at least as a control variable to see how much fo the variation it accounts for. 
+
+It looks like all the indicators from the carbon index (embodied, fluxes, stocks) correlate with one another, which makes enough sense. I imagine that one shouldn't be too much of a problem if they are being aggregated at the index level anyway.
+
+Forest health and carbon stocks are currently quite highly correlated, but this is because the metrics for carbon stocks are not ideal. The metrics for carbon stocks and forest health all come from the same TreeMap dataset. I suspect that if we include a better set of metrics for carbon stocks, this won't be a such a problem. 
+
+Value-added markets and operations diversification are all using a very similar set of metrics as well. They mostly come from NASS, and it would be worth digging into the NASS docs to see how whether value-added sales might overlap with agritourism, direct to consumer sales, or local marketing channel sales.
+
+Food affordability and food security also unsurprisingly correlate strongly. The current framework here is a work in progress and a bit haphazard. It will need some reworking. Curiously, these indicators also strongly correlate with participatory governance. That's quite an interesting finding. 
+
+As for what to do about highly correlating indicators in general:
+
+- They could be reworked to use metrics that don't lead to indicator correlations. This sounds rather difficult to me, and maybe impossible. It seems likely to be the reality that aspects of the economics and health dimensions are indeed related, for example.
+- They could be weighted in their respective dimensions to account for the correlations. This might be done with PCA loadings or by expert opinion.
+- We could also leave them as is. This would mean potentially double-counting certain aspects, but may be a reasonable approximation of reality.

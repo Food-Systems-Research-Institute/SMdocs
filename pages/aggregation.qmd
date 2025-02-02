@@ -10,7 +10,7 @@ editor_options:
 Exploring methods of aggregating data into index and dimension scores.
 
 ```{r}
-#| label: setup
+#| label: prep
 #| include: false
 pacman::p_load(
   dplyr,
@@ -24,112 +24,8 @@ conflicted::conflicts_prefer(
   dplyr::filter(),
   .quiet = TRUE
 )
-```
 
-# Explore
-
-Explore the data we have, make sure it checks out
-
-```{r}
-#| label: explore
-#| warnings: false
-#| output: false
-pacman::p_load(
-  dplyr,
-  stringr,
-  purrr
-)
-
-# Explore our set of state level metrics from refined secondary framework
-sm_data <- readRDS('data/sm_data_slim.rds')
-raw_tree <- sm_data[['refined_tree']]
-get_str(raw_tree)
-
-# Clean up the framework df 
-frame <- raw_tree %>% 
-  select(dimension:variable_name, resolution, use) %>% 
-  filter(use == 'x') %>% 
-  select(-use) %>% 
-  mutate(
-    metric = ifelse(
-      str_length(metric) > 50,
-      paste0(str_sub(metric, end = 50), '...'),
-      metric
-    )
-  )
-get_str(frame)
-
-
-## Join with metadata to double check the resolution of our metrics
-meta <- sm_data$metadata
-get_str(meta)
-
-dat <- frame %>% 
-  select(variable_name) %>% 
-  left_join(meta, by = 'variable_name') %>% 
-  unique()
-get_str(dat)
-
-# check resolution
-dat$resolution
-str_detect(dat$resolution, 'state')
-# Looks good, everything is at state level
-
-# Pull it from the actual metrics data
-metrics <- sm_data$metrics %>% 
-  filter(
-    variable_name %in% frame$variable_name,
-    fips %in% sm_data$state_key$state_code
-  )
-get_str(metrics)
-```
-
-# Prep
-
-Get latest years of each metric, check out missing data, make sure nothing is broken.
-
-```{r}
-#| label: prep
-#| warnings: false
-#| output: false
-pacman::p_load(
-  dplyr,
-  tidyr,
-  tibble
-)
-
-# Get latest year function
-source('dev/data_pipeline_functions.R')
-names(sm_data)
-get_str(metrics)
-
-# Filter to latest year for each metric, and pivot wider
-# Also removing census participation - don't really have data at state level
-# Note to aggregate counties for this at some point
-metrics_df <- metrics %>%
-  filter(variable_name != 'censusParticipation') %>% 
-  mutate(
-    value = ifelse(value == 'NaN', NA, value),
-    value = as.numeric(value)
-  ) %>%
-  get_latest_year() %>% 
-  pivot_wider(
-    names_from = 'variable_name',
-    values_from = 'value'
-  ) %>% 
-  # Note that we are getting dupes here for some reason. Explore this
-  unnest(cols = !fips) %>% 
-  unique()
-get_str(metrics_df)
-
-# Get rid of one variable that didn't come through properly
-metrics_df$waterIrrSrcOffFarmExp_2023 <- NULL
-
-get_str(metrics_df)
-# Note that we have 75 variables and 51 states. Can't do PCA with that
-
-# Let's get rid of the years so they are easier to work with
-names(metrics_df) <- str_split_i(names(metrics_df), '_', 1)
+sm_data <- readRDS('data/sm_data.rds')
 ```
 
 # Imputation
@@ -145,11 +41,13 @@ pacman::p_load(
   tibble
 )
 
+metrics_df <- readRDS('data/metrics_df.rds')
+get_str(metrics_df)
+
 # Check for missing data
-# skimr::skim(metrics_df)
+skimr::skim(metrics_df)
 sum(is.na(metrics_df))/(nrow(metrics_df)*(ncol(metrics_df) - 1)) * 100
-# 1.59% missing data. 
-# only 60 missing from value - that's not half bad
+# 1.96% missing data
 
 # Change fips from column to rowname so we can impute without losing it
 metrics_df <- metrics_df %>% 
@@ -166,8 +64,8 @@ mf_out <- metrics_df %>%
     variablewise = FALSE
   )
 # get_str(mf_out)
-mf_out$OOBerror
-# NRMSE 0.5906362
+(oob <- mf_out$OOBerror)
+# NRMSE 0.603
 
 # Check missing again
 skimr::skim(mf_out$ximp)
@@ -177,11 +75,46 @@ skimr::skim(mf_out$ximp)
 imp_dat <- mf_out$ximp
 ```
 
-We had 1.59% missing data, which is very little, and gives us flexibility in handling it. The out of bag error estimate from the missForest algorithm was 0.591.
+We had 1.98% missing data, which is very little, and gives us flexibility in handling it. The out of bag error estimate from the missForest algorithm was `r oob`.
 
 # Normalization
 
-We are normalizing with three methods: min-max, Box-Cox, and Z-scores. (We might also consider Winsorizing at some point.) Results will be saved to a list of three normalized datasets so we can compare outcomes of each one and see what the consequences are.
+We are normalizing our data using three methods: min-max, Box-Cox, and Z-scores. (We might also consider Winsorizing at some point.) Results will be saved to a list of three normalized datasets so we can compare outcomes of each one and see what the consequences are.
+
+**Min Max** [@oecdHandbookConstructingComposite2008]
+
+Min-maxing scales all the data from 0 to 1 by subtracting the minimum value of each variable from all cases and dividing by the range of all cases in the variable. It is rather intuitive, as 1 is the best score, and 0 is the worst. This is a linear transformation, so the relationships between the values should not change.
+
+\begin{equation}
+I^t_qc = \frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}
+\end{equation}
+
+Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$. 
+
+**Z-Scores** [@oecdHandbookConstructingComposite2008]
+
+Z-scores are stardized to have a mean of 0 and a standard deviation of 1. Larger numbers are better, but there are no caps on the highest or lowest values. A value of 2 would mean that it is 2 standard deviations greater than the mean. Again, this is a linear transformation, so relationships between variables should not change.  
+
+\begin{equation}
+I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
+\end{equation}
+
+Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
+
+**Box Cox** [@bickel1981]
+
+Box-Cox transformations are non-linear transformations that use an optimal value of lambda to make the distribution as normal as possible. This has some strengths in that the data are easier to work with in further analyses. It also effectively pulls outliers inward toward the center of the distribution. However, it also changes relationships between the variables, so it will distort any bivariate correlations.
+
+
+\begin{equation}
+{\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
+\end{equation}
+
+\begin{equation}
+{\rm For}\ \lambda = 0,\ f_0(x) = log(x)
+\end{equation}
+
+
 
 ```{r}
 #| label: normalization
@@ -213,14 +146,18 @@ normed$boxcox <- imp_dat %>%
 
 # Directional Values
 
-Here, we are assuming that each metric is has a directional value. Either more of it is better, or less of it is better. This is rather problematic in that just about any metric becomes negative with too much or too little of it. What might make more sense in the long run would be to consult the expertise of our teams and develop acceptable ranges for some metrics once they are settled. Still, just about every sustainability indicator framework does some variation of this one-way value system [@schneider2023StateFoodSystems; @bene2019GlobalMapIndicators; @nicolettiSummaryIndicatorsProduct2000; @jacobi2020NewUnderstandingEvaluation; @gomez-limon2010EmpiricalEvaluationAgricultural]. Alas, for now, we will invert variables in each of the transformed datasets as necessary so that larger numbers are more sustainable, and smaller numbers are less sustainable.
+Here, we are assuming that each metric has a direction that is more sustainable than the opposite. Either more of it is better, or less of it is better. This is rather problematic in that just about any metric becomes negative with too much or too little of it. What might make more sense in the long run would be to consult the expertise of our teams and develop acceptable ranges for some metrics once they are settled. Still, just about every sustainability indicator framework does some variation of this one-way value system [@schneider2023StateFoodSystems; @bene2019GlobalMapIndicators; @nicolettiSummaryIndicatorsProduct2000; @jacobi2020NewUnderstandingEvaluation; @gomez-limon2010EmpiricalEvaluationAgricultural].
 
-```{r eval=FALSE}
+Alas, for now, we will invert variables in each of the transformed datasets as necessary so that larger numbers are more sustainable, and smaller numbers are less sustainable. The table below shows this assignment in the `desired_direction` column. For couple of variables (vacancy rate and animal sales as a percentage of all agricultural sales) I was not comfortable assigning one direction as better than the other, so I have removed them from the refined framework.
+
+```{r}
 #| label: directional_values
 #| warnings: false
-# map(normed, get_str)
+pacman::p_load(
+  reactable
+)
 
-# Explore variables
+# map(normed, get_str)
 # names(normed[[1]])
 
 # Higher numbers should be better. Reverse metrics that are the opposite, where lower numbers are better:
@@ -263,43 +200,61 @@ normed <- map(normed, ~ {
 })
 # map(normed, get_str)
 
-## Do reversals separately for each dataset depending on normalization method
-# names(normed)
+## Show table of which metrics were set in which direction
+meta <- readRDS('data/sm_data.rds')[['metadata']]
 
-# For z-scores, multiply by -1 
-normed$zscore <- normed$zscore %>% 
-  mutate(across(matches(reverse), ~ .x * -1))
-
-# For min max, subtract from 1
-normed$minmax <- normed$minmax %>% 
-  mutate(across(matches(reverse), ~ 1 - .x))
-
-# For BoxCox, multiply by -1, then subtract the minimum
-# This should preserve rank and transformation
-normed$boxcox <- normed$boxcox %>% 
-  mutate(across(matches(reverse), ~ (.x * -1) - min(.x * -1)))
-# map(normed, get_str)
+# Reactable table showing var, metric, source, and direction
+table <- meta %>% 
+  filter(variable_name %in% names(imp_dat)) %>% 
+  mutate(desired_direction = case_when(
+    variable_name %in% reverse ~ 'Lower',
+    variable_name %in% remove ~ 'Removed',
+    .default = 'Higher'
+  )) %>% 
+  select(metric, definition, variable_name, desired_direction, source)
+  
+table %>% 
+  reactable(
+    sortable = TRUE,
+    resizable = TRUE,
+    filterable = TRUE,
+    searchable = TRUE,
+    pagination = TRUE,
+    bordered = TRUE,
+    wrap = TRUE,
+    rownames = FALSE,
+    onClick = 'select',
+    striped = TRUE,
+    pageSizeOptions = c(5, 10, 25, 50, 100),
+    defaultPageSize = 5,
+    showPageSizeOptions = TRUE,
+    highlight = TRUE,
+    style = list(fontSize = "14px"),
+    compact = TRUE,
+    fullWidth = TRUE
+  )
 ```
 
 # Aggregation
 
-Here we are combining values in each indicator, index, and dimension using both arithmetic and geometric means [@oecdHandbookConstructingComposite2008]. Arithmetic means are fully compensable, in that a strong score in one area can make up for a weak score in another. Geometric means are only somewhat compensable - it effectively applies a penalty for unbalanced scores. 
+Here we are combining values in each indicator, index, and dimension using both arithmetic and geometric means [@oecdHandbookConstructingComposite2008]. Arithmetic means are fully compensable, in that a strong score in one area can make up for a weak score in another. Geometric means are only somewhat compensable - it effectively applies a penalty for unbalanced scores.
 
 We might also consider PCA here, as we have done with the preliminary dimension metrics previously. But the n:p ratio is not in our favor for PCA as we have more metrics than states. Will revisit this, perhaps by splitting it up into dimensions again rather than trying the whole framework at once, or possible using a sparse PCA procedure that incorporates variable selection.
 
-We will end up with 6 iterations of our data (3 normalization methods * 2 aggregation methods). 
+We will end up with 6 iterations of our data (3 normalization methods \* 2 aggregation methods).
 
-## Indicator Means
+Indicator Means:
 
 ```{r}
 #| label: arithmetic_means
-#| warnings: false
+#| output: false
 # We need to attach these back to framework from metadata
 # Filter frame from earlier down to our current metrics
+frame <- readRDS('data/frame.rds')
 filtered_frame <- frame %>% 
   filter(variable_name %in% names(normed[[1]])) %>% 
   select(variable_name, indicator, index, dimension)
-# get_str(filtered_frame)
+get_str(filtered_frame)
 
 # Save this for later - use in regression and variable selection 
 saveRDS(filtered_frame, 'data/filtered_frame.rds')
@@ -323,7 +278,7 @@ indicator_scores <- map(normed, \(df) {
     
     # Split into groups by indicator, with one or more metrics each
     variables <- filtered_frame %>% 
-      filter(indicator == ind) %>% 
+      dplyr::filter(indicator == ind) %>% 
       pull(variable_name) %>% 
       unique()
     indicator_metrics <- df %>% 
@@ -359,14 +314,15 @@ indicator_scores <- map(normed, \(df) {
   return(norm_out) 
 })
   
-# get_str(indicator_scores, 4)
+get_str(indicator_scores, 4)
 ```
 
-## Index Means
+Index Means:
 
 ```{r}
 #| label: index_means
 #| warnings: false
+#| output: false
 # For each set of indicator scores, calculate index scores
 # get_str(indicator_scores, 4)
 indices <- unique(filtered_frame$index)
@@ -401,15 +357,16 @@ index_scores <- map(indicator_scores, \(norm_type) {
       bind_cols()
   })
 })
-# get_str(index_scores, 4)
+get_str(index_scores, 4)
 ```
 
-## Dimension Means
+Dimension Means:
 
 ```{r}
 #| label: dimension_means
 #| warnings: false
-# get_str(index_scores, 4)
+#| output: false
+get_str(index_scores, 4)
 
 # Same process for dimensions
 dimensions <- unique(filtered_frame$dimension)
@@ -437,7 +394,7 @@ dimension_scores <- map(index_scores, \(norm_type) {
       bind_cols()
   })
 })
-# get_str(dimension_scores, 4)
+get_str(dimension_scores, 4)
 ```
 
 # Wrangle
@@ -448,9 +405,13 @@ Organize arithmetic and geometric means for each level of the framework (indicat
 #| label: wrangle
 #| warnings: false
 #| output: false
-# get_str(indicator_scores, 4)
-# get_str(index_scores, 4)
-# get_str(dimension_scores, 4)
+pacman::p_load(
+  purrr
+)
+
+get_str(indicator_scores, 4)
+get_str(index_scores, 4)
+get_str(dimension_scores, 4)
 
 # Want to end up with 6 lists: 3 norm types * 2 mean types
 # Put them all together in one list to work with
@@ -459,7 +420,7 @@ all_scores <- mget(c(
   'index_scores',
   'dimension_scores'
 ))
-# get_str(all_scores, 3)
+get_str(all_scores, 3)
 
 # Function to pull out the pieces we want
 # Also put state names back in as a column and with real names, not codes
@@ -498,7 +459,7 @@ scores <- map2(combos[[1]], combos[[2]], ~ {
   get_output(.x, .y)
 }) %>% 
   setNames(c(combos$name))
-# get_str(scores, 4)
+get_str(scores, 4)
 
 
 ## Add averages for New England states and US
@@ -523,7 +484,7 @@ final_scores <- map(scores, \(method) {
       bind_rows(ne_means)
   })
 })
-# get_str(final_scores, 4)
+get_str(final_scores, 4)
 
 # Save this for use elsewhere
 saveRDS(final_scores, 'data/state_score_iterations.rds')
@@ -532,97 +493,5 @@ saveRDS(final_scores, 'data/state_score_iterations.rds')
 This gives us a list of 6 elements, one for each combination of normalization method and aggregation method. Each element has three data frames, one for indicator, index, and dimension. Now we can compare these 6 outputs to see how the methodological differences affect scores and ranks.
 
 Could consider aggregating the 6 New England states here by population as well? Or by arithmetic / geometric mean. TBD
-
-<!-- # PCA -->
-
-<!-- ## Extraction -->
-
-```{r eval=FALSE, include=FALSE}
-#| label: extraction
-#| warning: false
-pacman::p_load(
-  psych,
-  car
-)
-cor_matrix <- cor(imp_normed, use = "pairwise.complete.obs")
-cor_matrix <- cor(test, use = "pairwise.complete.obs")
-print(cor_matrix)
-
-# Check high correlations
-threshold <- 0.8
-high_corr_indices <- which(abs(cor_matrix) > threshold & abs(cor_matrix) < 1, arr.ind = TRUE)
-
-# Extract variable pairs and correlations
-high_corr_pairs <- data.frame(
-  Var1 = rownames(cor_matrix)[high_corr_indices[, 1]],
-  Var2 = colnames(cor_matrix)[high_corr_indices[, 2]],
-  Correlation = cor_matrix[high_corr_indices]
-)
-
-# Remove duplicate pairs
-high_corr_pairs <- high_corr_pairs[high_corr_pairs$Var1 < high_corr_pairs$Var2, ]
-
-# Check high correlations
-high_corr_pairs %>% arrange(abs(Correlation))
-# Lets' ditch:
-# prematureAgeAdjustedMortality_2024 (0.97 with life expectancy)
-# forestStandHeight_2016 (0.97 with forestCarbonDeadDown)
-# foodEnvironmentIndex_2024 (cors with several variables)
-# Ditch all food insecurity except foodInsecurity_2024 (county health rankings)
-# incomeInequality_2024 (already have gini)
-# forestLiveTreeVolume_2016 (varies with all other forest variables)
-# medianAcresPF_2022 (already have acres per farm)
-# 4 medianEarn variables - collinear with each other
-
-## Remove high collinear variables
-imp_normed <- imp_normed %>% 
-  select(-c(
-    prematureAgeAdjustedMortality_2024,
-    forestStandHeight_2016,
-    foodEnvironmentIndex_2024,
-    foodInsecChild_2021,
-    foodInsecOverall_2021,
-    incomeInequality_2024,
-    forestLiveTreeVolume_2016,
-    medianAcresPF_2022,
-    starts_with('medianEarn'),
-    landValPF_2022,
-    starts_with('forestCarbonDead'),
-    womenEarnPercMaleFood_2021
-  ))
-# get_str(imp_normed)
-
-# Check VIF to find out where the problem is
-vif_values <- lm(gini_2022 ~ ., data = imp_normed)
-summary(vif_values)
-vif_values <- vif(lm(gini_2022 ~ ., data = imp_normed))
-print(vif_values)
-
-
-VSS(imp_normed, fm = 'pc')
-fa.parallel(imp_dat)
-pca_out <- pca(imp_dat, nfactors = 3, rotate = 'varimax')
-plot(pca_out$values)
-abline(h = 1)
-```
-
-<!-- ## Run PCA -->
-
-```{r eval=FALSE, include=FALSE}
-#| label: pca
-#| warnings: false
-# Test it with 49 variables to see if that is the problem
-# get_str(imp_normed)
-small_set <- select(imp_normed, 1:50)
-# get_str(small_set)
-
-# 
-VSS(small_set, n = 10, fm = 'pc')
-VSS(small_set)
-fa_out <- fa.parallel(small_set, fa = 'pc')
-fa.parallel(small_set)
-
-pca(small_set, nfactors = 10, rotate = 'varimax')
-```
 
 # References

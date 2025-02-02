@@ -1,0 +1,133 @@
+---
+title: "Validation"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r}
+#| label: prep
+#| warnings: false
+#| include: false
+pacman::p_load(
+  dplyr,
+  purrr,
+  conflicted
+)
+
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
+
+source('dev/get_res_plots.R')
+```
+
+The goal here is to use our five tentative dimension scores as predictors to compare against other established metrics:
+
+- Food security index, overall and/or child (Feeding America, Map the Meal Gap)
+- Health outcomes (UW county health rankings)
+- Life expectancy, or premature age-adjusted mortality (UW rankings)
+- Other ideas: a food affordability index, happiness index, happy planet index?
+
+Note for now that this is a bit tautological because some of these indices are used within the framework already. Perhaps there are better external measures to compare against. We also may not want to include complete indices like food security as metrics or indicators in the final framework. Open to thoughts on others ways to approach this.
+
+```{r}
+#| label: wrangle
+#| output: false
+pacman::p_load(
+  dplyr,
+  purrr,
+  stringr
+)
+
+# Load state fips key to join other datasets
+state_key <- readRDS('data/sm_data.rds')[['state_key']] %>% 
+  select(state, state_code)
+
+# Load cleaned aggregated data for all levels of regresion
+minmax_geo <- readRDS('data/minmax_geo_all_levels.rds')
+get_str(minmax_geo)
+
+# Reduce to just dimension scores, and remove prefix
+dimension_scores <- minmax_geo %>% 
+  select(state, starts_with('dimen')) %>% 
+  setNames(c(str_remove(names(.), 'dimen_')))
+get_str(dimension_scores)
+
+# Pull raw metrics data
+metrics_df <- readRDS('data/metrics_df.rds')
+get_str(metrics_df)
+
+# Pull just food insecurity from raw metrics data and add it to the dimension scores
+validation_vars <- metrics_df %>% 
+  select(
+    fips, 
+    foodInsecOverall, 
+    foodInsecChild, 
+    lifeExpectancy,
+    CO2FromAg
+  )
+get_str(validation_vars)
+
+# Pull health outcomes from UW county health rankings (healthOutcomeZ) 
+# Need to finish this []
+metrics <- readRDS('data/sm_data.rds')[['metrics']]
+get_str(metrics)
+
+# Combine validation vars with dimension scores to get our dataset for regressions
+dat <- dimension_scores %>% 
+  left_join(state_key) %>% 
+  left_join(validation_vars, by = join_by(state_code == fips)) %>% 
+  select(-state_code)
+get_str(dat)
+```
+
+# Food Insecurity
+
+## Overall
+
+```{r}
+#| label: food_insecurity_overall
+#| out.width: 75%
+lm1 <- lm(
+  foodInsecOverall ~ economics + environment + health + production + social,
+  data = dat
+)
+summary(lm1)
+get_res_plots(lm1)
+```
+
+## Child
+
+```{r}
+#| label: food_insecurity_child
+#| out.width: 75%
+lm2 <- lm(
+  foodInsecChild ~ economics + environment + health + production + social,
+  data = dat
+)
+summary(lm2)
+get_res_plots(lm2)
+```
+
+# Life Expectancy
+
+```{r}
+#| label: life_expectancy
+#| out.width: 75%
+lm3 <- lm(
+  lifeExpectancy ~ economics + environment + health + production + social,
+  data = dat
+)
+summary(lm3)
+get_res_plots(lm3)
+```
+
+Tentative thoughts on this validation page for now are that it isn't showing much of anything clearly. If we use environment metrics, our environment dimension correlates with them. If we use health-related metrics as validation points, our health dimension associates with them (although health does not significantly predict the overall food security metric). I suppose it is a good sign that it is suggesting dimension scores are related to the metrics, at least. 
+
+This will have to be revisited when we have a more cohesive set of indicators and a farther-removed set of external variables with which to validate our framework.

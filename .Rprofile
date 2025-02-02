@@ -2,7 +2,8 @@ suppressPackageStartupMessages(
   pacman::p_load(
     dplyr,
     conflicted,
-    projecter
+    projecter,
+    quarto
   )
 )
 

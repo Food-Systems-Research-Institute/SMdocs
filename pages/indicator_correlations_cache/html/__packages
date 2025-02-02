@@ -1,0 +1,13 @@
+dplyr
+conflicted
+projecter
+tidyr
+tibble
+stringr
+purrr
+ggplot2
+plotly
+reshape
+Hmisc
+viridisLite
+reactable

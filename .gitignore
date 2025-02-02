@@ -2,3 +2,6 @@
 .Rproj.user
 data/sm_data.rds
 .Renviron
+
+# Data production page has a weirdly large cache
+pages/data_production_cache/html
