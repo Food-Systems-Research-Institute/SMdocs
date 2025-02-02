@@ -1,9 +1,10 @@
+source("renv/activate.R")
 suppressPackageStartupMessages(
   pacman::p_load(
     dplyr,
     conflicted,
-    projecter,
-    quarto
+    projecter
+    # quarto
   )
 )
 

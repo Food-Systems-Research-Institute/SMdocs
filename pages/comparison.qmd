@@ -9,7 +9,7 @@ editor_options:
 
 In the last page we created six sets of scores by state based on combinations of three normalization methods (z-scores, min max, box cox) and two aggregation methods (arithmetic, geometric). Here, we will explore differences between them in terms of state distributions and rankings.
 
-Note that each set of spider plots are scaled to the minimum and maximum of any single state in that dimension, given the normalization and aggregation methods. This means in the case of min-max normalization, for example, raw metrics are scaled from 0 to 1, arithmetic and geometric means consolidate values to dimension scores, and these sets of dimension scores are scaled on the plot from the lowest to the highest value of any state. A "perfect" score here means that it is the best of any state. Plots show dimension values for Vermont in green. The dotted purple polygon behind it is the US average by state. Arithmetic means are on the left, and geometric on the right.
+Note that each set of spider plots are scaled to the minimum and maximum of any single state in that dimension, given the normalization and aggregation methods. This means in the case of min-max normalization, for example, raw metrics are scaled from 0 to 1, arithmetic and geometric means consolidate values to dimension scores, and these sets of dimension scores are scaled on the plot from the lowest to the highest value of any state. A "perfect" score here means that it is the best of any state. Plots show dimension values for Vermont in green. The dotted purple polygon behind it is the median of US states and DC. Arithmetic means are on the left, and geometric on the right.
 
 Be aware that spider/radar charts can be hard to interpret, and sometimes misleading [The Radar Chart and its Caveats](https://www.data-to-viz.com/caveat/spider.html). The order of variables makes a big impact on the area of chart, and area is not a terribly reliable way to show differences, as it increases quadratically as variables increase linearly. Will explore some other ways to show this information, but using these for now as they are quite popular in the literature for sustainability metrics.
 
@@ -33,7 +33,7 @@ state_key <- readRDS('data/state_key.rds')
 fips_key <- readRDS('data/fips_key.rds')
 ne_states <- c('VT', 'NH', 'ME', 'MA', 'CT', 'RI') %>% sort
 source('dev/get_vt_spiders.R')
-source('dev/get_reactable.R')
+source('dev/get_reactable_scores.R')
 ```
 
 # Min Max
@@ -56,6 +56,7 @@ pacman::p_load(
 
 # Load state score data
 dat <- readRDS('data/state_score_iterations.rds')
+# get_str(dat)
 
 # Custom function to create spider plots
 get_vt_spiders(dat, 'minmax')
@@ -68,7 +69,7 @@ The difference in the production dimension between arithmetic and geometric aver
 ```{r}
 #| label: minmax_geo_table
 #| warnings: false
-get_reactable(dat, 'minmax_arithmetic')
+get_reactable_scores(dat, 'minmax_arithmetic')
 ```
 
 ## Geometric Table
@@ -76,7 +77,7 @@ get_reactable(dat, 'minmax_arithmetic')
 ```{r}
 #| label: minmax_ari_table
 #| warnings: false
-get_reactable(dat, 'minmax_geometric')
+get_reactable_scores(dat, 'minmax_geometric')
 ```
 
 # Z-Scores
@@ -98,7 +99,7 @@ The arithmetic plot is functionally identical to the min-max plots. The differen
 ```{r}
 #| label: zscore_ari_table
 #| warnings: false
-get_reactable(dat, 'zscore_arithmetic')
+get_reactable_scores(dat, 'zscore_arithmetic')
 ```
 
 ## Geometric Table
@@ -106,7 +107,7 @@ get_reactable(dat, 'zscore_arithmetic')
 ```{r}
 #| label: zscore_geo_table
 #| warnings: false
-get_reactable(dat, 'zscore_geometric')
+get_reactable_scores(dat, 'zscore_geometric')
 ```
 
 # Box Cox
@@ -128,7 +129,7 @@ We can see that all values are less extreme - both the lows and highs and pulled
 ```{r}
 #| label: boxcox_ari_table
 #| warnings: false
-get_reactable(dat, 'boxcox_arithmetic')
+get_reactable_scores(dat, 'boxcox_arithmetic')
 ```
 
 ## Geometric Table
@@ -136,7 +137,7 @@ get_reactable(dat, 'boxcox_arithmetic')
 ```{r}
 #| label: boxcox_geo_table
 #| warnings: false
-get_reactable(dat, 'boxcox_geometric')
+get_reactable_scores(dat, 'boxcox_geometric')
 ```
 
 # References

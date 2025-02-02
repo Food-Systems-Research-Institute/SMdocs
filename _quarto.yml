@@ -31,7 +31,6 @@ website:
   sidebar:
     title: "Table of Contents"
     style: "docked"
-    # search: true
     contents:
       - text: Home
         href: pages/home.qmd
@@ -71,12 +70,16 @@ website:
             href: pages/metric_distributions.qmd
           - text: Aggregation
             href: pages/aggregation.qmd
+          - text: Indicator Distributions
+            href: pages/indicator_distributions.qmd
           - text: Comparisons
             href: pages/comparison.qmd
           - text: Indicator Correlations
             href: pages/indicator_correlations.qmd
           - text: Selection and Regression
             href: pages/selection.qmd
+          - text: Validation
+            href: pages/validation.qmd
 
 format:
   html:

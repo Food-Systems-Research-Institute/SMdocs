@@ -28,8 +28,13 @@ get_vt_spiders <- function(df_list,
       dim_max <- map_dbl(.x[1:5], max)
       
       # National average
-      nat_avg <- .x %>% 
-        filter(state == 'US') %>% 
+      # nat_avg <- .x %>% 
+      #   filter(state == 'US_mean') %>% 
+      #   select(-state)
+       
+      # National median
+      nat_median <- .x %>% 
+        filter(state == 'US_median') %>% 
         select(-state)
       
       # Vermont scores
@@ -40,7 +45,8 @@ get_vt_spiders <- function(df_list,
       rbind(
         dim_max,
         dim_min,
-        nat_avg,
+        # nat_avg,
+        nat_median,
         vt_dims
       ) %>% 
         radarchart(
@@ -48,6 +54,7 @@ get_vt_spiders <- function(df_list,
           
           # Polygon
           pcol = c('#b16286', '#427b58'),
+          # pcol = c('#b16286', '#d79921', '#427b58'),
           pfcol = c('#FFFFFF00', '#689d6a80'),
           plwd = c(2, 3),
           plty = c(2, 1),
@@ -56,7 +63,6 @@ get_vt_spiders <- function(df_list,
           cglcol = 'darkgrey',
           cglty = 1,
           axislabcol = 'darkgrey',
-          # caxislabels = rep('', 5),
           
           # titles
           title = paste0('Vermont Dimension Scores\n', .y),
@@ -74,6 +80,7 @@ get_vt_spiders <- function(df_list,
         bty = "n",
         pch = 20,
         col = c('#b16286', '#427b58'),
+        # col = c('#b16286', '#d79921', '#427b58'),
         text.col = "black",
         cex = 1,
         pt.cex = 2

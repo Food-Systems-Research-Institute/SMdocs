@@ -5,6 +5,7 @@ format:
     fig-dpi: 200
 editor_options: 
   chunk_output_type: console
+warnings: false
 ---
 
 Exploring methods of aggregating data into index and dimension scores.
@@ -34,7 +35,6 @@ First, check how much missing data there are. If it is within reason, use missFo
 
 ```{r}
 #| label: imputation
-#| warnings: false
 #| output: false
 pacman::p_load(
   missForest,
@@ -462,15 +462,24 @@ scores <- map2(combos[[1]], combos[[2]], ~ {
 get_str(scores, 4)
 
 
-## Add averages for New England states and US
+## Add averages for New England states and US[]
 final_scores <- map(scores, \(method) {
   map(method, \(level) {
+    
     # Mean of every US state and DC
     us_means <- level %>%
       select(-state) %>% 
       colMeans() %>% 
       as.list()
-    us_means$state <- 'US'
+    us_means$state <- 'US_mean'
+    
+    # Median of every US state and DC
+    us_medians <- level %>% 
+      select(-state) %>% 
+      map_dbl(median) %>% 
+      as.list()
+    us_medians$state <- 'US_median'
+    
     # Mean of just New England states
     ne_means <- level %>% 
       filter(state %in% c('VT', 'NH', 'ME', 'MA', 'CT', 'RI')) %>% 
@@ -478,9 +487,11 @@ final_scores <- map(scores, \(method) {
       colMeans() %>% 
       as.list()
     ne_means$state <- 'NewEng'
+    
     # Return the level + US + NewEng means
     level %>% 
       bind_rows(us_means) %>% 
+      bind_rows(us_medians) %>% 
       bind_rows(ne_means)
   })
 })

@@ -1,13 +1,8 @@
 ---
 title: "Indicator Correlations"
-# format:
-  # html:
-    # fig-dpi: 200
 editor_options: 
   chunk_output_type: console
 warnings: false
-execute:
-  cache: false
 fig-responsive: false
 ---
 
@@ -59,8 +54,9 @@ pacman::p_load(
 final_scores <- readRDS('data/state_score_iterations.rds')
 # get_str(final_scores)
 
-# Pull out minmax geo indicators only
-minmax_geo_indicators <- final_scores$minmax_geometric$indicator_scores
+# Pull out minmax geo indicators only. Also use states only, no aggregates
+minmax_geo_indicators <- final_scores$minmax_geometric$indicator_scores %>% 
+  filter(! state %in% c('US_mean', 'US_median', 'NewEng'))
 # get_str(minmax_geo_indicators)
 
 # Make a correlation matrix using all the selected variables

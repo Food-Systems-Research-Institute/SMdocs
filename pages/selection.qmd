@@ -56,6 +56,7 @@ get_str(minmax_dat, 3)
 
 # Rename columns to specify what level of framework they are
 # then combine them into a single DF
+# and remove the aggregate US or NewEng rows
 dat <- imap(minmax_dat, ~ {
   new_names <- c(
     paste0(
@@ -69,11 +70,12 @@ dat <- imap(minmax_dat, ~ {
     setNames(c(new_names))
 }) %>% 
   reduce(inner_join) %>% 
-  select(state, everything())
+  select(state, everything()) %>% 
+  filter(!state %in% c('US_mean', 'US_median', 'NewEng'))
 get_str(dat)
 
-# Remove national average and New England average, leave just states
-dat <- filter(dat, !state %in% c('US', 'NewEng'))
+# Save this for later use elsewhere
+saveRDS(dat, 'data/minmax_geo_all_levels.rds')
 
 # Get filtered frame, which shows which indicators belong to which dimensions
 frame <- readRDS('data/filtered_frame.rds')

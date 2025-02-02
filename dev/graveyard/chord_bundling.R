@@ -1,7 +1,5 @@
 ## Edge Bundling Diagram
 
-```{r eval=FALSE}
-
 # Libraries
 library(ggraph)
 library(igraph)
@@ -61,14 +59,6 @@ p +
   geom_conn_bundle(data = get_con(from = from, to = to), width=1, alpha=0.2, aes(colour=..index..)) +
   scale_edge_colour_distiller(palette = "RdPu") +
   theme(legend.position = "none")
-
-
-
-```
-
-And an attempt at doing it for the SM framework:
-
-```{r eval=FALSE}
 
 cor_dat <- cor_r %>% 
   mutate(across(c(1:2), as.character)) %>% 
@@ -152,5 +142,3 @@ p +
   geom_conn_bundle(data = get_con(from = from, to = to), width=1, alpha=0.2, aes(colour=..index..)) +
   scale_edge_colour_distiller(palette = "RdPu") +
   theme(legend.position = "none")
-
-```
