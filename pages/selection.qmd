@@ -172,7 +172,8 @@ Here we split out data into a 60/40 training/test set for cross validation with 
 #| output: false
 pacman::p_load(
   caret,
-  ranger
+  ranger,
+  glmnet
 )
 
 # Split data 60/40

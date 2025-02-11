@@ -8,8 +8,6 @@ clean_refine_surveys <- function(
     n_votes
 ) {
 
-  browser()
-  
   # Add category to tables
   props <- tables %>% 
     imap(~ .x %>% mutate(cat = .y)) %>% 

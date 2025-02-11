@@ -13,3 +13,5 @@ lmtest
 snakecase
 psych
 ranger
+Matrix
+glmnet

@@ -1,0 +1,422 @@
+---
+title: "Production Indicator Refinement"
+format:
+  html:
+    fig-dpi: 200
+---
+
+```{r}
+#| label: not_setup
+#| echo: false
+pacman::p_load(
+  conflicted,
+  dplyr,
+  skimr,
+  readr,
+  stringr,
+  purrr,
+  ggplot2,
+  ggpubr,
+  reactable,
+  tidyr,
+  forcats,
+  paletteer,
+  ggraph,
+  igraph,
+  RColorBrewer,
+  viridisLite
+)
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::mutate(),
+  dplyr::select(),
+  dplyr::full_join(),
+  dplyr::arrange(),
+  dplyr::bind_rows(),
+  dplyr::group_by(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
+
+source('dev/get_dimension_ggraph.R')
+source('dev/clean_refine_surveys.R')
+```
+
+This page describes the various iterations of indicator sets for the production dimension. First, we observe the indicators included in the dimension at three points in time. The second section then shows the results of the survey following the indicator refinement meeting. 
+
+## Indicator Progression
+
+### Wiltshire
+
+This graph shows the original framework for the dimension as described in the Wiltshire et al. paper.
+
+```{r}
+#| label: wiltshire_dendro
+#| code-fold: true
+#| warning: false
+#| fig-height: 5
+#| fig-width: 10
+#| fig-align: center
+# Use custom function in SMDO repo
+source('dev/get_dimension_ggraph.R')
+get_dimension_ggraph(
+  csv_path = 'data/trees/wiltshire_tree.csv',
+  dimension_in = 'Production',
+  y_limits = c(-1.5, 2.1),
+  palette = "ggthemes::stata_s2color"
+)
+
+```
+
+### Matrix
+
+Here is the current set of indicators in the matrix, following the Sustainability Metrics workshop in July, 2024
+
+```{r}
+#| label: matrix_dendro
+#| code-fold: true
+#| warning: false
+#| fig-height: 8
+#| fig-width: 11
+#| fig-align: center
+# Use custom function in SMDO repo
+source('dev/get_dimension_ggraph.R')
+get_dimension_ggraph(
+  csv_path = 'data/trees/matrix_tree.csv',
+  dimension_in = 'Production',
+  y_limits = c(-1.5, 2.1),
+  palette = "ggthemes::stata_s2color"
+)
+```
+
+## Survey
+
+These are the results from the follow-up survey to the production indicator refinement meeting on January 15th. This feedback will be used to refine the framework for the next RFP.
+
+### Indicators
+
+```{r}
+#| label: survey_prep
+#| warnings: false
+raw <- read_csv('data/surveys/prod_survey.csv')
+
+dat <- raw %>% 
+  select(
+    ends_with('GROUP'),
+  ) %>% 
+  setNames(c(
+    'indi_must',
+    'indi_probably',
+    'indi_probably_not',
+    'indi_must_not',
+    'idx_must',
+    'idx_probably',
+    'idx_probably_not',
+    'idx_must_not'
+  )) %>% 
+  .[-c(1:2), ]
+
+to_df <- function(x) {
+  if (all(is.na(x))) {
+    return(NULL)
+  } else {
+   x %>%
+    str_remove(' \\(joint indicator with Marketability\\)') %>%
+    str_remove('\\*.*') %>%
+    str_remove(' \\(see notes with questions') %>%
+    str_split(',(?!\\s)') %>% # Split on comma not followed by a space
+    unlist() %>% 
+    table() %>% 
+    as.data.frame() %>% 
+    setNames(c('indicator', 'freq')) %>% 
+     arrange(desc(freq))
+  }
+}
+
+indi_out <- map(dat[1:4], to_df)
+idx_out <- map(dat[5:8], to_df)
+
+# Add scores by multipliers
+multipliers <- c(3:0)
+ind_tables <- map2(indi_out, multipliers, ~ {
+  .x %>% 
+    mutate(
+      freq = as.numeric(freq),
+      multiplier = .y,
+      score = freq * multiplier,
+    ) %>% 
+    select(indicator, freq, score)
+})
+
+# Set up DF for color graph 
+graph_table <- imap(ind_tables, ~ {
+  col_name <- str_remove(.y, 'indi_')
+  .x %>% 
+    rename(!!sym(col_name) := freq) %>% 
+    select(-score)
+})
+
+graph_table <- graph_table %>% 
+  reduce(full_join) %>% 
+  mutate(
+    across(where(is.numeric), ~ ifelse(is.na(.x), 0, .x)),
+    sort_key = must * 1e6 + probably * 1e4 + probably_not * 1e2 + must_not,
+    indicator = fct_reorder(indicator, sort_key, .desc = TRUE)
+  ) %>% 
+  pivot_longer(
+    cols = must:must_not,
+    names_to = "category",
+    values_to = "count"
+  ) %>% 
+  mutate(
+    category = fct_relevel(
+      category, 
+      "must_not",
+      "probably_not", 
+      "probably", 
+      "must"
+    )
+  ) %>%
+  group_by(indicator) %>%
+  mutate(proportion = count / sum(count)) %>%
+  ungroup()
+
+# Note some missing data throws off the graph table. Fix it here
+graph_table_clean <- graph_table %>% 
+  mutate(
+    sort_key = case_when(
+      str_detect(indicator, 'Production Species Diversity') ~ 3e6,
+      str_detect(indicator, 'Not livestock specific') ~ 1010002,
+      .default = sort_key
+    )
+  )
+```
+
+```{r}
+#| label: indi_graph
+#| fig-width: 16
+#| fig-height: 12
+#| fig-align: center
+#| out-width: 100%
+ggplot(graph_table_clean, aes(
+  y = reorder(indicator, sort_key),
+  x = proportion, 
+  fill = category
+)) +
+  geom_col(position = "stack") +  
+  labs(
+    y = "Indicator",
+    x = "Proportion",
+    fill = "Category"
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(size = 20),
+    legend.position = 'top'
+    ) +
+  scale_fill_brewer(
+    palette = "RdBu", 
+    direction = -1,
+    limits = c(
+      "must",
+      "probably", 
+      "probably_not", 
+      "must_not" 
+    ),
+    labels = c(
+      "Must Include", 
+      "Probably Include", 
+      "Probably Not Include", 
+      "Must Not Include"
+    )
+  )
+```
+
+We are coding this so "Must Include" is worth 3 points, "Probably Include" is worth 2 points, "Probably Not Include" is worth 1 point, and "Must Not Include" is worth 0 points. Note that the last column is the sum of proportions of "Must Include" and "Probably Include". You can sort, search, expand, or page through the table below.
+
+```{r}
+#| label: indicator_scores
+#| warnings: false
+#| class: centered-table
+#| echo: false
+indi_scores_table <- clean_refine_surveys(
+  tables = ind_tables,
+  scope = 'indicator',
+  cat_must = 'indi_must',
+  cat_probably = 'indi_probably',
+  n_votes = 3
+)
+
+# Edit product safety (not livestock). Proportion is off because of missing vote
+indi_scores_table <- indi_scores_table %>% 
+  mutate(
+    `Proportion Must Include` = case_when(
+      str_detect(Indicator, 'Not livestock specific') ~ '0.50',
+      .default = `Proportion Must Include`
+    ),
+    `Proportion Must OR Probably Include` = case_when(
+      str_detect(Indicator, 'Not livestock specific') ~ '1.00',
+      .default = `Proportion Must OR Probably Include`
+    )
+  )
+
+reactable(
+  indi_scores_table,
+  sortable = TRUE,
+  resizable = TRUE,
+  searchable = TRUE,
+  pagination = TRUE,
+  bordered = TRUE,
+  wrap = TRUE,
+  rownames = FALSE,
+  striped = TRUE,
+  pageSizeOptions = c(5, 10, 25, 50, 100),
+  defaultPageSize = 10,
+  showPageSizeOptions = TRUE,
+  compact = TRUE,
+  fullWidth = FALSE, #
+  defaultColDef = colDef(
+    minWidth = 200, 
+    align = 'right',
+    format = colFormat(digits = 2)
+  ),
+  columns = list(
+    Indicator = colDef(align = 'left'),
+    Score = colDef(minWidth = 75, format = colFormat(digits = 0))
+  )
+)
+```
+
+
+### Indices
+
+```{r}
+#| label: idx_graphs
+#| warnings: false
+#| fig-width: 16
+#| fig-height: 6
+#| fig-align: center
+#| out-width: 90%
+# Add scores by multipliers
+multipliers <- c(3:1)
+idx_tables <- map2(idx_out[1:3], multipliers, ~ {
+  .x %>% 
+    mutate(
+      freq = as.numeric(freq),
+      multiplier = .y,
+      score = freq * multiplier,
+    ) %>% 
+    select(index = indicator, freq, score)
+})
+
+# Set up DF for color graph 
+graph_table <- imap(idx_tables, ~ {
+  col_name <- str_remove(.y, 'idx_')
+  .x %>% 
+    rename(!!sym(col_name) := freq) %>% 
+    select(-score)
+}) %>% 
+  reduce(full_join) %>% 
+  mutate(
+    across(where(is.numeric), ~ ifelse(is.na(.x), 0, .x)),
+    sort_key = must * 1e6 + probably * 1e4 + probably_not,
+    sort_key = ifelse(str_detect(index, 'Carbon'), 5e6, sort_key),
+    index = fct_reorder(index, sort_key, .desc = TRUE)
+  ) %>% 
+  pivot_longer(
+    cols = must:probably_not,
+    names_to = "category",
+    values_to = "count"
+  ) %>% 
+  mutate(
+    category = fct_relevel(
+      category, 
+      # "must_not",
+      "probably_not", 
+      "probably", 
+      "must"
+    )
+  ) %>%
+  group_by(index) %>%
+  mutate(proportion = count / sum(count)) %>%
+  ungroup()
+
+
+colors <- RColorBrewer::brewer.pal(4, 'RdBu')
+
+ggplot(graph_table, aes(
+  y = reorder(index, sort_key),
+  x = proportion, 
+  fill = category
+)) +
+  geom_col(position = "stack") +  
+  labs(
+    y = "Index",
+    x = "Proportion",
+    fill = "Category"
+  ) +
+  theme_minimal() +
+  theme(
+    text = element_text(size = 20),
+    legend.position = 'top'
+    ) +
+  scale_fill_manual(
+    values = rev(colors),
+    limits = c(
+      "must",
+      "probably",
+      "probably_not"
+    ),
+    labels = c(
+      "Must Include",
+      "Probably Include",
+      "Probably Not Include"
+    )
+  )
+```
+
+```{r}
+#| label: index_score_table
+#| warnings: false
+#| echo: false
+#| class: centered-table
+idx_scores_table <- clean_refine_surveys(
+  tables = idx_tables,
+  scope = 'index',
+  cat_must = 'idx_must',
+  cat_probably = 'idx_probably',
+  n_votes = 3
+)
+
+# Fix proportion for carbon
+idx_scores_table <- idx_scores_table %>% 
+  mutate(across(c(3:4), ~ ifelse(str_detect(Index, 'Carbon'), '1.00', .x)))
+
+reactable(
+  idx_scores_table,
+  sortable = TRUE,
+  resizable = TRUE,
+  searchable = TRUE,
+  pagination = FALSE,
+  bordered = TRUE,
+  wrap = TRUE,
+  rownames = FALSE,
+  striped = TRUE,
+  defaultPageSize = 10,
+  showPageSizeOptions = FALSE,
+  compact = TRUE,
+  fullWidth = FALSE,
+  defaultColDef = colDef(
+    minWidth = 200,
+    align = 'right',
+    format = colFormat(digits = 2)
+  ),
+  columns = list(
+    Index = colDef(align = 'left'),
+    Score = colDef(minWidth = 75, format = colFormat(digits = 0))
+  )
+)
+```
+

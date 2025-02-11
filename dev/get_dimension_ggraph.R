@@ -33,7 +33,6 @@ get_dimension_ggraph <- function(csv_path = NULL,
                                  index_label_size = 0.1,
                                  index_font_size = 4,
                                  palette = 'basetheme::royal') {
-  
   # Put input in lower case for consistency
   dimension_in <- stringr::str_to_lower(dimension_in)
   

@@ -44,6 +44,8 @@ website:
                 href: pages/refine_economics.qmd
               - text: Environment
                 href: pages/refine_environment.qmd
+              - text: Production
+                href: pages/refine_production.qmd
       - section: Secondary Data
         contents:
           - text: Economics
@@ -107,6 +109,7 @@ bibliography: fsrc.bib
 
 execute:
   warning: false
+  cache: true
 
 editor_options:
   chunk_output_type: console
