@@ -5,6 +5,8 @@ format:
     fig-dpi: 200
 editor_options: 
   chunk_output_type: console
+execute:
+  eval: false
 ---
 
 ```{r}
@@ -67,7 +69,7 @@ get_str(metrics_df)
 validation_vars <- metrics_df %>% 
   select(
     fips, 
-    foodInsecOverall, 
+    foodInsecOverall,
     foodInsecChild, 
     lifeExpectancy,
     CO2FromAg
