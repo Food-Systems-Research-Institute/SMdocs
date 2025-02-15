@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Framework – Food Systems Research Center</title>
+<title>Overview – Food Systems Research Center</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -54,7 +54,27 @@ div.sourceCode
 @media screen {
 pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
 }
-</style>
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+  margin-bottom: 0em;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
 
 
 <script src="../site_libs/quarto-nav/quarto-nav.js"></script>
@@ -64,7 +84,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/refine_economics.html" rel="next">
+<link href="../pages/refinement_process.html" rel="next">
 <link href="../pages/home.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -103,6 +123,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="../site_libs/core-js-2.5.3/shim.min.js"></script>
+
+<script src="../site_libs/react-18.2.0/react.min.js"></script>
+
+<script src="../site_libs/react-18.2.0/react-dom.min.js"></script>
+
+<script src="../site_libs/reactwidget-2.0.0/react-tools.js"></script>
+
+<link href="../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<link href="../site_libs/reactable-0.4.4/reactable.css" rel="stylesheet">
+
+<script src="../site_libs/reactable-binding-0.4.4/reactable.js"></script>
+
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -163,7 +199,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
         <a class="flex-grow-1 no-decor" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
-          <h1 class="quarto-secondary-nav-title">Framework</h1>
+          <h1 class="quarto-secondary-nav-title">Overview</h1>
         </a>     
     </div>
   </nav>
@@ -180,10 +216,16 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Home</span></a>
   </div>
 </li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/framework.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Overview</span></a>
+  </div>
+</li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
             <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true">
- <span class="menu-text">Framework</span></a>
+ <span class="menu-text">Indicator Refinement</span></a>
           <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-1" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
@@ -191,19 +233,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/framework.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">Overview</span></a>
+  <a href="../pages/refinement_process.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Process</span></a>
   </div>
 </li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false">
- <span class="menu-text">Indicator Refinement</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth2 ">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/refine_economics.html" class="sidebar-item-text sidebar-link">
@@ -224,50 +257,25 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
       </ul>
   </li>
-      </ul>
-  </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true">
  <span class="menu-text">Secondary Data</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-2" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-2" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/data_economics.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Economics</span></a>
-  </div>
-</li>
-          <li class="sidebar-item sidebar-item-section">
-      <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false">
- <span class="menu-text">Environment</span></a>
-          <a class="sidebar-item-toggle text-start collapsed" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-4" role="navigation" aria-expanded="false" aria-label="Toggle section">
-            <i class="bi bi-chevron-right ms-2"></i>
-          </a> 
-      </div>
-      <ul id="quarto-sidebar-section-4" class="collapse list-unstyled sidebar-section depth2 ">  
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/data_environment_overview.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Overview</span></a>
+  <a href="../pages/metadata_table.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Metadata</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../pages/data_environment_analysis.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Analysis</span></a>
-  </div>
-</li>
-      </ul>
-  </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/data_production.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Production</span></a>
+  <a href="../pages/metrics_table.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Metrics Data</span></a>
   </div>
 </li>
           <li class="sidebar-item">
@@ -276,23 +284,17 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">SM-Explorer</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/tables.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">Tables</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
       <div class="sidebar-item-container"> 
-            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true">
- <span class="menu-text">Secondary Data Rework</span></a>
-          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-5" role="navigation" aria-expanded="true" aria-label="Toggle section">
+            <a class="sidebar-item-text sidebar-link text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true">
+ <span class="menu-text">Refined Framework</span></a>
+          <a class="sidebar-item-toggle text-start" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar-section-3" role="navigation" aria-expanded="true" aria-label="Toggle section">
             <i class="bi bi-chevron-right ms-2"></i>
           </a> 
       </div>
-      <ul id="quarto-sidebar-section-5" class="collapse list-unstyled sidebar-section depth1 show">  
+      <ul id="quarto-sidebar-section-3" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
   <a href="../pages/refined_framework.html" class="sidebar-item-text sidebar-link">
@@ -353,8 +355,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On This Page</h2>
    
   <ul>
-  <li><a href="#radial-plot" id="toc-radial-plot" class="nav-link active" data-scroll-target="#radial-plot"><span class="header-section-number">1</span> Radial Plot</a></li>
-  <li><a href="#cladogram" id="toc-cladogram" class="nav-link" data-scroll-target="#cladogram"><span class="header-section-number">2</span> Cladogram</a></li>
+  <li><a href="#introduction" id="toc-introduction" class="nav-link active" data-scroll-target="#introduction"><span class="header-section-number">1</span> Introduction</a></li>
+  <li><a href="#sec-framework_overview" id="toc-sec-framework_overview" class="nav-link" data-scroll-target="#sec-framework_overview"><span class="header-section-number">2</span> Framework Overview</a></li>
+  <li><a href="#sec-framework_table" id="toc-sec-framework_table" class="nav-link" data-scroll-target="#sec-framework_table"><span class="header-section-number">3</span> Full Indicator Table</a></li>
   </ul>
 </nav>
     </div>
@@ -363,7 +366,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title d-none d-lg-block">Framework</h1>
+<h1 class="title d-none d-lg-block">Overview</h1>
 </div>
 
 
@@ -380,20 +383,26 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<!-- <div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
-  <img src="../images/hort_farm_small.png" alt="description" style="width: 100%;">
-  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">UVM Horticultural Research and Education Center in South Burlington, Vermont. Copyright: Sally McCay, UVM Photo.
+<section id="introduction" class="level2" data-number="1">
+<h2 data-number="1" class="anchored" data-anchor-id="introduction"><span class="header-section-number">1</span> Introduction</h2>
+<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 50%;">
+<img src="../images/Taylor_Conner_workshop.jpg" alt="Dr. Josh Taylor (left) and Dr. David Conner (right) at the FSRC Sustainability Metrics workshop in 2024. Photo by Colleen Goodhue, FSRC." style="width: 100%;">
+<div style="text-align: left; margin-top: 0.5em; font-size: smaller;">
+<p>Dr.&nbsp;Josh Taylor (left) and Dr.&nbsp;David Conner (right) at the FSRC Sustainability Metrics workshop in 2024. Photo by Colleen Goodhue, FSRC.</p>
 </div>
-</div> -->
-<p>Just including some visualizations of the framework here for now. These include all the indicators currently in the matrix.</p>
-<!-- This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al. in that food system sustainability is still largely undefined [@beneWhenFoodSystems2019]. -->
-<!-- [Including some more text here just so that it wraps around the photo. 
-
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia eu nibh vel luctus. Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.
-
-Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.] -->
-<section id="radial-plot" class="level2" data-number="1">
-<h2 data-number="1" class="anchored" data-anchor-id="radial-plot"><span class="header-section-number">1</span> Radial Plot</h2>
+</div>
+<p>The original framework of dimensions, indices, and indicators representing food system sustainability was developed through a transdisciplinary team science process described in detail by <span class="citation" data-cites="wiltshire2024RegionalFoodSystema">Wiltshire et al. (<a href="#ref-wiltshire2024RegionalFoodSystema" role="doc-biblioref">2024</a>)</span>. The figure below shows the structure of this collaborative process.</p>
+<p>As the project progressed, a collection of new indicators were proposed across all dimensions, leading up to a total of 135 indicators. This full set of indicators is shown in <a href="#sec-framework_overview" class="quarto-xref">Section&nbsp;2</a>. Starting in July of 2024, the FSRC has been using a collaborative and transparent process to reduce the number of indicators to manageable amount that. More information about this refinement process can be found in the <a href="../pages/refinement_process.html">Indicator Refinement</a> pages.</p>
+<div style="float: center; margin-left: auto; margin-right: auto; margin-bottom: 1em; width: 75%;">
+<img src="../images/wiltshire2024_team_science_diagram.png" alt="Team science process diagram showing the progression from concept papers and backgroundf research to concept paper synthesis meetings to framework refinement, breakout groups for each dimnension, and breakout group synthesis, followed by collaborative drafting of a narrative document and manuscript." style="width: 100%;">
+<div style="text-align: left; margin-top: 0.5em; font-size: smaller;">
+<p>Team science diagram from Wiltshire et al., 2024.</p>
+</div>
+</div>
+</section>
+<section id="sec-framework_overview" class="level2" data-number="2">
+<h2 data-number="2" class="anchored" data-anchor-id="sec-framework_overview"><span class="header-section-number">2</span> Framework Overview</h2>
+<p>Below is a diagram of all 136 indicators in the framework as of July, 2024. Colors represent dimensions, and splits occur at the dimension and index level. See the table in <a href="#sec-framework_table" class="quarto-xref">Section&nbsp;3</a> for a more detailed look at indicators.</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
@@ -517,92 +526,76 @@ Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleife
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="framework_files/figure-html/radial_plot-1.png" class="img-fluid figure-img" width="960"></p>
+<p><img src="framework_files/figure-html/radial_plot-1.png" class="img-fluid figure-img" alt="Radial dendrogram of Sustainability Metrics framework showing sustainability in the middle, splitting into economic, environment, social, production, and health dimensions, each splitting into a set of indicators." width="960"></p>
 <figcaption>Radial dendrogram of Sustainability Metrics framework</figcaption>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="cladogram" class="level2" data-number="2">
-<h2 data-number="2" class="anchored" data-anchor-id="cladogram"><span class="header-section-number">2</span> Cladogram</h2>
-<p>A slightly more readable version of the diagram above.</p>
+<section id="sec-framework_table" class="level2" data-number="3">
+<h2 data-number="3" class="anchored" data-anchor-id="sec-framework_table"><span class="header-section-number">3</span> Full Indicator Table</h2>
+<p>Below is an interactive table with the full set of 135 indicators from July of 2024. You can search, filter, and page through the table, and download the filtered set of data as a .csv file using the download button.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
-<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  ggtree,</span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  dplyr,</span>
-<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  ape,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  data.tree,</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  viridisLite,</span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  stringr</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="do">## Load data and add an origin level</span></span>
-<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/trees/tree_dat.rds'</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Framework =</span> <span class="st">'Sustainability'</span>) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(Framework, Dimension<span class="sc">:</span>Indicator) <span class="sc">%&gt;%</span> </span>
-<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="fu">across</span>(</span>
-<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="fu">everything</span>(), </span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>    <span class="sc">~</span> <span class="fu">str_trim</span>(<span class="fu">str_replace_all</span>(., <span class="st">';|%|/|</span><span class="sc">\\</span><span class="st">.|</span><span class="sc">\"</span><span class="st">|,|</span><span class="sc">\\</span><span class="st">(|</span><span class="sc">\\</span><span class="st">)'</span>, <span class="st">'_'</span>))</span>
-<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>  ))</span>
-<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>dat<span class="sc">$</span>pathString <span class="ot">&lt;-</span> <span class="fu">paste</span>(</span>
-<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>Framework,</span>
-<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>Dimension,</span>
-<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>Index,</span>
-<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>  dat<span class="sc">$</span>Indicator,</span>
-<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>  <span class="at">sep =</span> <span class="st">'/'</span></span>
-<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> <span class="fu">as.Node</span>(dat)</span>
-<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co"># Convert the data.tree structure to Newick format</span></span>
-<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>tree_newick <span class="ot">&lt;-</span> <span class="fu">ToNewick</span>(tree)</span>
-<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co"># Read the Newick tree into ape</span></span>
-<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>phylo_tree <span class="ot">&lt;-</span> <span class="fu">read.tree</span>(<span class="at">text =</span> tree_newick)</span>
-<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Make all edge lengths 1</span></span>
-<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>phylo_tree<span class="sc">$</span>edge.length <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="dv">1</span>, <span class="fu">length</span>(phylo_tree<span class="sc">$</span>edge.length))</span>
-<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co"># Add a space to end of node labels so it isn't cut off</span></span>
-<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a>phylo_tree<span class="sc">$</span>node.label <span class="ot">&lt;-</span> <span class="fu">paste0</span>(phylo_tree<span class="sc">$</span>node.label, <span class="st">' '</span>)</span>
-<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot it</span></span>
-<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(</span>
-<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>  phylo_tree, </span>
-<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>  <span class="at">type =</span> <span class="st">'c'</span>,</span>
-<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> <span class="fl">0.75</span>,</span>
-<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a>  <span class="at">edge.width =</span> <span class="dv">2</span>,</span>
-<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a>  <span class="at">show.tip.label =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>  <span class="at">label.offset =</span> <span class="dv">0</span>,</span>
-<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>  <span class="at">no.margin =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>  <span class="at">tip.color =</span> <span class="st">'black'</span>,</span>
-<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a>  <span class="at">edge.color =</span> <span class="fu">viridis</span>(<span class="dv">181</span>),</span>
-<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a>  <span class="at">x.lim =</span> <span class="fu">c</span>(<span class="sc">-</span><span class="fl">0.1</span>, <span class="dv">5</span>)</span>
-<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="fu">nodelabels</span>(</span>
-<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a>  phylo_tree<span class="sc">$</span>node.label,</span>
-<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a>  <span class="at">cex =</span> <span class="fl">0.8</span>,</span>
-<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a>  <span class="at">bg =</span> <span class="st">'white'</span></span>
-<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  dplyr,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  reactable,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  stringr,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  htmltools</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># Load framework data as a tree</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>tree <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/trees/tree_dat.rds'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Load custom reactable table function</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'dev/get_reactable.R'</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># Pick out variables to display</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> tree <span class="sc">%&gt;%</span> </span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(<span class="sc">-</span><span class="fu">c</span>(tooltip, count_))</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Make reactable table</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a>htmltools<span class="sc">::</span><span class="fu">browsable</span>(</span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a>  <span class="fu">tagList</span>(</span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>    tags<span class="sc">$</span><span class="fu">div</span>(</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>      <span class="at">style =</span> <span class="st">"display: flex; margin-bottom: 20px; justify-content: center;"</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>      tags<span class="sc">$</span><span class="fu">button</span>(</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>          <span class="at">class =</span> <span class="st">"btn btn-primary"</span>,</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>          <span class="at">style =</span> <span class="st">"display: flex; align-items: center; gap: 8px; padding: 8px 12px;"</span>,</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>          <span class="fu">tagList</span>(fontawesome<span class="sc">::</span><span class="fu">fa</span>(<span class="st">"download"</span>), <span class="st">"Download as CSV"</span>),</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>          <span class="at">onclick =</span> <span class="st">"Reactable.downloadDataCSV('indicator_table', 'indicator_framework.csv')"</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>        )</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>      ),</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a>    <span class="fu">get_reactable</span>(</span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a>      dat,</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a>      <span class="at">elementId =</span> <span class="st">"indicator_table"</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div class="quarto-figure quarto-figure-left">
-<figure class="figure">
-<p><img src="framework_files/figure-html/cladogram-1.png" class="img-fluid figure-img" width="768"></p>
-<figcaption>Cladogram of Sustainability Metrics framework</figcaption>
-</figure>
+<div style="display: flex; margin-bottom: 20px; justify-content: center;">
+<button class="btn btn-primary" style="display: flex; align-items: center; gap: 8px; padding: 8px 12px;" onclick="Reactable.downloadDataCSV('indicator_table', 'indicator_framework.csv')">
+<svg aria-hidden="true" role="img" viewbox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"></path></svg>
+Download as CSV
+</button>
+</div>
+<div class="reactable html-widget html-fill-item" id="indicator_table" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="indicator_table">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Dimension":["Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Environment","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Economics","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Production","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Health","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social","Social"],"Index":["Soil health","Soil health","Water quality","Water quality","Water quality","Water quality","Water quality","Air quality","Soil biology","Soil biology","Soil biology","Biodiversity","Biodiversity","Biodiversity","Biodiversity","Biodiversity","Biodiversity","Forest health","Forest health","Forest health","Forest health","Resource use efficiency","Resource use efficiency","Resource use efficiency","Best management","Soild Waste","Water Stability ","Food business profitability","Food business profitability","Food business profitability","Food business profitability","Food business profitability","Food business profitability","Value from rural landscape","Value from rural landscape","Value from rural landscape","Value from rural landscape","Food business resilience","Food business resilience","Food business resilience","Food business resilience","Food business resilience","Food business resilience","Food business resilience","Food business resilience","Food business resilience","Food business resilience","Distribution chain localness","Distribution chain localness","Distribution chain localness","Distribution chain localness","Distribution chain localness","Community economy","Community economy","Community economy","Community economy","Community economy","Community economy","Community economy","Exogenous factors for business","Access to capital/credit","Access to capital/credit","Access to capital/credit","Farmer personal finance","Farmer personal finance","Farmer personal finance","Farmer personal finance","Farmer personal finance","Consumer preferences","Production margins","Production margins","Production margins","Production margins","Production margins","Waste/losses","Waste/losses","Waste/losses","Waste/losses","Product quality","Product quality","Product quality","Product quality","Product quality","Product quality","Production diversity","Production diversity","Production diversity","Imports vs. exports","Imports vs. exports","Production efficiency","Physical health","Physical health","Physical health","Physical health","Physical health","Physical health","Mental health","Mental health","Mental health","Mental health","Food security","Food security","Food security","Food security","Food security","Happiness","Happiness","Happiness","Education","Stability Agency","Stability Agency","Food worker and farmer diversity","Food worker and farmer diversity","Food worker and farmer diversity","Food worker and farmer diversity","Community embeddedness","Community embeddedness","Community embeddedness","Community embeddedness","Community embeddedness","Community embeddedness","Community embeddedness","Rural community livability","Rural community livability","Rural community livability","Rural community livability","Rural community livability","Food system governance","Food system governance","Food system governance","Food system governance","Food system governance","Stewardship participation","Stewardship participation","Stewardship participation"],"Indicator":["soil aggregate stability","Soil cover, Soil loss/sedimentation","Water quality of runoff (argochemical, nutrient)","Protected waterways","Environmental impacts of land use","Quality/quantity of surface and shallow subsurface water","Climate change","Greenhouse gas emissions","Baterial and fungal biomass","Alpha and beta microbial diversity","Microinvertebrate composition","Insect, plant, & animal diversity","Acres in conservation practices","Land use diversity","Rare habitats","Pollinators","Enrollement in certification program","Regeneration of Maple","Tree vigor","Forest pest populations","Aboveground biomass","External nutient use efficiency","Energy efficiency","Water use/irrigation efficience","Adoption","Waste generated/disposed of; contaminated (PFAS, PFOS)","NEW - proposed by CFA Team","Total sales/revenue","Total costs","Labor costs","Price","Exchange rate","Acreage in production","Diversity of farm types","Open acres","Forest cover","VT terrior/VT brand","Use of Ag/farm/crop insurance","Balance sheet (assets and liabilities)","Operations diversification","Business growth/fixed mindset","Enterprise agility/flexibility","Income stability","Perceived viability","Confidence in future","Marketplace","Market mix","% local sales","% of farm/business inputs bought locally","% direct-to- consumer sales","Consumer awareness of VT products","Distribution chain capacity","Wealth/income distribution","Availability of good-paying jobs in food systems","Business failure rate of food business","In vs. out of state ownership","Employee numbers","Employee Retention","Wage rate","Commodity price fluctuation","Access to credit","Access to land","Captial markets","Operator salary/wage","Operator labor (time and tasks)","Satisfaction and/or success scale","Dependence on off-farm income","Commercial intent","Preferences of plant based proteins","Production inputs (fertilizer, pesticides)","Total qty. food products","Total qty. forest products","Total qty. non-food ag. products","Value-added market","Food wasted","Food losses","Crop failure","\"Waste\" converted to useable byproduct","Marketability","Livestock product safety","Recalls in each industry","Certificates of assurance","Food safety","Nutrition","Richness","Nutritional staples","Crop rotations","Total qty. imported","Total qty. exported","Techology adoption (reverse osmosis, tapping practices)","Housing supply/quality","Nutritious diets","Presence of obesity","Presence of metabolic disease/Diet related non-communicable diseases","Mobility, pain","Access to care (health, child, elder)","Stress and anxiety","Access to social support","Uncertainty","Risk aversion (e.g., social stigma)","Food access","Food affordability","Dietary quality","Food agency","Access to culturally appropriate food","Happiness index","Finding meaning in life","Satisfaction and flexibiltiy - Proposed adjustment by Soil Team: Wellbeing","Educational attainment","Farmer agency to improve","Intention to consume PBP","Gender diversity","Race/ethnicity","Age diversity","Sexuality","Trust","Reciprocity","Social connectedness","Feeling of belonging to community","Collective action","Tradition/heritage","Common goals","NIMBYism","Community safety","Population drain (outmigration)","Open spaces and nautral beauty","Diverse representation","Policies","Participatory governance","Government responsiveness","Fair regulations and incentives","Transparency","Farmer stewardship ethic (sense of responsibility and care)","Conservation program","Behaviors/decisions/motivations"]},"columns":[{"id":"Dimension","name":"Dimension","type":"character"},{"id":"Index","name":"Index","type":"character"},{"id":"Indicator","name":"Indicator","type":"character"}],"resizable":true,"filterable":true,"searchable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"elementId":"indicator_table","dataKey":"d87282bd1eb124e4b0cae98a9f9ec250"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-</div>
+
 
 
 </section>
 
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" role="doc-bibliography" id="quarto-bibliography"><h2 class="anchored quarto-appendix-heading">References</h2><div id="refs" class="references csl-bib-body hanging-indent" data-entry-spacing="0" role="list">
+<div id="ref-wiltshire2024RegionalFoodSystema" class="csl-entry" role="listitem">
+Wiltshire, Serge, Brian Beckage, Chris Callahan, Lisa Chase, David Conner, Heather Darby, Jane Kolodinsky, et al. 2024. <span>“Regional Food System Sustainability: <span>Using</span> Team Science to Develop an Indicator-Based Assessment Framework.”</span> <em>Journal of Agriculture, Food Systems, and Community Development</em> 14 (1): 1–24. <a href="https://doi.org/10.5304/jafscd.2024.141.011">https://doi.org/10.5304/jafscd.2024.141.011</a>.
+</div>
+</div></section></div></main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">
 window.document.addEventListener("DOMContentLoaded", function (event) {
   const toggleBodyColorMode = (bsSheetEl) => {
@@ -1032,8 +1025,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/refine_economics.html" class="pagination-link" aria-label="Economics">
-        <span class="nav-page-text">Economics</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/refinement_process.html" class="pagination-link" aria-label="Process">
+        <span class="nav-page-text">Process</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

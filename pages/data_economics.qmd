@@ -1,11 +1,13 @@
 ---
 title: 'Economics'
 fig-responsive: false
+execute:
+  eval: false
 ---
 
 ```{r}
 #| label: setup
-#| include: false
+#| echo: false
 pacman::p_load(
  conflicted
 )

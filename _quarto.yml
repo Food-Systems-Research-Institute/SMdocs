@@ -34,37 +34,39 @@ website:
     contents:
       - text: Home
         href: pages/home.qmd
-      - section: Framework
+      - text: Overview
+        href: pages/framework.qmd
+      - section: Indicator Refinement
         contents: 
-          - text: Overview
-            href: pages/framework.qmd
-          - section: Indicator Refinement
-            contents: 
-              - text: Economics
-                href: pages/refine_economics.qmd
-              - text: Environment
-                href: pages/refine_environment.qmd
-              - text: Production
-                href: pages/refine_production.qmd
+          - text: Process
+            href: pages/refinement_process.qmd
+          - text: Economics
+            href: pages/refine_economics.qmd
+          - text: Environment
+            href: pages/refine_environment.qmd
+          - text: Production
+            href: pages/refine_production.qmd
       - section: Secondary Data
         contents:
-          - text: Economics
-            href: pages/data_economics.qmd
-          - section: Environment
-            contents:
-              - text: Overview
-                href: pages/data_environment_overview.qmd
-              # - text: Maps
-                # href: pages/data_environment_maps.qmd
-              - text: Analysis
-                href: pages/data_environment_analysis.qmd
-          - text: Production
-            href: pages/data_production.qmd
+          # - text: Economics
+          #   href: pages/data_economics.qmd
+          # - section: Environment
+          #   contents:
+          #     - text: Overview
+          #       href: pages/data_environment_overview.qmd
+          #     - text: Maps
+          #       href: pages/data_environment_maps.qmd
+          #     - text: Analysis
+          #       href: pages/data_environment_analysis.qmd
+          # - text: Production
+          #   href: pages/data_production.qmd
+          - text: Metadata
+            href: pages/metadata_table.qmd
+          - text: Metrics Data
+            href: pages/metrics_table.qmd
           - text: SM-Explorer
             href: pages/sm-explorer.qmd
-          - text: Tables
-            href: pages/tables.qmd
-      - section: Secondary Data Rework
+      - section: Refined Framework
         contents:
           - text: Framework
             href: pages/refined_framework.qmd

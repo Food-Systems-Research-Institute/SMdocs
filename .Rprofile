@@ -12,6 +12,7 @@ pacman::p_load_gh('ChrisDonovan307/projecter')
 conflicted::conflicts_prefer(
   dplyr::filter(),
   dplyr::select(),
+  dplyr::arrange(),
   .quiet = TRUE
 )
 
@@ -21,6 +22,6 @@ options(
   pilar.print_min = 950
 )
 
-source('startup.R')
+# source('startup.R')
 
 cat("\n.Rprofile loaded")

@@ -1,12 +1,12 @@
 ---
 title: "Environment: Analysis"
 execute:
-  freeze: auto
+  eval: false
 ---
 
 ```{r}
-#| label: setup
-#| include: false
+#| label: prep
+#| echo: false
 pacman::p_load(
   conflicted,
   viridisLite,
@@ -218,7 +218,7 @@ pacman::p_load(
   leaflet,
   leafpop
 )
-map_dat <- readRDS('data/sm_data.rds')[['ne_counties_2021']] %>%
+map_dat <- readRDS('data/sm_spatial.rds')[['ne_counties_2021']] %>%
   right_join(dimension_scores) %>%
   left_join(fips_key) %>%
   select(

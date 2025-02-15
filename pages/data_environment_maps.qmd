@@ -1,11 +1,11 @@
 ---
 title: "Environment: Maps"
 execute:
-  freeze: auto
+  eval: false
 ---
 
 ```{r}
-#| label: setup
+#| label: prep
 #| echo: false
 pacman::p_load(
   conflicted,

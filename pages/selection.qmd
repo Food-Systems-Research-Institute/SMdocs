@@ -11,7 +11,7 @@ warnings: false
 ```{r}
 #| label: prep
 #| warnings: false
-#| include: false
+#| echo: false
 pacman::p_load(
   dplyr,
   purrr,

@@ -2,7 +2,7 @@
 title: "Environment: Overview"
 fig-responsive: false
 execute:
-  freeze: auto
+  eval: false
 ---
 
 ```{r}

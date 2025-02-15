@@ -6,7 +6,9 @@ pacman::p_load(
 )
 
 get_indicator_distributions <- function(scores_list,
-                                        transformation) {
+                                        transformation,
+                                        rows = 10,
+                                        columns = 4) {
   # Pull the indicators at desired transformation
   # Also remove averages, new england
   df <- scores_list[[transformation]]$indicator_scores %>% 
@@ -45,7 +47,7 @@ get_indicator_distributions <- function(scores_list,
   # Arrange them in 4 columns
   ggarrange(
     plotlist = plots,
-    ncol = 4,
-    nrow = 8
+    ncol = columns,
+    nrow = rows
   )
 }

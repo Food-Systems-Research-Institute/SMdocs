@@ -14,7 +14,7 @@ Goes after framework, before aggregation. Pull in data prep from aggregation int
 
 ```{r}
 #| label: prep
-#| include: false
+#| echo: false
 pacman::p_load(
   dplyr,
   conflicted
@@ -24,6 +24,7 @@ conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
   dplyr::summarize(),
+  dplyr::as_data_frame(),
   .quiet = TRUE
 )
 
@@ -50,22 +51,8 @@ sm_data <- readRDS('data/sm_data.rds')
 # Load refined framework
 raw_tree <- sm_data[['refined_tree']]
 
-# Clean up the framework df 
-frame <- raw_tree %>% 
-  select(dimension:variable_name, resolution, use) %>% 
-  dplyr::filter(use == 'x') %>% 
-  select(-use) %>% 
-  mutate(
-    metric = ifelse(
-      str_length(metric) > 50,
-      paste0(str_sub(metric, end = 50), '...'),
-      metric
-    )
-  )
-get_str(frame)
-
-# Save this refined framework for later
-saveRDS(frame, 'data/frame.rds')
+# Load refined framework
+frame <- readRDS('data/frame.rds')
 
 
 ## Join with metadata to double check the resolution of our metrics
@@ -100,13 +87,20 @@ metrics_df <- metrics %>%
     names_from = 'variable_name',
     values_from = 'value'
   ) %>% 
-  # Note that we are getting dupes here for some reason. Explore this
   unnest(cols = !fips) %>%
   unique()
 get_str(metrics_df)
 
-# Get rid of one variable that didn't come through properly
-metrics_df$waterIrrSrcOffFarmExp_2023 <- NULL
+# Three variables didn't come through properly. Let's remove them:
+# waterIrrSrcOffFarmExp_2023 (all NA)
+# totalValueMilkLossPayments_2023 (all 0)
+# juvenileArrests_2024 (half NA)
+metrics_df <- metrics_df %>% 
+  select(-c(
+    waterIrrSrcOffFarmExp_2023,
+    totalValueMilkLossPayments_2023,
+    juvenileArrests_2024
+  ))
 get_str(metrics_df)
 
 # Let's get rid of the years so they are easier to work with
@@ -124,13 +118,14 @@ Here we explore univariate distributions of each of our metrics. Highly skewed d
 ```{r}
 #| label: metric_distributions
 #| fig-cap: Distributions of metrics at the state level.
-#| fig-height: 35
+#| fig-height: 40
 #| fig-width: 10
 #| fig-align: center
 pacman::p_load(
   ggplot2,
   purrr,
-  ggpubr
+  ggpubr,
+  psych
 )
 
 # Get skews of variables
@@ -167,7 +162,7 @@ plots <- map(names(metrics_df)[-1], \(var){
 ggarrange(
   plotlist = plots,
   ncol = 4,
-  nrow = 22
+  nrow = 32
 )
 
 ```

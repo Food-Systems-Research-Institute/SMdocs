@@ -5,3 +5,6 @@ data/sm_data.rds
 
 # Data production page has a weirdly large cache
 pages/data_production_cache/html
+
+# Temp things that don't matter
+temp/

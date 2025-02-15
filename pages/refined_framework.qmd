@@ -28,22 +28,38 @@ conflicts_prefer(
   dplyr::summarize(),
   .quiet = TRUE
 )
+```
 
+```{r}
+#| label: wrangle
+pacman::p_load(
+  conflicted,
+  dplyr,
+  purrr,
+  stringr,
+  readr
+)
 source('dev/get_dimension_ggraph.R')
+
+# Load refined framework
 raw <- readRDS('data/sm_data.rds')[['refined_tree']]
 
 # Clean up the framework df 
 frame <- raw %>% 
-  select(dimension:variable_name, resolution, use) %>% 
-  dplyr::filter(use == 'x') %>% 
+  select(dimension:variable_name, use) %>% 
+  filter(use == 'x') %>% 
   select(-use) %>% 
   mutate(
     metric = ifelse(
-      str_length(metric) > 50,
-      paste0(str_sub(metric, end = 50), '...'),
+      str_length(metric) > 45,
+      paste0(str_sub(metric, end = 45), '...'),
       metric
     )
   )
+# get_str(frame)
+
+# Save frame to rds for use in subsequent scripts
+saveRDS(frame, 'data/frame.rds')
 ```
 
 This page shows the partially refined framework as it stands after three dimension meetings: economics, environment, and production. It also includes a selection of preliminary secondary data metrics to match those indicators. We have collected around 1500 metrics so far, although many of those are fluff. Effectively, we have around 400 meaningful metrics. Here, we are using a selection of ~91 of them to make a preliminary framework for preliminary analyses. This is more than we have been planning for the refined framework, which will give us a chance to see how aggregate scores change with different combinations of metrics and under different methods of aggregation. 
@@ -66,7 +82,7 @@ One gap I've noticed since this dimension was reworked in the dimension meeting 
 #| label: environment
 #| code-fold: true
 #| warning: false
-#| fig-height: 6
+#| fig-height: 8
 #| fig-width: 10
 #| fig-align: center
 source('dev/get_dimension_ggraph.R')
@@ -87,8 +103,8 @@ It has definitely been easier to find economics data than other dimensions. Wort
 #| label: economics
 #| code-fold: true
 #| warning: false
-#| fig-height: 7
-#| fig-width: 12
+#| fig-height: 8
+#| fig-width: 10
 #| fig-align: center
 get_dimension_ggraph(
   framework_df = frame,
@@ -107,8 +123,8 @@ The production dimension looks slim at first glance, but is better than it looks
 #| label: production
 #| code-fold: true
 #| warning: false
-#| fig-height: 5
-#| fig-width: 12
+#| fig-height: 7
+#| fig-width: 10
 #| fig-align: center
 get_dimension_ggraph(
   framework_df = frame,
@@ -127,14 +143,14 @@ The Food Environment Atlas has lots of data on access and nutrition, which accou
 #| label: health
 #| code-fold: true
 #| warning: false
-#| fig-height: 9 
+#| fig-height: 11
 #| fig-width: 10
 #| fig-align: center
 get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'health',
   include_metrics = TRUE,
-  y_limits = c(-1.9, 3),
+  y_limits = c(-1.7, 3),
   palette = "ggthemes::stata_s2color"
 )
 ```
@@ -147,14 +163,14 @@ The social dimension is admittedly slim, but it could have been a lot worse. The
 #| label: social
 #| code-fold: true
 #| warning: false
-#| fig-height: 7
+#| fig-height: 8
 #| fig-width: 10
 #| fig-align: center
 get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'social',
   include_metrics = TRUE,
-  y_limits = c(-1.9, 3),
+  y_limits = c(-1.7, 3),
   palette = "ggthemes::stata_s2color"
 )
 ```

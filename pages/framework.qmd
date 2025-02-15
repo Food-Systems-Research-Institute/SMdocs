@@ -1,30 +1,34 @@
 ---
-title: "Framework"
-execute:
-    cache: true
+title: "Overview"
 ---
 
-<!-- <div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
-  <img src="../images/hort_farm_small.png" alt="description" style="width: 100%;">
-  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">UVM Horticultural Research and Education Center in South Burlington, Vermont. Copyright: Sally McCay, UVM Photo.
+## Introduction
+
+<div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 50%;">
+  <img src="../images/Taylor_Conner_workshop.jpg" alt="Dr. Josh Taylor (left) and Dr. David Conner (right) at the FSRC Sustainability Metrics workshop in 2024. Photo by Colleen Goodhue, FSRC." style="width: 100%;">
+  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Dr. Josh Taylor (left) and Dr. David Conner (right) at the FSRC Sustainability Metrics workshop in 2024. Photo by Colleen Goodhue, FSRC.
 </div>
-</div> -->
+</div>
 
-Just including some visualizations of the framework here for now. These include all the indicators currently in the matrix.
+The original framework of dimensions, indices, and indicators representing food system sustainability was developed through a transdisciplinary team science process described in detail by @wiltshire2024RegionalFoodSystema. The figure below shows the structure of this collaborative process.
 
-<!-- This is where the framework will be described. Cite some papers doing similar work, maybe better explain the gap a little bit. Then use some big picture visualization below to get the gist across. More detail about dimensions, indices, and metrics will be in the following pages. Probably cite Bene et al. in that food system sustainability is still largely undefined [@beneWhenFoodSystems2019]. -->
+As the project progressed, a collection of new indicators were proposed across all dimensions, leading up to a total of 135 indicators. This full set of indicators is shown in @sec-framework_overview. Starting in July of 2024, the FSRC has been using a collaborative and transparent process to reduce the number of indicators to manageable amount that. More information about this refinement process can be found in the [Indicator Refinement](../pages/refinement_process.qmd) pages.
 
-<!-- [Including some more text here just so that it wraps around the photo. 
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce lacinia eu nibh vel luctus. Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.
+<div style="float: center; margin-left: auto; margin-right: auto; margin-bottom: 1em; width: 75%;">
+  <img src="../images/wiltshire2024_team_science_diagram.png" alt="Team science process diagram showing the progression from concept papers and backgroundf research to concept paper synthesis meetings to framework refinement, breakout groups for each dimnension, and breakout group synthesis, followed by collaborative drafting of a narrative document and manuscript." style="width: 100%;">
+  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Team science diagram from Wiltshire et al., 2024.
+</div>
+</div>
 
-Integer mollis cursus velit eget ornare. Phasellus vel enim leo. Praesent eleifend ultricies arcu at varius. Curabitur quis mollis erat, non mollis ex. Ut gravida efficitur turpis, vel elementum diam facilisis ac. Morbi eros sem, volutpat id felis non, sagittis ultrices felis. Vivamus quis enim nisi. Mauris vel lectus arcu.] -->
+## Framework Overview {#sec-framework_overview}
 
-## Radial Plot
+Below is a diagram of all 136 indicators in the framework as of July, 2024. Colors represent dimensions, and splits occur at the dimension and index level. See the table in @sec-framework_table for a more detailed look at indicators.
 
 ```{r fig.dim=c(10, 10), fig.align='center'}
 #| label: radial_plot
 #| fig-cap: Radial dendrogram of Sustainability Metrics framework
+#| fig-alt: Radial dendrogram of Sustainability Metrics framework showing sustainability in the middle, splitting into economic, environment, social, production, and health dimensions, each splitting into a set of indicators.
 #| code-fold: true
 #| warning: false
 
@@ -146,72 +150,47 @@ ggraph(graph, layout = 'dendrogram', circular = TRUE) +
   expand_limits(x = c(-2, 2), y = c(-2, 2))
 ```
 
-## Cladogram
+## Full Indicator Table {#sec-framework_table}
 
-A slightly more readable version of the diagram above.
+Below is an interactive table with the full set of 135 indicators from July of 2024. You can search, filter, and page through the table, and download the filtered set of data as a .csv file using the download button.
 
-```{r cladogram}
-#| label: cladogram
-#| fig-cap: Cladogram of Sustainability Metrics framework
-#| fig-height: 20
-#| fig-width: 8
+```{r}
+#| label: indicator_table
+#| warning: false
 pacman::p_load(
-  ggtree,
   dplyr,
-  ape,
-  data.tree,
-  viridisLite,
-  stringr
+  reactable,
+  stringr,
+  htmltools
 )
 
-## Load data and add an origin level
-dat <- readRDS('data/trees/tree_dat.rds') %>% 
-  mutate(Framework = 'Sustainability') %>% 
-  select(Framework, Dimension:Indicator) %>% 
-  mutate(across(
-    everything(), 
-    ~ str_trim(str_replace_all(., ';|%|/|\\.|\"|,|\\(|\\)', '_'))
-  ))
+# Load framework data as a tree
+tree <- readRDS('data/trees/tree_dat.rds')
 
-dat$pathString <- paste(
-  dat$Framework,
-  dat$Dimension,
-  dat$Index,
-  dat$Indicator,
-  sep = '/'
+# Load custom reactable table function
+source('dev/get_reactable.R')
+
+# Pick out variables to display
+dat <- tree %>% 
+  select(-c(tooltip, count_))
+
+# Make reactable table
+htmltools::browsable(
+  tagList(
+    tags$div(
+      style = "display: flex; margin-bottom: 20px; justify-content: center;",
+      tags$button(
+          class = "btn btn-primary",
+          style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+          tagList(fontawesome::fa("download"), "Download as CSV"),
+          onclick = "Reactable.downloadDataCSV('indicator_table', 'indicator_framework.csv')"
+        )
+      ),
+    get_reactable(
+      dat,
+      elementId = "indicator_table"
+    )
+  )
 )
-tree <- as.Node(dat)
-
-# Convert the data.tree structure to Newick format
-tree_newick <- ToNewick(tree)
-
-# Read the Newick tree into ape
-phylo_tree <- read.tree(text = tree_newick)
-
-# Make all edge lengths 1
-phylo_tree$edge.length <- rep(1, length(phylo_tree$edge.length))
-
-# Add a space to end of node labels so it isn't cut off
-phylo_tree$node.label <- paste0(phylo_tree$node.label, ' ')
-
-# Plot it
-plot(
-  phylo_tree, 
-  type = 'c',
-  cex = 0.75,
-  edge.width = 2,
-  show.tip.label = TRUE,
-  label.offset = 0,
-  no.margin = TRUE,
-  tip.color = 'black',
-  edge.color = viridis(181),
-  x.lim = c(-0.1, 5)
-)
-
-nodelabels(
-  phylo_tree$node.label,
-  cex = 0.8,
-  bg = 'white'
-)
-
 ```
+

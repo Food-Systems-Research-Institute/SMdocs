@@ -10,7 +10,7 @@ warnings: false
 
 ```{r}
 #| label: prep
-#| include: false
+#| echo: false
 pacman::p_load(
   dplyr,
   conflicted
@@ -83,7 +83,7 @@ This is providing some evidence that Box-Cox transformations could be warranted 
 ```{r}
 #| label: minmax_arithmetic
 #| fig-cap: Distributions of indicators at the state level for the min-max arithmetic transformations.
-#| fig-height: 12
+#| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
 pacman::p_load(
@@ -104,7 +104,7 @@ get_indicator_distributions(scores, 'minmax_arithmetic')
 ```{r}
 #| label: minmax_geo
 #| fig-cap: Distributions of indicators at the state level for the min-max geometric transformations
-#| fig-height: 12
+#| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
 get_indicator_distributions(scores, 'minmax_geometric')
@@ -115,7 +115,7 @@ get_indicator_distributions(scores, 'minmax_geometric')
 ```{r}
 #| label: zscore_arithmetic
 #| fig-cap: Distributions of indicators at the state level for the Z-score arithmetic transformations 
-#| fig-height: 12
+#| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
 get_indicator_distributions(scores, 'zscore_arithmetic')
@@ -126,7 +126,7 @@ get_indicator_distributions(scores, 'zscore_arithmetic')
 ```{r}
 #| label: zscore_geometric
 #| fig-cap: Distributions of indicators at the state level for the Z-score geometric transformations 
-#| fig-height: 12
+#| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
 get_indicator_distributions(scores, 'zscore_geometric')
@@ -137,7 +137,7 @@ get_indicator_distributions(scores, 'zscore_geometric')
 ```{r}
 #| label: boxcox_arithmetic
 #| fig-cap: Distributions of indicators at the state level for the Box Cox arithmetic transformations 
-#| fig-height: 12
+#| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
 get_indicator_distributions(scores, 'boxcox_arithmetic')
@@ -148,7 +148,7 @@ get_indicator_distributions(scores, 'boxcox_arithmetic')
 ```{r}
 #| label: boxcox_geometric
 #| fig-cap: Distributions of indicators at the state level for the Box Cox geometric transformations 
-#| fig-height: 12
+#| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
 get_indicator_distributions(scores, 'boxcox_geometric')

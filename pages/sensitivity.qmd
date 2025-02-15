@@ -1,0 +1,16 @@
+---
+title: "Metric Aggregation"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+## Introduction
+
+Examples:
+
+- cite bene et al 2019 [@bene2019GlobalMapIndicators]
+  - what happens when we change the number of indicators

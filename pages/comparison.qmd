@@ -13,9 +13,10 @@ Note that each set of spider plots are scaled to the minimum and maximum of any 
 
 Be aware that spider/radar charts can be hard to interpret, and sometimes misleading [The Radar Chart and its Caveats](https://www.data-to-viz.com/caveat/spider.html). The order of variables makes a big impact on the area of chart, and area is not a terribly reliable way to show differences, as it increases quadratically as variables increase linearly. Will explore some other ways to show this information, but using these for now as they are quite popular in the literature for sustainability metrics.
 
-```{r include=FALSE}
+```{r}
 #| label: prep
 #| warnings: false
+#| echo: false 
 pacman::p_load(
   dplyr,
   purrr,

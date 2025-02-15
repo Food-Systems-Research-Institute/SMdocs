@@ -8,11 +8,45 @@ editor_options:
 warnings: false
 ---
 
-Exploring methods of aggregating data into index and dimension scores.
+# Introduction
+
+Exploring methods of aggregating data into index and dimension scores. To Add:
+
+- Primer on methods, cite [@oecdHandbookConstructingComposite2008]
+- Examples
+  - cite Schneider [@schneider2023StateFoodSystems]
+    - rank order comparisons only
+    - compare to global weighted means by groups based on GDP
+    - min max scaling to show distance from global groups
+  - cite Bene et al 2019 [@bene2019GlobalMapIndicators]
+    - Box cox for most skewed indicators (skew > 2)
+    - then min max 
+    - geometric means for enviro and economic dimensions
+    - arithmetic means for social and food dimensions
+    - geometric mean for combining all four dimensions into one
+  - cite Nicoletti [@nicolettiSummaryIndicatorsProduct2000]
+    - Use normaliaed square loadings (indicator weights) to weight each indicator
+  - cite Gomez Limon and Sanchez [@gomez-limon2010EmpiricalEvaluationAgricultural]
+    - min max normalization
+    - Aggregation - compared several different methods - mostly correlate, no big differences
+      - weighted sum of indicators
+      - product of weighted indicators
+      - muilticriteria function based on distance to ideal point
+    - Weighting - did both PCA and analytic hierarchy process
+    - Validation (identifying important factors) - double censored tobit - index as dependent, indicators as independent
+  - cite demelash and aremu [@adamudemelash2024MeasuringFoodSystem]
+    - Normalization - distance to reference
+      - refernce determined by quartile analysis
+      - not affected by outliers, extreme values
+    - Weighting - equal
+    - Aggregation - linear
+    - Additive method for indicators within dimensions
+    - Geometric means for aggregate scores across four dimensions
+
 
 ```{r}
 #| label: prep
-#| include: false
+#| echo: false
 pacman::p_load(
   dplyr,
   purrr,
@@ -46,8 +80,8 @@ get_str(metrics_df)
 
 # Check for missing data
 skimr::skim(metrics_df)
-sum(is.na(metrics_df))/(nrow(metrics_df)*(ncol(metrics_df) - 1)) * 100
-# 1.96% missing data
+mis_dat <- sum(is.na(metrics_df))/(nrow(metrics_df)*(ncol(metrics_df) - 1)) * 100 
+mis_dat <- round(mis_dat, 3)
 
 # Change fips from column to rowname so we can impute without losing it
 metrics_df <- metrics_df %>% 
@@ -75,7 +109,7 @@ skimr::skim(mf_out$ximp)
 imp_dat <- mf_out$ximp
 ```
 
-We had 1.98% missing data, which is very little, and gives us flexibility in handling it. The out of bag error estimate from the missForest algorithm was `r oob`.
+We had `r mis_dat`% missing data, which is rather little, and gives us flexibility in handling it. The out of bag error estimate from the missForest imputation algorithm was `r oob`.
 
 # Normalization
 

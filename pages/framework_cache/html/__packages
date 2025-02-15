@@ -10,3 +10,5 @@ ggtree
 ape
 data.tree
 stringr
+reactable
+htmltools

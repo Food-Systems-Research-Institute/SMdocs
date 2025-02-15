@@ -12,7 +12,7 @@ execute:
 ```{r}
 #| label: prep
 #| warnings: false
-#| include: false
+#| echo: false
 pacman::p_load(
   dplyr,
   purrr,
@@ -29,6 +29,8 @@ conflicted::conflicts_prefer(
 source('dev/get_res_plots.R')
 ```
 
+## Introduction
+
 The goal here is to use our five tentative dimension scores as predictors to compare against other established metrics:
 
 - Food security index, overall and/or child (Feeding America, Map the Meal Gap)
@@ -38,6 +40,10 @@ The goal here is to use our five tentative dimension scores as predictors to com
 
 Note for now that this is a bit tautological because some of these indices are used within the framework already. Perhaps there are better external measures to compare against. We also may not want to include complete indices like food security as metrics or indicators in the final framework. Open to thoughts on others ways to approach this.
 
+To Add:
+
+- cite Schneider 2023 [@schneider2023StateFoodSystems]
+  - WLS regression to get deviations of region and income group weighted means from global weighted mean
 ```{r}
 #| label: wrangle
 #| output: false

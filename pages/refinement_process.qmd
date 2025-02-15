@@ -1,0 +1,30 @@
+---
+title: "Indicator Refinement Process"
+---
+
+```{r}
+#| label: prep
+#| echo: false
+pacman::p_load(
+  conflicted
+)
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  .quiet = TRUE
+)
+```
+
+## Introduction
+
+
+
+To Add:
+
+- Describe dimension meetings
+- link Wiltshire [@wiltshire2024RegionalFoodSystema]
+- Link Bene et al 2024 [@beneWhyBuildingParticipatory2024]
+- What is more settled, what is not (social and human)
+- Photo of David and Josh
+
+## References
