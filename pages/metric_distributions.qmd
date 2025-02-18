@@ -8,34 +8,19 @@ editor_options:
 warnings: false
 ---
 
-Explore metric distributions before normalization. Use this to inform how we want to deal with outliers, how we want to normalize data.
-
-Goes after framework, before aggregation. Pull in data prep from aggregation into this script.
+Explore metric distributions before normalization. Use this to inform how we might want to deal with outliers or normalize data at the metric level. For now, we are leaving the metrics as is, taking arithmetic means, and saving all normalization and weighting for the indicator level.
 
 ```{r}
 #| label: prep
 #| echo: false
-pacman::p_load(
-  dplyr,
-  conflicted
-)
-
-conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::summarize(),
-  dplyr::as_data_frame(),
-  .quiet = TRUE
-)
-
+source('dev/get_setup.R')
+get_setup()
 ```
 
 Transforming our data from long format to wide and making sure everything came through alright.
 
 ```{r}
 #| label: wrangle
-#| warnings: false
-#| output: false
 pacman::p_load(
   dplyr,
   tidyr,
@@ -57,13 +42,14 @@ frame <- readRDS('data/frame.rds')
 
 ## Join with metadata to double check the resolution of our metrics
 meta <- sm_data$metadata
-get_str(meta)
+# get_str(meta)
 
 dat <- frame %>% 
+  filter(variable_name != 'NONE') %>% 
   select(variable_name) %>% 
   left_join(meta, by = 'variable_name') %>% 
   unique()
-get_str(dat)
+# get_str(dat)
 
 # Pull it from the actual metrics data
 metrics <- sm_data$metrics %>% 
@@ -71,15 +57,15 @@ metrics <- sm_data$metrics %>%
     variable_name %in% frame$variable_name,
     fips %in% sm_data$state_key$state_code
   )
-get_str(metrics)
+# get_str(metrics)
 
 # Filter to latest year for each metric, and pivot wider
 # Also removing census participation - don't really have data at state level
 # Note to aggregate counties for this at some point
 metrics_df <- metrics %>%
-  filter(variable_name != 'censusParticipation') %>% 
   mutate(
     value = ifelse(value == 'NaN', NA, value),
+    value = str_remove_all(value, ','),
     value = as.numeric(value)
   ) %>%
   get_latest_year() %>% 
@@ -89,23 +75,11 @@ metrics_df <- metrics %>%
   ) %>% 
   unnest(cols = !fips) %>%
   unique()
-get_str(metrics_df)
-
-# Three variables didn't come through properly. Let's remove them:
-# waterIrrSrcOffFarmExp_2023 (all NA)
-# totalValueMilkLossPayments_2023 (all 0)
-# juvenileArrests_2024 (half NA)
-metrics_df <- metrics_df %>% 
-  select(-c(
-    waterIrrSrcOffFarmExp_2023,
-    totalValueMilkLossPayments_2023,
-    juvenileArrests_2024
-  ))
-get_str(metrics_df)
+# get_str(metrics_df)
 
 # Let's get rid of the years so they are easier to work with
 names(metrics_df) <- str_split_i(names(metrics_df), '_', 1)
-get_str(metrics_df)
+# get_str(metrics_df)
 
 # Save this for use in subsequent pages
 saveRDS(metrics_df, 'data/metrics_df.rds')
@@ -118,7 +92,7 @@ Here we explore univariate distributions of each of our metrics. Highly skewed d
 ```{r}
 #| label: metric_distributions
 #| fig-cap: Distributions of metrics at the state level.
-#| fig-height: 40
+#| fig-height: 45
 #| fig-width: 10
 #| fig-align: center
 pacman::p_load(
@@ -129,7 +103,7 @@ pacman::p_load(
 )
 
 # Get skews of variables
-skewed <- psych::describe(metrics_df) %>% 
+skewed <- psych::describe(metrics_df[, -1]) %>% 
   as.data.frame() %>% 
   rownames_to_column('variable_name') %>% 
   select(variable_name, skew) %>% 
@@ -162,11 +136,13 @@ plots <- map(names(metrics_df)[-1], \(var){
 ggarrange(
   plotlist = plots,
   ncol = 4,
-  nrow = 32
+  nrow = 33
 )
 
 ```
 
-It seems most of our metrics fall along respectable mostly-normal distributions. 18 of the 86 variables are skewed. They include several variables related to local farm economies (agrotourism sales as a percentage of total sales, direct to consumer sales as a percentage of total sales, and value added sales as a percentage of total sales), as well as a couple of the TreeMap 2016 variables (dead standing carbon and live trees) and GHG emissions from agriculture (CH4 and CO2, with an honorable mention for N2O). State agricultural imports and exports are also highly skewed.
+It seems most of our metrics fall along respectable somewhat-normal distributions. `{r} length(skewed)` metrics are skewed out of `{r ncol(df) - 1}` total. They include several variables related to local farm economies (agrotourism sales as a percentage of total sales, direct to consumer sales as a percentage of total sales, and value added sales as a percentage of total sales), as well as a couple of the TreeMap 2016 variables (dead standing carbon and live trees) and GHG emissions from agriculture (CH4 and CO2, with an honorable mention for N2O). Just about the whole collection of ERS metrics are skewed, including importts and exports, indemnities, and real estate expenses. 
 
-@bene2019GlobalMapIndicators used Box Cox transformations for highly skewed indicators before normalizing all indicators with Min Max transformations. We will explore some of our options on the next page.
+There might be a case for transformations here, or it might make more sense to do it at the indicator level. Another option is to weight our metrics to take into account population, number of farms, acres of farmland, GDP, or some other appropriate variable for each metric. @bene2019GlobalMapIndicators used Box Cox transformations for highly skewed indicators before normalizing all indicators with Min Max transformations. 
+
+Putting a pin in this to try it with raw metrics and transformed metrics and then to compare the two. 

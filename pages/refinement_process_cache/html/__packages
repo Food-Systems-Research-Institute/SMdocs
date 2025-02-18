@@ -1,3 +1,10 @@
+base
+methods
+utils
 dplyr
 conflicted
 projecter
+datasets
+grDevices
+graphics
+stats

@@ -1,3 +1,7 @@
 dplyr
 conflicted
 projecter
+reactable
+stringr
+htmltools
+readr

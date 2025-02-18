@@ -17,14 +17,16 @@ conflicts_prefer(
 
 ## Introduction
 
-
-
 To Add:
 
 - Describe dimension meetings
 - link Wiltshire [@wiltshire2024RegionalFoodSystema]
-- Link Bene et al 2024 [@beneWhyBuildingParticipatory2024]
+- Link Bene et al 2024 [@beneWhyBuildingParticipatory2024], describe their process
 - What is more settled, what is not (social and human)
-- Photo of David and Josh
+
+<div style="float: center; margin-left: auto; margin-right: auto; margin-bottom: 1em; width: 100%;">
+  <img src="../images/whiteboard.jpg" alt="Whiteboard from economics dimension refinement meeting, November 15th, 2024." style="width: 100%;">
+  <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Whiteboard from economics dimension refinement meeting, November 15th, 2024</div>
+</div>
 
 ## References

@@ -169,7 +169,7 @@ server <- function(input, output, session) {
         columns = list(
           fips = colDef(minWidth = 50), 
           year = colDef(minWidth = 50),
-          variable_name = colDef(minWidth = 100),
+          variable_name = colDef(minWidth = 125),
           value = colDef(minWidth = 75)
         ),
         defaultColDef = colDef(align = 'left')

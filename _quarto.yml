@@ -35,7 +35,7 @@ website:
       - text: Home
         href: pages/home.qmd
       - text: Overview
-        href: pages/framework.qmd
+        href: pages/overview.qmd
       - section: Indicator Refinement
         contents: 
           - text: Process
@@ -66,7 +66,7 @@ website:
             href: pages/metrics_table.qmd
           - text: SM-Explorer
             href: pages/sm-explorer.qmd
-      - section: Refined Framework
+      - section: Refined Framework Analysis
         contents:
           - text: Framework
             href: pages/refined_framework.qmd
