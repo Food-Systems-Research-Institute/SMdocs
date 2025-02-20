@@ -10,8 +10,8 @@ igraph
 RColorBrewer
 paletteer
 snakecase
-reactable
-htmltools
 tidyr
 tibble
 rlang
+reactable
+htmltools

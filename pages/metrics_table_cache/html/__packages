@@ -1,7 +1,7 @@
 dplyr
 conflicted
 projecter
-reactable
 stringr
-htmltools
 readr
+reactable
+htmltools

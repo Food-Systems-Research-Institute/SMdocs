@@ -1,17 +1,3 @@
 dplyr
 conflicted
 projecter
-purrr
-readr
-stringr
-ggplot2
-lattice
-caret
-DHARMa
-zoo
-lmtest
-snakecase
-psych
-ranger
-Matrix
-glmnet

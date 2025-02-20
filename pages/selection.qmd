@@ -6,24 +6,27 @@ format:
 editor_options: 
   chunk_output_type: console
 warnings: false
+eval: false
 ---
 
 ```{r}
 #| label: prep
 #| warnings: false
 #| echo: false
-pacman::p_load(
-  dplyr,
-  purrr,
-  conflicted
-)
-
-conflicted::conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::summarize(),
-  .quiet = TRUE
-)
+source('dev/get_setup.R')
+get_setup()
+# pacman::p_load(
+#   dplyr,
+#   purrr,
+#   conflicted
+# )
+# 
+# conflicted::conflicts_prefer(
+#   dplyr::select(),
+#   dplyr::filter(),
+#   dplyr::summarize(),
+#   .quiet = TRUE
+# )
 ```
 
 On this page we will take our min-max normalized, geometrically averaged scores, which look like the most reliable and approachable so far, and take a deeper dive into variable selection, regression, and PCA. From the dimension meetings, it sounds like we may have some indicators with a couple of metrics, and potentially others with dozens. Because of this, and because of our focus on developing sensible indicators, I think it will be best to do any weighting at the indicator level or above. This also reduces our variable count substantially in relation to our state count of 51, opening more doors for PCA.
@@ -36,7 +39,6 @@ First we will combine our indicator, index, and dimension values into one data f
 
 ```{r}
 #| label: wrangle
-#| warnings: false
 #| output: false
 pacman::p_load(
   dplyr, 

@@ -386,7 +386,7 @@ div.csl-indent {
 <section id="wrangling" class="level1" data-number="1">
 <h1 data-number="1"><span class="header-section-number">1</span> Wrangling</h1>
 <p>First we will combine our indicator, index, and dimension values into one data frame to work with.</p>
-<div class="cell" data-warnings="false">
+<div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
@@ -452,77 +452,18 @@ div.csl-indent {
 <span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># get_str(pca_dat)</span></span>
 <span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Explore how many factors to extract</span></span>
-<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">VSS</span>(pca_dat, <span class="at">n =</span> <span class="dv">8</span>, <span class="at">rotate =</span> <span class="st">'varimax'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="fu">VSS</span>(pca_dat, <span class="at">n =</span> <span class="dv">8</span>, <span class="at">rotate =</span> <span class="st">'varimax'</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(pca_dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="selection_files/figure-html/extraction-1.png" class="img-fluid figure-img" width="1400"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Very Simple Structure
-Call: vss(x = x, n = n, rotate = rotate, diagonal = diagonal, fm = fm, 
-    n.obs = n.obs, plot = plot, title = title, use = use, cor = cor)
-VSS complexity 1 achieves a maximimum of 0.5  with  4  factors
-VSS complexity 2 achieves a maximimum of 0.71  with  4  factors
-
-The Velicer MAP achieves a minimum of 0.04  with  6  factors 
-BIC achieves a minimum of  -1304.56  with  1  factors
-Sample Size adjusted BIC achieves a minimum of  213.76  with  8  factors
-
-Statistics by number of factors 
-  vss1 vss2   map dof chisq                                   prob sqresid  fit
-1 0.37 0.00 0.045 629  1169 0.000000000000000000000000000000000071      67 0.37
-2 0.41 0.54 0.042 593  1032 0.000000000000000000000000033438437178      49 0.54
-3 0.49 0.65 0.037 558   901 0.000000000000000001317497200823118095      34 0.68
-4 0.50 0.68 0.037 524   818 0.000000000000002782788409395166828427      26 0.76
-5 0.48 0.68 0.037 491   739 0.000000000002923146111719464111233097      20 0.81
-6 0.47 0.69 0.037 459   664 0.000000001125217951918656117946994366      16 0.85
-7 0.47 0.71 0.038 428   606 0.000000030258711012038790300580914927      13 0.87
-8 0.46 0.69 0.037 398   529 0.000011242526917316233458533913935895      11 0.90
-  RMSEA   BIC SABIC complex eChisq  SRMR eCRMS  eBIC
-1 0.128 -1305   670     1.0   2019 0.172 0.177  -454
-2 0.119 -1300   562     1.4   1378 0.142 0.151  -954
-3 0.108 -1292   459     1.4    857 0.112 0.123 -1337
-4 0.103 -1242   403     1.7    614 0.095 0.107 -1447
-5 0.097 -1192   350     1.8    447 0.081 0.095 -1483
-6 0.091 -1141   300     2.0    330 0.070 0.084 -1475
-7 0.088 -1077   267     2.1    257 0.062 0.077 -1426
-8 0.078 -1036   214     2.2    189 0.053 0.068 -1376</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">fa.parallel</span>(pca_dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="selection_files/figure-html/extraction-2.png" class="img-fluid figure-img" width="1400"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Parallel analysis suggests that the number of factors =  5  and the number of components =  5 </code></pre>
-</div>
 </div>
 <p>Both MAP and Parallel Analysis determine that there should be 5 components.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pca_out <span class="ot">&lt;-</span> <span class="fu">pca</span>(pca_dat, <span class="at">nfactors =</span> <span class="dv">5</span>)</span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pca_out<span class="sc">$</span>values)</span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>pca_out <span class="ot">&lt;-</span> <span class="fu">pca</span>(pca_dat, <span class="at">nfactors =</span> <span class="dv">5</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(pca_out<span class="sc">$</span>values)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="fu">abline</span>(<span class="at">h =</span> <span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="selection_files/figure-html/scree-1.png" class="img-fluid figure-img" width="1400"></p>
-</figure>
-</div>
-</div>
 </div>
 <p>The scree plot is not all that convincing, though. One could make an argument for seven components.</p>
 </section>
@@ -532,107 +473,8 @@ Statistics by number of factors
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>pca_out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pca_out</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>Principal Components Analysis
-Call: principal(r = r, nfactors = nfactors, residuals = residuals, 
-    rotate = rotate, n.obs = n.obs, covar = covar, scores = scores, 
-    missing = missing, impute = impute, oblique.scores = oblique.scores, 
-    method = method, use = use, cor = cor, correct = 0.5, weight = NULL)
-Standardized loadings (pattern matrix) based upon correlation matrix
-                                        RC1   RC2   RC3   RC4   RC5   h2   u2
-access_to_land                        -0.32  0.74  0.10 -0.06 -0.18 0.70 0.30
-wealth_income_distribution             0.72  0.04 -0.07 -0.17  0.17 0.58 0.42
-operations_diversification             0.73 -0.29  0.30 -0.31 -0.03 0.81 0.19
-income_stability                       0.71 -0.12  0.27  0.23  0.20 0.68 0.32
-use_of_ag_farm_crop_insurance          0.12 -0.10  0.45  0.33 -0.08 0.35 0.65
-fluxes                                -0.20  0.73 -0.12 -0.14  0.00 0.60 0.40
-stocks                                 0.06  0.12  0.09  0.01  0.73 0.56 0.44
-embodied                              -0.28  0.71  0.02 -0.12 -0.01 0.60 0.40
-health                                 0.29 -0.19  0.16 -0.37  0.68 0.74 0.26
-biodiversity                           0.38  0.08 -0.34  0.58  0.12 0.62 0.38
-sensitive_or_rare_habitats            -0.04  0.20  0.18  0.58  0.00 0.41 0.59
-quantity                               0.17  0.08 -0.08 -0.53  0.12 0.34 0.66
-quality                                0.12 -0.18  0.17  0.14  0.70 0.59 0.41
-educational_attainment                 0.31  0.02  0.62 -0.10  0.14 0.51 0.49
-food_access                            0.15  0.46 -0.30 -0.13  0.56 0.66 0.34
-access_to_culturally_appropriate_food  0.72  0.07 -0.06 -0.08  0.04 0.53 0.47
-dietary_quality                        0.25 -0.18  0.21  0.00  0.39 0.29 0.71
-food_affordability                    -0.06 -0.26 -0.16 -0.07  0.12 0.12 0.88
-mental_health_tbd                     -0.02 -0.42 -0.15  0.00  0.29 0.28 0.72
-housing_supply_and_quality             0.81 -0.02  0.07  0.20  0.31 0.80 0.20
-access_to_care                         0.44 -0.09  0.41 -0.29  0.00 0.45 0.55
-physical_health_tbd                   -0.12 -0.10 -0.82  0.09 -0.02 0.71 0.29
-total_quantity_exported                0.03  0.81  0.11  0.08  0.08 0.68 0.32
-total_quantity_imported                0.40  0.58  0.03  0.35  0.07 0.63 0.37
-production_species_diversity          -0.02  0.02 -0.05  0.72  0.12 0.53 0.47
-production_inputs                     -0.07  0.61 -0.22 -0.08 -0.02 0.43 0.57
-total_quantity_forest_products        -0.08 -0.04 -0.48  0.21  0.58 0.62 0.38
-value_added_market                     0.58 -0.15  0.31 -0.29  0.02 0.54 0.46
-total_quantity_non_food_ag_products   -0.21  0.51 -0.17  0.22  0.27 0.45 0.55
-crop_failure                           0.09  0.52  0.11  0.22 -0.08 0.35 0.65
-social_connectedness                  -0.03 -0.08 -0.65 -0.11 -0.01 0.44 0.56
-community_safety                      -0.01  0.01  0.38 -0.37 -0.12 0.30 0.70
-diverse_representation                 0.14  0.48 -0.16 -0.45  0.03 0.49 0.51
-gender_diversity                       0.66 -0.18  0.19  0.19  0.01 0.54 0.46
-age_diversity                          0.43 -0.10 -0.22  0.57 -0.02 0.56 0.44
-racial_diversity                       0.61  0.07 -0.34  0.45 -0.23 0.75 0.25
-participatory_governance              -0.13 -0.06  0.69  0.01  0.23 0.56 0.44
-                                      com
-access_to_land                        1.5
-wealth_income_distribution            1.3
-operations_diversification            2.1
-income_stability                      1.8
-use_of_ag_farm_crop_insurance         2.2
-fluxes                                1.3
-stocks                                1.1
-embodied                              1.4
-health                                2.3
-biodiversity                          2.6
-sensitive_or_rare_habitats            1.5
-quantity                              1.4
-quality                               1.4
-educational_attainment                1.6
-food_access                           2.8
-access_to_culturally_appropriate_food 1.1
-dietary_quality                       2.8
-food_affordability                    2.5
-mental_health_tbd                     2.1
-housing_supply_and_quality            1.4
-access_to_care                        2.8
-physical_health_tbd                   1.1
-total_quantity_exported               1.1
-total_quantity_imported               2.5
-production_species_diversity          1.1
-production_inputs                     1.3
-total_quantity_forest_products        2.3
-value_added_market                    2.3
-total_quantity_non_food_ag_products   2.6
-crop_failure                          1.6
-social_connectedness                  1.1
-community_safety                      2.2
-diverse_representation                2.4
-gender_diversity                      1.5
-age_diversity                         2.3
-racial_diversity                      2.8
-participatory_governance              1.3
-
-                       RC1  RC2  RC3  RC4  RC5
-SS loadings           5.23 4.55 3.74 3.41 2.88
-Proportion Var        0.14 0.12 0.10 0.09 0.08
-Cumulative Var        0.14 0.26 0.37 0.46 0.54
-Proportion Explained  0.26 0.23 0.19 0.17 0.15
-Cumulative Proportion 0.26 0.49 0.68 0.85 1.00
-
-Mean item complexity =  1.9
-Test of the hypothesis that 5 components are sufficient.
-
-The root mean square of the residuals (RMSR) is  0.09 
- with the empirical chi square  512.05  with prob &lt;  0.25 
-
-Fit based upon off diagonal values = 0.86</code></pre>
-</div>
 </div>
 <p>There is a lot to look at here, but here are some impressions.</p>
 <p>Most of our current economics indicators (access to land to income stability), are coalescing into RC1. However, access to land splits out into RC3, alongside environment indicators like carbon stocks and forest health, as well as production indicators like inputs and total quantity of food products. The access to land indicator does not have an ideal set of metrics under it currently - it is made up of land and building value per farm and acreage per farm as a proxy for access. So it seems reasonable enough that this indicator is pulling away from the rest of the economics indicators.</p>
@@ -654,113 +496,14 @@ Fit based upon off diagonal values = 0.86</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce data down to dimen_economics and all indicators</span></span>
-<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>econ_dat <span class="ot">&lt;-</span> <span class="fu">select</span>(dat, dimen_economics, <span class="fu">starts_with</span>(<span class="st">'indic'</span>)) <span class="sc">%&gt;%</span> </span>
-<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="fu">names</span>(.) <span class="sc">%&gt;%</span> <span class="fu">str_remove</span>(<span class="st">'indic_|dimen_'</span>)))</span>
-<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(econ_dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Reduce data down to dimen_economics and all indicators</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>econ_dat <span class="ot">&lt;-</span> <span class="fu">select</span>(dat, dimen_economics, <span class="fu">starts_with</span>(<span class="st">'indic'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">setNames</span>(<span class="fu">c</span>(<span class="fu">names</span>(.) <span class="sc">%&gt;%</span> <span class="fu">str_remove</span>(<span class="st">'indic_|dimen_'</span>)))</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(econ_dat)</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(economics <span class="sc">~</span> ., <span class="at">data =</span> econ_dat)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output cell-output-stdout">
-<pre><code>rowws_df [51 × 38] (S3: rowwise_df/tbl_df/tbl/data.frame)
- $ economics                            : num [1:51] 0.138 0.159 0.142 0.153 0..
- $ access_to_land                       : num [1:51] 0.0992 0.0226 0.0304 0.16..
- $ wealth_income_distribution           : num [1:51] 0.336 0.36 0.343 0.342 0...
- $ operations_diversification           : num [1:51] 0.01315 0.39392 0.05679 0..
- $ income_stability                     : num [1:51] 0.0496 0.3594 0.3734 0.07..
- $ use_of_ag_farm_crop_insurance        : num [1:51] 0.7686 0.8388 1 0.7014 1 ..
- $ fluxes                               : num [1:51] 0.08425 0.00585 0.07561 0..
- $ stocks                               : num [1:51] 0.1621 0.3915 0.0181 0.31..
- $ embodied                             : num [1:51] 0.05821 0.00618 0.14482 0..
- $ health                               : num [1:51] 0.246 0.445 0.103 0.353 0..
- $ biodiversity                         : num [1:51] 0.2892 0.0975 0.3529 0.16..
- $ sensitive_or_rare_habitats           : num [1:51] 0.3176 0.7356 0.325 0.276..
- $ quantity                             : num [1:51] 0.1788 0.7638 0.1694 0.10..
- $ quality                              : num [1:51] 0.581 0.587 0.449 0.454 0..
- $ educational_attainment               : num [1:51] 0.2323 0.4223 0.4479 0.15..
- $ food_access                          : num [1:51] 0.343 0.362 0.118 0.326 0..
- $ access_to_culturally_appropriate_food: num [1:51] 0.1563 0.3824 0.0818 0.07..
- $ dietary_quality                      : num [1:51] 0.36 0.684 0.352 0.768 0...
- $ food_affordability                   : num [1:51] 0.579 0.51 0.38 0.229 0.4..
- $ mental_health_tbd                    : num [1:51] 0.764 0.565 0.32 0.54 0.3..
- $ housing_supply_and_quality           : num [1:51] 0.324 0.549 0.557 0.254 0..
- $ access_to_care                       : num [1:51] 0.172 0.395 0.316 0.201 0..
- $ physical_health_tbd                  : num [1:51] 0.435 0.341 0.385 0.405 0..
- $ total_quantity_exported              : num [1:51] 0.068031 1 0.068105 0.174..
- $ total_quantity_imported              : num [1:51] 0.01995 1 0.31967 0.01134..
- $ production_species_diversity         : num [1:51] 0.5496 0.342 0.6537 0.372..
- $ production_inputs                    : num [1:51] 0.2 1 0.381 0.6952 0.4667..
- $ total_quantity_forest_products       : num [1:51] 0.635061 0.000087 0.00048..
- $ value_added_market                   : num [1:51] 0.01481 0.30841 0.04466 0..
- $ total_quantity_non_food_ag_products  : num [1:51] 0.19143 0.05355 0.02043 0..
- $ crop_failure                         : num [1:51] 0.01484 1 0.0588 0.08897 ..
- $ social_connectedness                 : num [1:51] 0.459 0.399 0.261 0.482 0..
- $ community_safety                     : num [1:51] 0.25072 0.61582 0.10413 0..
- $ diverse_representation               : num [1:51] 0.498 0.449 0.284 0.648 0..
- $ gender_diversity                     : num [1:51] 0.274 0.9229 1 0.4825 0.4..
- $ age_diversity                        : num [1:51] 0.623 0.245 0.887 0.415 0..
- $ racial_diversity                     : num [1:51] 0.28454 0.34292 0.82326 0..
- $ participatory_governance             : num [1:51] 0.3192 0.514 0.4967 0.011..</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>lm <span class="ot">&lt;-</span> <span class="fu">lm</span>(economics <span class="sc">~</span> ., <span class="at">data =</span> econ_dat)</span>
-<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">summary</span>(lm)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>
-Call:
-lm(formula = economics ~ ., data = econ_dat)
-
-Residuals:
-      Min        1Q    Median        3Q       Max 
--0.032506 -0.009547  0.000472  0.009119  0.033461 
-
-Coefficients:
-                                       Estimate Std. Error t value Pr(&gt;|t|)  
-(Intercept)                           -0.127696   0.074104  -1.723   0.1085  
-access_to_land                         0.395961   0.192101   2.061   0.0599 .
-wealth_income_distribution             0.216182   0.097897   2.208   0.0458 *
-operations_diversification            -0.033910   0.056515  -0.600   0.5588  
-income_stability                       0.055002   0.068026   0.809   0.4333  
-use_of_ag_farm_crop_insurance          0.029886   0.022265   1.342   0.2025  
-fluxes                                 0.020582   0.055954   0.368   0.7189  
-stocks                                 0.028060   0.065944   0.426   0.6774  
-embodied                              -0.002989   0.094125  -0.032   0.9751  
-health                                 0.035913   0.102882   0.349   0.7326  
-biodiversity                           0.064742   0.126832   0.510   0.6183  
-sensitive_or_rare_habitats             0.053092   0.059256   0.896   0.3866  
-quantity                               0.048946   0.046358   1.056   0.3103  
-quality                                0.001493   0.052643   0.028   0.9778  
-educational_attainment                -0.031145   0.050001  -0.623   0.5441  
-food_access                           -0.079629   0.098239  -0.811   0.4322  
-access_to_culturally_appropriate_food  0.062672   0.065806   0.952   0.3583  
-dietary_quality                       -0.013677   0.039697  -0.345   0.7359  
-food_affordability                    -0.031015   0.049073  -0.632   0.5383  
-mental_health_tbd                      0.019039   0.061927   0.307   0.7634  
-housing_supply_and_quality            -0.006119   0.108204  -0.057   0.9558  
-access_to_care                         0.185710   0.106751   1.740   0.1055  
-physical_health_tbd                   -0.048216   0.123787  -0.390   0.7032  
-total_quantity_exported               -0.063996   0.065007  -0.984   0.3429  
-total_quantity_imported                0.095266   0.056533   1.685   0.1158  
-production_species_diversity           0.099719   0.053681   1.858   0.0860 .
-production_inputs                     -0.062396   0.038905  -1.604   0.1328  
-total_quantity_forest_products        -0.018830   0.037510  -0.502   0.6241  
-value_added_market                     0.069609   0.048850   1.425   0.1777  
-total_quantity_non_food_ag_products    0.069883   0.073040   0.957   0.3561  
-crop_failure                          -0.086287   0.060564  -1.425   0.1778  
-social_connectedness                   0.166177   0.071534   2.323   0.0370 *
-community_safety                       0.028331   0.039409   0.719   0.4849  
-diverse_representation                 0.018471   0.042039   0.439   0.6676  
-gender_diversity                       0.042539   0.057350   0.742   0.4714  
-age_diversity                         -0.014563   0.035843  -0.406   0.6911  
-racial_diversity                      -0.074237   0.089945  -0.825   0.4241  
-participatory_governance              -0.024834   0.042397  -0.586   0.5681  
----
-Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
-
-Residual standard error: 0.02585 on 13 degrees of freedom
-Multiple R-squared:  0.9533,    Adjusted R-squared:  0.8205 
-F-statistic: 7.179 on 37 and 13 DF,  p-value: 0.0002407</code></pre>
-</div>
 </div>
 <p>We can see that most of the economics indicators (access to land, wealth and income distribution, income stability) are significant predictors, while operations diversification is close. But some surprises are access to culturally appropriate food (school food authorities serving culturally relevant food), housing supply and quality, as well as a few production indicators, like richness (crop diversity), production inputs, and value-added markets. Social connectedness from the social dimension also makes it on the list. The largest coefficients by a wide margin are for access to land and wealth and income distribution.</p>
 </section>
@@ -770,31 +513,31 @@ F-statistic: 7.179 on 37 and 13 DF,  p-value: 0.0002407</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
-<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  caret,</span>
-<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  ranger,</span>
-<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  glmnet</span>
-<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Split data 60/40</span></span>
-<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>indices <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(econ_dat<span class="sc">$</span>economics, <span class="at">p =</span> <span class="fl">0.60</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>training_data <span class="ot">&lt;-</span> econ_dat[indices, ]</span>
-<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>testing_data <span class="ot">&lt;-</span> econ_dat[<span class="sc">-</span>indices,]</span>
-<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>my_folds <span class="ot">&lt;-</span> <span class="fu">createFolds</span>(training_data<span class="sc">$</span>economics, <span class="at">k =</span> <span class="dv">5</span>, <span class="at">list =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Control</span></span>
-<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a>my_control <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
-<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">'cv'</span>,</span>
-<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">5</span>,</span>
-<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">verboseIter =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> my_folds</span>
-<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for zero variance or near zero variance indicators</span></span>
-<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a><span class="fu">nearZeroVar</span>(dat, <span class="at">names =</span> <span class="cn">TRUE</span>, <span class="at">saveMetrics =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a><span class="co"># All clear</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  caret,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  ranger,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  glmnet</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Split data 60/40</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>indices <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(econ_dat<span class="sc">$</span>economics, <span class="at">p =</span> <span class="fl">0.60</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>training_data <span class="ot">&lt;-</span> econ_dat[indices, ]</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>testing_data <span class="ot">&lt;-</span> econ_dat[<span class="sc">-</span>indices,]</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>my_folds <span class="ot">&lt;-</span> <span class="fu">createFolds</span>(training_data<span class="sc">$</span>economics, <span class="at">k =</span> <span class="dv">5</span>, <span class="at">list =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Control</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>my_control <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">'cv'</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">5</span>,</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">verboseIter =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> my_folds</span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for zero variance or near zero variance indicators</span></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="fu">nearZeroVar</span>(dat, <span class="at">names =</span> <span class="cn">TRUE</span>, <span class="at">saveMetrics =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a><span class="co"># All clear</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 </section>
@@ -804,93 +547,25 @@ F-statistic: 7.179 on 37 and 13 DF,  p-value: 0.0002407</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>econ_glmnet <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
-<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>  economics <span class="sc">~</span> .,</span>
-<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_data, </span>
-<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(</span>
-<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">1</span>, <span class="at">length =</span> <span class="dv">5</span>),</span>
-<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> <span class="fu">seq</span>(<span class="fl">0.0001</span>, <span class="fl">0.1</span>, <span class="at">length =</span> <span class="dv">100</span>)</span>
-<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"glmnet"</span>,</span>
-<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> my_control,</span>
-<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">preProcess =</span> <span class="fu">c</span>(<span class="st">'zv'</span>, <span class="st">'center'</span>, <span class="st">'scale'</span>)</span>
-<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>+ Fold1: alpha=0.100, lambda=0.1 
-- Fold1: alpha=0.100, lambda=0.1 
-+ Fold1: alpha=0.325, lambda=0.1 
-- Fold1: alpha=0.325, lambda=0.1 
-+ Fold1: alpha=0.550, lambda=0.1 
-- Fold1: alpha=0.550, lambda=0.1 
-+ Fold1: alpha=0.775, lambda=0.1 
-- Fold1: alpha=0.775, lambda=0.1 
-+ Fold1: alpha=1.000, lambda=0.1 
-- Fold1: alpha=1.000, lambda=0.1 
-+ Fold2: alpha=0.100, lambda=0.1 
-- Fold2: alpha=0.100, lambda=0.1 
-+ Fold2: alpha=0.325, lambda=0.1 
-- Fold2: alpha=0.325, lambda=0.1 
-+ Fold2: alpha=0.550, lambda=0.1 
-- Fold2: alpha=0.550, lambda=0.1 
-+ Fold2: alpha=0.775, lambda=0.1 
-- Fold2: alpha=0.775, lambda=0.1 
-+ Fold2: alpha=1.000, lambda=0.1 
-- Fold2: alpha=1.000, lambda=0.1 
-+ Fold3: alpha=0.100, lambda=0.1 
-- Fold3: alpha=0.100, lambda=0.1 
-+ Fold3: alpha=0.325, lambda=0.1 
-- Fold3: alpha=0.325, lambda=0.1 
-+ Fold3: alpha=0.550, lambda=0.1 
-- Fold3: alpha=0.550, lambda=0.1 
-+ Fold3: alpha=0.775, lambda=0.1 
-- Fold3: alpha=0.775, lambda=0.1 
-+ Fold3: alpha=1.000, lambda=0.1 
-- Fold3: alpha=1.000, lambda=0.1 
-+ Fold4: alpha=0.100, lambda=0.1 
-- Fold4: alpha=0.100, lambda=0.1 
-+ Fold4: alpha=0.325, lambda=0.1 
-- Fold4: alpha=0.325, lambda=0.1 
-+ Fold4: alpha=0.550, lambda=0.1 
-- Fold4: alpha=0.550, lambda=0.1 
-+ Fold4: alpha=0.775, lambda=0.1 
-- Fold4: alpha=0.775, lambda=0.1 
-+ Fold4: alpha=1.000, lambda=0.1 
-- Fold4: alpha=1.000, lambda=0.1 
-+ Fold5: alpha=0.100, lambda=0.1 
-- Fold5: alpha=0.100, lambda=0.1 
-+ Fold5: alpha=0.325, lambda=0.1 
-- Fold5: alpha=0.325, lambda=0.1 
-+ Fold5: alpha=0.550, lambda=0.1 
-- Fold5: alpha=0.550, lambda=0.1 
-+ Fold5: alpha=0.775, lambda=0.1 
-- Fold5: alpha=0.775, lambda=0.1 
-+ Fold5: alpha=1.000, lambda=0.1 
-- Fold5: alpha=1.000, lambda=0.1 </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Aggregating results
-Selecting tuning parameters
-Fitting alpha = 0.325, lambda = 0.1 on full training set</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">varImp</span>(econ_glmnet, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(importance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="selection_files/figure-html/econ_glmnet-1.png" class="img-fluid figure-img" width="1400"></p>
-</figure>
-</div>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict</span></span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="co"># p &lt;- predict(econ_glmnet, testing_data)</span></span>
-<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="co"># postResample(pred = p, obs = testing_data$economics)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>econ_glmnet <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  economics <span class="sc">~</span> .,</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_data, </span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">1</span>, <span class="at">length =</span> <span class="dv">5</span>),</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> <span class="fu">seq</span>(<span class="fl">0.0001</span>, <span class="fl">0.1</span>, <span class="at">length =</span> <span class="dv">100</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"glmnet"</span>,</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> my_control,</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">preProcess =</span> <span class="fu">c</span>(<span class="st">'zv'</span>, <span class="st">'center'</span>, <span class="st">'scale'</span>)</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">varImp</span>(econ_glmnet, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(importance)</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict</span></span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a><span class="co"># p &lt;- predict(econ_glmnet, testing_data)</span></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a><span class="co"># postResample(pred = p, obs = testing_data$economics)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The optimal hyperparameters from the tuning grid were alpha = 0.1 (mostly ridge regression) and lambda = 0.00313. The variable importance plot is on a relative scale of 0 (unimportant) to 100 (most important) in terms of predictive power. Curiously, it is showing that the value added market indicator from the production dimension is a better predictor of economics than any economics indicator.</p>
@@ -901,183 +576,25 @@ Fitting alpha = 0.325, lambda = 0.1 on full training set</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>econ_rf <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  economics <span class="sc">~</span> .,</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_data, </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneLength =</span> <span class="dv">7</span>,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ranger"</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> my_control,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">importance =</span> <span class="st">'impurity'</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code>+ Fold1: mtry= 2, min.node.size=5, splitrule=variance 
-- Fold1: mtry= 2, min.node.size=5, splitrule=variance 
-+ Fold1: mtry= 7, min.node.size=5, splitrule=variance 
-- Fold1: mtry= 7, min.node.size=5, splitrule=variance 
-+ Fold1: mtry=13, min.node.size=5, splitrule=variance 
-- Fold1: mtry=13, min.node.size=5, splitrule=variance 
-+ Fold1: mtry=19, min.node.size=5, splitrule=variance 
-- Fold1: mtry=19, min.node.size=5, splitrule=variance 
-+ Fold1: mtry=25, min.node.size=5, splitrule=variance 
-- Fold1: mtry=25, min.node.size=5, splitrule=variance 
-+ Fold1: mtry=31, min.node.size=5, splitrule=variance 
-- Fold1: mtry=31, min.node.size=5, splitrule=variance 
-+ Fold1: mtry=37, min.node.size=5, splitrule=variance 
-- Fold1: mtry=37, min.node.size=5, splitrule=variance 
-+ Fold1: mtry= 2, min.node.size=5, splitrule=extratrees 
-- Fold1: mtry= 2, min.node.size=5, splitrule=extratrees 
-+ Fold1: mtry= 7, min.node.size=5, splitrule=extratrees 
-- Fold1: mtry= 7, min.node.size=5, splitrule=extratrees 
-+ Fold1: mtry=13, min.node.size=5, splitrule=extratrees 
-- Fold1: mtry=13, min.node.size=5, splitrule=extratrees 
-+ Fold1: mtry=19, min.node.size=5, splitrule=extratrees 
-- Fold1: mtry=19, min.node.size=5, splitrule=extratrees 
-+ Fold1: mtry=25, min.node.size=5, splitrule=extratrees 
-- Fold1: mtry=25, min.node.size=5, splitrule=extratrees 
-+ Fold1: mtry=31, min.node.size=5, splitrule=extratrees 
-- Fold1: mtry=31, min.node.size=5, splitrule=extratrees 
-+ Fold1: mtry=37, min.node.size=5, splitrule=extratrees 
-- Fold1: mtry=37, min.node.size=5, splitrule=extratrees 
-+ Fold2: mtry= 2, min.node.size=5, splitrule=variance 
-- Fold2: mtry= 2, min.node.size=5, splitrule=variance 
-+ Fold2: mtry= 7, min.node.size=5, splitrule=variance 
-- Fold2: mtry= 7, min.node.size=5, splitrule=variance 
-+ Fold2: mtry=13, min.node.size=5, splitrule=variance 
-- Fold2: mtry=13, min.node.size=5, splitrule=variance 
-+ Fold2: mtry=19, min.node.size=5, splitrule=variance 
-- Fold2: mtry=19, min.node.size=5, splitrule=variance 
-+ Fold2: mtry=25, min.node.size=5, splitrule=variance 
-- Fold2: mtry=25, min.node.size=5, splitrule=variance 
-+ Fold2: mtry=31, min.node.size=5, splitrule=variance 
-- Fold2: mtry=31, min.node.size=5, splitrule=variance 
-+ Fold2: mtry=37, min.node.size=5, splitrule=variance 
-- Fold2: mtry=37, min.node.size=5, splitrule=variance 
-+ Fold2: mtry= 2, min.node.size=5, splitrule=extratrees 
-- Fold2: mtry= 2, min.node.size=5, splitrule=extratrees 
-+ Fold2: mtry= 7, min.node.size=5, splitrule=extratrees 
-- Fold2: mtry= 7, min.node.size=5, splitrule=extratrees 
-+ Fold2: mtry=13, min.node.size=5, splitrule=extratrees 
-- Fold2: mtry=13, min.node.size=5, splitrule=extratrees 
-+ Fold2: mtry=19, min.node.size=5, splitrule=extratrees 
-- Fold2: mtry=19, min.node.size=5, splitrule=extratrees 
-+ Fold2: mtry=25, min.node.size=5, splitrule=extratrees 
-- Fold2: mtry=25, min.node.size=5, splitrule=extratrees 
-+ Fold2: mtry=31, min.node.size=5, splitrule=extratrees 
-- Fold2: mtry=31, min.node.size=5, splitrule=extratrees 
-+ Fold2: mtry=37, min.node.size=5, splitrule=extratrees 
-- Fold2: mtry=37, min.node.size=5, splitrule=extratrees 
-+ Fold3: mtry= 2, min.node.size=5, splitrule=variance 
-- Fold3: mtry= 2, min.node.size=5, splitrule=variance 
-+ Fold3: mtry= 7, min.node.size=5, splitrule=variance 
-- Fold3: mtry= 7, min.node.size=5, splitrule=variance 
-+ Fold3: mtry=13, min.node.size=5, splitrule=variance 
-- Fold3: mtry=13, min.node.size=5, splitrule=variance 
-+ Fold3: mtry=19, min.node.size=5, splitrule=variance 
-- Fold3: mtry=19, min.node.size=5, splitrule=variance 
-+ Fold3: mtry=25, min.node.size=5, splitrule=variance 
-- Fold3: mtry=25, min.node.size=5, splitrule=variance 
-+ Fold3: mtry=31, min.node.size=5, splitrule=variance 
-- Fold3: mtry=31, min.node.size=5, splitrule=variance 
-+ Fold3: mtry=37, min.node.size=5, splitrule=variance 
-- Fold3: mtry=37, min.node.size=5, splitrule=variance 
-+ Fold3: mtry= 2, min.node.size=5, splitrule=extratrees 
-- Fold3: mtry= 2, min.node.size=5, splitrule=extratrees 
-+ Fold3: mtry= 7, min.node.size=5, splitrule=extratrees 
-- Fold3: mtry= 7, min.node.size=5, splitrule=extratrees 
-+ Fold3: mtry=13, min.node.size=5, splitrule=extratrees 
-- Fold3: mtry=13, min.node.size=5, splitrule=extratrees 
-+ Fold3: mtry=19, min.node.size=5, splitrule=extratrees 
-- Fold3: mtry=19, min.node.size=5, splitrule=extratrees 
-+ Fold3: mtry=25, min.node.size=5, splitrule=extratrees 
-- Fold3: mtry=25, min.node.size=5, splitrule=extratrees 
-+ Fold3: mtry=31, min.node.size=5, splitrule=extratrees 
-- Fold3: mtry=31, min.node.size=5, splitrule=extratrees 
-+ Fold3: mtry=37, min.node.size=5, splitrule=extratrees 
-- Fold3: mtry=37, min.node.size=5, splitrule=extratrees 
-+ Fold4: mtry= 2, min.node.size=5, splitrule=variance 
-- Fold4: mtry= 2, min.node.size=5, splitrule=variance 
-+ Fold4: mtry= 7, min.node.size=5, splitrule=variance 
-- Fold4: mtry= 7, min.node.size=5, splitrule=variance 
-+ Fold4: mtry=13, min.node.size=5, splitrule=variance 
-- Fold4: mtry=13, min.node.size=5, splitrule=variance 
-+ Fold4: mtry=19, min.node.size=5, splitrule=variance 
-- Fold4: mtry=19, min.node.size=5, splitrule=variance 
-+ Fold4: mtry=25, min.node.size=5, splitrule=variance 
-- Fold4: mtry=25, min.node.size=5, splitrule=variance 
-+ Fold4: mtry=31, min.node.size=5, splitrule=variance 
-- Fold4: mtry=31, min.node.size=5, splitrule=variance 
-+ Fold4: mtry=37, min.node.size=5, splitrule=variance 
-- Fold4: mtry=37, min.node.size=5, splitrule=variance 
-+ Fold4: mtry= 2, min.node.size=5, splitrule=extratrees 
-- Fold4: mtry= 2, min.node.size=5, splitrule=extratrees 
-+ Fold4: mtry= 7, min.node.size=5, splitrule=extratrees 
-- Fold4: mtry= 7, min.node.size=5, splitrule=extratrees 
-+ Fold4: mtry=13, min.node.size=5, splitrule=extratrees 
-- Fold4: mtry=13, min.node.size=5, splitrule=extratrees 
-+ Fold4: mtry=19, min.node.size=5, splitrule=extratrees 
-- Fold4: mtry=19, min.node.size=5, splitrule=extratrees 
-+ Fold4: mtry=25, min.node.size=5, splitrule=extratrees 
-- Fold4: mtry=25, min.node.size=5, splitrule=extratrees 
-+ Fold4: mtry=31, min.node.size=5, splitrule=extratrees 
-- Fold4: mtry=31, min.node.size=5, splitrule=extratrees 
-+ Fold4: mtry=37, min.node.size=5, splitrule=extratrees 
-- Fold4: mtry=37, min.node.size=5, splitrule=extratrees 
-+ Fold5: mtry= 2, min.node.size=5, splitrule=variance 
-- Fold5: mtry= 2, min.node.size=5, splitrule=variance 
-+ Fold5: mtry= 7, min.node.size=5, splitrule=variance 
-- Fold5: mtry= 7, min.node.size=5, splitrule=variance 
-+ Fold5: mtry=13, min.node.size=5, splitrule=variance 
-- Fold5: mtry=13, min.node.size=5, splitrule=variance 
-+ Fold5: mtry=19, min.node.size=5, splitrule=variance 
-- Fold5: mtry=19, min.node.size=5, splitrule=variance 
-+ Fold5: mtry=25, min.node.size=5, splitrule=variance 
-- Fold5: mtry=25, min.node.size=5, splitrule=variance 
-+ Fold5: mtry=31, min.node.size=5, splitrule=variance 
-- Fold5: mtry=31, min.node.size=5, splitrule=variance 
-+ Fold5: mtry=37, min.node.size=5, splitrule=variance 
-- Fold5: mtry=37, min.node.size=5, splitrule=variance 
-+ Fold5: mtry= 2, min.node.size=5, splitrule=extratrees 
-- Fold5: mtry= 2, min.node.size=5, splitrule=extratrees 
-+ Fold5: mtry= 7, min.node.size=5, splitrule=extratrees 
-- Fold5: mtry= 7, min.node.size=5, splitrule=extratrees 
-+ Fold5: mtry=13, min.node.size=5, splitrule=extratrees 
-- Fold5: mtry=13, min.node.size=5, splitrule=extratrees 
-+ Fold5: mtry=19, min.node.size=5, splitrule=extratrees 
-- Fold5: mtry=19, min.node.size=5, splitrule=extratrees 
-+ Fold5: mtry=25, min.node.size=5, splitrule=extratrees 
-- Fold5: mtry=25, min.node.size=5, splitrule=extratrees 
-+ Fold5: mtry=31, min.node.size=5, splitrule=extratrees 
-- Fold5: mtry=31, min.node.size=5, splitrule=extratrees 
-+ Fold5: mtry=37, min.node.size=5, splitrule=extratrees 
-- Fold5: mtry=37, min.node.size=5, splitrule=extratrees </code></pre>
-</div>
-<div class="cell-output cell-output-stdout">
-<pre><code>Aggregating results
-Selecting tuning parameters
-Fitting mtry = 25, splitrule = extratrees, min.node.size = 5 on full training set</code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="co"># econ_rf</span></span>
-<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(econ_rf)</span></span>
-<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb22-4"><a href="#cb22-4" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">varImp</span>(econ_rf, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb22-5"><a href="#cb22-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(importance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="selection_files/figure-html/econ_rf-1.png" class="img-fluid figure-img" width="1400"></p>
-</figure>
-</div>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb23"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict</span></span>
-<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="co"># p &lt;- predict(model_mf, testing_data)</span></span>
-<span id="cb23-3"><a href="#cb23-3" aria-hidden="true" tabindex="-1"></a><span class="co"># postResample(pred = p, obs = testing_data$rebl_tpm)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>econ_rf <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  economics <span class="sc">~</span> .,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_data, </span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneLength =</span> <span class="dv">7</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ranger"</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> my_control,</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">importance =</span> <span class="st">'impurity'</span></span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a><span class="co"># econ_rf</span></span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a><span class="co"># plot(econ_rf)</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">varImp</span>(econ_rf, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(importance)</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a><span class="co"># Predict</span></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a><span class="co"># p &lt;- predict(model_mf, testing_data)</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a><span class="co"># postResample(pred = p, obs = testing_data$rebl_tpm)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>The random forest model is also picking out the value-added market indicator as the best predictor of economics dimension scores, followed closely by operations diversification, wealth and income distribution, and income stability.</p>

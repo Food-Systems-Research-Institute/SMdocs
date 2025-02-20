@@ -33,6 +33,23 @@
     ]
   },
   "Packages": {
+    "AER": {
+      "Package": "AER",
+      "Version": "1.2-14",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "Formula",
+        "R",
+        "car",
+        "lmtest",
+        "sandwich",
+        "stats",
+        "survival",
+        "zoo"
+      ],
+      "Hash": "c59e9840e0e17154bb7bb3e2ed89b10c"
+    },
     "DBI": {
       "Package": "DBI",
       "Version": "1.2.3",
@@ -91,6 +108,50 @@
         "methods"
       ],
       "Hash": "cd52c065c9e687c60c56b51f10f7bcd3"
+    },
+    "DescTools": {
+      "Package": "DescTools",
+      "Version": "0.99.59",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "Exact",
+        "MASS",
+        "R",
+        "Rcpp",
+        "base",
+        "boot",
+        "cli",
+        "data.table",
+        "expm",
+        "gld",
+        "grDevices",
+        "graphics",
+        "haven",
+        "httr",
+        "methods",
+        "mvtnorm",
+        "readxl",
+        "rstudioapi",
+        "stats",
+        "utils",
+        "withr"
+      ],
+      "Hash": "60aea3ab405a250f027f9fe8e2a2baca"
+    },
+    "Exact": {
+      "Package": "Exact",
+      "Version": "3.3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "graphics",
+        "rootSolve",
+        "stats",
+        "utils"
+      ],
+      "Hash": "72eeb792b6ae3bef92624916c328bcff"
     },
     "Formula": {
       "Package": "Formula",
@@ -423,6 +484,22 @@
       ],
       "Hash": "543776ae6848fde2f48ff3816d0628bc"
     },
+    "bayestestR": {
+      "Package": "bayestestR",
+      "Version": "0.15.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "datawizard",
+        "graphics",
+        "insight",
+        "methods",
+        "stats",
+        "utils"
+      ],
+      "Hash": "768acac338a7a17a063e8bb88c58e611"
+    },
     "bit": {
       "Package": "bit",
       "Version": "4.0.5",
@@ -628,6 +705,18 @@
         "withr"
       ],
       "Hash": "528692344d5a174552e3bf7acdfbaebd"
+    },
+    "cellranger": {
+      "Package": "cellranger",
+      "Version": "1.1.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "rematch",
+        "tibble"
+      ],
+      "Hash": "f61dbaec772ccd2e17705c1e872e9e7c"
     },
     "checkmate": {
       "Package": "checkmate",
@@ -845,6 +934,19 @@
       ],
       "Hash": "2e00b378fc3be69c865120d9f313039a"
     },
+    "datawizard": {
+      "Package": "datawizard",
+      "Version": "1.0.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "insight",
+        "stats",
+        "utils"
+      ],
+      "Hash": "8a37ad13b9b0db70bf32d6eb2fc0a2aa"
+    },
     "diagram": {
       "Package": "diagram",
       "Version": "1.6.5",
@@ -970,6 +1072,17 @@
         "R"
       ],
       "Hash": "e9651417729bbe7472e32b5027370e79"
+    },
+    "expm": {
+      "Package": "expm",
+      "Version": "1.0-0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "Matrix",
+        "methods"
+      ],
+      "Hash": "a44b2810f36c1cda5d52eee6ec96cafa"
     },
     "fansi": {
       "Package": "fansi",
@@ -1374,6 +1487,19 @@
       ],
       "Hash": "02cdab34154e9e70dac279afbb20d34b"
     },
+    "gld": {
+      "Package": "gld",
+      "Version": "2.6.7",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "e1071",
+        "graphics",
+        "lmom",
+        "stats"
+      ],
+      "Hash": "c0fb9f61bfa549d9606801b1ee56a643"
+    },
     "glmnet": {
       "Package": "glmnet",
       "Version": "4.1-8",
@@ -1626,6 +1752,19 @@
         "vctrs"
       ],
       "Hash": "c3b7d801d722e26e4cd888e042bf9af5"
+    },
+    "insight": {
+      "Package": "insight",
+      "Version": "1.0.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "methods",
+        "stats",
+        "utils"
+      ],
+      "Hash": "ba2606f588c01adc84699ed43e8d162a"
     },
     "ipred": {
       "Package": "ipred",
@@ -1946,6 +2085,18 @@
       ],
       "Hash": "16a08fc75007da0d08e0c0388c7c33e6"
     },
+    "lmom": {
+      "Package": "lmom",
+      "Version": "3.2",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "graphics",
+        "stats"
+      ],
+      "Hash": "a75d2dd42af9b4cb291815889cdcff77"
+    },
     "lmtest": {
       "Package": "lmtest",
       "Version": "0.9-40",
@@ -2120,6 +2271,17 @@
       ],
       "Hash": "4fd8900853b746af55b81fda99da7695"
     },
+    "mvtnorm": {
+      "Package": "mvtnorm",
+      "Version": "1.3-3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "stats"
+      ],
+      "Hash": "c7241e6be9d6df551a2e539a50f5c875"
+    },
     "nlme": {
       "Package": "nlme",
       "Version": "3.1-166",
@@ -2262,6 +2424,21 @@
         "numDeriv"
       ],
       "Hash": "938e6bbc4ac57534f8b43224506a8966"
+    },
+    "performance": {
+      "Package": "performance",
+      "Version": "0.13.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "bayestestR",
+        "datawizard",
+        "insight",
+        "stats",
+        "utils"
+      ],
+      "Hash": "35de0c9474563ca8054029abb0b6e72c"
     },
     "pillar": {
       "Package": "pillar",
@@ -2675,6 +2852,21 @@
       ],
       "Hash": "9de96463d2117f6ac49980577939dfb3"
     },
+    "readxl": {
+      "Package": "readxl",
+      "Version": "1.4.3",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "cellranger",
+        "cpp11",
+        "progress",
+        "tibble",
+        "utils"
+      ],
+      "Hash": "8cf9c239b96df1bbb133b74aef77ad0a"
+    },
     "recipes": {
       "Package": "recipes",
       "Version": "1.1.0",
@@ -2706,6 +2898,13 @@
         "withr"
       ],
       "Hash": "fc6672e55fcd1b5c461a3529ff6b1b08"
+    },
+    "rematch": {
+      "Package": "rematch",
+      "Version": "2.0.0",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Hash": "cbff1b666c6fa6d21202f07e2318d4f1"
     },
     "rematch2": {
       "Package": "rematch2",
@@ -2830,6 +3029,19 @@
       ],
       "Hash": "367a915f939520767660671efa0e32bd"
     },
+    "rootSolve": {
+      "Package": "rootSolve",
+      "Version": "1.8.2.4",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "grDevices",
+        "graphics",
+        "stats"
+      ],
+      "Hash": "c6fa270a97604238a5ce5fe5d327fdad"
+    },
     "rpart": {
       "Package": "rpart",
       "Version": "4.1.23",
@@ -2884,6 +3096,19 @@
         "wk"
       ],
       "Hash": "3c8013cdd7f1d20de5762e3f97e5e274"
+    },
+    "sandwich": {
+      "Package": "sandwich",
+      "Version": "3.1-1",
+      "Source": "Repository",
+      "Repository": "RSPM",
+      "Requirements": [
+        "R",
+        "stats",
+        "utils",
+        "zoo"
+      ],
+      "Hash": "072bb2d27425f2a58fe71fe1080676ce"
     },
     "sass": {
       "Package": "sass",
