@@ -1,10 +1,10 @@
 pacman::p_load(
-  fmsb
+  fmsb,
+  snakecase
 )
 
 get_vt_spiders <- function(df_list,
                            norm_type) {
-  
   # Put inputs together to get set name
   set_ari <- paste0(norm_type, '_arithmetic')
   set_geo <- paste0(norm_type, '_geometric')
@@ -34,13 +34,13 @@ get_vt_spiders <- function(df_list,
        
       # National median
       nat_median <- .x %>% 
-        filter(state == 'US_median') %>% 
-        select(-state)
+        dplyr::filter(state == 'US_median') %>% 
+        dplyr::select(-state)
       
       # Vermont scores
       vt_dims <- .x %>% 
-        filter(state == 'VT') %>% 
-        select(-state)
+        dplyr::filter(state == 'VT') %>% 
+        dplyr::select(-state)
       
       rbind(
         dim_max,

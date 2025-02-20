@@ -5,6 +5,7 @@ format:
     fig-dpi: 200
 editor_options: 
   chunk_output_type: console
+warnings: false
 ---
 
 In the last page we created six sets of scores by state based on combinations of three normalization methods (z-scores, min max, box cox) and two aggregation methods (arithmetic, geometric). Here, we will explore differences between them in terms of state distributions and rankings.
@@ -15,12 +16,12 @@ Be aware that spider/radar charts can be hard to interpret, and sometimes mislea
 
 ```{r}
 #| label: prep
-#| warnings: false
 #| echo: false 
 pacman::p_load(
   dplyr,
   purrr,
-  conflicted
+  conflicted,
+  fmsb
 )
 
 conflicts_prefer(
@@ -45,7 +46,6 @@ The transformation is easy to understand, but has some drawbacks, including bein
 
 ```{r}
 #| label: minmax_spider
-#| warnings: false
 #| fig-width: 10
 #| fig-height: 5
 pacman::p_load(
@@ -69,7 +69,6 @@ The difference in the production dimension between arithmetic and geometric aver
 
 ```{r}
 #| label: minmax_geo_table
-#| warnings: false
 get_reactable_scores(dat, 'minmax_arithmetic')
 ```
 
@@ -77,7 +76,6 @@ get_reactable_scores(dat, 'minmax_arithmetic')
 
 ```{r}
 #| label: minmax_ari_table
-#| warnings: false
 get_reactable_scores(dat, 'minmax_geometric')
 ```
 
@@ -87,7 +85,6 @@ Z-scores are standardized values. We subtract the mean from every metric to cent
 
 ```{r}
 #| label: zscore_spider
-#| warnings: false
 #| fig-width: 10
 #| fig-height: 5
 get_vt_spiders(dat, 'zscore')
@@ -99,7 +96,6 @@ The arithmetic plot is functionally identical to the min-max plots. The differen
 
 ```{r}
 #| label: zscore_ari_table
-#| warnings: false
 get_reactable_scores(dat, 'zscore_arithmetic')
 ```
 
@@ -107,7 +103,6 @@ get_reactable_scores(dat, 'zscore_arithmetic')
 
 ```{r}
 #| label: zscore_geo_table
-#| warnings: false
 get_reactable_scores(dat, 'zscore_geometric')
 ```
 
@@ -117,7 +112,6 @@ The Box-Cox procedure explores a range of lambda values with which to transform 
 
 ```{r}
 #| label: boxcox_spider
-#| warnings: false
 #| fig-width: 10
 #| fig-height: 5
 get_vt_spiders(dat, 'boxcox')
@@ -129,7 +123,6 @@ We can see that all values are less extreme - both the lows and highs and pulled
 
 ```{r}
 #| label: boxcox_ari_table
-#| warnings: false
 get_reactable_scores(dat, 'boxcox_arithmetic')
 ```
 
@@ -137,8 +130,53 @@ get_reactable_scores(dat, 'boxcox_arithmetic')
 
 ```{r}
 #| label: boxcox_geo_table
-#| warnings: false
 get_reactable_scores(dat, 'boxcox_geometric')
+```
+
+# Rank Order 
+
+```{r}
+#| label: rank_spider
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'rank')
+```
+
+## Arithmetic Table
+
+```{r}
+#| label: rank_ari_table
+get_reactable_scores(dat, 'rank_arithmetic')
+```
+
+## Geometric Table
+
+```{r}
+#| label: rank_geo_table
+get_reactable_scores(dat, 'rank_geometric')
+```
+
+# Winsorization 
+
+```{r}
+#| label: winsor_spider
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'winsor')
+```
+
+## Arithmetic Table
+
+```{r}
+#| label: winsor_ari_table
+get_reactable_scores(dat, 'winsor_arithmetic')
+```
+
+## Geometric Table
+
+```{r}
+#| label: winsor_geo_table
+get_reactable_scores(dat, 'winsor_geometric')
 ```
 
 # References

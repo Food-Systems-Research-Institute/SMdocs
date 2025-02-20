@@ -6,7 +6,7 @@ pacman::p_load(
 )
 
 get_reactable_scores <- function(scores_list, method_name) {
-  
+ 
   # Get DF to display
   df <- scores_list[[method_name]]$dimension_scores %>% 
     select(state, everything()) %>% 
@@ -24,7 +24,7 @@ get_reactable_scores <- function(scores_list, method_name) {
     rownames = FALSE,
     onClick = 'select',
     striped = TRUE,
-    defaultPageSize = 10,
+    defaultPageSize = 5,
     showPageSizeOptions = TRUE,
     highlight = TRUE,
     style = list(fontSize = "14px"),

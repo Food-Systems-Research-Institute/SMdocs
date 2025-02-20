@@ -57,17 +57,27 @@ final_scores <- readRDS('data/state_score_iterations.rds')
 # Pull out minmax geo indicators only. Also use states only, no aggregates
 minmax_geo_indicators <- final_scores$minmax_geometric$indicator_scores %>% 
   filter(! state %in% c('US_mean', 'US_median', 'NewEng'))
-# get_str(minmax_geo_indicators)
+get_str(minmax_geo_indicators)
 
 # Make a correlation matrix using all the selected variables
-cor <- minmax_geo_indicators %>% 
+mat <- minmax_geo_indicators %>% 
   select(-state) %>% 
-  as.matrix() %>% 
-  rcorr()
+  as.matrix()
+
+# Lose top half to make a triangle
+# mat[lower.tri(mat)] <- NA
+
+# Get correlations
+cor <- rcorr(mat, type = 'pearson')
 
 # Melt correlation values and rename columns
 cor_r <- melt(cor$r) %>% 
   setNames(c('var_1', 'var_2', 'value'))
+  # mutate(across(where(is.factor), as.character))
+
+# Keep only lower half of matrix
+# cor_r <- cor_r %>%
+  # filter(var_1 >= var_2)
 
 # Save p values
 cor_p <- melt(cor$P)
@@ -82,7 +92,15 @@ plot <- cor_r %>%
     'P-Value: ', format(round(p.value, 3), nsmall = 3)
   ))) + 
   geom_tile() + 
-  scale_fill_distiller(palette = 'PRGn') +
+  scale_fill_gradient2(
+    low = "#762a83", 
+    mid = "white", 
+    high = "#1b7837", 
+    midpoint = 0
+  ) +
+  # scale_fill_distiller(
+  #   palette = 'PRGn',
+  # ) +
   theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
   labs(
     x = NULL,

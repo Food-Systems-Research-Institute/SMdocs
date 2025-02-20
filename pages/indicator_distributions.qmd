@@ -3,8 +3,6 @@ title: "Indicator Distributions"
 format:
   html:
     fig-dpi: 200
-editor_options: 
-  chunk_output_type: inline
 warnings: false
 ---
 
@@ -15,7 +13,7 @@ pacman::p_load(
   dplyr,
   conflicted
 )
-
+pacman::p_load_gh('ChrisDonovan307/projecter')
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
@@ -152,4 +150,49 @@ get_indicator_distributions(scores, 'boxcox_arithmetic')
 #| fig-width: 10
 #| fig-align: center
 get_indicator_distributions(scores, 'boxcox_geometric')
+```
+
+# Rank Arithmetic
+
+```{r}
+#| label: rank_arithmetic
+#| fig-cap: Distributions of indicators at the state level for the rank arithmetic transformations 
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'rank_arithmetic')
+```
+
+# Rank Geometric
+
+```{r}
+#| label: rank_geometric
+#| fig-cap: Distributions of indicators at the state level for the rank geometric transformations 
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'rank_geometric')
+```
+
+
+# Winsor Arithmetic
+
+```{r}
+#| label: winsor_arithmetic
+#| fig-cap: Distributions of indicators at the state level for the winsor arithmetic transformations 
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'winsor_arithmetic')
+```
+
+# Winsor Geometric
+
+```{r}
+#| label: winsor_geometric
+#| fig-cap: Distributions of indicators at the state level for the winsor geometric transformations 
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'winsor_geometric')
 ```

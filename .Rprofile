@@ -22,6 +22,6 @@ options(
   pilar.print_min = 950
 )
 
-# source('startup.R')
+source('dev/get_setup.R')
 
 cat("\n.Rprofile loaded")

@@ -6,32 +6,37 @@ format:
 ---
 
 ```{r}
-#| label: not_setup
+#| label: prep
 #| echo: false
+# source('dev/get_setup.R')
+# get_setup()
 pacman::p_load(
-  conflicted,
   dplyr,
-  purrr,
-  stringr,
-  readr
+  conflicted
 )
-
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
-  dplyr::mutate(),
-  dplyr::select(),
-  dplyr::full_join(),
   dplyr::arrange(),
-  dplyr::bind_rows(),
-  dplyr::group_by(),
   dplyr::summarize(),
+  dplyr::as_data_frame(),
   .quiet = TRUE
 )
+pacman::p_load_gh('ChrisDonovan307/projecter')
 ```
 
+This page shows the partially refined framework as it stands after three dimension meetings: economics, environment, and production. It also includes a selection of preliminary secondary data metrics to match those indicators. We have collected around 1500 metrics so far, although many of those are fluff. Effectively, we have around 600 meaningful metrics. Here, we are using a selection of ~129 of them to make a preliminary framework for preliminary analyses. This is more than we have been planning for the refined framework, which will give us a chance to see how aggregate scores change with different combinations of metrics and under different methods of aggregation. 
+
+Note that where I have no metrics to represent an indicator, I have added placeholders of the format `NONE_#`. This does not mean that secondary data do not exist, just that I either haven't found it or haven't cleaned and wrangled it yet. At the time of writing, there are several of the latter, including crop failure, access to care, racial diversity, and others. If you know of any secondary data to fill in the gaps or improve on data we already have, please do reach out to let Chris know about it.
+
+At the bottom of this page is a metadata table with sources and definitions for all the metrics.
+
+## Partially Refined Framework
+
+Here is the framework with a selection of secondary metrics, split into each dimension for ease of reading.
+
 ```{r}
-#| label: wrangle
+#| label: wrangle_framework
 pacman::p_load(
   conflicted,
   dplyr,
@@ -42,10 +47,11 @@ pacman::p_load(
 source('dev/get_dimension_ggraph.R')
 
 # Load refined framework
-raw <- readRDS('data/sm_data.rds')[['refined_tree']]
+sm_data <- readRDS('data/sm_data.rds')
+raw_frame <- sm_data[['refined_tree']]
 
 # Clean up the framework df 
-frame <- raw %>% 
+frame <- raw_frame %>% 
   select(dimension:variable_name, use) %>% 
   filter(use == 'x') %>% 
   select(-use) %>% 
@@ -61,16 +67,6 @@ frame <- raw %>%
 # Save frame to rds for use in subsequent scripts
 saveRDS(frame, 'data/frame.rds')
 ```
-
-This page shows the partially refined framework as it stands after three dimension meetings: economics, environment, and production. It also includes a selection of preliminary secondary data metrics to match those indicators. We have collected around 1500 metrics so far, although many of those are fluff. Effectively, we have around 400 meaningful metrics. Here, we are using a selection of ~91 of them to make a preliminary framework for preliminary analyses. This is more than we have been planning for the refined framework, which will give us a chance to see how aggregate scores change with different combinations of metrics and under different methods of aggregation. 
-
-Note that where I have no metrics to represent an indicator, I have added placeholders of the format `NONE_#`. This does not mean that secondary data do not exist, just that I either haven't found it or haven't cleaned and wrangled it yet. At the time of writing, there are several of the latter, including crop failure, access to care, racial diversity, and others. If you know of any secondary data to fill in the gaps or improve on data we already have, please do reach out to let Chris know about it.
-
-At the bottom of this page is a metadata table with sources and definitions for all the metrics.
-
-## Partially Refined Framework
-
-Here is the framework with a selection of secondary metrics, split into each dimension for ease of reading.
 
 ### Environment
 
@@ -97,7 +93,7 @@ get_dimension_ggraph(
 
 ### Economics
 
-It has definitely been easier to find economics data than other dimensions. Worth noting here is that the access to land indicator is not ideal. I'm using value and farm size as a proxy for access. Use of crop in    surance is also a proxy, since I could not find direct insurance claim data from FSA. So for now, we are just using the presidential and ag secretary declarations of disasters that allow for insurance claims. 
+It has definitely been easier to find economics data than other dimensions. Worth noting here is that the access to land indicator is not ideal. I'm using value and farm size as a proxy for access. Use of crop insurance is also a proxy, since I could not find direct insurance claim data from FSA. So for now, we are just using the ag secretary declarations of disasters that allow for insurance claims as a proxy.
 
 ```{r}
 #| label: economics
@@ -117,7 +113,7 @@ get_dimension_ggraph(
 
 ### Production
 
-The production dimension looks slim at first glance, but is better than it looks. Agricultural exports are a pretty robust dataset at the state level from ERS, although the import data only includes the values of the top five imports for each state - not ideal. Crop diversity is based on the Cropland Data Layer, a USDA NASS estimate of crop types, which I used to calculate Shannon diversity at the county level. The rest of the metrics come from NASS. Production is an area in which I feel better about using NASS data than usual. 
+Agricultural exports are a pretty robust dataset at the state level from ERS, although the import data only includes the values of the top five imports for each state - not ideal. Crop diversity is based on the Cropland Data Layer, a USDA NASS spatial model estimating of crop types, which I used to calculate Shannon diversity at the county and state level. The rest of the metrics come from NASS. Production is an area in which I feel better about using NASS data than some other dimensions, but there is still some risk of these data not representing VT farms appropriately.
 
 ```{r}
 #| label: production
@@ -137,12 +133,11 @@ get_dimension_ggraph(
 
 ### Health
 
-The Food Environment Atlas has lots of data on access and nutrition, which accounts for much of the food security data, along with NASS. The 'food security tbd' index is just pulled out because this is already an index of food security that encompasses access and affordability. I will use this to explore how redundant they are. I also threw in a slew of metrics for physical health. The Factor and Outcome Z-Scores are already composite indices from the County Health Rankings, a great dataset. This is another area I want to explore with PCA to see how much unique variation these little metrics bring compared to a composite. 
+The Food Environment Atlas has lots of data on access and nutrition, which accounts for much of the food security data, along with NASS. I threw in a slew of metrics for physical health under the temporary indicator name 'physical health tbd' just to differentiate it from the index. I also have a handful of established composite indices for health, including the [UW County Health Rankings](https://www.countyhealthrankings.org/what-impacts-health/county-health-rankings-model) metrics for health factors (behavior, clinical care, social and economic factors, physical environment) and health outcomes (length of life, quality of life), as well as some established food security indices that are not included in this framework. I will instead use them to compare to dimensions scores as external validation in the [Validation](../pages/validation.qmd) section.
 
 ```{r}
 #| label: health
 #| code-fold: true
-#| warning: false
 #| fig-height: 11
 #| fig-width: 10
 #| fig-align: center
@@ -177,7 +172,75 @@ get_dimension_ggraph(
 
 ## Metadata
 
-Here is the metadata for this refined set of secondary metrics.
+Here we pull out the set of 129 metrics from the larger collection and arrange them into a more functional, tidy dataframe:
+
+```{r}
+#| label: wrangle_metrics
+pacman::p_load(
+  dplyr,
+  tidyr,
+  tibble
+)
+
+# Get latest year function
+source('dev/data_pipeline_functions.R')
+
+# Load metrics data
+sm_data <- readRDS('data/sm_data.rds')
+
+# Load refined framework
+raw_tree <- sm_data[['refined_tree']]
+
+# Load refined framework
+frame <- readRDS('data/frame.rds')
+
+
+## Join with metadata to double check the resolution of our metrics
+meta <- sm_data$metadata
+# get_str(meta)
+
+dat <- frame %>% 
+  filter(variable_name != 'NONE') %>% 
+  select(variable_name) %>% 
+  left_join(meta, by = 'variable_name') %>% 
+  unique()
+# get_str(dat)
+
+# Pull it from the actual metrics data
+metrics <- sm_data$metrics %>% 
+  filter(
+    variable_name %in% frame$variable_name,
+    fips %in% sm_data$state_key$state_code
+  )
+# get_str(metrics)
+
+# Filter to latest year for each metric, and pivot wider
+# Also removing census participation - don't really have data at state level
+# Note to aggregate counties for this at some point
+metrics_df <- metrics %>%
+  mutate(
+    value = ifelse(value == 'NaN', NA, value),
+    value = str_remove_all(value, ','),
+    value = as.numeric(value)
+  ) %>%
+  get_latest_year() %>% 
+  pivot_wider(
+    names_from = 'variable_name',
+    values_from = 'value'
+  ) %>% 
+  unnest(cols = !fips) %>%
+  unique()
+# get_str(metrics_df)
+
+# Let's get rid of the years so they are easier to work with
+names(metrics_df) <- str_split_i(names(metrics_df), '_', 1)
+# get_str(metrics_df)
+
+# Save this for use in subsequent pages
+saveRDS(metrics_df, 'data/metrics_df.rds')
+```
+
+Below, the metrics are displayed in a table that lets you browse and explore them. 
 
 ```{r}
 #| label: metadata_table
@@ -189,15 +252,16 @@ pacman::p_load(
   htmltools
 )
 
-# Load full metadata table
-metadata <- readRDS('data/sm_data.rds')[['metadata']]
+# Pull var names from metrics_df out of full metadata
+vars <- unique(frame$variable_name) %>% 
+  str_subset('NONE', negate = TRUE)
 
-# Pull var names out of frame df, extract from all metadata
-vars <- frame$variable_name
-metadata <- filter(metadata, variable_name %in% vars)
+# Load full metadata table
+metadata <- sm_data$metadata %>% 
+  dplyr::filter(variable_name %in% vars)
 
 # Pick out variables to display
-meta <- metadata %>% 
+metadata <- metadata %>% 
   select(
     metric,
     'Variable Name' = variable_name,
@@ -206,9 +270,11 @@ meta <- metadata %>%
     index,
     indicator,
     units,
+    years = year,
     'Year' = latest_year, # Renaming latest year as year, not including og year
     source,
     scope,
+    updates,
     resolution,
     url
 ) %>% 
@@ -239,7 +305,7 @@ htmltools::browsable(
     ),
     
     reactable(
-      meta,
+      metadata[, which(names(metadata) != 'Years')],
       sortable = TRUE,
       resizable = TRUE,
       filterable = TRUE,
@@ -282,7 +348,7 @@ htmltools::browsable(
       details = function(index) {
         div(
           style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
-             background-color: #E0EEEE; border-radius: 10px; border-color: black;
+             background-color: #ecf4ed; border-radius: 10px; border-color: black;
              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);",
           
           tags$h4(
@@ -290,38 +356,38 @@ htmltools::browsable(
           ),
           tags$p(
             strong('Metric Name: '), 
-            as.character(metadata[index, 'metric']),
+            as.character(metadata[index, 'Metric']),
           ),
           tags$p(
             strong('Variable Name: '), 
-            as.character(metadata[index, 'variable_name']),
+            as.character(metadata[index, 'Variable Name']),
           ),
           tags$p(
             strong('Definition: '), 
-            as.character(metadata[index, 'definition']),
+            as.character(metadata[index, 'Definition']),
           ),
           tags$p(
             strong('Source: '), 
-            as.character(metadata[index, 'source'])
+            as.character(metadata[index, 'Source'])
           ),
           tags$p(
             strong('Latest Year: '), 
-            as.character(metadata[index, 'latest_year'])
+            as.character(metadata[index, 'Year'])
           ),
           tags$p(
             strong('All Years (cleaned, wrangled, and included): '), 
-            as.character(metadata[index, 'year'])
+            as.character(metadata[index, 'Years'])
           ),
           tags$p(
             strong('Updates: '), 
-            str_to_title(as.character(metadata[index, 'updates']))
+            str_to_title(as.character(metadata[index, 'Updates']))
           ),
           tags$p(
             strong('URL: '), 
             tags$a(
-              href = as.character(metadata[index, 'url']),
+              href = as.character(metadata[index, 'Url']),
               target = '_blank',
-              as.character(metadata[index, 'url'])
+              as.character(metadata[index, 'Url'])
             )
           )
         )

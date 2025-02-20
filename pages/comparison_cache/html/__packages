@@ -3,6 +3,7 @@ conflicted
 projecter
 purrr
 fmsb
+snakecase
 reactable
 stringr
 htmltools

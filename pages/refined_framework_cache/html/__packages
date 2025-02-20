@@ -12,3 +12,6 @@ paletteer
 snakecase
 reactable
 htmltools
+tidyr
+tibble
+rlang
