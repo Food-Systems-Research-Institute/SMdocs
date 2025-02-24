@@ -127,7 +127,6 @@ Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
 
 Box-Cox transformations are non-linear transformations that use an optimal value of lambda to make the distribution as normal as possible. This has some strengths in that the data are easier to work with in further analyses. It also effectively pulls outliers inward toward the center of the distribution. However, it also changes relationships between the variables, so it will distort any bivariate correlations.
 
-
 \begin{equation}
 {\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
 \end{equation}
@@ -136,6 +135,9 @@ Box-Cox transformations are non-linear transformations that use an optimal value
 {\rm For}\ \lambda = 0,\ f_0(x) = log(x)
 \end{equation}
 
+**Rank Order** 
+
+**Winsorization**
 
 
 ```{r}
@@ -193,7 +195,7 @@ map(normed, get_str)
 
 Here, we are assuming that each metric has a direction that is more sustainable than the opposite. Either more of it is better, or less of it is better. This is rather problematic in that just about any metric becomes negative with too much or too little of it. What might make more sense in the long run would be to consult the expertise of our teams and develop targets or acceptable ranges for some metrics once they are settled. Still, just about every sustainability indicator framework does some variation of this one-way value system [@schneider2023StateFoodSystems; @bene2019GlobalMapIndicators; @nicolettiSummaryIndicatorsProduct2000; @jacobi2020NewUnderstandingEvaluation; @gomez-limon2010EmpiricalEvaluationAgricultural].
 
-Alas, for now we will invert variables in each of the transformed datasets as necessary so that larger numbers are more sustainable, and smaller numbers are less sustainable. The table below shows this assignment in the `desired_direction` column. For couple of variables (vacancy rate and animal sales as a percentage of all agricultural sales) I was not comfortable assigning one direction as better than the other, so I have removed them from the refined framework.
+Alas, for now we will invert variables in each of the transformed datasets as necessary so that larger numbers are more sustainable, and smaller numbers are less sustainable. The table below shows this assignment in the `desirable` column. For couple of variables (vacancy rate and animal sales as a percentage of all agricultural sales) I was not comfortable assigning one direction as better than the other, so I have removed them from the refined framework.
 
 ```{r}
 #| label: directional_values

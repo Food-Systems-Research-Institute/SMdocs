@@ -48,27 +48,15 @@ website:
             href: pages/refine_production.qmd
       - section: Secondary Data
         contents:
-          # - text: Economics
-          #   href: pages/data_economics.qmd
-          # - section: Environment
-          #   contents:
-          #     - text: Overview
-          #       href: pages/data_environment_overview.qmd
-          #     - text: Maps
-          #       href: pages/data_environment_maps.qmd
-          #     - text: Analysis
-          #       href: pages/data_environment_analysis.qmd
-          # - text: Production
-          #   href: pages/data_production.qmd
           - text: Metadata
             href: pages/metadata_table.qmd
           - text: Metrics Data
             href: pages/metrics_table.qmd
           - text: SM-Explorer
             href: pages/sm-explorer.qmd
-      - section: Refined Framework Analysis
+      - section: Analysis
         contents:
-          - text: Framework
+          - text: Refined Framework
             href: pages/refined_framework.qmd
           - text: Metric Distributions
             href: pages/metric_distributions.qmd

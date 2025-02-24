@@ -65,6 +65,7 @@ get_str(metrics_df)
 
 
 # Pull validation variables out of sm_data, wrangle them to match metrics_df
+# Also including covariates, gdp and population
 validation_vars <- sm_data$metadata %>% 
   select(variable_name, metric, definition, source) %>% 
   filter(variable_name %in% c(
@@ -74,7 +75,9 @@ validation_vars <- sm_data$metadata %>%
     'wellbeingRank',
     'workEnvRank',
     'foodEnvironmentIndex',
-    'lifeExpectancy'
+    'lifeExpectancy',
+    'population',
+    'gdpCurrent'
   )) %>% 
   pull(variable_name)
 validation_vars  
@@ -97,12 +100,12 @@ validation_metrics <- validation_metrics %>%
     names_from = variable_name,
     values_from = value
   ) %>% 
-  setNames(c(str_remove(names(.), '_2024'))) %>% 
+  setNames(c(str_remove(names(.), '_[0-9]{4}'))) %>% 
   mutate(across(!fips, as.numeric))
 get_str(validation_metrics)
-# 00 US is missing obviously
-# 11 DC is the other one
-# We will just filter down to 50 states then
+# 00 US is missing a lot obviously
+# 11 DC is the other one with missing data
+# We will just filter down to 50 states to match metrics_df
 
 # Combine validation variables with our dimension scores using state key as the 
 # bridge. Also remove DC (don't have validation metrics there)
@@ -115,63 +118,87 @@ dat <- dimension_scores %>%
   filter(state != 'DC') %>% 
   select(-fips)
 
+# Make a GDP per capita variable from GDP real and population
+# It was already in millions to begin with
+dat <- dat %>% 
+  mutate(gdp_per_cap = ((gdpCurrent / population) * 1e6) / 1000)
+get_str(dat)
+
 # Check it out
 get_str(dat)
 skimr::skim(dat)
 # Looks good
+
+# Save this for other pages
+saveRDS(dat, 'data/metrics_df_with_vals_and_covars.rds')
 ```
 
 # Food Insecurity
 
 ```{r}
-#| label: food_insecurity
+#| label: food_insecurity_reg
+pacman::p_load(
+  performance,
+  AER,
+  sandwich,
+  sjPlot,
+  htmltools
+)
+
+lm1 <- lm(
+  foodInsecurity ~ economics + environment + health + production + social + gdp_per_cap,
+  data = dat
+)
+```
+
+```{r}
+#| label: food_insecurity_table
+#| class: centered-table
+#| echo: FALSE
+tab_model(lm1, digits = 3)
+```
+
+```{r}
+#| label: food_insecurity_check
 #| fig-width: 8
 #| fig-height: 8
 #| fig-align: center
 #| out-width: 75%
-pacman::p_load(
-  performance,
-  AER,
-  sandwich
-)
-lm1 <- lm(
-  foodInsecurity ~ economics + environment + health + production + social,
-  data = dat
-)
-summary(lm1)
 check_model(lm1)
 ```
 
-Not the worst residuals plots I've seen, but there are signs of heteroskedasticity and a scoche of non-linearity. Let's explore heteroskedasticity:
+Not the worst residuals plots, but there are signs of heteroskedasticity and a scoche of non-linearity. Let's explore heteroskedasticity:
 
 ```{r}
 #| label: food_insecurity_bptest
 lmtest::bptest(lm1)
 ```
 
-BP test is just barely showing significant result for heteroskedasticity. Let's try using robust standard errors:
-
-```{r}
-#| label: food_insecurity_robust
-vcov <- vcovHC(lm1, type = 'HC')
-coeftest(lm1, vcov. = vcov)
-```
-
-Robust standard errors brought economics closer, but none of our dimensions significantly predict food insecurity, nor does the model explain a meaningful amount of variance.  
+Heteroskedasticity looks not to be a problem. We could try a non-linear analysis here though (note to add GLMnet and RF). 
 
 # Life Expectancy
 
 ```{r}
 #| label: life_exp
+lm2 <- lm(
+  lifeExpectancy ~ economics + environment + health + production + social + gdp_per_cap,
+  data = dat
+)
+```
+
+```{r}
+#| label: life_exp_table
+#| class: centered-table
+#| echo: FALSE
+tab_model(lm2, digits = 3)
+```
+
+```{r}
+#| label: life_exp_check
 #| fig-width: 8
 #| fig-height: 8
 #| fig-align: center
 #| out-width: 75%
-lm2 <- lm(
-  lifeExpectancy ~ economics + environment + health + production + social,
-  data = dat
-)
-summary(lm2)
 check_model(lm2)
 ```
 
@@ -182,25 +209,43 @@ It also looks like heteroskedasticity is a bigger issue here. Let's check it and
 ```{r}
 #| label: life_exp_bptest
 lmtest::bptest(lm2)
-vcov <- vcovHC(lm2, type = 'HC')
-coeftest(lm2, vcov. = vcov)
+life_exp_vcov <- vcovHC(lm2, type = 'HC3')
 ```
 
-When using robust errors, the health dimension falls off and we are left with only economics as a significant predictor of life expectancy. That being said, the model is explaining 35% of the variance in life expectancy, which is surprisingly strong. I suspect some strong omitted variable bias here, with GDP being a primary suspect. 
+
+```{r}
+#| label: life_exp_robust
+#| class: centered-table
+#| echo: FALSE
+tab_model(lm2, digits = 3, vcov.fun = life_exp_vcov)
+```
+
+When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model is explaining `r summary(lm2)$adj.r.squared * 100`% of the variance in life expectancy, which is surprisingly strong.
 
 # Food Environment Index
 
 ```{r}
 #| label: food_env
+lm3 <- lm(
+  foodEnvironmentIndex ~ economics + environment + health + production + social + gdp_per_cap,
+  data = dat
+)
+```
+
+
+```{r}
+#| label: food_env_table
+#| class: centered-table
+#| echo: FALSE
+tab_model(lm3, digits = 3)
+```
+
+
+```{r}
 #| fig-width: 8
 #| fig-height: 8
 #| fig-align: center
 #| out-width: 75%
-lm3 <- lm(
-  foodEnvironmentIndex ~ economics + environment + health + production + social,
-  data = dat
-)
-summary(lm3)
 bptest(lm3)
 check_model(lm3)
 ```
@@ -246,7 +291,7 @@ nearZeroVar(dat, names = TRUE, saveMetrics = TRUE)
 #| output: false
 set.seed(42)
 food_env_glmnet <- train(
-  foodEnvironmentIndex ~ economics + environment + health + production + social,
+  foodEnvironmentIndex ~ economics + environment + health + production + social + gdp_per_cap,
   data = training_data, 
   tuneGrid = expand.grid(
     alpha = seq(0.1, 1, length = 5),
@@ -266,6 +311,8 @@ importance <- varImp(food_env_glmnet, scale = TRUE)
 plot(importance)
 ```
 
+It looks like GDP is a better predictor of the Food Environment Index than anything else, but the health dimension is far more influential than any other.
+
 ## Random Forest
 
 ```{r}
@@ -273,7 +320,7 @@ plot(importance)
 #| output: false
 set.seed(42)
 food_env_rf <- train(
-  foodEnvironmentIndex ~ production + social + health + economics + environment,
+  foodEnvironmentIndex ~ production + social + health + economics + environment + gdp_per_cap,
   data = training_data, 
   tuneLength = 7,
   method = "ranger",
@@ -295,15 +342,26 @@ plot(importance)
 
 ```{r}
 #| label: happiness
+lm4 <- lm(
+  happinessScore ~ economics + environment + health + production + social + gdp_per_cap,
+  data = dat
+)
+```
+
+
+```{r}
+#| label: happiness_table
+#| class: centered-table
+#| echo: FALSE
+tab_model(lm4, digits = 3)
+```
+
+```{r}
+#| label: happiness_check
 #| fig-width: 8
 #| fig-height: 8
 #| fig-align: center
 #| out-width: 75%
-lm4 <- lm(
-  happinessScore ~ economics + environment + health + production + social,
-  data = dat
-)
-summary(lm4)
 check_model(lm4)
 ```
 

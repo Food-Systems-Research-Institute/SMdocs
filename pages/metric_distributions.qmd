@@ -12,7 +12,7 @@ Explore metric distributions before normalization. Use this to inform how we mig
 
 ```{r}
 #| label: prep
-#| echo: false
+#| include: false
 source('dev/get_setup.R')
 get_setup()
 ```

@@ -13,6 +13,8 @@ lmtest
 sandwich
 survival
 AER
+sjPlot
+htmltools
 ggplot2
 lattice
 caret

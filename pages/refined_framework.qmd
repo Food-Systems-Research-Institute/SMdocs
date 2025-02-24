@@ -3,26 +3,27 @@ title: "Refined Secondary Data Framework"
 format:
   html:
     fig-dpi: 200
+warnings: false
 ---
 
 ```{r}
 #| label: prep
 #| echo: false
-# source('dev/get_setup.R')
-# get_setup()
-pacman::p_load(
-  dplyr,
-  conflicted
-)
-conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::arrange(),
-  dplyr::summarize(),
-  dplyr::as_data_frame(),
-  .quiet = TRUE
-)
-pacman::p_load_gh('ChrisDonovan307/projecter')
+source('dev/get_setup.R')
+get_setup()
+# pacman::p_load(
+#   dplyr,
+#   conflicted
+# )
+# conflicts_prefer(
+#   dplyr::select(),
+#   dplyr::filter(),
+#   dplyr::arrange(),
+#   dplyr::summarize(),
+#   dplyr::as_data_frame(),
+#   .quiet = TRUE
+# )
+# pacman::p_load_gh('ChrisDonovan307/projecter')
 ```
 
 This page shows the partially refined framework as it stands after three dimension meetings: economics, environment, and production. It also includes a selection of preliminary secondary data metrics to match those indicators. We have collected around 1500 metrics so far, although many of those are fluff. Effectively, we have around 600 meaningful metrics. Here, we are using a selection of ~129 of them to make a preliminary framework for preliminary analyses. This is more than we have been planning for the refined framework, which will give us a chance to see how aggregate scores change with different combinations of metrics and under different methods of aggregation. 
@@ -235,6 +236,10 @@ metrics_df <- metrics %>%
 # Let's get rid of the years so they are easier to work with
 names(metrics_df) <- str_split_i(names(metrics_df), '_', 1)
 # get_str(metrics_df)
+
+# Also get rid of DC - too many missing values
+metrics_df <- metrics_df %>% 
+  filter(fips != '11')
 
 # Save this for use in subsequent pages
 saveRDS(metrics_df, 'data/metrics_df.rds')

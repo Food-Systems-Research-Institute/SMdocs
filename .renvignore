@@ -1,2 +1,6 @@
 # Anything in dev, including the graveyard
 dev/*
+
+# Any site files should not matter here
+_site/*
+
