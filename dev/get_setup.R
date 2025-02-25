@@ -27,6 +27,5 @@ get_setup <- function() {
     .quiet = TRUE
   )
   pacman::p_load_gh('ChrisDonovan307/projecter')
-  cat('\n*Setup complete*')
 }
 

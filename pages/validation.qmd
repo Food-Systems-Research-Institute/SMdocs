@@ -10,11 +10,45 @@ warnings: false
 
 ```{r}
 #| label: prep
-#| echo: false
+#| include: false
 source('dev/data_pipeline_functions.R')
 source('dev/get_res_plots.R')
 source('dev/get_setup.R')
 get_setup()
+
+# Function for tab_model settings
+my_tab_model <- function(model,
+                         title = NULL,
+                         digits = 3,
+                         dv.labels = c(
+                           'Dimensions Only', 
+                           'With GDP per Capita',
+                           'With GDP and Population Weights'
+                          ),
+                         ...) {
+  model2 <- update(model, ~ . + gdp_per_cap)
+  model3 <- update(model2, weights = population)
+  tab_model(
+    model, 
+    model2, 
+    model3,
+    title = title, 
+    digits = digits, 
+    dv.labels = dv.labels
+    # CSS = list(
+      # css.table = 'border-collapse: collapse;',
+      # css.depvarhead = 'border-bottom: 2px solid black; width: 100%;'
+      # css.th = 'border-bottom: 2px solid black;',
+      # css.td = 'border-top: 2px solid black;'
+    #   css.firsttablecol = 'font-weight: bold;',
+    #   css.table = '
+    #     td:nth-child(5), th:nth-child(5) {
+    #       border-left: 2px solid black;
+    #     }
+    #   '
+    # )
+  )
+}
 ```
 
 # Introduction
@@ -146,7 +180,7 @@ pacman::p_load(
 )
 
 lm1 <- lm(
-  foodInsecurity ~ economics + environment + health + production + social + gdp_per_cap,
+  foodInsecurity ~ economics + environment + health + production + social,
   data = dat
 )
 ```
@@ -155,7 +189,7 @@ lm1 <- lm(
 #| label: food_insecurity_table
 #| class: centered-table
 #| echo: FALSE
-tab_model(lm1, digits = 3)
+my_tab_model(lm1, title = 'Food Insecurity Index')
 ```
 
 ```{r}
@@ -174,14 +208,14 @@ Not the worst residuals plots, but there are signs of heteroskedasticity and a s
 lmtest::bptest(lm1)
 ```
 
-Heteroskedasticity looks not to be a problem. We could try a non-linear analysis here though (note to add GLMnet and RF). 
+Heteroskedasticity looks not to be a problem. We could try a non-linear analysis here though (note to add GLMnet and RF).
 
 # Life Expectancy
 
 ```{r}
 #| label: life_exp
 lm2 <- lm(
-  lifeExpectancy ~ economics + environment + health + production + social + gdp_per_cap,
+  lifeExpectancy ~ economics + environment + health + production + social,
   data = dat
 )
 ```
@@ -190,7 +224,7 @@ lm2 <- lm(
 #| label: life_exp_table
 #| class: centered-table
 #| echo: FALSE
-tab_model(lm2, digits = 3)
+my_tab_model(lm2, title = 'Life Expectancy') + theme_538()
 ```
 
 ```{r}
@@ -217,7 +251,7 @@ life_exp_vcov <- vcovHC(lm2, type = 'HC3')
 #| label: life_exp_robust
 #| class: centered-table
 #| echo: FALSE
-tab_model(lm2, digits = 3, vcov.fun = life_exp_vcov)
+my_tab_model(lm2, title = 'Life Expectancy - Robust SEs', vcov.fun = life_exp_vcov)
 ```
 
 When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model is explaining `r summary(lm2)$adj.r.squared * 100`% of the variance in life expectancy, which is surprisingly strong.
@@ -227,21 +261,21 @@ When using robust errors, the health dimension falls off and we are left with on
 ```{r}
 #| label: food_env
 lm3 <- lm(
-  foodEnvironmentIndex ~ economics + environment + health + production + social + gdp_per_cap,
+  foodEnvironmentIndex ~ economics + environment + health + production + social,
   data = dat
 )
 ```
-
 
 ```{r}
 #| label: food_env_table
 #| class: centered-table
 #| echo: FALSE
-tab_model(lm3, digits = 3)
+my_tab_model(lm3, title = 'Food Environment Index')
 ```
 
 
 ```{r}
+#| label: food_env_check
 #| fig-width: 8
 #| fig-height: 8
 #| fig-align: center
@@ -305,8 +339,10 @@ food_env_glmnet <- train(
 
 
 ```{r}
+#| label: food_env_glmnet_importance
 #| fig-align: center
 #| out-width: 75%
+#| fig-height: 3
 importance <- varImp(food_env_glmnet, scale = TRUE)
 plot(importance)
 ```
@@ -332,7 +368,9 @@ food_env_rf <- train(
 OOB prediction error (MSE): `r food_env_rf$finalModel$prediction.error`
 
 ```{r}
+#| label: food_env_rf_importance
 #| out-width: 75%
+#| fig-height: 3
 #| fig-align: center
 importance <- varImp(food_env_rf, scale = TRUE)
 plot(importance)
@@ -343,17 +381,16 @@ plot(importance)
 ```{r}
 #| label: happiness
 lm4 <- lm(
-  happinessScore ~ economics + environment + health + production + social + gdp_per_cap,
+  happinessScore ~ economics + environment + health + production + social,
   data = dat
 )
 ```
-
 
 ```{r}
 #| label: happiness_table
 #| class: centered-table
 #| echo: FALSE
-tab_model(lm4, digits = 3)
+my_tab_model(lm4, title = 'Happiness Index')
 ```
 
 ```{r}
@@ -366,9 +403,3 @@ check_model(lm4)
 ```
 
 The model looks pretty reasonable here. The model does not explain a significant amount of variance on the whole, but economics still shows up as the only significant predictor of the validation variable.
-
-# To Do
-
-- Add GDP and population as covariates in all analyses.
-- Add non-linear analyses to each analysis for which linear models are ill-suited
-- Package regression outputs more cleanly with stargazer or kable

@@ -13,6 +13,9 @@ conflicted::conflicts_prefer(
   dplyr::filter(),
   dplyr::select(),
   dplyr::arrange(),
+  dplyr::as_data_frame(),
+  dplyr::summarize(),
+  dplyr::arrangej(),
   .quiet = TRUE
 )
 
