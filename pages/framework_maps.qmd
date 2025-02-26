@@ -1,0 +1,11 @@
+---
+title: "Map Explorer"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+Exploring scores with maps. 

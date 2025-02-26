@@ -200,6 +200,21 @@ $web-font-path: "https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;70
   //margin-right: auto;
 }
 
+// for stargazer tables
+.stargazer-table {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+
+.stargazer-table th, .stargazer-table td {
+  padding-right: 25px;
+  padding-left: 25px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  text-align: center;
+}
+
 // Forms
 
 input,

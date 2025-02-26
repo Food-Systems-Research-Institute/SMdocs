@@ -4,13 +4,14 @@ projecter
 purrr
 stringr
 rlang
+stargazer
+zoo
+lmtest
+sandwich
 tidyr
 performance
 carData
 car
-zoo
-lmtest
-sandwich
 survival
 AER
 sjPlot

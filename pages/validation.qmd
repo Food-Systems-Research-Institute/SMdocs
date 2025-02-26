@@ -14,41 +14,8 @@ warnings: false
 source('dev/data_pipeline_functions.R')
 source('dev/get_res_plots.R')
 source('dev/get_setup.R')
+source('dev/get_stargazer.R')
 get_setup()
-
-# Function for tab_model settings
-my_tab_model <- function(model,
-                         title = NULL,
-                         digits = 3,
-                         dv.labels = c(
-                           'Dimensions Only', 
-                           'With GDP per Capita',
-                           'With GDP and Population Weights'
-                          ),
-                         ...) {
-  model2 <- update(model, ~ . + gdp_per_cap)
-  model3 <- update(model2, weights = population)
-  tab_model(
-    model, 
-    model2, 
-    model3,
-    title = title, 
-    digits = digits, 
-    dv.labels = dv.labels
-    # CSS = list(
-      # css.table = 'border-collapse: collapse;',
-      # css.depvarhead = 'border-bottom: 2px solid black; width: 100%;'
-      # css.th = 'border-bottom: 2px solid black;',
-      # css.td = 'border-top: 2px solid black;'
-    #   css.firsttablecol = 'font-weight: bold;',
-    #   css.table = '
-    #     td:nth-child(5), th:nth-child(5) {
-    #       border-left: 2px solid black;
-    #     }
-    #   '
-    # )
-  )
-}
 ```
 
 # Introduction
@@ -187,9 +154,10 @@ lm1 <- lm(
 
 ```{r}
 #| label: food_insecurity_table
-#| class: centered-table
-#| echo: FALSE
-my_tab_model(lm1, title = 'Food Insecurity Index')
+#| results: asis
+#| echo: false
+#| class: stargazer-table
+get_stargazer(lm1, dep_var = 'Food Insecurity Index')
 ```
 
 ```{r}
@@ -210,6 +178,7 @@ lmtest::bptest(lm1)
 
 Heteroskedasticity looks not to be a problem. We could try a non-linear analysis here though (note to add GLMnet and RF).
 
+
 # Life Expectancy
 
 ```{r}
@@ -222,9 +191,10 @@ lm2 <- lm(
 
 ```{r}
 #| label: life_exp_table
-#| class: centered-table
+#| class: stargazer-table
 #| echo: FALSE
-my_tab_model(lm2, title = 'Life Expectancy') + theme_538()
+#| results: asis
+get_stargazer(lm2, dep_var = 'Life Expectancy')
 ```
 
 ```{r}
@@ -249,12 +219,13 @@ life_exp_vcov <- vcovHC(lm2, type = 'HC3')
 
 ```{r}
 #| label: life_exp_robust
-#| class: centered-table
+#| class: stargazer-table
 #| echo: FALSE
-my_tab_model(lm2, title = 'Life Expectancy - Robust SEs', vcov.fun = life_exp_vcov)
+#| results: asis
+get_stargazer(lm2, dep_var = 'Life Expectancy', robust = TRUE)
 ```
 
-When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model is explaining `r summary(lm2)$adj.r.squared * 100`% of the variance in life expectancy, which is surprisingly strong.
+When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model without GDP is already explaining `r round(summary(lm2)$adj.r.squared * 100)`% of the variance in life expectancy, which is surprisingly strong.
 
 # Food Environment Index
 
@@ -268,9 +239,10 @@ lm3 <- lm(
 
 ```{r}
 #| label: food_env_table
-#| class: centered-table
+#| class: stargazer-table
 #| echo: FALSE
-my_tab_model(lm3, title = 'Food Environment Index')
+#| results: asis
+get_stargazer(lm3, dep_var = 'Food Environment Index')
 ```
 
 
@@ -388,9 +360,10 @@ lm4 <- lm(
 
 ```{r}
 #| label: happiness_table
-#| class: centered-table
+#| class: stargazer-table
 #| echo: FALSE
-my_tab_model(lm4, title = 'Happiness Index')
+#| results: asis
+get_stargazer(lm4, dep_var = 'Happiness Index')
 ```
 
 ```{r}

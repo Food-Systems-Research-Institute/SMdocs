@@ -93,7 +93,7 @@ div.csl-indent {
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-84c4de9940dda03c3053f83edb5e97be.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-913bc11c8dbd843f740ffa41caa7f6dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -538,130 +538,274 @@ window.Quarto = {
 <span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell centered-table">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Food Insecurity Index</caption>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">Dimensions Only</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">With GDP per Capita</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">With GDP and Population Weights</td>
+<div class="cell stargazer-table">
+<table style="text-align:center">
+<tbody><tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
-<td style="text-align: center;">p</td>
-<td style="text-align: center;">Estimates</td>
-<td style="text-align: center;">CI</td>
-<td style="text-align: center;">p</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+<em>Dependent variable:</em>
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.155</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.112&nbsp;–&nbsp;0.198</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.187</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.141&nbsp;–&nbsp;0.232</td>
-<td style="text-align: center;"><strong>&lt;0.001</strong></td>
-<td style="text-align: center;">0.182</td>
-<td style="text-align: center;">0.137&nbsp;–&nbsp;0.228</td>
-<td style="text-align: center;"><strong>&lt;0.001</strong></td>
+<tr>
+<td>
+</td>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">economics</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.178</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.326&nbsp;–&nbsp;-0.029</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.020</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.077</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.232&nbsp;–&nbsp;0.078</td>
-<td style="text-align: center;">0.321</td>
-<td style="text-align: center;">-0.043</td>
-<td style="text-align: center;">-0.197&nbsp;–&nbsp;0.111</td>
-<td style="text-align: center;">0.579</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+Food Insecurity Index
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">environment</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.025</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.091&nbsp;–&nbsp;0.141</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.665</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.029</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.078&nbsp;–&nbsp;0.137</td>
-<td style="text-align: center;">0.584</td>
-<td style="text-align: center;">0.010</td>
-<td style="text-align: center;">-0.091&nbsp;–&nbsp;0.111</td>
-<td style="text-align: center;">0.843</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+Dimensions
+</td>
+<td>
+With GDP
+</td>
+<td>
+GDP and Weights
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">health</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.064</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.170&nbsp;–&nbsp;0.042</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.233</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.047</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.146&nbsp;–&nbsp;0.053</td>
-<td style="text-align: center;">0.350</td>
-<td style="text-align: center;">-0.084</td>
-<td style="text-align: center;">-0.210&nbsp;–&nbsp;0.043</td>
-<td style="text-align: center;">0.189</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(1)
+</td>
+<td>
+(2)
+</td>
+<td>
+(3)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">production</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.075</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.020&nbsp;–&nbsp;0.170</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.118</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.065</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.023&nbsp;–&nbsp;0.153</td>
-<td style="text-align: center;">0.143</td>
-<td style="text-align: center;">0.068</td>
-<td style="text-align: center;">-0.003&nbsp;–&nbsp;0.138</td>
-<td style="text-align: center;">0.060</td>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">social</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.019</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.109&nbsp;–&nbsp;0.072</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.679</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.019</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.103&nbsp;–&nbsp;0.065</td>
-<td style="text-align: center;">0.647</td>
-<td style="text-align: center;">-0.051</td>
-<td style="text-align: center;">-0.138&nbsp;–&nbsp;0.035</td>
-<td style="text-align: center;">0.237</td>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+0.155<sup>***</sup> (0.113, 0.197)
+</td>
+<td>
+0.187<sup>***</sup> (0.142, 0.231)
+</td>
+<td>
+0.182<sup>***</sup> (0.138, 0.226)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">gdp per cap</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.001</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.001&nbsp;–&nbsp;-0.000</td>
-<td style="text-align: center;"><strong>0.007</strong></td>
-<td style="text-align: center;">-0.000</td>
-<td style="text-align: center;">-0.001&nbsp;–&nbsp;0.000</td>
-<td style="text-align: center;">0.155</td>
+<tr>
+<td style="text-align:left">
+economics
+</td>
+<td>
+-0.178<sup>*</sup> (-0.322, -0.033)
+</td>
+<td>
+-0.077 (-0.228, 0.074)
+</td>
+<td>
+-0.043 (-0.193, 0.107)
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
+<tr>
+<td style="text-align:left">
+environment
+</td>
+<td>
+0.025 (-0.087, 0.137)
+</td>
+<td>
+0.029 (-0.075, 0.134)
+</td>
+<td>
+0.010 (-0.089, 0.109)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.197 / 0.106</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.324 / 0.230</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.378 / 0.291</td>
+<tr>
+<td style="text-align:left">
+health
+</td>
+<td>
+-0.064 (-0.167, 0.040)
+</td>
+<td>
+-0.047 (-0.143, 0.050)
+</td>
+<td>
+-0.084 (-0.206, 0.039)
+</td>
 </tr>
-</tbody>
-</table>
-
-
-</div>
+<tr>
+<td style="text-align:left">
+production
+</td>
+<td>
+0.075 (-0.017, 0.167)
+</td>
+<td>
+0.065 (-0.021, 0.151)
+</td>
+<td>
+0.068 (-0.001, 0.136)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+social
+</td>
+<td>
+-0.019 (-0.107, 0.069)
+</td>
+<td>
+-0.019 (-0.101, 0.062)
+</td>
+<td>
+-0.051 (-0.135, 0.033)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+gdp_per_cap
+</td>
+<td>
+</td>
+<td>
+-0.001<sup>**</sup> (-0.001, -0.0002)
+</td>
+<td>
+-0.0004 (-0.001, 0.0001)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+WLS
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+<td>
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Robust
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+0.197
+</td>
+<td>
+0.324
+</td>
+<td>
+0.378
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+0.106
+</td>
+<td>
+0.230
+</td>
+<td>
+0.291
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+0.022 (df = 44)
+</td>
+<td>
+0.020 (df = 43)
+</td>
+<td>
+42.586 (df = 43)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+2.162 (df = 5; 44)
+</td>
+<td>
+3.439<sup>**</sup> (df = 6; 43)
+</td>
+<td>
+4.354<sup>**</sup> (df = 6; 43)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td colspan="3" style="text-align:right">
+<sup>⋆</sup>p&lt;0.05; <sup>⋆⋆</sup>p&lt;0.01; <sup>⋆⋆⋆</sup>p&lt;0.001
+</td>
+</tr>
+</tbody></table>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
@@ -703,15 +847,279 @@ BP = 9.6567, df = 5, p-value = 0.08557</code></pre>
 <span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell centered-table">
-<div class="cell-output cell-output-stdout">
-<pre><code>NULL</code></pre>
-</div>
+<div class="cell stargazer-table">
+<table style="text-align:center">
+<tbody><tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+<em>Dependent variable:</em>
+</td>
+</tr>
+<tr>
+<td>
+</td>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+Life Expectancy
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+Dimensions
+</td>
+<td>
+With GDP
+</td>
+<td>
+GDP and Weights
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(1)
+</td>
+<td>
+(2)
+</td>
+<td>
+(3)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+69.648<sup>***</sup> (66.485, 72.811)
+</td>
+<td>
+66.179<sup>***</sup> (63.168, 69.190)
+</td>
+<td>
+66.873<sup>***</sup> (63.882, 69.865)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+economics
+</td>
+<td>
+20.683<sup>***</sup> (9.719, 31.647)
+</td>
+<td>
+9.671 (-0.560, 19.901)
+</td>
+<td>
+6.081 (-4.079, 16.242)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+environment
+</td>
+<td>
+-2.077 (-10.617, 6.463)
+</td>
+<td>
+-2.560 (-9.640, 4.520)
+</td>
+<td>
+-4.881 (-11.568, 1.807)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+health
+</td>
+<td>
+10.426<sup>*</sup> (2.590, 18.262)
+</td>
+<td>
+8.555<sup>*</sup> (2.012, 15.098)
+</td>
+<td>
+5.779 (-2.548, 14.106)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+production
+</td>
+<td>
+-4.390 (-11.381, 2.601)
+</td>
+<td>
+-3.325 (-9.137, 2.486)
+</td>
+<td>
+0.122 (-4.522, 4.766)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+social
+</td>
+<td>
+1.964 (-4.710, 8.637)
+</td>
+<td>
+2.019 (-3.511, 7.549)
+</td>
+<td>
+3.976 (-1.717, 9.669)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+gdp_per_cap
+</td>
+<td>
+</td>
+<td>
+0.080<sup>***</sup> (0.046, 0.115)
+</td>
+<td>
+0.086<sup>***</sup> (0.051, 0.120)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+WLS
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+<td>
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Robust
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+0.405
+</td>
+<td>
+0.600
+</td>
+<td>
+0.691
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+0.337
+</td>
+<td>
+0.545
+</td>
+<td>
+0.648
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+1.674 (df = 44)
+</td>
+<td>
+1.387 (df = 43)
+</td>
+<td>
+2,887.952 (df = 43)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+5.979<sup>***</sup> (df = 5; 44)
+</td>
+<td>
+10.767<sup>***</sup> (df = 6; 43)
+</td>
+<td>
+16.014<sup>***</sup> (df = 6; 43)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td colspan="3" style="text-align:right">
+<sup>⋆</sup>p&lt;0.05; <sup>⋆⋆</sup>p&lt;0.01; <sup>⋆⋆⋆</sup>p&lt;0.001
+</td>
+</tr>
+</tbody></table>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -726,7 +1134,7 @@ BP = 9.6567, df = 5, p-value = 0.08557</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>lmtest<span class="sc">::</span><span class="fu">bptest</span>(lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>lmtest<span class="sc">::</span><span class="fu">bptest</span>(lm2)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -737,276 +1145,564 @@ BP = 11.581, df = 5, p-value = 0.041</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>life_exp_vcov <span class="ot">&lt;-</span> <span class="fu">vcovHC</span>(lm2, <span class="at">type =</span> <span class="st">'HC3'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>life_exp_vcov <span class="ot">&lt;-</span> <span class="fu">vcovHC</span>(lm2, <span class="at">type =</span> <span class="st">'HC3'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell centered-table">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Life Expectancy - Robust SEs</caption>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">Dimensions Only</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">With GDP per Capita</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">With GDP and Population Weights</td>
+<div class="cell stargazer-table">
+<table style="text-align:center">
+<tbody><tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
-<td style="text-align: center;">p</td>
-<td style="text-align: center;">Estimates</td>
-<td style="text-align: center;">CI</td>
-<td style="text-align: center;">p</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+<em>Dependent variable:</em>
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">69.648</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">66.396&nbsp;–&nbsp;72.900</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">66.179</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">63.081&nbsp;–&nbsp;69.277</td>
-<td style="text-align: center;"><strong>&lt;0.001</strong></td>
-<td style="text-align: center;">66.873</td>
-<td style="text-align: center;">63.796&nbsp;–&nbsp;69.951</td>
-<td style="text-align: center;"><strong>&lt;0.001</strong></td>
+<tr>
+<td>
+</td>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">economics</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">20.683</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">9.409&nbsp;–&nbsp;31.957</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.001</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">9.671</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-0.856&nbsp;–&nbsp;20.198</td>
-<td style="text-align: center;">0.071</td>
-<td style="text-align: center;">6.081</td>
-<td style="text-align: center;">-4.373&nbsp;–&nbsp;16.536</td>
-<td style="text-align: center;">0.247</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+Life Expectancy
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">environment</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-2.077</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-10.858&nbsp;–&nbsp;6.705</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.636</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-2.560</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-9.845&nbsp;–&nbsp;4.725</td>
-<td style="text-align: center;">0.482</td>
-<td style="text-align: center;">-4.881</td>
-<td style="text-align: center;">-11.761&nbsp;–&nbsp;2.000</td>
-<td style="text-align: center;">0.160</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+Dimensions
+</td>
+<td>
+With GDP
+</td>
+<td>
+GDP and Weights
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">health</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">10.426</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.368&nbsp;–&nbsp;18.484</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.012</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">8.555</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.823&nbsp;–&nbsp;15.287</td>
-<td style="text-align: center;"><strong>0.014</strong></td>
-<td style="text-align: center;">5.779</td>
-<td style="text-align: center;">-2.789&nbsp;–&nbsp;14.347</td>
-<td style="text-align: center;">0.181</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(1)
+</td>
+<td>
+(2)
+</td>
+<td>
+(3)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">production</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-4.390</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-11.578&nbsp;–&nbsp;2.799</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.225</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-3.325</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-9.305&nbsp;–&nbsp;2.654</td>
-<td style="text-align: center;">0.268</td>
-<td style="text-align: center;">0.122</td>
-<td style="text-align: center;">-4.656&nbsp;–&nbsp;4.900</td>
-<td style="text-align: center;">0.959</td>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">social</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.964</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-4.899&nbsp;–&nbsp;8.826</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.567</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.019</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-3.672&nbsp;–&nbsp;7.710</td>
-<td style="text-align: center;">0.478</td>
-<td style="text-align: center;">3.976</td>
-<td style="text-align: center;">-1.882&nbsp;–&nbsp;9.834</td>
-<td style="text-align: center;">0.178</td>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+69.648<sup>***</sup> (66.717, 72.580)
+</td>
+<td>
+66.179<sup>***</sup> (62.936, 69.422)
+</td>
+<td>
+66.873<sup>***</sup> (64.062, 69.685)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">gdp per cap</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.080</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.045&nbsp;–&nbsp;0.116</td>
-<td style="text-align: center;"><strong>&lt;0.001</strong></td>
-<td style="text-align: center;">0.086</td>
-<td style="text-align: center;">0.050&nbsp;–&nbsp;0.121</td>
-<td style="text-align: center;"><strong>&lt;0.001</strong></td>
+<tr>
+<td style="text-align:left">
+economics
+</td>
+<td>
+20.683<sup>***</sup> (11.961, 29.404)
+</td>
+<td>
+9.671 (-2.864, 22.206)
+</td>
+<td>
+6.081 (-7.286, 19.449)
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
+<tr>
+<td style="text-align:left">
+environment
+</td>
+<td>
+-2.077 (-9.921, 5.768)
+</td>
+<td>
+-2.560 (-10.673, 5.553)
+</td>
+<td>
+-4.881 (-13.346, 3.584)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.405 / 0.337</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.600 / 0.545</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.691 / 0.648</td>
+<tr>
+<td style="text-align:left">
+health
+</td>
+<td>
+10.426 (-6.643, 27.495)
+</td>
+<td>
+8.555 (-6.598, 23.708)
+</td>
+<td>
+5.779 (-5.993, 17.551)
+</td>
 </tr>
-</tbody>
-</table>
-
-
+<tr>
+<td style="text-align:left">
+production
+</td>
+<td>
+-4.390<sup>*</sup> (-8.681, -0.098)
+</td>
+<td>
+-3.325 (-11.291, 4.640)
+</td>
+<td>
+0.122 (-9.042, 9.286)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+social
+</td>
+<td>
+1.964 (-13.589, 17.516)
+</td>
+<td>
+2.019 (-10.149, 14.187)
+</td>
+<td>
+3.976 (-5.316, 13.268)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+gdp_per_cap
+</td>
+<td>
+</td>
+<td>
+0.080<sup>***</sup> (0.034, 0.126)
+</td>
+<td>
+0.086<sup>***</sup> (0.050, 0.121)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+WLS
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+<td>
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Robust
+</td>
+<td>
+Yes
+</td>
+<td>
+Yes
+</td>
+<td>
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+7.177*** (df = 5; 44)
+</td>
+<td>
+11.244*** (df = 6; 43)
+</td>
+<td>
+16.06*** (df = 6; 43)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+0.405
+</td>
+<td>
+0.600
+</td>
+<td>
+0.691
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+0.337
+</td>
+<td>
+0.545
+</td>
+<td>
+0.648
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+1.674 (df = 44)
+</td>
+<td>
+1.387 (df = 43)
+</td>
+<td>
+2,887.952 (df = 43)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td colspan="3" style="text-align:right">
+<sup>⋆</sup>p&lt;0.05; <sup>⋆⋆</sup>p&lt;0.01; <sup>⋆⋆⋆</sup>p&lt;0.001
+</td>
+</tr>
+</tbody></table>
 </div>
-</div>
-<p>When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model is explaining 33.6880094% of the variance in life expectancy, which is surprisingly strong.</p>
+<p>When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model without GDP is already explaining 34% of the variance in life expectancy, which is surprisingly strong.</p>
 </section>
 <section id="food-environment-index" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Food Environment Index</h1>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  foodEnvironmentIndex <span class="sc">~</span> economics <span class="sc">+</span> environment <span class="sc">+</span> health <span class="sc">+</span> production <span class="sc">+</span> social,</span>
-<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat</span>
-<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>lm3 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  foodEnvironmentIndex <span class="sc">~</span> economics <span class="sc">+</span> environment <span class="sc">+</span> health <span class="sc">+</span> production <span class="sc">+</span> social,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell centered-table">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Food Environment Index</caption>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">Dimensions Only</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">With GDP per Capita</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">With GDP and Population Weights</td>
+<div class="cell stargazer-table">
+<table style="text-align:center">
+<tbody><tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
-<td style="text-align: center;">p</td>
-<td style="text-align: center;">Estimates</td>
-<td style="text-align: center;">CI</td>
-<td style="text-align: center;">p</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+<em>Dependent variable:</em>
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.993</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.751&nbsp;–&nbsp;5.235</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.010</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.798</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-1.418&nbsp;–&nbsp;3.015</td>
-<td style="text-align: center;">0.472</td>
-<td style="text-align: center;">1.385</td>
-<td style="text-align: center;">-0.797&nbsp;–&nbsp;3.567</td>
-<td style="text-align: center;">0.207</td>
+<tr>
+<td>
+</td>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">economics</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">11.206</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">3.434&nbsp;–&nbsp;18.978</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.006</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">4.241</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-3.292&nbsp;–&nbsp;11.773</td>
-<td style="text-align: center;">0.263</td>
-<td style="text-align: center;">6.848</td>
-<td style="text-align: center;">-0.564&nbsp;–&nbsp;14.259</td>
-<td style="text-align: center;">0.069</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+Food Environment Index
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">environment</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.520</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-4.534&nbsp;–&nbsp;7.573</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.615</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.214</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-3.999&nbsp;–&nbsp;6.427</td>
-<td style="text-align: center;">0.641</td>
-<td style="text-align: center;">1.329</td>
-<td style="text-align: center;">-3.549&nbsp;–&nbsp;6.206</td>
-<td style="text-align: center;">0.586</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+Dimensions
+</td>
+<td>
+With GDP
+</td>
+<td>
+GDP and Weights
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">health</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">6.610</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">1.055&nbsp;–&nbsp;12.165</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.021</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">5.426</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.609&nbsp;–&nbsp;10.244</td>
-<td style="text-align: center;"><strong>0.028</strong></td>
-<td style="text-align: center;">3.989</td>
-<td style="text-align: center;">-2.084&nbsp;–&nbsp;10.062</td>
-<td style="text-align: center;">0.192</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(1)
+</td>
+<td>
+(2)
+</td>
+<td>
+(3)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">production</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-5.960</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-10.916&nbsp;–&nbsp;-1.005</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.020</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-5.287</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-9.566&nbsp;–&nbsp;-1.008</td>
-<td style="text-align: center;"><strong>0.017</strong></td>
-<td style="text-align: center;">-6.167</td>
-<td style="text-align: center;">-9.554&nbsp;–&nbsp;-2.780</td>
-<td style="text-align: center;"><strong>0.001</strong></td>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">social</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.838</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-3.892&nbsp;–&nbsp;5.569</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.723</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.873</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-3.199&nbsp;–&nbsp;4.945</td>
-<td style="text-align: center;">0.668</td>
-<td style="text-align: center;">2.488</td>
-<td style="text-align: center;">-1.665&nbsp;–&nbsp;6.640</td>
-<td style="text-align: center;">0.234</td>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+2.993<sup>*</sup> (0.812, 5.173)
+</td>
+<td>
+0.798 (-1.356, 2.953)
+</td>
+<td>
+1.385 (-0.736, 3.505)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">gdp per cap</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.051</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.026&nbsp;–&nbsp;0.076</td>
-<td style="text-align: center;"><strong>&lt;0.001</strong></td>
-<td style="text-align: center;">0.038</td>
-<td style="text-align: center;">0.013&nbsp;–&nbsp;0.063</td>
-<td style="text-align: center;"><strong>0.004</strong></td>
+<tr>
+<td style="text-align:left">
+economics
+</td>
+<td>
+11.206<sup>**</sup> (3.648, 18.765)
+</td>
+<td>
+4.241 (-3.080, 11.561)
+</td>
+<td>
+6.848 (-0.355, 14.050)
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
+<tr>
+<td style="text-align:left">
+environment
+</td>
+<td>
+1.520 (-4.367, 7.407)
+</td>
+<td>
+1.214 (-3.852, 6.280)
+</td>
+<td>
+1.329 (-3.412, 6.069)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.347 / 0.273</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.528 / 0.462</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.644 / 0.594</td>
+<tr>
+<td style="text-align:left">
+health
+</td>
+<td>
+6.610<sup>*</sup> (1.208, 12.012)
+</td>
+<td>
+5.426<sup>*</sup> (0.744, 10.108)
+</td>
+<td>
+3.989 (-1.914, 9.892)
+</td>
 </tr>
-</tbody>
-</table>
-
-
-</div>
+<tr>
+<td style="text-align:left">
+production
+</td>
+<td>
+-5.960<sup>*</sup> (-10.779, -1.141)
+</td>
+<td>
+-5.287<sup>*</sup> (-9.445, -1.129)
+</td>
+<td>
+-6.167<sup>***</sup> (-9.459, -2.875)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+social
+</td>
+<td>
+0.838 (-3.762, 5.439)
+</td>
+<td>
+0.873 (-3.084, 4.831)
+</td>
+<td>
+2.488 (-1.548, 6.523)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+gdp_per_cap
+</td>
+<td>
+</td>
+<td>
+0.051<sup>***</sup> (0.026, 0.075)
+</td>
+<td>
+0.038<sup>**</sup> (0.013, 0.062)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+WLS
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+<td>
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Robust
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+0.347
+</td>
+<td>
+0.528
+</td>
+<td>
+0.644
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+0.273
+</td>
+<td>
+0.462
+</td>
+<td>
+0.594
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+1.154 (df = 44)
+</td>
+<td>
+0.993 (df = 43)
+</td>
+<td>
+2,047.217 (df = 43)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+4.672<sup>**</sup> (df = 5; 44)
+</td>
+<td>
+8.005<sup>***</sup> (df = 6; 43)
+</td>
+<td>
+12.940<sup>***</sup> (df = 6; 43)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td colspan="3" style="text-align:right">
+<sup>⋆</sup>p&lt;0.05; <sup>⋆⋆</sup>p&lt;0.01; <sup>⋆⋆⋆</sup>p&lt;0.001
+</td>
+</tr>
+</tbody></table>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">bptest</span>(lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output cell-output-stdout">
 <pre><code>
@@ -1017,7 +1713,7 @@ BP = 5.6531, df = 5, p-value = 0.3414</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(lm3)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -1032,31 +1728,31 @@ BP = 5.6531, df = 5, p-value = 0.3414</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
-<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>  caret,</span>
-<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  ranger,</span>
-<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  glmnet</span>
-<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Split data 60/40</span></span>
-<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>indices <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(dat<span class="sc">$</span>foodEnvironmentIndex, <span class="at">p =</span> <span class="fl">0.60</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
-<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>training_data <span class="ot">&lt;-</span> dat[indices, ]</span>
-<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>testing_data <span class="ot">&lt;-</span> dat[<span class="sc">-</span>indices,]</span>
-<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a>my_folds <span class="ot">&lt;-</span> <span class="fu">createFolds</span>(training_data<span class="sc">$</span>foodEnvironmentIndex, <span class="at">k =</span> <span class="dv">5</span>, <span class="at">list =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-15"><a href="#cb16-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Control</span></span>
-<span id="cb16-16"><a href="#cb16-16" aria-hidden="true" tabindex="-1"></a>my_control <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
-<span id="cb16-17"><a href="#cb16-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">'cv'</span>,</span>
-<span id="cb16-18"><a href="#cb16-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">5</span>,</span>
-<span id="cb16-19"><a href="#cb16-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">verboseIter =</span> <span class="cn">TRUE</span>,</span>
-<span id="cb16-20"><a href="#cb16-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> my_folds</span>
-<span id="cb16-21"><a href="#cb16-21" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb16-22"><a href="#cb16-22" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb16-23"><a href="#cb16-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for zero variance or near zero variance indicators</span></span>
-<span id="cb16-24"><a href="#cb16-24" aria-hidden="true" tabindex="-1"></a><span class="fu">nearZeroVar</span>(dat, <span class="at">names =</span> <span class="cn">TRUE</span>, <span class="at">saveMetrics =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb16-25"><a href="#cb16-25" aria-hidden="true" tabindex="-1"></a><span class="co"># All clear</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  caret,</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  ranger,</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>  glmnet</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Split data 60/40</span></span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>indices <span class="ot">&lt;-</span> <span class="fu">createDataPartition</span>(dat<span class="sc">$</span>foodEnvironmentIndex, <span class="at">p =</span> <span class="fl">0.60</span>, <span class="at">list =</span> <span class="cn">FALSE</span>)</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>training_data <span class="ot">&lt;-</span> dat[indices, ]</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>testing_data <span class="ot">&lt;-</span> dat[<span class="sc">-</span>indices,]</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>my_folds <span class="ot">&lt;-</span> <span class="fu">createFolds</span>(training_data<span class="sc">$</span>foodEnvironmentIndex, <span class="at">k =</span> <span class="dv">5</span>, <span class="at">list =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Control</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>my_control <span class="ot">&lt;-</span> <span class="fu">trainControl</span>(</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">'cv'</span>,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">number =</span> <span class="dv">5</span>,</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>  <span class="at">verboseIter =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  <span class="at">index =</span> my_folds</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co"># Check for zero variance or near zero variance indicators</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a><span class="fu">nearZeroVar</span>(dat, <span class="at">names =</span> <span class="cn">TRUE</span>, <span class="at">saveMetrics =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a><span class="co"># All clear</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <section id="glmnet" class="level2" data-number="4.1">
@@ -1064,25 +1760,25 @@ BP = 5.6531, df = 5, p-value = 0.3414</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>food_env_glmnet <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
-<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  foodEnvironmentIndex <span class="sc">~</span> economics <span class="sc">+</span> environment <span class="sc">+</span> health <span class="sc">+</span> production <span class="sc">+</span> social <span class="sc">+</span> gdp_per_cap,</span>
-<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_data, </span>
-<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(</span>
-<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">1</span>, <span class="at">length =</span> <span class="dv">5</span>),</span>
-<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> <span class="fu">seq</span>(<span class="fl">0.0001</span>, <span class="fl">0.1</span>, <span class="at">length =</span> <span class="dv">100</span>)</span>
-<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
-<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"glmnet"</span>,</span>
-<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> my_control,</span>
-<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">preProcess =</span> <span class="fu">c</span>(<span class="st">'zv'</span>, <span class="st">'center'</span>, <span class="st">'scale'</span>)</span>
-<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>food_env_glmnet <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>  foodEnvironmentIndex <span class="sc">~</span> economics <span class="sc">+</span> environment <span class="sc">+</span> health <span class="sc">+</span> production <span class="sc">+</span> social <span class="sc">+</span> gdp_per_cap,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_data, </span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneGrid =</span> <span class="fu">expand.grid</span>(</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fu">seq</span>(<span class="fl">0.1</span>, <span class="dv">1</span>, <span class="at">length =</span> <span class="dv">5</span>),</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">lambda =</span> <span class="fu">seq</span>(<span class="fl">0.0001</span>, <span class="fl">0.1</span>, <span class="at">length =</span> <span class="dv">100</span>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"glmnet"</span>,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> my_control,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">preProcess =</span> <span class="fu">c</span>(<span class="st">'zv'</span>, <span class="st">'center'</span>, <span class="st">'scale'</span>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">varImp</span>(food_env_glmnet, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(importance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">varImp</span>(food_env_glmnet, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(importance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -1099,23 +1795,23 @@ BP = 5.6531, df = 5, p-value = 0.3414</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
-<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>food_env_rf <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
-<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  foodEnvironmentIndex <span class="sc">~</span> production <span class="sc">+</span> social <span class="sc">+</span> health <span class="sc">+</span> economics <span class="sc">+</span> environment <span class="sc">+</span> gdp_per_cap,</span>
-<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_data, </span>
-<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneLength =</span> <span class="dv">7</span>,</span>
-<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ranger"</span>,</span>
-<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> my_control,</span>
-<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">importance =</span> <span class="st">'impurity'</span></span>
-<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">42</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>food_env_rf <span class="ot">&lt;-</span> <span class="fu">train</span>(</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>  foodEnvironmentIndex <span class="sc">~</span> production <span class="sc">+</span> social <span class="sc">+</span> health <span class="sc">+</span> economics <span class="sc">+</span> environment <span class="sc">+</span> gdp_per_cap,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> training_data, </span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">tuneLength =</span> <span class="dv">7</span>,</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">method =</span> <span class="st">"ranger"</span>,</span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">trControl =</span> my_control,</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">importance =</span> <span class="st">'impurity'</span></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>OOB prediction error (MSE): 1.2917313</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">varImp</span>(food_env_rf, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
-<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(importance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>importance <span class="ot">&lt;-</span> <span class="fu">varImp</span>(food_env_rf, <span class="at">scale =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(importance)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
@@ -1132,141 +1828,285 @@ BP = 5.6531, df = 5, p-value = 0.3414</code></pre>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>lm4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
-<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  happinessScore <span class="sc">~</span> economics <span class="sc">+</span> environment <span class="sc">+</span> health <span class="sc">+</span> production <span class="sc">+</span> social,</span>
-<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat</span>
-<span id="cb21-4"><a href="#cb21-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>lm4 <span class="ot">&lt;-</span> <span class="fu">lm</span>(</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>  happinessScore <span class="sc">~</span> economics <span class="sc">+</span> environment <span class="sc">+</span> health <span class="sc">+</span> production <span class="sc">+</span> social,</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">data =</span> dat</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell centered-table">
-<div class="cell-output-display">
-<table class="caption-top table table-sm table-striped small" data-quarto-postprocess="true">
-<caption>Happiness Index</caption>
-<tbody>
-<tr class="odd">
-<td data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">&nbsp;</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">Dimensions Only</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">With GDP per Capita</td>
-<td colspan="3" data-quarto-table-cell-role="th" style="text-align: center; border-top: double; font-style: normal; font-weight: bold; padding: 0.2cm;">With GDP and Population Weights</td>
+<div class="cell stargazer-table">
+<table style="text-align:center">
+<tbody><tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Predictors</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">p</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">Estimates</td>
-<td style="text-align: center; border-bottom: 1px solid; font-style: italic; font-weight: normal;">CI</td>
-<td style="text-align: center;">p</td>
-<td style="text-align: center;">Estimates</td>
-<td style="text-align: center;">CI</td>
-<td style="text-align: center;">p</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+<em>Dependent variable:</em>
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">(Intercept)</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">34.743</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">20.931&nbsp;–&nbsp;48.556</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>&lt;0.001</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">22.496</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">8.378&nbsp;–&nbsp;36.614</td>
-<td style="text-align: center;"><strong>0.002</strong></td>
-<td style="text-align: center;">23.592</td>
-<td style="text-align: center;">8.693&nbsp;–&nbsp;38.491</td>
-<td style="text-align: center;"><strong>0.003</strong></td>
+<tr>
+<td>
+</td>
+<td colspan="3" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">economics</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">75.244</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">27.361&nbsp;–&nbsp;123.128</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"><strong>0.003</strong></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">36.367</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-11.608&nbsp;–&nbsp;84.341</td>
-<td style="text-align: center;">0.134</td>
-<td style="text-align: center;">34.409</td>
-<td style="text-align: center;">-16.199&nbsp;–&nbsp;85.018</td>
-<td style="text-align: center;">0.177</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td colspan="3">
+Happiness Index
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">environment</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-8.884</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-46.180&nbsp;–&nbsp;28.412</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.634</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-10.590</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-43.790&nbsp;–&nbsp;22.611</td>
-<td style="text-align: center;">0.523</td>
-<td style="text-align: center;">-17.946</td>
-<td style="text-align: center;">-51.254&nbsp;–&nbsp;15.362</td>
-<td style="text-align: center;">0.283</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+Dimensions
+</td>
+<td>
+With GDP
+</td>
+<td>
+GDP and Weights
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">health</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">8.618</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-25.605&nbsp;–&nbsp;42.841</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.614</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">2.012</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-28.670&nbsp;–&nbsp;32.693</td>
-<td style="text-align: center;">0.895</td>
-<td style="text-align: center;">11.637</td>
-<td style="text-align: center;">-29.837&nbsp;–&nbsp;53.110</td>
-<td style="text-align: center;">0.574</td>
+<tr>
+<td style="text-align:left">
+</td>
+<td>
+(1)
+</td>
+<td>
+(2)
+</td>
+<td>
+(3)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">production</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-20.755</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-51.286&nbsp;–&nbsp;9.776</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.178</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-16.998</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-44.248&nbsp;–&nbsp;10.252</td>
-<td style="text-align: center;">0.215</td>
-<td style="text-align: center;">-7.830</td>
-<td style="text-align: center;">-30.960&nbsp;–&nbsp;15.300</td>
-<td style="text-align: center;">0.498</td>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">social</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">9.553</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-19.593&nbsp;–&nbsp;38.698</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.512</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">9.748</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">-16.186&nbsp;–&nbsp;35.682</td>
-<td style="text-align: center;">0.453</td>
-<td style="text-align: center;">19.984</td>
-<td style="text-align: center;">-8.373&nbsp;–&nbsp;48.340</td>
-<td style="text-align: center;">0.162</td>
+<tr>
+<td style="text-align:left">
+Constant
+</td>
+<td>
+34.743<sup>***</sup> (21.310, 48.177)
+</td>
+<td>
+22.496<sup>**</sup> (8.775, 36.216)
+</td>
+<td>
+23.592<sup>**</sup> (9.112, 38.072)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">gdp per cap</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;"></td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.284</td>
-<td style="text-align: left; padding: 0.2cm; vertical-align: top;">0.123&nbsp;–&nbsp;0.445</td>
-<td style="text-align: center;"><strong>0.001</strong></td>
-<td style="text-align: center;">0.191</td>
-<td style="text-align: center;">0.018&nbsp;–&nbsp;0.363</td>
-<td style="text-align: center;"><strong>0.031</strong></td>
+<tr>
+<td style="text-align:left">
+economics
+</td>
+<td>
+75.244<sup>**</sup> (28.677, 121.811)
+</td>
+<td>
+36.367 (-10.258, 82.991)
+</td>
+<td>
+34.409 (-14.776, 83.594)
+</td>
 </tr>
-<tr class="even">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">Observations</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm; border-top: 1px solid;">50</td>
+<tr>
+<td style="text-align:left">
+environment
+</td>
+<td>
+-8.884 (-45.155, 27.386)
+</td>
+<td>
+-10.590 (-42.856, 21.677)
+</td>
+<td>
+-17.946 (-50.317, 14.425)
+</td>
 </tr>
-<tr class="odd">
-<td style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">R<sup>2</sup> / R<sup>2</sup> adjusted</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.229 / 0.142</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.404 / 0.321</td>
-<td colspan="3" style="text-align: left; padding: 0.2cm; vertical-align: top; padding-top: 0.1cm; padding-bottom: 0.1cm;">0.429 / 0.350</td>
+<tr>
+<td style="text-align:left">
+health
+</td>
+<td>
+8.618 (-24.664, 41.900)
+</td>
+<td>
+2.012 (-27.807, 31.830)
+</td>
+<td>
+11.637 (-28.670, 51.944)
+</td>
 </tr>
-</tbody>
-</table>
-
-
-</div>
+<tr>
+<td style="text-align:left">
+production
+</td>
+<td>
+-20.755 (-50.446, 8.936)
+</td>
+<td>
+-16.998 (-43.481, 9.486)
+</td>
+<td>
+-7.830 (-30.309, 14.649)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+social
+</td>
+<td>
+9.553 (-18.791, 37.897)
+</td>
+<td>
+9.748 (-15.456, 34.953)
+</td>
+<td>
+19.984 (-7.575, 47.543)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+gdp_per_cap
+</td>
+<td>
+</td>
+<td>
+0.284<sup>***</sup> (0.127, 0.440)
+</td>
+<td>
+0.191<sup>*</sup> (0.023, 0.358)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+WLS
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+<td>
+Yes
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Robust
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+<td>
+No
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Observations
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+<td>
+50
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+R<sup>2</sup>
+</td>
+<td>
+0.229
+</td>
+<td>
+0.404
+</td>
+<td>
+0.429
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Adjusted R<sup>2</sup>
+</td>
+<td>
+0.142
+</td>
+<td>
+0.321
+</td>
+<td>
+0.350
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+Residual Std. Error
+</td>
+<td>
+7.110 (df = 44)
+</td>
+<td>
+6.322 (df = 43)
+</td>
+<td>
+13,979.790 (df = 43)
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+F Statistic
+</td>
+<td>
+2.616<sup>*</sup> (df = 5; 44)
+</td>
+<td>
+4.865<sup>***</sup> (df = 6; 43)
+</td>
+<td>
+5.388<sup>***</sup> (df = 6; 43)
+</td>
+</tr>
+<tr>
+<td colspan="4" style="border-bottom: 1px solid black">
+</td>
+</tr>
+<tr>
+<td style="text-align:left">
+<em>Note:</em>
+</td>
+<td colspan="3" style="text-align:right">
+<sup>⋆</sup>p&lt;0.05; <sup>⋆⋆</sup>p&lt;0.01; <sup>⋆⋆⋆</sup>p&lt;0.001
+</td>
+</tr>
+</tbody></table>
 </div>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb21"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="fu">check_model</span>(lm4)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
