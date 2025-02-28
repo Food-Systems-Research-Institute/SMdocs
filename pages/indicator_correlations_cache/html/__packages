@@ -1,6 +1,7 @@
 dplyr
 conflicted
 projecter
+reactable
 tidyr
 tibble
 stringr
@@ -10,4 +11,3 @@ plotly
 reshape
 Hmisc
 viridisLite
-reactable

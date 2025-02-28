@@ -1,3 +1,17 @@
 dplyr
 conflicted
 projecter
+readr
+stringr
+ggplot2
+lattice
+caret
+purrr
+DHARMa
+zoo
+lmtest
+snakecase
+psych
+ranger
+Matrix
+glmnet

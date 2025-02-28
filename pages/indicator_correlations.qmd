@@ -20,16 +20,10 @@ conflicts_prefer(
   .quiet = TRUE
 )
 
+source('dev/get_reactable.r')
 ```
 
 This page will explore correlations between variables at the indicator level.
-
-To Do:
-
-- Correlation matrix between our 27 indicators
-- Consider a chord diagram showing strength of correlations
-- Use results to inform how we want to weight or otherwise deal with our indicators. High correlations between indicators would suggest some aspects of the system will be double-counted. If so, either the framework should be revised, or indicators should be weighted accordingly. 
-
 
 # Correlation Matrix
 
@@ -57,15 +51,12 @@ final_scores <- readRDS('data/state_score_iterations.rds')
 # Pull out minmax geo indicators only. Also use states only, no aggregates
 minmax_geo_indicators <- final_scores$minmax_geometric$indicator_scores %>% 
   filter(! state %in% c('US_mean', 'US_median', 'NewEng'))
-get_str(minmax_geo_indicators)
+# get_str(minmax_geo_indicators)
 
 # Make a correlation matrix using all the selected variables
 mat <- minmax_geo_indicators %>% 
   select(-state) %>% 
   as.matrix()
-
-# Lose top half to make a triangle
-# mat[lower.tri(mat)] <- NA
 
 # Get correlations
 cor <- rcorr(mat, type = 'pearson')
@@ -74,10 +65,6 @@ cor <- rcorr(mat, type = 'pearson')
 cor_r <- melt(cor$r) %>% 
   setNames(c('var_1', 'var_2', 'value'))
   # mutate(across(where(is.factor), as.character))
-
-# Keep only lower half of matrix
-# cor_r <- cor_r %>%
-  # filter(var_1 >= var_2)
 
 # Save p values
 cor_p <- melt(cor$P)
@@ -98,9 +85,6 @@ plot <- cor_r %>%
     high = "#1b7837", 
     midpoint = 0
   ) +
-  # scale_fill_distiller(
-  #   palette = 'PRGn',
-  # ) +
   theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
   labs(
     x = NULL,
@@ -123,13 +107,14 @@ We have many significant correlations between indicators, but we probably don't 
 
 ```{r}
 #| label: explore_correlations
+#| output: false
 pacman::p_load(
   reactable,
   Hmisc
 )
 
 # Isolate all significant correlations
-# get_str(cor_r)
+get_str(cor_r)
 
 # Save p values
 cor_p <- melt(cor$P)
@@ -137,7 +122,7 @@ p.value <- cor_p$value
 
 # Add p values to dataframe with correlations
 cor_r$p <- cor_p$value
-# get_str(cor_r)
+get_str(cor_r)
 
 # filter for correlations over 0.5
 sig <- cor_r %>% 
@@ -155,28 +140,16 @@ sig <- sig %>%
     across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))
   ) %>% 
   setNames(c('Indicator 1', 'Indicator 2', 'Correlation', 'P Value'))
-# get_str(sig)
+get_str(sig)
 
-reactable(
-  sig,
-  sortable = TRUE,
-  resizable = TRUE,
-  filterable = TRUE,
-  searchable = TRUE,
-  pagination = TRUE,
-  bordered = TRUE,
-  wrap = TRUE,
-  rownames = FALSE,
-  onClick = 'select',
-  striped = TRUE,
-  pageSizeOptions = c(5, 10, 25, 50, 100),
-  defaultPageSize = 25,
-  showPageSizeOptions = TRUE,
-  highlight = TRUE,
-  style = list(fontSize = "14px"),
-  compact = TRUE,
-  fullWidth = TRUE
-)
+table_out <- get_reactable(sig)
+```
+
+```{r}
+#| label: table_out
+#| class: centered-table
+#| echo: false
+table_out
 ```
 
 The wealth/income distribution indicator (economics) is correlating strongly with several indicators, some from the economics dimension and some from health. Note that there are several metrics in that indicator related to median earnings, which might be a proxy for gdp per capita. Now that I look at this, it might be worth including gdp per capita at least as a control variable to see how much fo the variation it accounts for. 

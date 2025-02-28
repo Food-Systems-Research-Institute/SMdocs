@@ -6,7 +6,6 @@ format:
 editor_options: 
   chunk_output_type: console
 warnings: false
-eval: false
 ---
 
 ```{r}
@@ -64,7 +63,7 @@ dat <- imap(minmax_dat, ~ {
     paste0(
       str_sub(.y, end = 5),
       '_',
-      snakecase::to_snake_case(names(.x[-length(.x)]))
+      names(.x[-length(.x)])
     ),
     'state'
   )
@@ -73,7 +72,7 @@ dat <- imap(minmax_dat, ~ {
 }) %>% 
   reduce(inner_join) %>% 
   select(state, everything()) %>% 
-  filter(!state %in% c('US_mean', 'US_median', 'NewEng'))
+  filter(str_detect(state, '_', negate = TRUE))
 get_str(dat)
 
 # Save this for later use elsewhere
@@ -99,19 +98,29 @@ pacman::p_load(
 # Filter down to just indicators for PCA
 pca_dat <- dat %>% 
   select(starts_with('indic')) %>% 
-  setNames(c(str_remove(names(.), 'indic_')))
-# get_str(pca_dat)
+  setNames(c(str_remove(names(.), 'indic_'))) %>% 
+  as.data.frame()
+# names(pca_dat) <- map_chr(names(pca_dat), ~ {
+#   paste0(
+#     '(',
+#     frame$dimension[match(.x, frame$indicator)],
+#     ')',
+#     .x
+#   )
+# })
+get_str(pca_dat)
 
 # Explore how many factors to extract
-VSS(pca_dat, n = 8, rotate = 'varimax')
-fa.parallel(pca_dat)
+VSS(pca_dat, n = 8, fm = 'pc', rotate = 'promax')
+set.seed(42)
+fa.parallel(pca_dat, fm = 'ml')
 ```
 
-Both MAP and Parallel Analysis determine that there should be 5 components.
+VSS suggests 6 or 7, MAP suggests 8, Parallel Analysis suggests 6.
 
 ```{r}
 #| label: scree
-pca_out <- pca(pca_dat, nfactors = 5)
+pca_out <- pca(pca_dat, nfactors = 6, rotate = 'promax')
 plot(pca_out$values)
 abline(h = 1)
 ```
@@ -124,8 +133,30 @@ Let's go ahead with the recommended components from MAP and PA, which are genera
 
 ```{r}
 #| label: pca
-#| warning: false
 pca_out
+```
+
+Let's try this again with just the loadings table in a format that is easier to read.
+
+```{r}
+#| label: pca_table
+pca_out$loadings %>% 
+  unclass() %>% 
+  as.data.frame() %>% 
+  select(order(colnames(.))) %>%
+  mutate(
+    across(everything(), ~ round(.x, 3)),
+    across(everything(), ~ case_when(
+      .x < 0.02 ~ '',
+      .x >= 0.02 & .x < 0.32 ~ '.',
+      .x >= 0.32 ~ as.character(.x),
+      .default = NA
+    ))
+  ) %>% 
+  rownames_to_column() %>% 
+  rename(indicator = 1) %>% 
+  mutate(dimension = frame$dimension[match(indicator, frame$indicator)]) %>% 
+  select(indicator, dimension, everything())
 ```
 
 There is a lot to look at here, but here are some impressions.

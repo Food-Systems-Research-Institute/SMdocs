@@ -46,6 +46,7 @@ Exploring methods of aggregating data into index and dimension scores. To Add:
 #| label: prep
 #| echo: false
 source('dev/get_setup.R')
+source('dev/get_aggregations.R')
 get_setup()
 ```
 
@@ -189,6 +190,9 @@ normed$winsor <- imp_dat %>%
 
 # Check
 map(normed, get_str)
+
+# Save this for later
+saveRDS(normed, 'data/normalized_metrics_df.rds')
 ```
 
 # Directional Values
@@ -355,10 +359,10 @@ We might also consider PCA here, as we have done with the preliminary dimension 
 
 We will end up with 10 iterations of our data (5 normalization methods \* 2 aggregation methods).
 
-Indicator Means:
+Indicator aggregation:
 
 ```{r}
-#| label: indicator_means
+#| label: indicator_aggregation
 #| output: false
 # We need to attach these back to framework from metadata
 # Filter frame from earlier down to our current metrics
@@ -375,7 +379,7 @@ saveRDS(filtered_frame, 'data/filtered_frame.rds')
 scores <- list()
 
 # Function for geometric mean
-geometric_mean = function(x, na.rm = TRUE){
+geometric_mean <- function(x, na.rm = TRUE){
   exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
 }
 
@@ -428,12 +432,22 @@ indicator_scores <- map(normed, \(df) {
   
 get_str(indicator_scores, 3)
 get_str(indicator_scores, 4)
+
+# Test function
+# test <- get_agg_indicators(normed, filtered_frame)
+# identical(indicator_scores, test)
 ```
 
-Index Means:
+Index aggregation:
 
 ```{r}
-#| label: index_means
+#| label: test_pca_aggregation
+get_str(indicator_scores)
+
+```
+
+```{r}
+#| label: index_aggregation
 #| output: false
 # For each set of indicator scores, calculate index scores
 # get_str(indicator_scores, 4)
@@ -470,12 +484,16 @@ index_scores <- map(indicator_scores, \(norm_type) {
   })
 })
 get_str(index_scores, 4)
+
+# Test function
+# test_indices <- get_agg_indices(indicator_scores, frame)
+# identical(index_scores, test_indices)
 ```
 
-Dimension Means:
+Dimension aggregation:
 
 ```{r}
-#| label: dimension_means
+#| label: dimension_aggregation
 #| output: false
 get_str(index_scores, 4)
 
@@ -506,11 +524,15 @@ dimension_scores <- map(index_scores, \(norm_type) {
   })
 })
 get_str(dimension_scores, 4)
+
+# Test function
+# test_dimensions <- get_agg_dimensions(index_scores, filtered_frame)
+# identical(dimension_scores, test_dimensions)
 ```
 
 # Wrangle
 
-Here, we organize arithmetic and geometric means for each level of the framework (indicator, index, dimension) in a way that is easier to work with. We also add the US state median and median for New England that we can use as points of comparison. 
+Here, we organize arithmetic and geometric means for each level of the framework (indicator, index, dimension) in a way that is easier to work with. We also add means and medians for all US states as well as New England states that we can use as points of comparison.
 
 ```{r}
 #| label: wrangle
@@ -546,13 +568,13 @@ get_output <- function(norm_type, agg_type) {
       bind_cols(
         metrics_df %>% 
           rownames_to_column('fips') %>% 
-          select(fips)
+          dplyr::select(fips)
       ) %>% 
       left_join(
-        select(sm_data$state_key, state, state_code),
+        dplyr::select(sm_data$state_key, state, state_code),
         by = join_by(fips == state_code) 
       ) %>% 
-      select(-fips)
+      dplyr::select(-fips)
   })
   return(out)
 }
@@ -560,7 +582,6 @@ get_output <- function(norm_type, agg_type) {
 # All combinations, also a name
 combos <- expand.grid(
   names(all_scores[[1]]),
-  # c('zscore', 'minmax', 'boxcox', 'rank', 'winsor'), 
   c('arithmetic', 'geometric')
 ) %>% 
   mutate(name = paste0(Var1, '_', Var2))
@@ -573,6 +594,10 @@ scores <- map2(combos[[1]], combos[[2]], ~ {
 get_str(scores, 4)
 get_str(scores, 3)
 
+# Test function
+# test_organized <- get_organized_scores(all_scores, sm_data$state_key, metrics_df)
+# identical(scores, test_organized)
+
 
 ## Add medians for New England states and US
 final_scores <- map(scores, \(method) {
@@ -580,35 +605,51 @@ final_scores <- map(scores, \(method) {
     
     # Mean of every US state and DC
     us_means <- level %>%
-      select(-state) %>% 
+      dplyr::select(-state) %>% 
       colMeans() %>% 
       as.list()
     us_means$state <- 'US_mean'
     
     # Median of every US state and DC
     us_medians <- level %>% 
-      select(-state) %>% 
+      dplyr::select(-state) %>% 
       map_dbl(median) %>% 
       as.list()
     us_medians$state <- 'US_median'
     
     # Mean of just New England states
     ne_means <- level %>% 
-      filter(state %in% c('VT', 'NH', 'ME', 'MA', 'CT', 'RI')) %>% 
-      select(-state) %>% 
+      dplyr::filter(state %in% c('VT', 'NH', 'ME', 'MA', 'CT', 'RI')) %>% 
+      dplyr::select(-state) %>% 
       colMeans() %>% 
       as.list()
-    ne_means$state <- 'NewEng'
+    ne_means$state <- 'NE_mean'
+     
+    # Median of just New England states
+    ne_medians <- level %>% 
+      dplyr::filter(state %in% c('VT', 'NH', 'ME', 'MA', 'CT', 'RI')) %>% 
+      dplyr::select(-state) %>% 
+      map_dbl(median) %>% 
+      as.list()
+    ne_medians$state <- 'NE_median'
     
     # Return the level + US + NewEng means
     level %>% 
       bind_rows(us_means) %>% 
       bind_rows(us_medians) %>% 
-      bind_rows(ne_means)
+      bind_rows(ne_means) %>% 
+      bind_rows(ne_medians)
   })
 })
 get_str(final_scores, 3)
 get_str(final_scores, 4)
+
+# Test function
+# test_final_scores <- get_groupings(scores)
+# get_str(test_final_scores)
+# get_str(test_final_scores, 4)
+# identical(final_scores, test_final_scores)
+# Not same because we added NE medians. That's okay.
 
 # Save this for use elsewhere
 saveRDS(final_scores, 'data/state_score_iterations.rds')
