@@ -48,7 +48,8 @@ pacman::p_load(
   DHARMa, 
   lmtest,
   purrr, 
-  snakecase
+  snakecase,
+  tibble
 )
 
 # Load data

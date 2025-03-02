@@ -1,0 +1,138 @@
+---
+title: "Metric Counts"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+```{r}
+#| label: prep
+#| include: false
+source('dev/get_setup.R')
+source('dev/get_vt_spiders.R')
+source('dev/get_aggregations.R')
+get_setup()
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::arrange(),
+  dplyr::summarize(),
+  dplyr::as_data_frame(),
+  dplyr::pull(),
+  .quiet = TRUE
+)
+```
+
+Exploring what happens if we use different counts of metrics. The plan is to:
+
+- Pick a few good candidate indicators that have lots of metrics.
+  - physical health tbd (health)
+  - crop failure (production)
+  - biodiversity (environment)
+  - wealth and income distribution (economics)
+- See what happens when we reduce those to a single one?
+- See how it affects the index and dimension scores (in VT specifically)
+- Get a spider plot to compare before and after
+- Doing this with min-max normalization data, and maybe doing both arithmetic and geometric? The functions are already set up that way
+
+```{r}
+#| label: explore
+#| output: false
+pacman::p_load(
+  dplyr,
+  purrr
+)
+# Load data for aggregations
+state_key <- readRDS('data/sm_data.rds')[['state_key']]
+metrics_df <- readRDS('data/metrics_df.rds')
+normed_data <- readRDS('data/normalized_metrics_df.rds')
+framework <- readRDS('data/filtered_frame.rds')
+
+# Test out process
+check_out <- get_all_aggregations(
+  normed_data = normed_data['minmax'],
+  framework = framework,
+  state_key = state_key,
+  metrics_df = metrics_df
+)
+```
+
+```{r}
+#| label: check_spiders
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(check_out, 'minmax')
+```
+
+# Reduce Health
+
+## To Life Expectancy
+
+```{r}
+#| label: life_expectancy
+#| output: false
+# Remove everything from physical health tbd except life expectancy
+to_remove <- framework %>% 
+  dplyr::filter(
+    indicator == 'physical health tbd', 
+    variable_name != 'Life expectancy'
+  ) %>% 
+  dplyr::pull(variable_name)
+
+# Get dimension scores
+to_life <- get_all_aggregations(
+  normed_data = normed_data['minmax'],
+  framework = framework,
+  state_key = state_key,
+  metrics_df = metrics_df,
+  to_remove = to_remove
+)
+```
+
+```{r}
+#| label: life_exp_spider
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(to_life, 'minmax')
+```
+
+## To Drug Overdose Deaths
+
+```{r}
+#| label: overdose
+#| output: false
+# Remove everything from physical health tbd except life expectancy
+to_remove <- framework %>% 
+  dplyr::filter(
+    indicator == 'physical health tbd', 
+    variable_name != 'drugOverdoseDeaths'
+  ) %>% 
+  dplyr::pull(variable_name)
+
+# Get dimension scores
+to_overdose <- get_all_aggregations(
+  normed_data = normed_data['minmax'],
+  framework = framework,
+  state_key = state_key,
+  metrics_df = metrics_df,
+  to_remove = to_remove
+)
+```
+
+```{r}
+#| label: overdose_spider
+#| fig-width: 10
+#| fig-height: 5
+# Compare out_to_life and to_overdose
+to_life$minmax_geometric$dimension_scores %>% 
+  filter(state == 'VT')
+
+to_overdose$minmax_geometric$dimension_scores %>% 
+  filter(state == 'VT')
+
+# Spider diagram
+get_vt_spiders(to_overdose, 'minmax')
+```

@@ -14,6 +14,7 @@
 
 
 get_setup <- function() {
+  pacman::p_load_gh('ChrisDonovan307/projecter')
   pacman::p_load(
     dplyr,
     conflicted
@@ -24,8 +25,8 @@ get_setup <- function() {
     dplyr::arrange(),
     dplyr::summarize(),
     dplyr::as_data_frame(),
+    dplyr::pull(),
     .quiet = TRUE
   )
-  pacman::p_load_gh('ChrisDonovan307/projecter')
 }
 

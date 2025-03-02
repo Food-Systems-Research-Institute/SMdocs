@@ -568,13 +568,13 @@ Food Insecurity Index
 <td style="text-align:left">
 </td>
 <td>
-Dimensions
+Dimensions Only
 </td>
 <td>
-With GDP
+With GDP per Capita
 </td>
 <td>
-GDP and Weights
+GDP and Pop. Weights
 </td>
 </tr>
 <tr>
@@ -599,13 +599,13 @@ GDP and Weights
 Constant
 </td>
 <td>
-0.155<sup>***</sup> (0.113, 0.197)
+0.168<sup>***</sup> (0.127, 0.209)
 </td>
 <td>
-0.187<sup>***</sup> (0.142, 0.231)
+0.195<sup>***</sup> (0.152, 0.238)
 </td>
 <td>
-0.182<sup>***</sup> (0.138, 0.226)
+0.184<sup>***</sup> (0.144, 0.223)
 </td>
 </tr>
 <tr>
@@ -613,13 +613,13 @@ Constant
 economics
 </td>
 <td>
--0.178<sup>*</sup> (-0.322, -0.033)
+-0.226<sup>**</sup> (-0.359, -0.094)
 </td>
 <td>
--0.077 (-0.228, 0.074)
+-0.149<sup>*</sup> (-0.286, -0.013)
 </td>
 <td>
--0.043 (-0.193, 0.107)
+-0.128 (-0.254, -0.002)
 </td>
 </tr>
 <tr>
@@ -627,13 +627,13 @@ economics
 environment
 </td>
 <td>
-0.025 (-0.087, 0.137)
+0.035 (-0.074, 0.143)
 </td>
 <td>
-0.029 (-0.075, 0.134)
+0.040 (-0.062, 0.142)
 </td>
 <td>
-0.010 (-0.089, 0.109)
+0.029 (-0.061, 0.118)
 </td>
 </tr>
 <tr>
@@ -641,13 +641,13 @@ environment
 health
 </td>
 <td>
--0.064 (-0.167, 0.040)
+-0.084 (-0.181, 0.013)
 </td>
 <td>
--0.047 (-0.143, 0.050)
+-0.065 (-0.157, 0.027)
 </td>
 <td>
--0.084 (-0.206, 0.039)
+-0.107 (-0.218, 0.004)
 </td>
 </tr>
 <tr>
@@ -655,13 +655,13 @@ health
 production
 </td>
 <td>
-0.075 (-0.017, 0.167)
+0.079 (-0.008, 0.166)
 </td>
 <td>
-0.065 (-0.021, 0.151)
+0.076 (-0.006, 0.157)
 </td>
 <td>
-0.068 (-0.001, 0.136)
+0.082<sup>**</sup> (0.024, 0.140)
 </td>
 </tr>
 <tr>
@@ -669,13 +669,13 @@ production
 social
 </td>
 <td>
--0.019 (-0.107, 0.069)
+-0.010 (-0.087, 0.066)
 </td>
 <td>
--0.019 (-0.101, 0.062)
+-0.011 (-0.082, 0.061)
 </td>
 <td>
--0.051 (-0.135, 0.033)
+-0.030 (-0.103, 0.044)
 </td>
 </tr>
 <tr>
@@ -685,10 +685,10 @@ gdp_per_cap
 <td>
 </td>
 <td>
--0.001<sup>**</sup> (-0.001, -0.0002)
+-0.001<sup>*</sup> (-0.001, -0.0002)
 </td>
 <td>
--0.0004 (-0.001, 0.0001)
+-0.0002 (-0.001, 0.0002)
 </td>
 </tr>
 <tr>
@@ -742,13 +742,13 @@ Observations
 R<sup>2</sup>
 </td>
 <td>
-0.197
+0.277
 </td>
 <td>
-0.324
+0.379
 </td>
 <td>
-0.378
+0.434
 </td>
 </tr>
 <tr>
@@ -756,13 +756,13 @@ R<sup>2</sup>
 Adjusted R<sup>2</sup>
 </td>
 <td>
-0.106
+0.195
 </td>
 <td>
-0.230
+0.293
 </td>
 <td>
-0.291
+0.355
 </td>
 </tr>
 <tr>
@@ -770,13 +770,13 @@ Adjusted R<sup>2</sup>
 Residual Std. Error
 </td>
 <td>
-0.022 (df = 44)
+0.021 (df = 44)
 </td>
 <td>
 0.020 (df = 43)
 </td>
 <td>
-42.586 (df = 43)
+40.627 (df = 43)
 </td>
 </tr>
 <tr>
@@ -784,13 +784,13 @@ Residual Std. Error
 F Statistic
 </td>
 <td>
-2.162 (df = 5; 44)
+3.371<sup>*</sup> (df = 5; 44)
 </td>
 <td>
-3.439<sup>**</sup> (df = 6; 43)
+4.382<sup>**</sup> (df = 6; 43)
 </td>
 <td>
-4.354<sup>**</sup> (df = 6; 43)
+5.492<sup>***</sup> (df = 6; 43)
 </td>
 </tr>
 <tr>
@@ -831,7 +831,7 @@ F Statistic
     studentized Breusch-Pagan test
 
 data:  lm1
-BP = 9.6567, df = 5, p-value = 0.08557</code></pre>
+BP = 8.4419, df = 5, p-value = 0.1335</code></pre>
 </div>
 </div>
 <p>Heteroskedasticity looks not to be a problem. We could try a non-linear analysis here though (note to add GLMnet and RF).</p>
@@ -877,13 +877,13 @@ Life Expectancy
 <td style="text-align:left">
 </td>
 <td>
-Dimensions
+Dimensions Only
 </td>
 <td>
-With GDP
+With GDP per Capita
 </td>
 <td>
-GDP and Weights
+GDP and Pop. Weights
 </td>
 </tr>
 <tr>
@@ -908,13 +908,13 @@ GDP and Weights
 Constant
 </td>
 <td>
-69.648<sup>***</sup> (66.485, 72.811)
+68.760<sup>***</sup> (65.534, 71.987)
 </td>
 <td>
-66.179<sup>***</sup> (63.168, 69.190)
+65.503<sup>***</sup> (62.533, 68.473)
 </td>
 <td>
-66.873<sup>***</sup> (63.882, 69.865)
+66.755<sup>***</sup> (64.238, 69.272)
 </td>
 </tr>
 <tr>
@@ -922,13 +922,13 @@ Constant
 economics
 </td>
 <td>
-20.683<sup>***</sup> (9.719, 31.647)
+21.530<sup>***</sup> (11.118, 31.942)
 </td>
 <td>
-9.671 (-0.560, 19.901)
+12.136<sup>*</sup> (2.752, 21.519)
 </td>
 <td>
-6.081 (-4.079, 16.242)
+13.921<sup>**</sup> (5.827, 22.015)
 </td>
 </tr>
 <tr>
@@ -936,13 +936,13 @@ economics
 environment
 </td>
 <td>
--2.077 (-10.617, 6.463)
+-1.106 (-9.645, 7.433)
 </td>
 <td>
--2.560 (-9.640, 4.520)
+-1.724 (-8.732, 5.284)
 </td>
 <td>
--4.881 (-11.568, 1.807)
+-6.198<sup>*</sup> (-11.949, -0.448)
 </td>
 </tr>
 <tr>
@@ -950,13 +950,13 @@ environment
 health
 </td>
 <td>
-10.426<sup>*</sup> (2.590, 18.262)
+11.776<sup>**</sup> (4.154, 19.399)
 </td>
 <td>
-8.555<sup>*</sup> (2.012, 15.098)
+9.388<sup>**</sup> (3.058, 15.717)
 </td>
 <td>
-5.779 (-2.548, 14.106)
+7.720<sup>*</sup> (0.609, 14.832)
 </td>
 </tr>
 <tr>
@@ -964,13 +964,13 @@ health
 production
 </td>
 <td>
--4.390 (-11.381, 2.601)
+-4.414 (-11.231, 2.403)
 </td>
 <td>
--3.325 (-9.137, 2.486)
+-4.016 (-9.609, 1.578)
 </td>
 <td>
-0.122 (-4.522, 4.766)
+-1.342 (-5.091, 2.407)
 </td>
 </tr>
 <tr>
@@ -978,13 +978,13 @@ production
 social
 </td>
 <td>
-1.964 (-4.710, 8.637)
+1.430 (-4.573, 7.434)
 </td>
 <td>
-2.019 (-3.511, 7.549)
+1.508 (-3.416, 6.432)
 </td>
 <td>
-3.976 (-1.717, 9.669)
+2.035 (-2.679, 6.749)
 </td>
 </tr>
 <tr>
@@ -994,10 +994,10 @@ gdp_per_cap
 <td>
 </td>
 <td>
-0.080<sup>***</sup> (0.046, 0.115)
+0.078<sup>***</sup> (0.046, 0.111)
 </td>
 <td>
-0.086<sup>***</sup> (0.051, 0.120)
+0.072<sup>***</sup> (0.043, 0.101)
 </td>
 </tr>
 <tr>
@@ -1051,13 +1051,13 @@ Observations
 R<sup>2</sup>
 </td>
 <td>
-0.405
+0.425
 </td>
 <td>
-0.600
+0.622
 </td>
 <td>
-0.691
+0.748
 </td>
 </tr>
 <tr>
@@ -1065,13 +1065,13 @@ R<sup>2</sup>
 Adjusted R<sup>2</sup>
 </td>
 <td>
-0.337
+0.360
 </td>
 <td>
-0.545
+0.569
 </td>
 <td>
-0.648
+0.713
 </td>
 </tr>
 <tr>
@@ -1079,13 +1079,13 @@ Adjusted R<sup>2</sup>
 Residual Std. Error
 </td>
 <td>
-1.674 (df = 44)
+1.645 (df = 44)
 </td>
 <td>
-1.387 (df = 43)
+1.349 (df = 43)
 </td>
 <td>
-2,887.952 (df = 43)
+2,608.582 (df = 43)
 </td>
 </tr>
 <tr>
@@ -1093,13 +1093,13 @@ Residual Std. Error
 F Statistic
 </td>
 <td>
-5.979<sup>***</sup> (df = 5; 44)
+6.511<sup>***</sup> (df = 5; 44)
 </td>
 <td>
-10.767<sup>***</sup> (df = 6; 43)
+11.802<sup>***</sup> (df = 6; 43)
 </td>
 <td>
-16.014<sup>***</sup> (df = 6; 43)
+21.245<sup>***</sup> (df = 6; 43)
 </td>
 </tr>
 <tr>
@@ -1141,7 +1141,7 @@ F Statistic
     studentized Breusch-Pagan test
 
 data:  lm2
-BP = 11.581, df = 5, p-value = 0.041</code></pre>
+BP = 14.335, df = 5, p-value = 0.01362</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1178,13 +1178,13 @@ Life Expectancy
 <td style="text-align:left">
 </td>
 <td>
-Dimensions
+Dimensions Only
 </td>
 <td>
-With GDP
+With GDP per Capita
 </td>
 <td>
-GDP and Weights
+GDP and Pop. Weights
 </td>
 </tr>
 <tr>
@@ -1209,13 +1209,13 @@ GDP and Weights
 Constant
 </td>
 <td>
-69.648<sup>***</sup> (66.717, 72.580)
+68.760<sup>***</sup> (65.681, 71.839)
 </td>
 <td>
-66.179<sup>***</sup> (62.936, 69.422)
+65.503<sup>***</sup> (62.415, 68.591)
 </td>
 <td>
-66.873<sup>***</sup> (64.062, 69.685)
+66.755<sup>***</sup> (63.760, 69.750)
 </td>
 </tr>
 <tr>
@@ -1223,13 +1223,13 @@ Constant
 economics
 </td>
 <td>
-20.683<sup>***</sup> (11.961, 29.404)
+21.530<sup>***</sup> (12.523, 30.537)
 </td>
 <td>
-9.671 (-2.864, 22.206)
+12.136<sup>*</sup> (0.607, 23.664)
 </td>
 <td>
-6.081 (-7.286, 19.449)
+13.921<sup>*</sup> (2.749, 25.093)
 </td>
 </tr>
 <tr>
@@ -1237,13 +1237,13 @@ economics
 environment
 </td>
 <td>
--2.077 (-9.921, 5.768)
+-1.106 (-9.449, 7.238)
 </td>
 <td>
--2.560 (-10.673, 5.553)
+-1.724 (-9.827, 6.378)
 </td>
 <td>
--4.881 (-13.346, 3.584)
+-6.198 (-15.059, 2.662)
 </td>
 </tr>
 <tr>
@@ -1251,13 +1251,13 @@ environment
 health
 </td>
 <td>
-10.426 (-6.643, 27.495)
+11.776 (-5.818, 29.371)
 </td>
 <td>
-8.555 (-6.598, 23.708)
+9.388 (-6.086, 24.861)
 </td>
 <td>
-5.779 (-5.993, 17.551)
+7.720 (-3.020, 18.461)
 </td>
 </tr>
 <tr>
@@ -1265,13 +1265,13 @@ health
 production
 </td>
 <td>
--4.390<sup>*</sup> (-8.681, -0.098)
+-4.414 (-8.915, 0.087)
 </td>
 <td>
--3.325 (-11.291, 4.640)
+-4.016 (-10.440, 2.409)
 </td>
 <td>
-0.122 (-9.042, 9.286)
+-1.342 (-5.638, 2.954)
 </td>
 </tr>
 <tr>
@@ -1279,13 +1279,13 @@ production
 social
 </td>
 <td>
-1.964 (-13.589, 17.516)
+1.430 (-13.024, 15.885)
 </td>
 <td>
-2.019 (-10.149, 14.187)
+1.508 (-9.871, 12.887)
 </td>
 <td>
-3.976 (-5.316, 13.268)
+2.035 (-5.678, 9.748)
 </td>
 </tr>
 <tr>
@@ -1295,10 +1295,10 @@ gdp_per_cap
 <td>
 </td>
 <td>
-0.080<sup>***</sup> (0.034, 0.126)
+0.078<sup>***</sup> (0.034, 0.122)
 </td>
 <td>
-0.086<sup>***</sup> (0.050, 0.121)
+0.072<sup>***</sup> (0.038, 0.105)
 </td>
 </tr>
 <tr>
@@ -1338,13 +1338,13 @@ Yes
 F Statistic
 </td>
 <td>
-7.177*** (df = 5; 44)
+7.994*** (df = 5; 44)
 </td>
 <td>
-11.244*** (df = 6; 43)
+12.777*** (df = 6; 43)
 </td>
 <td>
-16.06*** (df = 6; 43)
+22.945*** (df = 6; 43)
 </td>
 </tr>
 <tr>
@@ -1366,13 +1366,13 @@ Observations
 R<sup>2</sup>
 </td>
 <td>
-0.405
+0.425
 </td>
 <td>
-0.600
+0.622
 </td>
 <td>
-0.691
+0.748
 </td>
 </tr>
 <tr>
@@ -1380,13 +1380,13 @@ R<sup>2</sup>
 Adjusted R<sup>2</sup>
 </td>
 <td>
-0.337
+0.360
 </td>
 <td>
-0.545
+0.569
 </td>
 <td>
-0.648
+0.713
 </td>
 </tr>
 <tr>
@@ -1394,13 +1394,13 @@ Adjusted R<sup>2</sup>
 Residual Std. Error
 </td>
 <td>
-1.674 (df = 44)
+1.645 (df = 44)
 </td>
 <td>
-1.387 (df = 43)
+1.349 (df = 43)
 </td>
 <td>
-2,887.952 (df = 43)
+2,608.582 (df = 43)
 </td>
 </tr>
 <tr>
@@ -1417,7 +1417,7 @@ Residual Std. Error
 </tr>
 </tbody></table>
 </div>
-<p>When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model without GDP is already explaining 34% of the variance in life expectancy, which is surprisingly strong.</p>
+<p>When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model without GDP is already explaining 36% of the variance in life expectancy, which is surprisingly strong.</p>
 </section>
 <section id="food-environment-index" class="level1" data-number="4">
 <h1 data-number="4"><span class="header-section-number">4</span> Food Environment Index</h1>
@@ -1460,13 +1460,13 @@ Food Environment Index
 <td style="text-align:left">
 </td>
 <td>
-Dimensions
+Dimensions Only
 </td>
 <td>
-With GDP
+With GDP per Capita
 </td>
 <td>
-GDP and Weights
+GDP and Pop. Weights
 </td>
 </tr>
 <tr>
@@ -1491,13 +1491,13 @@ GDP and Weights
 Constant
 </td>
 <td>
-2.993<sup>*</sup> (0.812, 5.173)
+2.375<sup>*</sup> (0.206, 4.544)
 </td>
 <td>
-0.798 (-1.356, 2.953)
+0.407 (-1.688, 2.501)
 </td>
 <td>
-1.385 (-0.736, 3.505)
+0.923 (-0.879, 2.724)
 </td>
 </tr>
 <tr>
@@ -1505,13 +1505,13 @@ Constant
 economics
 </td>
 <td>
-11.206<sup>**</sup> (3.648, 18.765)
+13.113<sup>***</sup> (6.112, 20.114)
 </td>
 <td>
-4.241 (-3.080, 11.561)
+7.435<sup>*</sup> (0.817, 14.053)
 </td>
 <td>
-6.848 (-0.355, 14.050)
+10.229<sup>**</sup> (4.436, 16.022)
 </td>
 </tr>
 <tr>
@@ -1519,13 +1519,13 @@ economics
 environment
 </td>
 <td>
-1.520 (-4.367, 7.407)
+1.266 (-4.475, 7.008)
 </td>
 <td>
-1.214 (-3.852, 6.280)
+0.892 (-4.050, 5.835)
 </td>
 <td>
-1.329 (-3.412, 6.069)
+0.706 (-3.409, 4.822)
 </td>
 </tr>
 <tr>
@@ -1533,13 +1533,13 @@ environment
 health
 </td>
 <td>
-6.610<sup>*</sup> (1.208, 12.012)
+7.548<sup>**</sup> (2.422, 12.673)
 </td>
 <td>
-5.426<sup>*</sup> (0.744, 10.108)
+6.104<sup>*</sup> (1.640, 10.567)
 </td>
 <td>
-3.989 (-1.914, 9.892)
+6.049<sup>*</sup> (0.960, 11.139)
 </td>
 </tr>
 <tr>
@@ -1547,13 +1547,13 @@ health
 production
 </td>
 <td>
--5.960<sup>*</sup> (-10.779, -1.141)
+-6.043<sup>*</sup> (-10.626, -1.459)
 </td>
 <td>
--5.287<sup>*</sup> (-9.445, -1.129)
+-5.802<sup>**</sup> (-9.747, -1.857)
 </td>
 <td>
--6.167<sup>***</sup> (-9.459, -2.875)
+-6.424<sup>***</sup> (-9.107, -3.741)
 </td>
 </tr>
 <tr>
@@ -1561,13 +1561,13 @@ production
 social
 </td>
 <td>
-0.838 (-3.762, 5.439)
+0.419 (-3.618, 4.455)
 </td>
 <td>
-0.873 (-3.084, 4.831)
+0.466 (-3.007, 3.938)
 </td>
 <td>
-2.488 (-1.548, 6.523)
+1.114 (-2.260, 4.488)
 </td>
 </tr>
 <tr>
@@ -1577,10 +1577,10 @@ gdp_per_cap
 <td>
 </td>
 <td>
-0.051<sup>***</sup> (0.026, 0.075)
+0.047<sup>***</sup> (0.024, 0.070)
 </td>
 <td>
-0.038<sup>**</sup> (0.013, 0.062)
+0.033<sup>**</sup> (0.012, 0.053)
 </td>
 </tr>
 <tr>
@@ -1634,13 +1634,13 @@ Observations
 R<sup>2</sup>
 </td>
 <td>
-0.347
+0.400
 </td>
 <td>
-0.528
+0.566
 </td>
 <td>
-0.644
+0.704
 </td>
 </tr>
 <tr>
@@ -1648,13 +1648,13 @@ R<sup>2</sup>
 Adjusted R<sup>2</sup>
 </td>
 <td>
-0.273
+0.332
 </td>
 <td>
-0.462
+0.506
 </td>
 <td>
-0.594
+0.662
 </td>
 </tr>
 <tr>
@@ -1662,13 +1662,13 @@ Adjusted R<sup>2</sup>
 Residual Std. Error
 </td>
 <td>
-1.154 (df = 44)
+1.106 (df = 44)
 </td>
 <td>
-0.993 (df = 43)
+0.951 (df = 43)
 </td>
 <td>
-2,047.217 (df = 43)
+1,866.951 (df = 43)
 </td>
 </tr>
 <tr>
@@ -1676,13 +1676,13 @@ Residual Std. Error
 F Statistic
 </td>
 <td>
-4.672<sup>**</sup> (df = 5; 44)
+5.871<sup>***</sup> (df = 5; 44)
 </td>
 <td>
-8.005<sup>***</sup> (df = 6; 43)
+9.355<sup>***</sup> (df = 6; 43)
 </td>
 <td>
-12.940<sup>***</sup> (df = 6; 43)
+17.010<sup>***</sup> (df = 6; 43)
 </td>
 </tr>
 <tr>
@@ -1709,7 +1709,7 @@ F Statistic
     studentized Breusch-Pagan test
 
 data:  lm3
-BP = 5.6531, df = 5, p-value = 0.3414</code></pre>
+BP = 6.0149, df = 5, p-value = 0.3048</code></pre>
 </div>
 <details class="code-fold">
 <summary>Code</summary>
@@ -1806,7 +1806,7 @@ BP = 5.6531, df = 5, p-value = 0.3414</code></pre>
 <span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<p>OOB prediction error (MSE): 1.2917313</p>
+<p>OOB prediction error (MSE): 1.2861053</p>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
@@ -1864,13 +1864,13 @@ Happiness Index
 <td style="text-align:left">
 </td>
 <td>
-Dimensions
+Dimensions Only
 </td>
 <td>
-With GDP
+With GDP per Capita
 </td>
 <td>
-GDP and Weights
+GDP and Pop. Weights
 </td>
 </tr>
 <tr>
@@ -1895,13 +1895,13 @@ GDP and Weights
 Constant
 </td>
 <td>
-34.743<sup>***</sup> (21.310, 48.177)
+31.675<sup>***</sup> (17.878, 45.472)
 </td>
 <td>
-22.496<sup>**</sup> (8.775, 36.216)
+20.186<sup>**</sup> (6.469, 33.903)
 </td>
 <td>
-23.592<sup>**</sup> (9.112, 38.072)
+21.475<sup>**</sup> (8.717, 34.233)
 </td>
 </tr>
 <tr>
@@ -1909,13 +1909,13 @@ Constant
 economics
 </td>
 <td>
-75.244<sup>**</sup> (28.677, 121.811)
+76.601<sup>**</sup> (32.077, 121.126)
 </td>
 <td>
-36.367 (-10.258, 82.991)
+43.462 (0.123, 86.801)
 </td>
 <td>
-34.409 (-14.776, 83.594)
+55.032<sup>*</sup> (14.004, 96.060)
 </td>
 </tr>
 <tr>
@@ -1923,13 +1923,13 @@ economics
 environment
 </td>
 <td>
--8.884 (-45.155, 27.386)
+-7.811 (-44.326, 28.704)
 </td>
 <td>
--10.590 (-42.856, 21.677)
+-9.994 (-42.361, 22.374)
 </td>
 <td>
--17.946 (-50.317, 14.425)
+-22.571 (-51.718, 6.576)
 </td>
 </tr>
 <tr>
@@ -1937,13 +1937,13 @@ environment
 health
 </td>
 <td>
-8.618 (-24.664, 41.900)
+16.466 (-16.130, 49.062)
 </td>
 <td>
-2.012 (-27.807, 31.830)
+8.039 (-21.195, 37.272)
 </td>
 <td>
-11.637 (-28.670, 51.944)
+24.947 (-11.099, 60.992)
 </td>
 </tr>
 <tr>
@@ -1951,13 +1951,13 @@ health
 production
 </td>
 <td>
--20.755 (-50.446, 8.936)
+-19.165 (-48.316, 9.986)
 </td>
 <td>
--16.998 (-43.481, 9.486)
+-17.760 (-43.593, 8.074)
 </td>
 <td>
--7.830 (-30.309, 14.649)
+-9.566 (-28.568, 9.436)
 </td>
 </tr>
 <tr>
@@ -1965,13 +1965,13 @@ production
 social
 </td>
 <td>
-9.553 (-18.791, 37.897)
+6.125 (-19.546, 31.796)
 </td>
 <td>
-9.748 (-15.456, 34.953)
+6.398 (-16.342, 29.138)
 </td>
 <td>
-19.984 (-7.575, 47.543)
+10.682 (-13.212, 34.576)
 </td>
 </tr>
 <tr>
@@ -1981,10 +1981,10 @@ gdp_per_cap
 <td>
 </td>
 <td>
-0.284<sup>***</sup> (0.127, 0.440)
+0.276<sup>***</sup> (0.127, 0.426)
 </td>
 <td>
-0.191<sup>*</sup> (0.023, 0.358)
+0.154<sup>*</sup> (0.007, 0.301)
 </td>
 </tr>
 <tr>
@@ -2038,13 +2038,13 @@ Observations
 R<sup>2</sup>
 </td>
 <td>
-0.229
+0.246
 </td>
 <td>
-0.404
+0.422
 </td>
 <td>
-0.429
+0.489
 </td>
 </tr>
 <tr>
@@ -2052,13 +2052,13 @@ R<sup>2</sup>
 Adjusted R<sup>2</sup>
 </td>
 <td>
-0.142
+0.160
 </td>
 <td>
-0.321
+0.341
 </td>
 <td>
-0.350
+0.418
 </td>
 </tr>
 <tr>
@@ -2066,13 +2066,13 @@ Adjusted R<sup>2</sup>
 Residual Std. Error
 </td>
 <td>
-7.110 (df = 44)
+7.033 (df = 44)
 </td>
 <td>
-6.322 (df = 43)
+6.230 (df = 43)
 </td>
 <td>
-13,979.790 (df = 43)
+13,222.240 (df = 43)
 </td>
 </tr>
 <tr>
@@ -2080,13 +2080,13 @@ Residual Std. Error
 F Statistic
 </td>
 <td>
-2.616<sup>*</sup> (df = 5; 44)
+2.867<sup>*</sup> (df = 5; 44)
 </td>
 <td>
-4.865<sup>***</sup> (df = 6; 43)
+5.224<sup>***</sup> (df = 6; 43)
 </td>
 <td>
-5.388<sup>***</sup> (df = 6; 43)
+6.868<sup>***</sup> (df = 6; 43)
 </td>
 </tr>
 <tr>

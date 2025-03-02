@@ -72,6 +72,8 @@ website:
             href: pages/selection.qmd
           - text: Validation
             href: pages/validation.qmd
+          - text: Metric Counts
+            href: pages/metric_counts.qmd
 
 format:
   html:

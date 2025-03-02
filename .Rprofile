@@ -1,5 +1,3 @@
-source("renv/activate.R")
-
 suppressPackageStartupMessages(
   pacman::p_load(
     dplyr,
@@ -15,7 +13,8 @@ conflicted::conflicts_prefer(
   dplyr::arrange(),
   dplyr::as_data_frame(),
   dplyr::summarize(),
-  dplyr::arrangej(),
+  dplyr::arrange(),
+  dplyr::pull(),
   .quiet = TRUE
 )
 
@@ -25,6 +24,6 @@ options(
   pilar.print_min = 950
 )
 
-source('dev/get_setup.R')
-
 cat("\n.Rprofile loaded")
+
+source("renv/activate.R")

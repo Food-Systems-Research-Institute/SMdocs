@@ -36,19 +36,18 @@
 
 
 pacman::p_load(
-  dplyr,
   purrr,
-  conflicted
+  conflicted,
+  tibble
 )
 
 conflicted::conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
+  dplyr::pull(),
+  dplyr::arrange(),
   .quiet = TRUE
 )
-
-# Load refined and filtered framework
-# frame <- readRDS('data/filtered_frame.rds')
 
 
 
@@ -85,7 +84,7 @@ get_organized_scores <- function(scores_list,
   scores <- map2(combos[[1]], combos[[2]], \(norm_type, agg_type) {
     
     # Get list of each df (dimension, index, indicator) for combo
-    dfs <- all_scores %>% 
+    dfs <- scores_list %>% 
       map(\(level) level[[norm_type]]) %>% 
       map(\(norm) norm[[agg_type]])
     
@@ -94,11 +93,11 @@ get_organized_scores <- function(scores_list,
         # Note that we are binding fips back in - this is hinky, note to fix
         bind_cols(
           metrics_df %>% 
-            rownames_to_column('fips') %>% 
+            # rownames_to_column('fips') %>% 
             select(fips)
         ) %>% 
         left_join(
-          select(sm_data$state_key, state, state_code),
+          select(state_key, state, state_code),
           by = join_by(fips == state_code) 
         ) %>% 
         select(-fips)
@@ -221,7 +220,7 @@ get_agg_indices <- function(indicator_scores,
     imap(norm_type, \(agg_df, agg_type) {
       map(indices, \(index_) {
         # Get names of indicators for this index
-        index_indicators <- filtered_frame %>% 
+        index_indicators <- framework %>% 
           dplyr::filter(index == index_) %>% 
           pull(indicator) %>% 
           unique()
@@ -280,22 +279,56 @@ get_agg_dimensions <- function(index_scores,
 
 
 # Putting everything into a single function so we can run start to finish
+# Normed data is saved in 'data/normalized_metrics_df.rds'
+# Note that this takes a list of every transformation. Could technically give it
+# a list of one element though if we need to. 
 get_all_aggregations <- function(normed_data,
                                  framework,
                                  state_key,
-                                 metrics_df) {
-  
+                                 metrics_df,
+                                 to_remove = NULL
+                                 ) {
   # Make empty list for results from each level
   scores <- list()
   
+  # If removing variable names, remove them from all of the above
+  if (!is.null(to_remove)) {
+    metrics_df <- dplyr::select(metrics_df, -all_of(to_remove))
+    normed_data <- map(normed_data, ~ {
+      dplyr::select(.x, -all_of(to_remove))
+    })
+    framework <- dplyr::filter(framework, !variable_name %in% to_remove)
+    cat('\nRemoving metrics\n')
+  }
+  
   # Start with normed data, get each level of scores
+  cat('\nStarting indicators\n')
   scores$indicator_scores <- get_agg_indicators(normed_data, framework)
+  cat('\nFinished indicators\n')
+  
+  cat('\nStarting indices\n')
   scores$index_scores <- get_agg_indices(scores$indicator_scores, framework)
+  cat('\nFinished indices\n')
+  
+  cat('\nStarting dimensions\n')
   scores$dimension_scores <- get_agg_dimensions(scores$index_scores, framework)
+  cat('\nFinished dimensions\n')
   
   # Now organize and add groupings
+  cat('\nStarting organization\n')
   organized_scores <- get_organized_scores(scores, state_key, metrics_df)
+  cat('\nFinished organization\n')
+  
+  cat('\nStarting groupings\n')
   groupings <- get_groupings(organized_scores)
+  cat('\nFinished groupings\n')
+  
+  # Print message about removing metrics
+  if (!is.null(to_remove)) {
+    cat('\nMetrics removed:', paste0(to_remove, sep = ','), '\n')
+  } else {
+    cat('\nNo metrics removed\n')
+  }
   
   return(groupings)
 }
