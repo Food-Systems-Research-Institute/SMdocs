@@ -17,7 +17,9 @@ pacman::p_load(
   purrr,
   tictoc,
   stringr,
-  ggplot2
+  ggplot2,
+  ggpubr,
+  snakecase
 )
 conflicts_prefer(
   dplyr::select(),
@@ -34,13 +36,9 @@ Steps
 
 - Set up grid of uncertain inputs (normalization, aggregation, indicators)
 - Sample from input factors
-- Run model 1000 times, get VT rank for each dimension
 - Explore distributions of each dimension rank
 
-Notes
-
-- the normed data are already handy. We could just choose the appropriate DF, then reduce indicators from there
-- workflow: choose the norms, reduce by indicators, then aggregate
+# Dimension
 
 ```{r}
 #| label: input_grid
@@ -72,10 +70,13 @@ grid <- expand.grid(
 ) %>% 
   setNames(c('norms', 'aggs', 'indics'))
 # Could loop through it just once, or sample from it?
+```
 
 
-## Try looping through it
-# For each sample, select normed data run model that way, get dimension scores for VT
+```{r}
+#| label: 400_iterations
+#| eval: false
+# For each set of input factors, get dimension scores for VT
 tic()
 out <- map(1:nrow(grid), \(i) {
   
@@ -94,15 +95,21 @@ out <- map(1:nrow(grid), \(i) {
   )
 }, .progress = TRUE)
 toc()
-# 8 minutes 20 seconds
+# ~ 8 minutes 20 seconds
 
 get_str(out)
 get_str(out, 4)
 
-# Save this for posterity
-saveRDS(out, 'data/objects/sensitivity_out.RDS')
+# Save this so we don't have to run it again
+# saveRDS(out, 'data/objects/sensitivity_out.RDS')
+```
 
 
+```{r}
+#| label: wrangle_output
+#| output: false
+# Load up saved sensitivity out
+sens_out <- readRDS('data/objects/sensitivity_out.RDS')
 
 ## Get names of sampled inputs to identify later
 sampled_inputs <- map_chr(1:nrow(grid), ~ {
@@ -117,29 +124,211 @@ sampled_inputs <- map_chr(1:nrow(grid), ~ {
 })
 
 # Pull out just VT dimension scores
-test <- map_dfr(out, ~ {
+dimension_df <- map_dfr(sens_out, ~ {
   df <- .x[[1]]$dimension_scores %>% 
     as.data.frame() %>% 
     filter(str_length(state) == 2) %>% 
-    mutate(across(!state, ~ as.numeric(dense_rank(.x)), .names = "{.col}_rank")) %>% 
-    filter(state == 'VT')
+    mutate(
+      across(
+        !state, ~ as.numeric(dense_rank(.x)), 
+        .names = "{.col}_rank"
+      )) %>% 
+    filter(state == 'VT') %>% 
+    select(matches(regex('_')))
 }) %>% 
   mutate(inputs = sampled_inputs)
-get_str(test, 3)
+get_str(dimension_df, 3)
 # Each line is result from one sample.
 
-plots <- map(str_subset(names(test), '_'), ~ {
-  test %>% 
+# Get vector of dimension rank names
+dimension_ranks <- str_subset(names(dimension_df),  '_') %>% 
+  str_remove('_rank') %>% 
+  snakecase::to_title_case()
+```
+
+
+```{r}
+#| label: distribution_plots
+#| fig-width: 10
+#| fig-height: 8
+#| fig-align: center
+#| out-width: 80%
+#| fig-caption: Distribution plots for Vermont dimension scores over 400 iterations of uncertain input factors.
+plots <- map2(str_subset(names(dimension_df), '_'), dimension_ranks, ~ {
+  dimension_df %>% 
     ggplot(aes(x = !!sym(.x))) + 
     geom_density(
       fill = 'lightblue',
       color = 'royalblue'
     ) +
-    theme_classic()
+    theme_classic() +
+    labs(
+      x = paste(.y),
+      y = 'Density',
+      title = .y
+      # title = paste0('Distribution of ', .y, 's for Vermont')
+    )
 })
-plots
-# Noice!
-# Note that ranks will make a lot more sense than scores now I realize...
-# Ranks it is!
+plot <- ggarrange(
+  plotlist = plots,
+  nrow = 3,
+  ncol = 2
+)
+annotate_figure(
+  plot,
+  top = text_grob(
+    'Distributions of VT Dimension Ranks (Higher is Better)',
+    size = 14,
+    hjust = 0.5
+  )
+)
+```
+
+# Indicators
+
+Steps
+
+- Use same iteration from 400 outputs
+- For each indicator, get mean of values where it is included and mean of values where it is not. Record the difference
+- Plot with flipped axes, indicators on y axis, difference in x-axis
+- Do one of these plots for each dimension
+
+Note that we want to end up with 5 DFs - One for each dimension
+
+```{r}
+#| label: wrangle_indicators
+get_str(dimension_df)
+
+# Get a cleaner df to work with our indicators
+ind_df <- dimension_df %>% 
+  mutate(indicator = str_split_fixed(inputs, '_', 3)[, 3]) %>% 
+  select(-inputs)
+  # filter(indicator != 'none')
+get_str(ind_df)
+
+# Do it for one indicator. For first indicator (access_to_land), get mean with
+# and without for each dim
+# var <- 'access_to_land'
+
+# Dimension scores with indicator (full set)
+# with <- ind_df %>% 
+  # summarize(across(where(is.numeric), ~ mean(.x)))
+# get_str(with)
+
+# Dimension scores without indicator
+# without <- ind_df %>% 
+#   filter(indicator != var) %>% 
+#   summarize(across(where(is.numeric), ~ mean(.x)))
+# get_str(without)
+# 
+# # Get difference. Shows effect of including - positive means gets better
+# (out <- with - without)
+# 
+
+## Map it
+# We can do the 'with' group once for all indicators
+# get_str(ind_df)
+# with <- ind_df %>% 
+#   summarize(across(where(is.numeric), ~ mean(.x)))
+# get_str(with)
+
+get_str(framework)
+
+# Get a version of framework with indicators in snake case to match
+snake_framework <- framework %>% 
+  mutate(indicator = snakecase::to_snake_case(indicator))
+
+unique_indicators <- ind_df$indicator %>% 
+  unique() %>% 
+  str_subset('none', negate = TRUE)
+
+# Map over indicators to get the 'without' scores, then get difference
+influence_df <- map(unique_indicators, \(ind) {
+ 
+  # Get scores with all indicators in that dimension. This is the 'none' option
+  with <- ind_df %>% 
+    dplyr::filter(indicator == 'none') %>% 
+    summarize(across(where(is.numeric), ~ mean(.x)))
+    
+  # Get scores with that dimension's indicators but WITHOUT that indicator
+  # Note that we set it equal to that indicator to get get data without it...
+  without <- ind_df %>% 
+    dplyr::filter(indicator == ind) %>% 
+    summarize(across(where(is.numeric), ~ mean(.x)))
+  
+  # Get difference in dimension scores, with and without
+  # Will show impact of including it
+  out <- with - without
+  return(out)
+}) %>% 
+  bind_rows() %>% 
+  mutate(indicator = unique_indicators)
+get_str(influence_df)
+
+# Now we need to pull this apart into 5 data frames, one for each dimension
+dim_dfs <- list()
+for (i in 1:5) {
+  name <- names(influence_df)[i]
+  dim_dfs[[name]] <- influence_df %>% 
+    filter(.data[[name]] != 0) %>% 
+    mutate(rank_diff = .data[[name]]) %>% 
+    select(indicator, rank_diff) %>% 
+    mutate(
+      Influence = ifelse(rank_diff > 0, 'Positive', 'Negative'),
+      indicator = snakecase::to_title_case(indicator)
+    )
+}
+get_str(dim_dfs)
+# Noice
+
+ind_plots <- imap(dim_dfs, ~ {
+  title_name <- .y %>% 
+    str_remove('_rank') %>% 
+    snakecase::to_title_case()
+  .x %>% 
+    ggplot(aes(
+      x = fct_reorder(indicator, rank_diff), 
+      y = rank_diff, color = Influence
+    )) +
+    geom_segment(aes(
+        x = fct_reorder(indicator, rank_diff),
+        xend = indicator, 
+        y = 0, 
+        yend = rank_diff
+      ),
+      color = 'grey'
+    ) +
+    geom_point(size = 3) +
+    geom_text(
+      aes(
+        label = indicator, 
+        color = Influence
+      ),
+      nudge_x = 0.25,
+      show.legend = FALSE
+    ) + 
+    geom_hline(
+      yintercept = 0, 
+      lty = 2,
+      alpha = 0.5
+    ) +
+    coord_flip() +
+    theme_classic() +
+    labs(
+      x = NULL,
+      y = 'Average Difference in Rank',
+      title = paste0('Influence of Indicators on ', title_name)
+    ) +
+    theme(
+      axis.text.y = element_blank(),
+      axis.title.y = element_blank(),
+      axis.ticks.y = element_blank(),
+      axis.line.y = element_blank()
+    ) +
+    expand_limits(y = c(max(.x$rank_diff + 4), min(.x$rank_diff - 4)))
+})
+ind_plots[[1]]
+ind_plots
+
 ```
 

@@ -1,10 +1,9 @@
-base
-methods
 dplyr
 conflicted
 projecter
-utils
-datasets
-grDevices
-graphics
-stats
+purrr
+tibble
+tictoc
+stringr
+ggplot2
+ggpubr
