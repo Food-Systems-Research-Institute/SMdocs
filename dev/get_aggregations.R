@@ -72,13 +72,29 @@ agg_function <- function(x, agg_type) {
 # Takes a list of the indicator, index, and dimension scores
 get_organized_scores <- function(scores_list,
                                  state_key,
-                                 metrics_df) {
-  # All combinations, also a name
-  combos <- expand.grid(
-    names(scores_list[[1]]),
-    c('arithmetic', 'geometric')
-  ) %>% 
-    mutate(name = paste0(Var1, '_', Var2))
+                                 metrics_df,
+                                 aggregation = c('both', 'arithmetic', 'geometric')) {
+  
+  # Aggregations to put into expand grid combos
+  if (aggregation == 'both') {
+    combos <- expand.grid(
+      names(scores_list[[1]]),
+      c('arithmetic', 'geometric')
+    ) %>% 
+      mutate(name = paste0(Var1, '_', Var2))
+  } else if (aggregation == 'arithmetic') {
+    combos <- expand.grid(
+      names(scores_list[[1]]),
+      'arithmetic'
+    ) %>% 
+      mutate(name = paste0(Var1, '_', Var2))
+  } else if (aggregation == 'geometric') {
+    combos <- expand.grid(
+      names(scores_list[[1]]),
+      'geometric'
+    ) %>% 
+      mutate(name = paste0(Var1, '_', Var2))
+  }
   
   # Map to pull them all out
   scores <- map2(combos[[1]], combos[[2]], \(norm_type, agg_type) {
@@ -162,13 +178,14 @@ get_groupings <- function(scores_list) {
 
 
 get_agg_indicators <- function(normed_data,
-                               framework) {
+                               framework,
+                               aggregation = c('both', 'arithmetic', 'geometric')) {
   
   indicator_scores <- map(normed_data, \(df) {
     
     # For each df, calculate indicator means
     indicators_out <- map(unique(framework$indicator), \(ind) {
-      
+   
       # Split into groups by indicator, with one or more metrics each
       variables <- framework %>% 
         dplyr::filter(indicator == ind) %>% 
@@ -179,31 +196,39 @@ get_agg_indicators <- function(normed_data,
       
       # Get arithmetic and geo means for each indicator
       dfs <- list()
-      dfs$arithmetic <- indicator_metrics %>%
-        rowwise() %>%
-        mutate(
-          !!sym(ind) := mean(c_across(everything())),
-        ) %>%
-        select(!!sym(ind))
-      dfs$geometric <- indicator_metrics %>% 
-        rowwise() %>% 
-        mutate(
-          !!sym(ind) := get_geo_mean(c_across(everything())),
-        ) %>%
-        select(!!sym(ind))
+      if (aggregation %in% c('both', 'arithmetic')) {
+        dfs$arithmetic <- indicator_metrics %>%
+          rowwise() %>%
+          mutate(
+            !!sym(ind) := mean(c_across(everything())),
+          ) %>%
+          select(!!sym(ind))
+      }
+      if (aggregation %in% c('both', 'geometric')) {
+        dfs$geometric <- indicator_metrics %>% 
+          rowwise() %>% 
+          mutate(
+            !!sym(ind) := get_geo_mean(c_across(everything())),
+          ) %>%
+          select(!!sym(ind))
+      }
       return(dfs) 
     })
     
     # Rearrange so we put each aggregation method (arith, geo) together
     norm_out <- list()
-    norm_out$arithmetic <- map(indicators_out, ~ {
-      .x[grep("arithmetic", names(.x))]
-    }) %>% 
-      bind_cols()
-    norm_out$geometric <- map(indicators_out, ~ {
-      .x[grep("geometric", names(.x))]
-    }) %>% 
-      bind_cols()
+    if (aggregation %in% c('both', 'arithmetic')) {
+      norm_out$arithmetic <- map(indicators_out, ~ {
+        .x[grep("arithmetic", names(.x))]
+      }) %>% 
+        bind_cols()
+    }
+    if (aggregation %in% c('both', 'geometric')) {
+      norm_out$geometric <- map(indicators_out, ~ {
+        .x[grep("geometric", names(.x))]
+      }) %>% 
+        bind_cols()
+    }
     return(norm_out) 
   })
   
@@ -251,7 +276,7 @@ get_agg_dimensions <- function(index_scores,
       map(dimensions, \(dimension_) {
         # Get names of indices for this dimension
         dimension_indices <- framework %>% 
-          filter(dimension == dimension_) %>% 
+          dplyr::filter(dimension == dimension_) %>% 
           pull(index) %>% 
           unique()
         # Get DF of indice for this dimension
@@ -286,48 +311,68 @@ get_all_aggregations <- function(normed_data,
                                  framework,
                                  state_key,
                                  metrics_df,
-                                 to_remove = NULL
-                                 ) {
+                                 aggregation = c('both', 'arithmetic', 'geometric'),
+                                 remove_metrics = NULL,
+                                 remove_indicators = NULL) {
   # Make empty list for results from each level
   scores <- list()
   
   # If removing variable names, remove them from all of the above
-  if (!is.null(to_remove)) {
-    metrics_df <- dplyr::select(metrics_df, -all_of(to_remove))
+  if (!is.null(remove_metrics)) {
+    metrics_df <- dplyr::select(metrics_df, -any_of(remove_metrics))
     normed_data <- map(normed_data, ~ {
-      dplyr::select(.x, -all_of(to_remove))
+      dplyr::select(.x, -any_of(remove_metrics))
     })
-    framework <- dplyr::filter(framework, !variable_name %in% to_remove)
+    framework <- dplyr::filter(framework, !variable_name %in% remove_metrics)
     cat('\nRemoving metrics\n')
   }
   
+  # If removing indicators, remove from all of the above
+  if (!is.null(remove_indicators) & remove_indicators != 'none') {
+    
+    # Reduce framework by removing indicators (and with them, metrics)
+    framework <- framework %>% 
+      filter(!indicator %in% remove_indicators)
+    
+    # Keep only the metrics in the new framework (and fips)
+    metrics_df <- dplyr::select(metrics_df, fips, all_of(framework$variable_name))
+    
+    # Reduce normed datasets
+    normed_data <- map(normed_data, ~ {
+      dplyr::select(.x, all_of(framework$variable_name))
+    })
+    
+    cat('\nRemoving indicators\n')
+  } 
+  
   # Start with normed data, get each level of scores
   cat('\nStarting indicators\n')
-  scores$indicator_scores <- get_agg_indicators(normed_data, framework)
-  cat('\nFinished indicators\n')
+  scores$indicator_scores <- get_agg_indicators(normed_data, framework, aggregation = aggregation)
   
   cat('\nStarting indices\n')
   scores$index_scores <- get_agg_indices(scores$indicator_scores, framework)
-  cat('\nFinished indices\n')
   
   cat('\nStarting dimensions\n')
   scores$dimension_scores <- get_agg_dimensions(scores$index_scores, framework)
-  cat('\nFinished dimensions\n')
   
   # Now organize and add groupings
   cat('\nStarting organization\n')
-  organized_scores <- get_organized_scores(scores, state_key, metrics_df)
-  cat('\nFinished organization\n')
+  organized_scores <- get_organized_scores(scores, state_key, metrics_df, aggregation = aggregation)
   
   cat('\nStarting groupings\n')
   groupings <- get_groupings(organized_scores)
-  cat('\nFinished groupings\n')
   
-  # Print message about removing metrics
-  if (!is.null(to_remove)) {
-    cat('\nMetrics removed:', paste0(to_remove, sep = ','), '\n')
+  # Print message about removing metrics or indicators
+  if (!is.null(remove_metrics)) {
+    cat('\nMetrics removed:', paste0(remove_metrics, sep = ','), '\n')
   } else {
     cat('\nNo metrics removed\n')
+  }
+  
+  if (!is.null(remove_indicators)) {
+    cat('\nIndicators removed:', paste0(remove_indicators, sep = ','), '\n')
+  } else {
+    cat('\nNo indicators removed\n')
   }
   
   return(groupings)

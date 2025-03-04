@@ -74,6 +74,8 @@ website:
             href: pages/validation.qmd
           - text: Metric Counts
             href: pages/metric_counts.qmd
+          - text: Sensitivity and Uncertainty 
+            href: pages/sensitivity.qmd
 
 format:
   html:

@@ -9,12 +9,21 @@ warnings: false
 ---
 
 ```{r}
-#| label: prep
-#| include: false
-source('dev/get_setup.R')
+#| label: setup
+#| echo: false
 source('dev/get_vt_spiders.R')
 source('dev/get_aggregations.R')
-get_setup()
+source('dev/get_reactable.R')
+pacman::p_load(
+  dplyr,
+  purrr,
+  reactable,
+  fmsb,
+  snakecase,
+  conflicted,
+  tibble,
+  stringr
+)
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
@@ -26,25 +35,13 @@ conflicts_prefer(
 )
 ```
 
-Exploring what happens if we use different counts of metrics. The plan is to:
+Here we will see how much the dimension scores for Vermont change when we reduce certain indicators with many metrics to a single metric. We do this for an indicator in every dimension except social, which really doesn't have any metrics to spare currently. 
 
-- Pick a few good candidate indicators that have lots of metrics.
-  - physical health tbd (health)
-  - crop failure (production)
-  - biodiversity (environment)
-  - wealth and income distribution (economics)
-- See what happens when we reduce those to a single one?
-- See how it affects the index and dimension scores (in VT specifically)
-- Get a spider plot to compare before and after
-- Doing this with min-max normalization data, and maybe doing both arithmetic and geometric? The functions are already set up that way
+Note that this should be redone more systematically and across all metrics to compare them at some point, rather than a picking just a few. On to-do list. 
 
 ```{r}
 #| label: explore
 #| output: false
-pacman::p_load(
-  dplyr,
-  purrr
-)
 # Load data for aggregations
 state_key <- readRDS('data/sm_data.rds')[['state_key']]
 metrics_df <- readRDS('data/metrics_df.rds')
@@ -52,7 +49,7 @@ normed_data <- readRDS('data/normalized_metrics_df.rds')
 framework <- readRDS('data/filtered_frame.rds')
 
 # Test out process
-check_out <- get_all_aggregations(
+original_scores <- get_all_aggregations(
   normed_data = normed_data['minmax'],
   framework = framework,
   state_key = state_key,
@@ -60,16 +57,9 @@ check_out <- get_all_aggregations(
 )
 ```
 
-```{r}
-#| label: check_spiders
-#| fig-width: 10
-#| fig-height: 5
-get_vt_spiders(check_out, 'minmax')
-```
+# Reduce Physical Health Metrics
 
-# Reduce Health
-
-## To Life Expectancy
+First let's take the `physical health tbd` indicator and reduce it to only `lifeExpectancy`.
 
 ```{r}
 #| label: life_expectancy
@@ -78,7 +68,7 @@ get_vt_spiders(check_out, 'minmax')
 to_remove <- framework %>% 
   dplyr::filter(
     indicator == 'physical health tbd', 
-    variable_name != 'Life expectancy'
+    variable_name != 'lifeExpectancy'
   ) %>% 
   dplyr::pull(variable_name)
 
@@ -92,14 +82,7 @@ to_life <- get_all_aggregations(
 )
 ```
 
-```{r}
-#| label: life_exp_spider
-#| fig-width: 10
-#| fig-height: 5
-get_vt_spiders(to_life, 'minmax')
-```
-
-## To Drug Overdose Deaths
+Now the same for `drugOverdoseDeaths`
 
 ```{r}
 #| label: overdose
@@ -110,7 +93,7 @@ to_remove <- framework %>%
     indicator == 'physical health tbd', 
     variable_name != 'drugOverdoseDeaths'
   ) %>% 
-  dplyr::pull(variable_name)
+  pull(variable_name)
 
 # Get dimension scores
 to_overdose <- get_all_aggregations(
@@ -122,17 +105,260 @@ to_overdose <- get_all_aggregations(
 )
 ```
 
+Finally, we can compare the health dimension score and rank for the original framework against the `physical health tbd` indicator as represented by only life expectancy or only drug overdoses.
+
 ```{r}
-#| label: overdose_spider
-#| fig-width: 10
-#| fig-height: 5
-# Compare out_to_life and to_overdose
-to_life$minmax_geometric$dimension_scores %>% 
-  filter(state == 'VT')
+#| label: compare
+#| output: false
+df <- map_dfr(list(original_scores, to_life, to_overdose), ~ {
+  .x$minmax_geometric$dimension_scores %>% 
+    as.data.frame() %>%
+    dplyr::filter(str_length(state) == 2) %>% 
+    mutate(
+      rank = dense_rank(health),
+    ) %>% 
+    dplyr::filter(state == 'VT') %>% 
+    dplyr::select(health, rank)
+}) %>% 
+  mutate(
+    health = round(health, 3),
+    iteration = c('Original', 'Life Exp Only', 'Overdoses Only')
+  )
+```
 
-to_overdose$minmax_geometric$dimension_scores %>% 
-  filter(state == 'VT')
+```{r}
+#| label: health_comparison
+#| class: centered-table
+#| echo: false
+get_reactable(
+  df, 
+  fullWidth = FALSE,
+  searchable = FALSE,
+  filterable = FALSE
+)
+```
 
-# Spider diagram
-get_vt_spiders(to_overdose, 'minmax')
+# Reduce Crop Failure Metrics
+
+For `production`, we will reduce the `crop failure` indicator to only the value of dairy margin protection payments and then income from insurance indemnities.
+
+```{r}
+#| label: reduce_crop_failure
+#| output: false
+get_str(normed_data)
+get_str(framework)
+
+## Reduce crop failure indicator to totalValueDairyMarginProtPayments
+to_remove <- framework %>% 
+  dplyr::filter(
+    indicator == 'crop failure', 
+    variable_name != 'totalValueDairyMarginProtPayments'
+  ) %>% 
+  pull(variable_name)
+
+# Get dimension scores
+to_dairy <- get_all_aggregations(
+  normed_data = normed_data['minmax'],
+  framework = framework,
+  state_key = state_key,
+  metrics_df = metrics_df,
+  to_remove = to_remove
+)
+
+
+## Reduce crop failure indicator to totalIncomeInsuranceIndemnities
+to_remove <- framework %>% 
+  dplyr::filter(
+    indicator == 'crop failure', 
+    variable_name != 'totalIncomeInsuranceIndemnities'
+  ) %>% 
+  pull(variable_name)
+
+# Get dimension scores
+to_insurance <- get_all_aggregations(
+  normed_data = normed_data['minmax'],
+  framework = framework,
+  state_key = state_key,
+  metrics_df = metrics_df,
+  to_remove = to_remove
+)
+
+
+## Put them together
+prod_df <- map_dfr(list(original_scores, to_dairy, to_insurance), ~ {
+  .x$minmax_geometric$dimension_scores %>% 
+    as.data.frame() %>%
+    dplyr::filter(str_length(state) == 2) %>% 
+    mutate(
+      rank = dense_rank(production),
+    ) %>% 
+    dplyr::filter(state == 'VT') %>% 
+    dplyr::select(production, rank)
+}) %>% 
+  mutate(
+    production = round(production, 3),
+    iteration = c('Original', 'Dairy Only', 'Insurance Only')
+  )
+```
+
+```{r}
+#| label: production_comparison
+#| class: centered-table
+#| echo: false
+get_reactable(
+  prod_df, 
+  fullWidth = FALSE,
+  searchable = FALSE,
+  filterable = FALSE
+)
+```
+
+# Reduce Biodiversity Metrics
+
+Now for the `environment` dimension, we will reduce the `biodiversity` indicator from its current set of 8 species down to the percentage of animal species at risk and the percentage of plant species at risk. 
+
+```{r}
+#| label: reduce_biodiversity
+#| output: false
+get_str(normed_data)
+get_str(framework)
+
+## Reduce crop failure indicator to pctAtRiskAnimalSpp
+to_remove <- framework %>% 
+  dplyr::filter(
+    indicator == 'biodiversity', 
+    variable_name != 'pctAtRiskAnimalSpp'
+  ) %>% 
+  pull(variable_name)
+
+# Get dimension scores
+to_animal <- get_all_aggregations(
+  normed_data = normed_data['minmax'],
+  framework = framework,
+  state_key = state_key,
+  metrics_df = metrics_df,
+  to_remove = to_remove
+)
+
+
+## Reduce biodiversity indicator to pctAtRiskPlantSpp
+to_remove <- framework %>% 
+  dplyr::filter(
+    indicator == 'crop failure', 
+    variable_name != 'pctAtRiskPlantSpp'
+  ) %>% 
+  pull(variable_name)
+
+# Get dimension scores
+to_plant <- get_all_aggregations(
+  normed_data = normed_data['minmax'],
+  framework = framework,
+  state_key = state_key,
+  metrics_df = metrics_df,
+  to_remove = to_remove
+)
+
+
+## Put them together
+env_df <- map_dfr(list(original_scores, to_animal, to_plant), ~ {
+  .x$minmax_geometric$dimension_scores %>% 
+    as.data.frame() %>%
+    dplyr::filter(str_length(state) == 2) %>% 
+    mutate(
+      rank = dense_rank(environment),
+    ) %>% 
+    dplyr::filter(state == 'VT') %>% 
+    dplyr::select(environment, rank)
+}) %>% 
+  mutate(
+    environment = round(environment, 3),
+    iteration = c('Original', 'Animal Spp Only', 'Plant Spp Only')
+  )
+```
+
+```{r}
+#| label: environment_comparison
+#| class: centered-table
+#| echo: false
+get_reactable(
+  env_df, 
+  fullWidth = FALSE,
+  searchable = FALSE,
+  filterable = FALSE
+)
+```
+
+# Reduce Wealth/Income Metrics
+
+For the `economics` dimension, we will reduce the `wealth/income distribution` indicator down to unemployment rate and then gini index.
+
+```{r}
+#| label: reduce_economics
+#| output: false
+get_str(normed_data)
+get_str(framework)
+
+## Reduce wealth/income indicator to unemploymentRate
+to_remove <- framework %>% 
+  dplyr::filter(
+    indicator == 'wealth/income distribution', 
+    variable_name != 'unemploymentRate'
+  ) %>% 
+  pull(variable_name)
+
+# Get dimension scores
+to_unemployment <- get_all_aggregations(
+  normed_data = normed_data['minmax'],
+  framework = framework,
+  state_key = state_key,
+  metrics_df = metrics_df,
+  to_remove = to_remove
+)
+
+
+## Reduce wealth/income indicator to gini index
+to_remove <- framework %>% 
+  dplyr::filter(
+    indicator == 'wealth/income distribution', 
+    variable_name != 'gini'
+  ) %>% 
+  pull(variable_name)
+
+# Get dimension scores
+to_gini <- get_all_aggregations(
+  normed_data = normed_data['minmax'],
+  framework = framework,
+  state_key = state_key,
+  metrics_df = metrics_df,
+  to_remove = to_remove
+)
+
+
+## Put them together
+econ_df <- map_dfr(list(original_scores, to_unemployment, to_gini), ~ {
+  .x$minmax_geometric$dimension_scores %>% 
+    as.data.frame() %>%
+    dplyr::filter(str_length(state) == 2) %>% 
+    mutate(
+      rank = dense_rank(economics),
+    ) %>% 
+    dplyr::filter(state == 'VT') %>% 
+    dplyr::select(economics, rank)
+}) %>% 
+  mutate(
+    economics = round(economics, 3),
+    iteration = c('Original', 'Unemployment', 'Gini')
+  )
+```
+
+```{r}
+#| label: economics_comparison
+#| class: centered-table
+#| echo: false
+get_reactable(
+  env_df, 
+  fullWidth = FALSE,
+  searchable = FALSE,
+  filterable = FALSE
+)
 ```

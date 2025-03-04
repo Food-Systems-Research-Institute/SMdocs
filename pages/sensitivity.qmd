@@ -1,5 +1,5 @@
 ---
-title: "Sensitivity Analysis"
+title: "Sensitivity and Uncertainty"
 format:
   html:
     fig-dpi: 200
@@ -8,9 +8,138 @@ editor_options:
 warnings: false
 ---
 
-## Introduction
+```{r}
+#| label: setup
+#| include: false
+source('dev/get_aggregations.R')
+pacman::p_load(
+  dplyr,
+  purrr,
+  tictoc,
+  stringr,
+  ggplot2
+)
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::arrange(),
+  dplyr::summarize(),
+  dplyr::as_data_frame(),
+  dplyr::pull(),
+  .quiet = TRUE
+)
+```
 
-Examples:
+Steps
 
-- cite bene et al 2019 [@bene2019GlobalMapIndicators]
-  - what happens when we change the number of indicators
+- Set up grid of uncertain inputs (normalization, aggregation, indicators)
+- Sample from input factors
+- Run model 1000 times, get VT rank for each dimension
+- Explore distributions of each dimension rank
+
+Notes
+
+- the normed data are already handy. We could just choose the appropriate DF, then reduce indicators from there
+- workflow: choose the norms, reduce by indicators, then aggregate
+
+```{r}
+#| label: input_grid
+## Load data for aggregations
+state_key <- readRDS('data/sm_data.rds')[['state_key']]
+metrics_df <- readRDS('data/metrics_df.rds')
+normed_data <- readRDS('data/normalized_metrics_df.rds')
+framework <- readRDS('data/filtered_frame.rds')
+
+
+## Set up options for uncertain input factors
+normalizations <- c(
+  'minmax',
+  'zscore',
+  'winsor',
+  'rank',
+  'boxcox'
+)
+aggregations <- c('geometric', 'arithmetic')
+# metrics <- c('none', framework$variable_name) # 129 metrics
+indicators <- c('none', unique(framework$indicator)) # 39 indicators
+
+
+## Try a grid of all possible combinations
+grid <- expand.grid(
+  normalizations,
+  aggregations,
+  indicators
+) %>% 
+  setNames(c('norms', 'aggs', 'indics'))
+# Could loop through it just once, or sample from it?
+
+
+## Try looping through it
+# For each sample, select normed data run model that way, get dimension scores for VT
+tic()
+out <- map(1:nrow(grid), \(i) {
+  
+  # Print outputs for debugging
+  print(grid[i, ])
+  
+  get_time(c('~~~~~ Starting row ', i, ' at:'))
+  # Run model
+  model_out <- get_all_aggregations(
+    normed_data = normed_data[as.character(grid$norms[i])],
+    framework = framework,
+    state_key = state_key,
+    metrics_df = metrics_df,
+    aggregation = grid$aggs[i],
+    remove_indicators = grid$indics[i]
+  )
+}, .progress = TRUE)
+toc()
+# 8 minutes 20 seconds
+
+get_str(out)
+get_str(out, 4)
+
+# Save this for posterity
+saveRDS(out, 'data/objects/sensitivity_out.RDS')
+
+
+
+## Get names of sampled inputs to identify later
+sampled_inputs <- map_chr(1:nrow(grid), ~ {
+  paste0(
+    c(
+      as.character(grid[.x, 1]), 
+      str_sub(grid[.x, 2], end = 3),
+      snakecase::to_snake_case(as.character(grid[.x, 3]))
+    ), 
+    collapse = '_'
+  )
+})
+
+# Pull out just VT dimension scores
+test <- map_dfr(out, ~ {
+  df <- .x[[1]]$dimension_scores %>% 
+    as.data.frame() %>% 
+    filter(str_length(state) == 2) %>% 
+    mutate(across(!state, ~ as.numeric(dense_rank(.x)), .names = "{.col}_rank")) %>% 
+    filter(state == 'VT')
+}) %>% 
+  mutate(inputs = sampled_inputs)
+get_str(test, 3)
+# Each line is result from one sample.
+
+plots <- map(str_subset(names(test), '_'), ~ {
+  test %>% 
+    ggplot(aes(x = !!sym(.x))) + 
+    geom_density(
+      fill = 'lightblue',
+      color = 'royalblue'
+    ) +
+    theme_classic()
+})
+plots
+# Noice!
+# Note that ranks will make a lot more sense than scores now I realize...
+# Ranks it is!
+```
+

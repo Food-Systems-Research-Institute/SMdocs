@@ -64,6 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
+<link href="../pages/sensitivity.html" rel="next">
 <link href="../pages/validation.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -102,6 +103,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   }
 }</script>
 <style>html{ scroll-behavior: smooth; }</style>
+<script src="../site_libs/core-js-2.5.3/shim.min.js"></script>
+
+<script src="../site_libs/react-18.2.0/react.min.js"></script>
+
+<script src="../site_libs/react-18.2.0/react-dom.min.js"></script>
+
+<script src="../site_libs/reactwidget-2.0.0/react-tools.js"></script>
+
+<link href="../site_libs/htmltools-fill-0.5.8.1/fill.css" rel="stylesheet">
+
+<script src="../site_libs/htmlwidgets-1.6.4/htmlwidgets.js"></script>
+
+<link href="../site_libs/reactable-0.4.4/reactable.css" rel="stylesheet">
+
+<script src="../site_libs/reactable-binding-0.4.4/reactable.js"></script>
+
 
 
 <link rel="stylesheet" href="../styles.css">
@@ -312,6 +329,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Metric Counts</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../pages/sensitivity.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Sensitivity and Uncertainty</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -324,11 +347,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On This Page</h2>
    
   <ul>
-  <li><a href="#reduce-health" id="toc-reduce-health" class="nav-link active" data-scroll-target="#reduce-health"><span class="header-section-number">1</span> Reduce Health</a>
-  <ul>
-  <li><a href="#to-life-expectancy" id="toc-to-life-expectancy" class="nav-link" data-scroll-target="#to-life-expectancy"><span class="header-section-number">1.1</span> To Life Expectancy</a></li>
-  <li><a href="#to-drug-overdose-deaths" id="toc-to-drug-overdose-deaths" class="nav-link" data-scroll-target="#to-drug-overdose-deaths"><span class="header-section-number">1.2</span> To Drug Overdose Deaths</a></li>
-  </ul></li>
+  <li><a href="#reduce-physical-health-metrics" id="toc-reduce-physical-health-metrics" class="nav-link active" data-scroll-target="#reduce-physical-health-metrics"><span class="header-section-number">1</span> Reduce Physical Health Metrics</a></li>
+  <li><a href="#reduce-crop-failure-metrics" id="toc-reduce-crop-failure-metrics" class="nav-link" data-scroll-target="#reduce-crop-failure-metrics"><span class="header-section-number">2</span> Reduce Crop Failure Metrics</a></li>
+  <li><a href="#reduce-biodiversity-metrics" id="toc-reduce-biodiversity-metrics" class="nav-link" data-scroll-target="#reduce-biodiversity-metrics"><span class="header-section-number">3</span> Reduce Biodiversity Metrics</a></li>
+  <li><a href="#reduce-wealthincome-metrics" id="toc-reduce-wealthincome-metrics" class="nav-link" data-scroll-target="#reduce-wealthincome-metrics"><span class="header-section-number">4</span> Reduce Wealth/Income Metrics</a></li>
   </ul>
 </nav>
     </div>
@@ -354,59 +376,51 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>Exploring what happens if we use different counts of metrics. The plan is to:</p>
-<ul>
-<li>Pick a few good candidate indicators that have lots of metrics.
-<ul>
-<li>physical health tbd (health)</li>
-<li>crop failure (production)</li>
-<li>biodiversity (environment)</li>
-<li>wealth and income distribution (economics)</li>
-</ul></li>
-<li>See what happens when we reduce those to a single one?</li>
-<li>See how it affects the index and dimension scores (in VT specifically)</li>
-<li>Get a spider plot to compare before and after</li>
-<li>Doing this with min-max normalization data, and maybe doing both arithmetic and geometric? The functions are already set up that way</li>
-</ul>
+<p>Here we will see how much the dimension scores for Vermont change when we reduce certain indicators with many metrics to a single metric. We do this for an indicator in every dimension except social, which really doesn’t have any metrics to spare currently.</p>
+<p>Note that this should be redone more systematically and across all metrics to compare them at some point, rather than a picking just a few. On to-do list.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>pacman<span class="sc">::</span><span class="fu">p_load</span>(</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  dplyr,</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>  purrr</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data for aggregations</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>state_key <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/sm_data.rds'</span>)[[<span class="st">'state_key'</span>]]</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>metrics_df <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/metrics_df.rds'</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>normed_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/normalized_metrics_df.rds'</span>)</span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>framework <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/filtered_frame.rds'</span>)</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Test out process</span></span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>check_out <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df</span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load data for aggregations</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>state_key <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/sm_data.rds'</span>)[[<span class="st">'state_key'</span>]]</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>metrics_df <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/metrics_df.rds'</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>normed_data <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/normalized_metrics_df.rds'</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>framework <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/filtered_frame.rds'</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Test out process</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>original_scores <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<section id="reduce-physical-health-metrics" class="level1" data-number="1">
+<h1 data-number="1"><span class="header-section-number">1</span> Reduce Physical Health Metrics</h1>
+<p>First let’s take the <code>physical health tbd</code> indicator and reduce it to only <code>lifeExpectancy</code>.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_vt_spiders</span>(check_out, <span class="st">'minmax'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove everything from physical health tbd except life expectancy</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>to_remove <span class="ot">&lt;-</span> framework <span class="sc">%&gt;%</span> </span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>    indicator <span class="sc">==</span> <span class="st">'physical health tbd'</span>, </span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'lifeExpectancy'</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(variable_name)</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimension scores</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>to_life <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df,</span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_remove =</span> to_remove</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="metric_counts_files/figure-html/check_spiders-1.png" class="img-fluid figure-img" width="2000"></p>
-</figure>
 </div>
-</div>
-</div>
-<section id="reduce-health" class="level1" data-number="1">
-<h1 data-number="1"><span class="header-section-number">1</span> Reduce Health</h1>
-<section id="to-life-expectancy" class="level2" data-number="1.1">
-<h2 data-number="1.1" class="anchored" data-anchor-id="to-life-expectancy"><span class="header-section-number">1.1</span> To Life Expectancy</h2>
+<p>Now the same for <code>drugOverdoseDeaths</code></p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -414,12 +428,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>to_remove <span class="ot">&lt;-</span> framework <span class="sc">%&gt;%</span> </span>
 <span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
 <span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    indicator <span class="sc">==</span> <span class="st">'physical health tbd'</span>, </span>
-<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'Life expectancy'</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'drugOverdoseDeaths'</span></span>
 <span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(variable_name)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(variable_name)</span>
 <span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimension scores</span></span>
-<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>to_life <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>to_overdose <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
 <span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
 <span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
 <span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
@@ -428,85 +442,241 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+<p>Finally, we can compare the health dimension score and rank for the original framework against the <code>physical health tbd</code> indicator as represented by only life expectancy or only drug overdoses.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_vt_spiders</span>(to_life, <span class="st">'minmax'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(<span class="fu">list</span>(original_scores, to_life, to_overdose), <span class="sc">~</span> {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  .x<span class="sc">$</span>minmax_geometric<span class="sc">$</span>dimension_scores <span class="sc">%&gt;%</span> </span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">str_length</span>(state) <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="at">rank =</span> <span class="fu">dense_rank</span>(health),</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(state <span class="sc">==</span> <span class="st">'VT'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(health, rank)</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">%&gt;%</span> </span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="at">health =</span> <span class="fu">round</span>(health, <span class="dv">3</span>),</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="fu">c</span>(<span class="st">'Original'</span>, <span class="st">'Life Exp Only'</span>, <span class="st">'Overdoses Only'</span>)</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
-<div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="metric_counts_files/figure-html/life_exp_spider-1.png" class="img-fluid figure-img" width="2000"></p>
-</figure>
 </div>
+<div class="cell centered-table">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-3f822d1468f1f0011ffd" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-3f822d1468f1f0011ffd">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"health":[0.531,0.586,0.565],"rank":[50,50,50],"iteration":["Original","Life Exp Only","Overdoses Only"]},"columns":[{"id":"health","name":"health","type":"numeric"},{"id":"rank","name":"rank","type":"numeric"},{"id":"iteration","name":"iteration","type":"character"}],"resizable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"inline":true,"dataKey":"bca3d4cc4ee42583f9f49d835aad7ab6"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </section>
-<section id="to-drug-overdose-deaths" class="level2" data-number="1.2">
-<h2 data-number="1.2" class="anchored" data-anchor-id="to-drug-overdose-deaths"><span class="header-section-number">1.2</span> To Drug Overdose Deaths</h2>
+<section id="reduce-crop-failure-metrics" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Reduce Crop Failure Metrics</h1>
+<p>For <code>production</code>, we will reduce the <code>crop failure</code> indicator to only the value of dairy margin protection payments and then income from insurance indemnities.</p>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Remove everything from physical health tbd except life expectancy</span></span>
-<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>to_remove <span class="ot">&lt;-</span> framework <span class="sc">%&gt;%</span> </span>
-<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
-<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>    indicator <span class="sc">==</span> <span class="st">'physical health tbd'</span>, </span>
-<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'drugOverdoseDeaths'</span></span>
-<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">pull</span>(variable_name)</span>
-<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimension scores</span></span>
-<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>to_overdose <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
-<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
-<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
-<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
-<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df,</span>
-<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_remove =</span> to_remove</span>
-<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(normed_data)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(framework)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Reduce crop failure indicator to totalValueDairyMarginProtPayments</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>to_remove <span class="ot">&lt;-</span> framework <span class="sc">%&gt;%</span> </span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    indicator <span class="sc">==</span> <span class="st">'crop failure'</span>, </span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'totalValueDairyMarginProtPayments'</span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(variable_name)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimension scores</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>to_dairy <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df,</span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_remove =</span> to_remove</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Reduce crop failure indicator to totalIncomeInsuranceIndemnities</span></span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>to_remove <span class="ot">&lt;-</span> framework <span class="sc">%&gt;%</span> </span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    indicator <span class="sc">==</span> <span class="st">'crop failure'</span>, </span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'totalIncomeInsuranceIndemnities'</span></span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(variable_name)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimension scores</span></span>
+<span id="cb5-31"><a href="#cb5-31" aria-hidden="true" tabindex="-1"></a>to_insurance <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
+<span id="cb5-32"><a href="#cb5-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
+<span id="cb5-33"><a href="#cb5-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
+<span id="cb5-34"><a href="#cb5-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
+<span id="cb5-35"><a href="#cb5-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df,</span>
+<span id="cb5-36"><a href="#cb5-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_remove =</span> to_remove</span>
+<span id="cb5-37"><a href="#cb5-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-38"><a href="#cb5-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-39"><a href="#cb5-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-40"><a href="#cb5-40" aria-hidden="true" tabindex="-1"></a><span class="do">## Put them together</span></span>
+<span id="cb5-41"><a href="#cb5-41" aria-hidden="true" tabindex="-1"></a>prod_df <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(<span class="fu">list</span>(original_scores, to_dairy, to_insurance), <span class="sc">~</span> {</span>
+<span id="cb5-42"><a href="#cb5-42" aria-hidden="true" tabindex="-1"></a>  .x<span class="sc">$</span>minmax_geometric<span class="sc">$</span>dimension_scores <span class="sc">%&gt;%</span> </span>
+<span id="cb5-43"><a href="#cb5-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb5-44"><a href="#cb5-44" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">str_length</span>(state) <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-45"><a href="#cb5-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb5-46"><a href="#cb5-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">rank =</span> <span class="fu">dense_rank</span>(production),</span>
+<span id="cb5-47"><a href="#cb5-47" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-48"><a href="#cb5-48" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(state <span class="sc">==</span> <span class="st">'VT'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-49"><a href="#cb5-49" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(production, rank)</span>
+<span id="cb5-50"><a href="#cb5-50" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">%&gt;%</span> </span>
+<span id="cb5-51"><a href="#cb5-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb5-52"><a href="#cb5-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">production =</span> <span class="fu">round</span>(production, <span class="dv">3</span>),</span>
+<span id="cb5-53"><a href="#cb5-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="fu">c</span>(<span class="st">'Original'</span>, <span class="st">'Dairy Only'</span>, <span class="st">'Insurance Only'</span>)</span>
+<span id="cb5-54"><a href="#cb5-54" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
-<div class="cell">
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Compare out_to_life and to_overdose</span></span>
-<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>to_life<span class="sc">$</span>minmax_geometric<span class="sc">$</span>dimension_scores <span class="sc">%&gt;%</span> </span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(state <span class="sc">==</span> <span class="st">'VT'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 6
-# Rowwise: 
-  economics environment health production social state
-      &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;
-1     0.154       0.179  0.586     0.0357  0.404 VT   </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>to_overdose<span class="sc">$</span>minmax_geometric<span class="sc">$</span>dimension_scores <span class="sc">%&gt;%</span> </span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(state <span class="sc">==</span> <span class="st">'VT'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
-<div class="cell-output cell-output-stdout">
-<pre><code># A tibble: 1 × 6
-# Rowwise: 
-  economics environment health production social state
-      &lt;dbl&gt;       &lt;dbl&gt;  &lt;dbl&gt;      &lt;dbl&gt;  &lt;dbl&gt; &lt;chr&gt;
-1     0.154       0.179  0.565     0.0357  0.404 VT   </code></pre>
-</div>
-<details class="code-fold">
-<summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Spider diagram</span></span>
-<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_vt_spiders</span>(to_overdose, <span class="st">'minmax'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
-</details>
+<div class="cell centered-table">
 <div class="cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="metric_counts_files/figure-html/overdose_spider-1.png" class="img-fluid figure-img" width="2000"></p>
-</figure>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-5f7253d05cd07dd0bf05" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-5f7253d05cd07dd0bf05">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"production":[0.036,0.046,0.019],"rank":[4,7,3],"iteration":["Original","Dairy Only","Insurance Only"]},"columns":[{"id":"production","name":"production","type":"numeric"},{"id":"rank","name":"rank","type":"numeric"},{"id":"iteration","name":"iteration","type":"character"}],"resizable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"inline":true,"dataKey":"b5c80518fb2bef021f5e0d46fb6cffa4"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
+</div>
+</section>
+<section id="reduce-biodiversity-metrics" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Reduce Biodiversity Metrics</h1>
+<p>Now for the <code>environment</code> dimension, we will reduce the <code>biodiversity</code> indicator from its current set of 8 species down to the percentage of animal species at risk and the percentage of plant species at risk.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(normed_data)</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(framework)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Reduce crop failure indicator to pctAtRiskAnimalSpp</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>to_remove <span class="ot">&lt;-</span> framework <span class="sc">%&gt;%</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>    indicator <span class="sc">==</span> <span class="st">'biodiversity'</span>, </span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'pctAtRiskAnimalSpp'</span></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(variable_name)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimension scores</span></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>to_animal <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_remove =</span> to_remove</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Reduce biodiversity indicator to pctAtRiskPlantSpp</span></span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>to_remove <span class="ot">&lt;-</span> framework <span class="sc">%&gt;%</span> </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>    indicator <span class="sc">==</span> <span class="st">'crop failure'</span>, </span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'pctAtRiskPlantSpp'</span></span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(variable_name)</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimension scores</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>to_plant <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df,</span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_remove =</span> to_remove</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a><span class="do">## Put them together</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>env_df <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(<span class="fu">list</span>(original_scores, to_animal, to_plant), <span class="sc">~</span> {</span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>  .x<span class="sc">$</span>minmax_geometric<span class="sc">$</span>dimension_scores <span class="sc">%&gt;%</span> </span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">str_length</span>(state) <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">rank =</span> <span class="fu">dense_rank</span>(environment),</span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(state <span class="sc">==</span> <span class="st">'VT'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(environment, rank)</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">environment =</span> <span class="fu">round</span>(environment, <span class="dv">3</span>),</span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="fu">c</span>(<span class="st">'Original'</span>, <span class="st">'Animal Spp Only'</span>, <span class="st">'Plant Spp Only'</span>)</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell centered-table">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-8bbfca1a330b804298e0" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-8bbfca1a330b804298e0">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"environment":[0.179,0.21,0.179],"rank":[15,25,15],"iteration":["Original","Animal Spp Only","Plant Spp Only"]},"columns":[{"id":"environment","name":"environment","type":"numeric"},{"id":"rank","name":"rank","type":"numeric"},{"id":"iteration","name":"iteration","type":"character"}],"resizable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"inline":true,"dataKey":"aa0ba1f1f809c5c704361df85f1d5284"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="reduce-wealthincome-metrics" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Reduce Wealth/Income Metrics</h1>
+<p>For the <code>economics</code> dimension, we will reduce the <code>wealth/income distribution</code> indicator down to unemployment rate and then gini index.</p>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(normed_data)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(framework)</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="do">## Reduce wealth/income indicator to unemploymentRate</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>to_remove <span class="ot">&lt;-</span> framework <span class="sc">%&gt;%</span> </span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    indicator <span class="sc">==</span> <span class="st">'wealth/income distribution'</span>, </span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'unemploymentRate'</span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(variable_name)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimension scores</span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>to_unemployment <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df,</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_remove =</span> to_remove</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a><span class="do">## Reduce wealth/income indicator to gini index</span></span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>to_remove <span class="ot">&lt;-</span> framework <span class="sc">%&gt;%</span> </span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    indicator <span class="sc">==</span> <span class="st">'wealth/income distribution'</span>, </span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>    variable_name <span class="sc">!=</span> <span class="st">'gini'</span></span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pull</span>(variable_name)</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a><span class="co"># Get dimension scores</span></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>to_gini <span class="ot">&lt;-</span> <span class="fu">get_all_aggregations</span>(</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a>  <span class="at">normed_data =</span> normed_data[<span class="st">'minmax'</span>],</span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">framework =</span> framework,</span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>  <span class="at">state_key =</span> state_key,</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">metrics_df =</span> metrics_df,</span>
+<span id="cb7-36"><a href="#cb7-36" aria-hidden="true" tabindex="-1"></a>  <span class="at">to_remove =</span> to_remove</span>
+<span id="cb7-37"><a href="#cb7-37" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-38"><a href="#cb7-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-39"><a href="#cb7-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-40"><a href="#cb7-40" aria-hidden="true" tabindex="-1"></a><span class="do">## Put them together</span></span>
+<span id="cb7-41"><a href="#cb7-41" aria-hidden="true" tabindex="-1"></a>econ_df <span class="ot">&lt;-</span> <span class="fu">map_dfr</span>(<span class="fu">list</span>(original_scores, to_unemployment, to_gini), <span class="sc">~</span> {</span>
+<span id="cb7-42"><a href="#cb7-42" aria-hidden="true" tabindex="-1"></a>  .x<span class="sc">$</span>minmax_geometric<span class="sc">$</span>dimension_scores <span class="sc">%&gt;%</span> </span>
+<span id="cb7-43"><a href="#cb7-43" aria-hidden="true" tabindex="-1"></a>    <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb7-44"><a href="#cb7-44" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">str_length</span>(state) <span class="sc">==</span> <span class="dv">2</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-45"><a href="#cb7-45" aria-hidden="true" tabindex="-1"></a>    <span class="fu">mutate</span>(</span>
+<span id="cb7-46"><a href="#cb7-46" aria-hidden="true" tabindex="-1"></a>      <span class="at">rank =</span> <span class="fu">dense_rank</span>(economics),</span>
+<span id="cb7-47"><a href="#cb7-47" aria-hidden="true" tabindex="-1"></a>    ) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-48"><a href="#cb7-48" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(state <span class="sc">==</span> <span class="st">'VT'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-49"><a href="#cb7-49" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(economics, rank)</span>
+<span id="cb7-50"><a href="#cb7-50" aria-hidden="true" tabindex="-1"></a>}) <span class="sc">%&gt;%</span> </span>
+<span id="cb7-51"><a href="#cb7-51" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-52"><a href="#cb7-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">economics =</span> <span class="fu">round</span>(economics, <span class="dv">3</span>),</span>
+<span id="cb7-53"><a href="#cb7-53" aria-hidden="true" tabindex="-1"></a>    <span class="at">iteration =</span> <span class="fu">c</span>(<span class="st">'Original'</span>, <span class="st">'Unemployment'</span>, <span class="st">'Gini'</span>)</span>
+<span id="cb7-54"><a href="#cb7-54" aria-hidden="true" tabindex="-1"></a>  )</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+</div>
+<div class="cell centered-table">
+<div class="cell-output-display">
+<div class="reactable html-widget html-fill-item" id="htmlwidget-44417f2cec27def45c57" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-44417f2cec27def45c57">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"environment":[0.179,0.21,0.179],"rank":[15,25,15],"iteration":["Original","Animal Spp Only","Plant Spp Only"]},"columns":[{"id":"environment","name":"environment","type":"numeric"},{"id":"rank","name":"rank","type":"numeric"},{"id":"iteration","name":"iteration","type":"character"}],"resizable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"inline":true,"dataKey":"aa0ba1f1f809c5c704361df85f1d5284"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 
 
-</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
@@ -939,6 +1109,9 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
+      <a href="../pages/sensitivity.html" class="pagination-link" aria-label="Sensitivity and Uncertainty">
+        <span class="nav-page-text">Sensitivity and Uncertainty</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
   </div>
 </nav>
 </div> <!-- /content -->

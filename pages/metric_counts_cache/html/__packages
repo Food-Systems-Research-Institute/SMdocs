@@ -1,8 +1,9 @@
 dplyr
 conflicted
 projecter
-purrr
-tictoc
-tibble
 fmsb
 snakecase
+purrr
+tibble
+reactable
+stringr
