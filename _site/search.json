@@ -15,7 +15,7 @@
     "href": "pages/sensitivity.html",
     "title": "Sensitivity and Uncertainty",
     "section": "",
-    "text": "Steps\n\nSet up grid of uncertain inputs (normalization, aggregation, indicators)\nSample from input factors\nExplore distributions of each dimension rank\n\nNotes\n\nthe normed data are already handy. We could just choose the appropriate DF, then reduce indicators from there\nworkflow: choose the norms, reduce by indicators, then aggregate\n\n\n1 Dimension Sensitivity\n\n\nCode\n## Load data for aggregations\nstate_key &lt;- readRDS('data/sm_data.rds')[['state_key']]\nmetrics_df &lt;- readRDS('data/metrics_df.rds')\nnormed_data &lt;- readRDS('data/normalized_metrics_df.rds')\nframework &lt;- readRDS('data/filtered_frame.rds')\n\n\n## Set up options for uncertain input factors\nnormalizations &lt;- c(\n  'minmax',\n  'zscore',\n  'winsor',\n  'rank',\n  'boxcox'\n)\naggregations &lt;- c('geometric', 'arithmetic')\n# metrics &lt;- c('none', framework$variable_name) # 129 metrics\nindicators &lt;- c('none', unique(framework$indicator)) # 39 indicators\n\n\n## Try a grid of all possible combinations\ngrid &lt;- expand.grid(\n  normalizations,\n  aggregations,\n  indicators\n) %&gt;% \n  setNames(c('norms', 'aggs', 'indics'))\n# Could loop through it just once, or sample from it?\n\n\n\n\nCode\n# For each set of input factors, get dimension scores for VT\ntic()\nout &lt;- map(1:nrow(grid), \\(i) {\n  \n  # Print outputs for debugging\n  print(grid[i, ])\n  \n  get_time(c('~~~~~ Starting row ', i, ' at:'))\n  # Run model\n  model_out &lt;- get_all_aggregations(\n    normed_data = normed_data[as.character(grid$norms[i])],\n    framework = framework,\n    state_key = state_key,\n    metrics_df = metrics_df,\n    aggregation = grid$aggs[i],\n    remove_indicators = grid$indics[i]\n  )\n}, .progress = TRUE)\ntoc()\n# ~ 8 minutes 20 seconds\n\nget_str(out)\nget_str(out, 4)\n\n# Save this so we don't have to run it again\nsaveRDS(out, 'data/objects/sensitivity_out.RDS')\n\n\n\n\nCode\n# Load up saved sensitivity out\nsens_out &lt;- readRDS('data/objects/sensitivity_out.RDS')\n\n## Get names of sampled inputs to identify later\nsampled_inputs &lt;- map_chr(1:nrow(grid), ~ {\n  paste0(\n    c(\n      as.character(grid[.x, 1]), \n      str_sub(grid[.x, 2], end = 3),\n      snakecase::to_snake_case(as.character(grid[.x, 3]))\n    ), \n    collapse = '_'\n  )\n})\n\n# Pull out just VT dimension scores\ntest &lt;- map_dfr(sens_out, ~ {\n  df &lt;- .x[[1]]$dimension_scores %&gt;% \n    as.data.frame() %&gt;% \n    filter(str_length(state) == 2) %&gt;% \n    mutate(across(!state, ~ as.numeric(dense_rank(.x)), .names = \"{.col}_rank\")) %&gt;% \n    filter(state == 'VT')\n}) %&gt;% \n  mutate(inputs = sampled_inputs)\nget_str(test, 3)\n# Each line is result from one sample.\n\n# Get vector of dimension rank names\ndimension_ranks &lt;- str_subset(names(test),  '_') %&gt;% \n  snakecase::to_title_case()\n\n\n\n\nCode\nplots &lt;- map2(str_subset(names(test), '_'), dimension_ranks, ~ {\n  test %&gt;% \n    ggplot(aes(x = !!sym(.x))) + \n    geom_density(\n      fill = 'lightblue',\n      color = 'royalblue'\n    ) +\n    theme_classic() +\n    labs(\n      x = paste(.y, '(Higher is Better)'),\n      y = 'Density',\n      title = paste0('Distribution of ', .y, 's for Vermont')\n    )\n})\nggarrange(\n  plotlist = plots,\n  nrow = 3,\n  ncol = 2\n)\n\n\n\n\n\n\n\n\n\n\n\n\n\n Back to top",
+    "text": "Steps",
     "crumbs": [
       "Analysis",
       "Sensitivity and Uncertainty"
@@ -763,5 +763,256 @@
       "Analysis",
       "Validation"
     ]
+  },
+  {
+    "objectID": "pages/sensitivity.html#economics",
+    "href": "pages/sensitivity.html#economics",
+    "title": "Sensitivity and Uncertainty",
+    "section": "2.1 Economics",
+    "text": "2.1 Economics",
+    "crumbs": [
+      "Analysis",
+      "Sensitivity and Uncertainty"
+    ]
+  },
+  {
+    "objectID": "pages/sensitivity.html#environment",
+    "href": "pages/sensitivity.html#environment",
+    "title": "Sensitivity and Uncertainty",
+    "section": "2.2 Environment",
+    "text": "2.2 Environment",
+    "crumbs": [
+      "Analysis",
+      "Sensitivity and Uncertainty"
+    ]
+  },
+  {
+    "objectID": "pages/sensitivity.html#health",
+    "href": "pages/sensitivity.html#health",
+    "title": "Sensitivity and Uncertainty",
+    "section": "2.3 Health",
+    "text": "2.3 Health",
+    "crumbs": [
+      "Analysis",
+      "Sensitivity and Uncertainty"
+    ]
+  },
+  {
+    "objectID": "pages/sensitivity.html#production",
+    "href": "pages/sensitivity.html#production",
+    "title": "Sensitivity and Uncertainty",
+    "section": "2.4 Production",
+    "text": "2.4 Production",
+    "crumbs": [
+      "Analysis",
+      "Sensitivity and Uncertainty"
+    ]
+  },
+  {
+    "objectID": "pages/sensitivity.html#social",
+    "href": "pages/sensitivity.html#social",
+    "title": "Sensitivity and Uncertainty",
+    "section": "2.5 Social",
+    "text": "2.5 Social",
+    "crumbs": [
+      "Analysis",
+      "Sensitivity and Uncertainty"
+    ]
+  },
+  {
+    "objectID": "preso/preso.html#getting-up",
+    "href": "preso/preso.html#getting-up",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Getting up",
+    "text": "Getting up\n\nTurn off alarm\nGet out of bed"
+  },
+  {
+    "objectID": "preso/preso.html#going-to-sleep",
+    "href": "preso/preso.html#going-to-sleep",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Going to sleep",
+    "text": "Going to sleep\n\nGet in bed\nCount sheep\n\n\nSpeaker notes go here."
+  },
+  {
+    "objectID": "preso/preso.html#testing-a-plot",
+    "href": "preso/preso.html#testing-a-plot",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Testing a plot",
+    "text": "Testing a plot\n\n\n\nSome points before plot\nanother point before the plot"
+  },
+  {
+    "objectID": "preso/preso.html#testing-plotly",
+    "href": "preso/preso.html#testing-plotly",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Testing Plotly",
+    "text": "Testing Plotly\n\n\n\nSome points before plot\nanother point before the plot"
+  },
+  {
+    "objectID": "preso/preso.html#test-loading-plot",
+    "href": "preso/preso.html#test-loading-plot",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Test Loading Plot",
+    "text": "Test Loading Plot\n\n\n\nSome points before plot\nanother point before the plot"
+  },
+  {
+    "objectID": "preso/preso.html#test-tabset-for-graphs",
+    "href": "preso/preso.html#test-tabset-for-graphs",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Test Tabset for Graphs",
+    "text": "Test Tabset for Graphs\n\nFirst TabSecond Tab"
+  },
+  {
+    "objectID": "preso/preso.html#test-plotly",
+    "href": "preso/preso.html#test-plotly",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Test Plotly",
+    "text": "Test Plotly\n\n\n\nSome points before plot\nanother point before the plot\n\n\n\nEcononomicsEnvironment"
+  },
+  {
+    "objectID": "preso/preso.html#sensitivity-by-dimension",
+    "href": "preso/preso.html#sensitivity-by-dimension",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Sensitivity by Dimension",
+    "text": "Sensitivity by Dimension\n\n\n\n400 combinations of uncertain inputs\nHigher ranks are desirable\nSome dimensions are stable (Health)\nSome are quite unstable (Economics)\n\n\n\nEconomicsEnvironmentHealthProductionSocial"
+  },
+  {
+    "objectID": "preso/preso.html#indicator-influence",
+    "href": "preso/preso.html#indicator-influence",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Indicator Influence",
+    "text": "Indicator Influence\n\n\n\nSome points before plot\nanother point before the plot\nsome other important point\n\n\n\nEconomicsEnvironmentHealthProductionSocial"
+  },
+  {
+    "objectID": "preso/preso.html#introduction",
+    "href": "preso/preso.html#introduction",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Introduction",
+    "text": "Introduction\n\nGoals of secondary data work\n\nexplore methods of aggregation\nhighlight existing data and important gaps\n\nGoals for today\n\nshare preliminary findings\nfeedback from content experts\n\nhow well do data represesent the system\nnormalization, aggregation, values\nwhere and how to incorporate qualitative data\nhow to guide next RFP\n\n\n\n\nSpeaker notes go here."
+  },
+  {
+    "objectID": "preso/preso.html#indicator-influence-plotlyy",
+    "href": "preso/preso.html#indicator-influence-plotlyy",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Indicator Influence (Plotlyy",
+    "text": "Indicator Influence (Plotlyy\n\n\n\nSome points before plot\nanother point before the plot\nsome other important point\n\n\n\nEcononomicsEnvironmentHealthProductionSocial"
+  },
+  {
+    "objectID": "preso/preso.html#indicator-influence-plotly",
+    "href": "preso/preso.html#indicator-influence-plotly",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Indicator Influence (Plotly)",
+    "text": "Indicator Influence (Plotly)\n\n\n\nSome points before plot\nanother point before the plot\nsome other important point\n\n\n\nEconomicsEnvironmentHealthProductionSocial"
+  },
+  {
+    "objectID": "preso/preso.html#secondary-data",
+    "href": "preso/preso.html#secondary-data",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Secondary Data",
+    "text": "Secondary Data\n\n\n\n\n\nShow/hide more columns\n\n\n\nDownload as CSV"
+  },
+  {
+    "objectID": "preso/preso.html#framework",
+    "href": "preso/preso.html#framework",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Framework",
+    "text": "Framework\n\ngraphs with framework, one tab for each dimension"
+  },
+  {
+    "objectID": "preso/preso.html#metric-distributions",
+    "href": "preso/preso.html#metric-distributions",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Metric Distributions",
+    "text": "Metric Distributions\n\nLong figure with metric distributions, scrollable"
+  },
+  {
+    "objectID": "preso/preso.html#indicator-distributions",
+    "href": "preso/preso.html#indicator-distributions",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Indicator Distributions",
+    "text": "Indicator Distributions\nAn example of indicator distributions with the Min Max + geometric means methods"
+  },
+  {
+    "objectID": "preso/preso.html#indicator-correlations",
+    "href": "preso/preso.html#indicator-correlations",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Indicator Correlations",
+    "text": "Indicator Correlations\nMin Max geometric aggregation"
+  },
+  {
+    "objectID": "preso/preso.html#framework-2",
+    "href": "preso/preso.html#framework-2",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Framework 2",
+    "text": "Framework 2\n\nTable with metadata, desired direction\nTouch on distance from targets? This is a hinky point here"
+  },
+  {
+    "objectID": "preso/preso.html#normalization-and-aggregation",
+    "href": "preso/preso.html#normalization-and-aggregation",
+    "title": "Sustainability Metrics Secondary Data Something Something",
+    "section": "Normalization and Aggregation",
+    "text": "Normalization and Aggregation\n\n\n\ncolumns\non the right, formulas and citations for each thing\non left, notes\ntest a citation (Schneider et al. 2023)\n\n\nMin Max (OECD 2008)\\[\\begin{equation}\nI^t_qc = \\frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}\n\\end{equation}\\]Where \\(x^t_qc\\) is the metric \\(q\\) for state \\(c\\) at time \\(t\\).Z-Scores (OECD 2008)\\[\\begin{equation}\nI^t_{qc} = \\frac{x^t_{qc}-x^t_{qc=\\overline{c}}}{\\sigma^t_{qc=\\overline{c}}}\n\\end{equation}\\]Box Cox (Bickel and Doksum 1981)\\[\\begin{equation}\n{\\rm For}\\ \\lambda\\neq0,\\ f\\lambda(x) = (sign(x)|x|^\\lambda-1)/\\lambda\n\\end{equation}\\]\\[\\begin{equation}\n{\\rm For}\\ \\lambda = 0,\\ f_0(x) = log(x)\n\\end{equation}\\]Rank OrderWinsorization"
+  },
+  {
+    "objectID": "preso/preso.html#comparisons",
+    "href": "preso/preso.html#comparisons",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Comparisons",
+    "text": "Comparisons\n\nspiderplots of each aggregation"
+  },
+  {
+    "objectID": "preso/preso.html#validation",
+    "href": "preso/preso.html#validation",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Validation",
+    "text": "Validation\n\nRegressions\n\n\nFood InsecurityLife ExpectancyFood Environment IndexHappiness Score\n\n\nFeeding America, Map the Meal Gap"
+  },
+  {
+    "objectID": "preso/preso.html#references",
+    "href": "preso/preso.html#references",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "References",
+    "text": "References\n\n\n\n\nBickel, Peter J., and Kjell A. Doksum. 1981. “An Analysis of Transformations Revisited.” Journal of the American Statistical Association 76 (374): 296–311. https://doi.org/10.1080/01621459.1981.10477649.\n\n\nOECD. 2008. Handbook on Constructing Composite Indicators: Methodology and User Guide. Paris: Organisation for Economic Co-operation and Development."
+  },
+  {
+    "objectID": "preso/test.html#slide-with-column-and-tabset",
+    "href": "preso/test.html#slide-with-column-and-tabset",
+    "title": "Quarto Reveal.js with Panel Tabset in a Column",
+    "section": "Slide with Column and Tabset",
+    "text": "Slide with Column and Tabset\n\n\nLeft Column\nSome content here…\n\nRight Column with Tabs"
+  },
+  {
+    "objectID": "preso/preso.html#validation-2",
+    "href": "preso/preso.html#validation-2",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Validation 2",
+    "text": "Validation 2\n\nPCA with all indicators"
+  },
+  {
+    "objectID": "preso/preso.html#normalization",
+    "href": "preso/preso.html#normalization",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Normalization",
+    "text": "Normalization\n\nRank OrderWinsorizationMin MaxZ-ScoresBox Cox\n\n\nRank Order\n\n\nWinsorization\n\n\nMin Max (OECD 2008)\n\\[\\begin{equation}\nI^t_qc = \\frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}\n\\end{equation}\\]\nWhere \\(x^t_qc\\) is the metric \\(q\\) for state \\(c\\) at time \\(t\\).\n\n\nZ-Scores (OECD 2008)\n\\[\\begin{equation}\nI^t_{qc} = \\frac{x^t_{qc}-x^t_{qc=\\overline{c}}}{\\sigma^t_{qc=\\overline{c}}}\n\\end{equation}\\]\n\n\nBox Cox (Bickel and Doksum 1981)\n\\[\\begin{equation}\n{\\rm For}\\ \\lambda\\neq0,\\ f\\lambda(x) = (sign(x)|x|^\\lambda-1)/\\lambda\n\\end{equation}\\] \\[\\begin{equation}\n{\\rm For}\\ \\lambda = 0,\\ f_0(x) = log(x)\n\\end{equation}\\]"
+  },
+  {
+    "objectID": "preso/preso.html#secondary-data-all",
+    "href": "preso/preso.html#secondary-data-all",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Secondary Data (All)",
+    "text": "Secondary Data (All)\n\n\n\n\n\nShow/hide more columns\n\n\n\nDownload as CSV"
+  },
+  {
+    "objectID": "preso/preso.html#refined-secondary-data",
+    "href": "preso/preso.html#refined-secondary-data",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Refined Secondary Data?",
+    "text": "Refined Secondary Data?\n\n\n\n\n\nShow/hide more columns\n\n\n\nDownload as CSV"
+  },
+  {
+    "objectID": "preso/preso.html#secondary-data---refined",
+    "href": "preso/preso.html#secondary-data---refined",
+    "title": "Sustainability Metrics Secondary Data",
+    "section": "Secondary Data - Refined",
+    "text": "Secondary Data - Refined\nA set of 129 metrics to match the refined framework\n\n\n\n\n\nShow/hide more columns\n\n\n\nDownload as CSV"
   }
 ]

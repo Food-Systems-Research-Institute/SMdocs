@@ -64,7 +64,6 @@ cor <- rcorr(mat, type = 'pearson')
 # Melt correlation values and rename columns
 cor_r <- melt(cor$r) %>% 
   setNames(c('var_1', 'var_2', 'value'))
-  # mutate(across(where(is.factor), as.character))
 
 # Save p values
 cor_p <- melt(cor$P)
@@ -91,6 +90,10 @@ plot <- cor_r %>%
     y = NULL,
     fill = 'Correlation'
   )
+
+# Save this for preso
+saveRDS(mat, 'preso/data/correlation_data.rds')
+# saveRDS(plot, 'preso/plots/indicator_correlations.rds')
 
 # Convert to interactive plotly figure with text tooltip
 ggplotly(

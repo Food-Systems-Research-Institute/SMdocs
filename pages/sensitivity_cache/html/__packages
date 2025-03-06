@@ -7,3 +7,6 @@ tictoc
 stringr
 ggplot2
 ggpubr
+snakecase
+forcats
+plotly

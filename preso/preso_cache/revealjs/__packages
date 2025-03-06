@@ -1,0 +1,11 @@
+dplyr
+conflicted
+projecter
+ggplot2
+plotly
+forcats
+reactable
+htmltools
+stringr
+Hmisc
+reshape

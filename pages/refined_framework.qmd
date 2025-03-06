@@ -285,6 +285,9 @@ metadata <- metadata %>%
 ) %>% 
   setNames(c(str_to_title(names(.))))
 
+# Save this for preso
+saveRDS(metadata, 'preso/data/meta_for_table.rds')
+
 ###
 htmltools::browsable(
   tagList(

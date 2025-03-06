@@ -1,0 +1,582 @@
+---
+title: "Sustainability Metrics Secondary Data"
+author: "Chris Donovan"
+institute: "Food Systems Research Center"
+format:
+  revealjs:
+    embed-resources: false
+    incremental: false
+    theme: [serif, preso.scss]
+    transition: fade
+    scrollable: true
+    revealjs-plugins:
+      - revealjs-text-resizer
+editor: 
+  markdown: 
+    wrap: 72
+bibliography: ../fsrc.bib
+citations-hover: true
+citeproc: true
+---
+
+```{r}
+#| label: setup
+#| include: false
+pacman::p_load(
+  ggplot2,
+  plotly,
+  forcats,
+  reactable,
+  htmltools,
+  stringr,
+  Hmisc,
+  reshape
+)
+```
+
+## Introduction
+
+-   Goals of secondary data work
+    -   explore methods of aggregation
+    -   highlight existing data and important gaps
+-   Goals for today
+    -   share preliminary findings
+    -   feedback from content experts
+        -   how well do data represesent the system
+        -   normalization, aggregation, values
+        -   where and how to incorporate qualitative data
+        -   how to guide next RFP
+
+::: notes
+Speaker notes go here.
+:::
+
+## Secondary Data
+
+```{r}
+#| label: metadata_table_all
+# Load full metadata table
+metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
+
+# Pick out variables to display
+metadata <- metadata_all %>% 
+  select(
+    metric,
+    'Variable Name' = variable_name,
+    definition,
+    dimension,
+    index,
+    indicator,
+    units,
+    'Year' = latest_year, # Renaming latest year as year, not including og year
+    source,
+    scope,
+    resolution,
+    url
+) %>% 
+  setNames(c(str_to_title(names(.))))
+
+###
+htmltools::browsable(
+  tagList(
+    
+    tags$div(
+      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
+      
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Show/hide more columns"),
+        onclick = "Reactable.setHiddenColumns('metadata_table', prevColumns => {
+          return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
+        })"
+      ),
+      
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Download as CSV"),
+        onclick = "Reactable.downloadDataCSV('metadata_table', 'sustainability_metadata.csv')"
+      )
+    ),
+    
+    reactable(
+      metadata,
+      sortable = TRUE,
+      resizable = TRUE,
+      filterable = TRUE,
+      searchable = TRUE,
+      pagination = TRUE,
+      bordered = TRUE,
+      wrap = TRUE,
+      rownames = FALSE,
+      onClick = 'select',
+      striped = TRUE,
+      pageSizeOptions = c(5, 10, 25, 50, 100),
+      defaultPageSize = 5,
+      showPageSizeOptions = TRUE,
+      highlight = TRUE,
+      style = list(fontSize = "14px"),
+      compact = TRUE,
+      fullWidth = TRUE,
+      columns = list(
+        Metric = colDef(
+          minWidth = 200,
+          sticky = 'left'
+        ),
+        'Variable Name' = colDef(
+          minWidth = 150
+        ),
+        Definition = colDef(
+          minWidth = 250
+        ),
+        'Latest Year' = colDef(minWidth = 75),
+        Source = colDef(minWidth = 250),
+        Scope = colDef(show = FALSE),
+        Resolution = colDef(show = FALSE),
+        Url = colDef(
+          minWidth = 300,
+          show = FALSE
+        )
+      ),
+      defaultColDef = colDef(minWidth = 100),
+      elementId = "metadata_table",
+      details = function(index) {
+        div(
+          style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
+             background-color: #E0EEEE; border-radius: 10px; border-color: black;
+             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);",
+          
+          tags$h4(
+            strong("Details"), 
+          ),
+          tags$p(
+            strong('Metric Name: '), 
+            as.character(metadata_all[index, 'metric']),
+          ),
+          tags$p(
+            strong('Variable Name: '), 
+            as.character(metadata_all[index, 'variable_name']),
+          ),
+          tags$p(
+            strong('Definition: '), 
+            as.character(metadata_all[index, 'definition']),
+          ),
+          tags$p(
+            strong('Source: '), 
+            as.character(metadata_all[index, 'source'])
+          ),
+          tags$p(
+            strong('Latest Year: '), 
+            as.character(metadata_all[index, 'latest_year'])
+          ),
+          tags$p(
+            strong('All Years (cleaned, wrangled, and included): '), 
+            as.character(metadata_all[index, 'year'])
+          ),
+          tags$p(
+            strong('Updates: '), 
+            str_to_title(as.character(metadata_all[index, 'updates']))
+          ),
+          tags$p(
+            strong('URL: '), 
+            tags$a(
+              href = as.character(metadata_all[index, 'url']),
+              target = '_blank',
+              as.character(metadata_all[index, 'url'])
+            )
+          )
+        )
+      }
+    )
+  )
+)
+
+```
+
+## Framework
+
+-   graphs with framework, one tab for each dimension
+
+## Framework 2
+
+-   Table with metadata, desired direction
+-   Touch on distance from targets? This is a hinky point here
+
+## Secondary Data - Refined {.smaller}
+
+A set of 129 metrics to match the refined framework
+
+```{r}
+#| label: metadata_table_refined
+metadata <- readRDS('preso/data/meta_for_table.rds')
+
+htmltools::browsable(
+  tagList(
+    
+    tags$div(
+      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
+      
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Show/hide more columns"),
+        onclick = "Reactable.setHiddenColumns('metadata_table', prevColumns => {
+          return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
+        })"
+      ),
+      
+      tags$button(
+        class = "btn btn-primary",
+        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+        tagList(fontawesome::fa("download"), "Download as CSV"),
+        onclick = "Reactable.downloadDataCSV('metadata_table', 'sustainability_metadata.csv')"
+      )
+    ),
+    
+    reactable(
+      metadata[, which(names(metadata) != 'Years')],
+      sortable = TRUE,
+      resizable = TRUE,
+      filterable = TRUE,
+      searchable = TRUE,
+      pagination = TRUE,
+      bordered = TRUE,
+      wrap = TRUE,
+      rownames = FALSE,
+      onClick = 'select',
+      striped = TRUE,
+      pageSizeOptions = c(5, 10, 25, 50, 100),
+      defaultPageSize = 5,
+      showPageSizeOptions = TRUE,
+      highlight = TRUE,
+      style = list(fontSize = "14px"),
+      compact = TRUE,
+      fullWidth = TRUE,
+      columns = list(
+        Metric = colDef(
+          minWidth = 200,
+          sticky = 'left'
+        ),
+        'Variable Name' = colDef(
+          minWidth = 150
+        ),
+        Definition = colDef(
+          minWidth = 250
+        ),
+        'Latest Year' = colDef(minWidth = 75),
+        Source = colDef(minWidth = 250),
+        Scope = colDef(show = FALSE),
+        Resolution = colDef(show = FALSE),
+        Url = colDef(
+          minWidth = 300,
+          show = FALSE
+        )
+      ),
+      defaultColDef = colDef(minWidth = 100),
+      elementId = "metadata_table",
+      details = function(index) {
+        div(
+          style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
+             background-color: #ecf4ed; border-radius: 10px; border-color: black;
+             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);",
+          
+          tags$h4(
+            strong("Details"), 
+          ),
+          tags$p(
+            strong('Metric Name: '), 
+            as.character(metadata[index, 'Metric']),
+          ),
+          tags$p(
+            strong('Variable Name: '), 
+            as.character(metadata[index, 'Variable Name']),
+          ),
+          tags$p(
+            strong('Definition: '), 
+            as.character(metadata[index, 'Definition']),
+          ),
+          tags$p(
+            strong('Source: '), 
+            as.character(metadata[index, 'Source'])
+          ),
+          tags$p(
+            strong('Latest Year: '), 
+            as.character(metadata[index, 'Year'])
+          ),
+          tags$p(
+            strong('All Years (cleaned, wrangled, and included): '), 
+            as.character(metadata[index, 'Years'])
+          ),
+          tags$p(
+            strong('Updates: '), 
+            str_to_title(as.character(metadata[index, 'Updates']))
+          ),
+          tags$p(
+            strong('URL: '), 
+            tags$a(
+              href = as.character(metadata[index, 'Url']),
+              target = '_blank',
+              as.character(metadata[index, 'Url'])
+            )
+          )
+        )
+      }
+    )
+  )
+)
+```
+
+## Normalization
+
+::: panel-tabset
+### Rank Order
+
+**Rank Order**
+
+### Winsorization
+
+**Winsorization**
+
+### Min Max
+
+**Min Max** [@oecdHandbookConstructingComposite2008]
+
+\begin{equation}
+I^t_qc = \frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}
+\end{equation}
+
+Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
+
+### Z-Scores
+
+**Z-Scores** [@oecdHandbookConstructingComposite2008]
+
+\begin{equation}
+I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
+\end{equation}
+
+### Box Cox
+
+**Box Cox** [@bickel1981]
+
+\begin{equation}
+{\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
+\end{equation}
+\begin{equation}
+{\rm For}\ \lambda = 0,\ f_0(x) = log(x)
+\end{equation}
+:::
+
+## Indicator Distributions
+
+An example of indicator distributions with the Min Max + geometric means
+methods
+
+![](plots/indic_dists.png){height="1500"}
+
+## Indicator Correlations
+
+Min Max geometric aggregation
+
+```{r}
+#| class: centered
+mat <- readRDS('preso/data/correlation_data.rds')
+cor <- rcorr(mat, type = 'pearson')
+cor_r <- melt(cor$r) %>% 
+  setNames(c('var_1', 'var_2', 'value'))
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+plot <- cor_r %>% 
+  ggplot(aes(var_1, var_2, fill = value, text = paste0(
+    'Var 1: ', var_1, '\n',
+    'Var 2: ', var_2, '\n',
+    'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
+    'P-Value: ', format(round(p.value, 3), nsmall = 3)
+  ))) + 
+  geom_tile() + 
+  scale_fill_gradient2(
+    low = "#762a83", 
+    mid = "white", 
+    high = "#1b7837", 
+    midpoint = 0
+  ) +
+  theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = 'Correlation'
+  )
+
+ggplotly(
+  plot, 
+  tooltip = 'text',
+  width = 850,
+  height = 650
+)
+```
+
+## Comparisons
+
+-   spiderplots of each aggregation
+
+## Validation
+
+-   Regressions
+
+::: panel-tabset
+### Food Insecurity
+
+Feeding America, Map the Meal Gap
+
+### Life Expectancy
+
+### Food Environment Index
+
+### Happiness Score
+:::
+
+## Validation 2
+
+-   PCA with all indicators
+
+## Sensitivity by Dimension {.smaller}
+
+::: columns
+::: {.column width = '40%'}
+
+-   400 combinations of uncertain inputs
+-   Higher ranks are desirable
+-   Some dimensions are stable (Health)
+-   Some are quite unstable (Economics)
+:::
+
+::: {.column width = '60%'}
+
+::: panel-tabset
+### Economics
+
+```{r}
+#| fig-align: center
+#| fig-height: 6
+#| fig-width: 8
+dim_sens_plots <- readRDS('preso/plots/dimension_sensitivity_plots.rds')
+dim_sens_plots$economics
+```
+
+### Environment
+
+```{r}
+#| fig-align: center
+#| fig-height: 6
+#| fig-width: 8
+dim_sens_plots$environment
+```
+
+### Health
+
+```{r}
+#| fig-align: center
+#| fig-height: 6
+#| fig-width: 8
+dim_sens_plots$health
+```
+
+### Production
+
+```{r}
+#| fig-align: center
+#| fig-height: 6
+#| fig-width: 8
+dim_sens_plots$production
+```
+
+### Social
+
+```{r}
+#| fig-align: center
+#| fig-height: 6
+#| fig-width: 8
+dim_sens_plots$social
+```
+:::
+
+:::
+
+::::
+
+## Indicator Influence {.smaller}
+
+::: columns
+::: {.column width = '30%'}
+
+-   Some points before plot
+-   another point before the plot
+-   some other important point
+:::
+
+::: {.column width = '70%'}
+
+::: panel-tabset
+### Economics
+
+```{r}
+#| fig-align: center
+#| fig-width: 8
+#| fig-height: 6
+#| out-width: 90%
+get_plotly <- function(plot) {
+  ggplotly(
+    plot,
+    width = 700,
+    height = 500,
+    tooltip = 'text'
+  )
+}
+ind_inf_plots <- readRDS('preso/plots/ind_influence_plots.rds')
+get_plotly(ind_inf_plots$economics)
+```
+
+### Environment
+
+```{r}
+#| fig-align: center
+#| fig-width: 8
+#| fig-height: 6
+#| out-width: 50%
+get_plotly(ind_inf_plots$environment)
+```
+
+### Health
+
+```{r}
+#| fig-align: center
+get_plotly(ind_inf_plots$health)
+```
+
+### Production
+
+```{r}
+#| fig-align: center
+#| fig-width: 10
+#| fig-height: 4
+get_plotly(ind_inf_plots$production)
+```
+
+### Social
+
+```{r}
+#| fig-align: center
+#| fig-width: 8
+#| fig-height: 6
+#| out-width: 90%
+get_plotly(ind_inf_plots$social)
+```
+:::
+
+:::
+
+::::
+
+## References

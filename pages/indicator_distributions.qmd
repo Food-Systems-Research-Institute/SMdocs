@@ -105,7 +105,15 @@ get_indicator_distributions(scores, 'minmax_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-get_indicator_distributions(scores, 'minmax_geometric')
+dists <- get_indicator_distributions(scores, 'minmax_geometric')
+ggsave(
+  'preso/plots/indic_dists.png',
+  plot = dists,
+  width = 10,
+  height = 15,
+  units = 'in'
+)
+dists
 ```
 
 # Z-Score Arithmetic
