@@ -11,3 +11,14 @@ $link-color: #154734;
 /*-- scss:rules --*/
 
 
+.flex-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+}

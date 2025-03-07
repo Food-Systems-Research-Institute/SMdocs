@@ -12,7 +12,7 @@ get_indicator_distributions <- function(scores_list,
   # Pull the indicators at desired transformation
   # Also remove averages, new england
   df <- scores_list[[transformation]]$indicator_scores %>% 
-    filter(!state %in% c('US_mean', 'US_median', 'NewEng'))
+    dplyr::filter(!state %in% c('US_mean', 'US_median', 'NewEng'))
   
   # Get skews of variables
   skewed <- psych::describe(df) %>% 

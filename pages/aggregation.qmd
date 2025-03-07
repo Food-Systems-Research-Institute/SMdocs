@@ -335,7 +335,11 @@ table <- meta %>%
     definition, 
     source
   )
+
+# Save this desirable direction table for preso
+saveRDS(table, 'preso/data/desirable_directions_table.rds')
   
+# Make reactable table
 table %>% 
   get_reactable(
     defaultPageSize = 5,

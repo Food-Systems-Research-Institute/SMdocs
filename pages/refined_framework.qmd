@@ -67,6 +67,9 @@ frame <- raw_frame %>%
 
 # Save frame to rds for use in subsequent scripts
 saveRDS(frame, 'data/frame.rds')
+
+# Start a list to save outputs for preso
+plots <- list()
 ```
 
 ### Environment
@@ -83,13 +86,14 @@ One gap I've noticed since this dimension was reworked in the dimension meeting 
 #| fig-width: 10
 #| fig-align: center
 source('dev/get_dimension_ggraph.R')
-get_dimension_ggraph(
+plots$environment <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'environment',
   include_metrics = TRUE,
   y_limits = c(-2, 3.25),
   palette = "ggthemes::stata_s2color"
 )
+plots$environment
 ```
 
 ### Economics
@@ -103,13 +107,14 @@ It has definitely been easier to find economics data than other dimensions. Wort
 #| fig-height: 8
 #| fig-width: 10
 #| fig-align: center
-get_dimension_ggraph(
+plots$economics <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'economics',
   include_metrics = TRUE,
   y_limits = c(-1.5, 3.1),
   palette = "ggthemes::stata_s2color"
 )
+plots$economics
 ```
 
 ### Production
@@ -123,13 +128,14 @@ Agricultural exports are a pretty robust dataset at the state level from ERS, al
 #| fig-height: 7
 #| fig-width: 10
 #| fig-align: center
-get_dimension_ggraph(
+plots$production <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'production',
   include_metrics = TRUE,
   y_limits = c(-1.75, 3),
   palette = "ggthemes::stata_s2color"
 )
+plots$production
 ```
 
 ### Health
@@ -142,13 +148,14 @@ The Food Environment Atlas has lots of data on access and nutrition, which accou
 #| fig-height: 11
 #| fig-width: 10
 #| fig-align: center
-get_dimension_ggraph(
+plots$health <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'health',
   include_metrics = TRUE,
   y_limits = c(-1.7, 3),
   palette = "ggthemes::stata_s2color"
 )
+plots$health
 ```
 
 ### Social
@@ -162,13 +169,18 @@ The social dimension is admittedly slim, but it could have been a lot worse. The
 #| fig-height: 8
 #| fig-width: 10
 #| fig-align: center
-get_dimension_ggraph(
+plots$social <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'social',
   include_metrics = TRUE,
   y_limits = c(-1.7, 3),
   palette = "ggthemes::stata_s2color"
 )
+
+# Save list of plots for preso
+saveRDS(plots, 'preso/plots/frameworks.rds')
+
+plots$social
 ```
 
 ## Metadata

@@ -2,6 +2,7 @@
 title: "Sustainability Metrics Secondary Data"
 author: "Chris Donovan"
 institute: "Food Systems Research Center"
+date: today
 format:
   revealjs:
     embed-resources: false
@@ -24,17 +25,51 @@ citeproc: true
 #| include: false
 pacman::p_load(
   ggplot2,
+  ggpubr,
   plotly,
   forcats,
   reactable,
   htmltools,
   stringr,
   Hmisc,
-  reshape
+  reshape,
+  performance,
+  AER,
+  sandwich,
+  sjPlot,
+  caret,
+  ranger,
+  glmnet,
+  conflicted,
+  knitr,
+  kableExtra,
+  mapview,
+  sf,
+  leaflet,
+  ggraph,
+  igraph,
+  readr,
+  RColorBrewer,
+  paletteer,
+  fmsb
+)
+
+source('dev/get_reactable.r')
+source('dev/get_vt_spiders.R')
+
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  tidyr::expand(),
+  .quiet = TRUE
 )
 ```
 
 ## Introduction
+
+:::: {.columns}
+
+::: {.column width = '40%'}
 
 -   Goals of secondary data work
     -   explore methods of aggregation
@@ -47,6 +82,16 @@ pacman::p_load(
         -   where and how to incorporate qualitative data
         -   how to guide next RFP
 
+:::
+
+::: {.column width = '60%'}
+
+* Pictures of FSRC SM stuff here
+
+:::
+
+:::: 
+
 ::: notes
 Speaker notes go here.
 :::
@@ -55,6 +100,7 @@ Speaker notes go here.
 
 ```{r}
 #| label: metadata_table_all
+
 # Load full metadata table
 metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
 
@@ -121,14 +167,14 @@ htmltools::browsable(
       fullWidth = TRUE,
       columns = list(
         Metric = colDef(
-          minWidth = 200,
+          minWidth = 150,
           sticky = 'left'
         ),
         'Variable Name' = colDef(
-          minWidth = 150
+          minWidth = 125
         ),
         Definition = colDef(
-          minWidth = 250
+          minWidth = 300
         ),
         'Latest Year' = colDef(minWidth = 75),
         Source = colDef(minWidth = 250),
@@ -194,14 +240,84 @@ htmltools::browsable(
 
 ```
 
-## Framework
+::: notes
 
--   graphs with framework, one tab for each dimension
+-   ~650 metrics, plus another thousand NAICS variables
 
-## Framework 2
+Sources
 
--   Table with metadata, desired direction
--   Touch on distance from targets? This is a hinky point here
+-   USDA NASS
+-   USDA ERS Farm Income and Wealth Statistics
+-   USDA ERS Food Environment Atlas
+-   USDA Farm Service Agency Distaster Assistance
+-   USDA Food and Nutrition Service
+-   USDA Food Safety and Inspection Service
+-   University of Wisconsin
+-   US Census
+-   EPA State GHG Data
+-   TreeMap 2016
+-   NatureServe - biodiversity data
+:::
+
+## Framework {.smaller}
+
+::: panel-tabset
+### Economics
+
+```{r}
+#| fig-height: 8
+#| fig-width: 10
+#| fig-align: center
+#| out-width: 75%
+plots <- readRDS('preso/plots/frameworks.rds')
+plots$economics
+```
+
+### Environment
+
+```{r}
+#| fig-height: 8
+#| fig-width: 10
+#| fig-align: center
+#| out-width: 75%
+plots$environment
+```
+
+### Health
+
+```{r}
+#| fig-height: 11
+#| fig-width: 10
+#| fig-align: center
+#| out-width: 75%
+plots$health
+```
+
+### Production
+
+```{r}
+#| fig-height: 7
+#| fig-width: 10
+#| fig-align: center
+#| out-width: 75%
+plots$production
+```
+
+### Social
+
+```{r}
+#| fig-height: 8
+#| fig-width: 10
+#| fig-align: center
+#| out-width: 75%
+plots$social
+```
+:::
+
+::: notes
+-   NONE is a placeholder for when I don't have a metric there
+-   All ears for more datasets if you can fill in some NONEs
+:::
 
 ## Secondary Data - Refined {.smaller}
 
@@ -221,7 +337,7 @@ htmltools::browsable(
         class = "btn btn-primary",
         style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
         tagList(fontawesome::fa("download"), "Show/hide more columns"),
-        onclick = "Reactable.setHiddenColumns('metadata_table', prevColumns => {
+        onclick = "Reactable.setHiddenColumns('metadata_table_refined', prevColumns => {
           return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
         })"
       ),
@@ -230,7 +346,7 @@ htmltools::browsable(
         class = "btn btn-primary",
         style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
         tagList(fontawesome::fa("download"), "Download as CSV"),
-        onclick = "Reactable.downloadDataCSV('metadata_table', 'sustainability_metadata.csv')"
+        onclick = "Reactable.downloadDataCSV('metadata_table_refined', 'sustainability_metadata.csv')"
       )
     ),
     
@@ -274,7 +390,7 @@ htmltools::browsable(
         )
       ),
       defaultColDef = colDef(minWidth = 100),
-      elementId = "metadata_table",
+      elementId = "metadata_table_refined",
       details = function(index) {
         div(
           style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
@@ -327,12 +443,51 @@ htmltools::browsable(
 )
 ```
 
+## Desirable Directions {.smaller}
+
+:::: {.columns}
+
+::: {.column width = '30%'}
+
+* Official benchmarks where possible, otherwise largest value is 100% [@jacobi2020NewUnderstandingEvaluation]
+* Every indicator gets a good direction and bad direction [@schneider2023StateFoodSystems]
+
+:::
+
+::: {.column width = '70%'}
+
+```{r}
+desirable_table <- readRDS('preso/data/desirable_directions_table.rds')
+desirable_table %>% 
+  dplyr::select(
+    metric,
+    desirable,
+    definition,
+    source
+  ) %>% 
+  setNames(c(names(.) %>% stringr::str_to_title())) %>% 
+  get_reactable(
+    defaultPageSize = 5,
+    columns = list(
+      Metric = colDef(minWidth = 150),
+      Desirable = colDef(minWidth = 100)
+    )
+  )
+```
+:::
+
+::::
+
 ## Normalization
 
 ::: panel-tabset
 ### Rank Order
 
 **Rank Order**
+
+-   Makes no distributional assumptions [@schneider2025]
+-   Useful for comparing other transformation methods
+-   Loss of information
 
 ### Winsorization
 
@@ -342,15 +497,25 @@ htmltools::browsable(
 
 **Min Max** [@oecdHandbookConstructingComposite2008]
 
+-   Scales all data from 0 to 1
+-   Intuitive (0 is worst, 1 is best)
+-   Linear transformation
+
 \begin{equation}
 I^t_qc = \frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}
 \end{equation}
 
 Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
 
+-   [@schneider2025, @schneider2023StateFoodSystems]
+
 ### Z-Scores
 
 **Z-Scores** [@oecdHandbookConstructingComposite2008]
+
+-   Scales data to mean of 0 and standard deviation of 1
+-   Larger numbers are better, but no limits
+-   Linear transformation
 
 \begin{equation}
 I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
@@ -360,13 +525,39 @@ I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 
 **Box Cox** [@bickel1981]
 
+-   Finds an optimal value of $\lambda$ to make distribution normal
+-   More tractable distribution for analysis
+-   Harder to interpret
+-   Non-linear transformation
+
 \begin{equation}
 {\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
-\end{equation}
-\begin{equation}
+\end{equation} \begin{equation}
 {\rm For}\ \lambda = 0,\ f_0(x) = log(x)
 \end{equation}
+
 :::
+
+## Aggregation
+
+:::: {.columns}
+
+::: {.column width = '40%'}
+
+-   Arithmetic [@jacobi2020NewUnderstandingEvaluation]
+-   Geometric
+-   Some did both and compared, came out similar [@gomez-limon2010EmpiricalEvaluationAgricultural]
+-   Make this a normal slide, with figures from these papers on right
+    
+:::
+
+::: {.column width = '60%'}
+
+* images here
+
+:::
+
+::::
 
 ## Indicator Distributions
 
@@ -417,45 +608,329 @@ ggplotly(
 )
 ```
 
-## Comparisons
+::: notes
 
--   spiderplots of each aggregation
+* Highly correlating indicators from different dimensions are a problem
 
-## Validation
+:::
 
--   Regressions
+
+## Comparisons {.smaller}
 
 ::: panel-tabset
+### Rank Order
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+# source('dev/get_vt_spiders.R')
+dat <- readRDS('data/state_score_iterations.rds')
+get_vt_spiders(dat, 'rank')
+```
+
+### Winsorization
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'winsor')
+```
+
+### Min Max
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'minmax')
+```
+
+### Z-Score
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'zscore')
+```
+
+### Box Cox
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'boxcox')
+```
+:::
+
+## Dimension Score Map
+
+::: panel-tabset
+```{r}
+#| label: map
+dim_scores <- readRDS('data/minmax_geo_all_levels.rds')
+state_key <- readRDS('data/state_key.rds')
+dim_scores <- dim_scores %>% 
+  as.data.frame() %>% 
+  dplyr::select(state, starts_with('dimen')) %>% 
+  setNames(c(names(.) %>% str_remove('dimen_')))
+# get_str(dim_scores)
+
+# Polygons for states
+states <- readRDS('preso/data/state_polygons.rds')
+
+# Combine dim scores with state key to get fips
+map_dat <- left_join(
+  dim_scores, 
+  select(state_key, state, fips = state_code)
+) %>%
+  left_join(states) %>% 
+  select(state:name, geometry) %>% 
+  mutate(across(where(is.numeric), ~ round(.x, 2))) %>% 
+  st_as_sf()
+# get_str(map_dat)
+
+get_mapview <- function(map_dat,
+                        dimension) {
+  dimension_map <- mapview(
+    map_dat,
+    zcol = dimension,
+    layer.name = stringr::str_to_title(dimension)
+  )
+  dimension_map@map %>% setView(-98.583333, 39.833333, zoom = 4)
+}
+```
+
+### Economics
+
+```{r}
+get_mapview(map_dat, 'economics')
+```
+
+### Environment
+
+```{r}
+get_mapview(map_dat, 'environment')
+```
+
+### Health
+
+```{r}
+get_mapview(map_dat, 'health')
+```
+
+### Production
+
+```{r}
+get_mapview(map_dat, 'production')
+```
+
+### Social
+
+```{r}
+get_mapview(map_dat, 'social')
+```
+:::
+
+## Validation: Regression {.smaller}
+
+:::::: panel-tabset
+
 ### Food Insecurity
 
-Feeding America, Map the Meal Gap
+Food Insecurity Index (UW Population Health Institute 2024)
+
+```{r}
+#| label: val1_food_insecurity
+#| include: false
+source('dev/get_stargazer.R')
+dat <- readRDS('data/metrics_df_with_vals_and_covars.rds')
+lm1 <- lm(
+  foodInsecurity ~ economics + environment + health + production + social,
+  data = dat
+)
+get_stargazer(
+  lm1, 
+  dep_var = 'Food Insecurity Index', 
+  type = 'html', 
+  out = 'preso/data/val1_food_insecurity.html',
+  single_row = FALSE
+)
+```
+
+::: flex-container
+<iframe src="data/val1_food_insecurity.html" width="100%" height="600" style="border: none;">
+
+</iframe>
+:::
 
 ### Life Expectancy
 
-### Food Environment Index
+Life Expectancy (UW Population Health Institute 2024)
 
-### Happiness Score
+```{r}
+#| label: val2_life_exp
+#| include: false
+lm2 <- lm(
+  lifeExpectancy ~ economics + environment + health + production + social,
+  data = dat
+)
+life_exp_vcov <- vcovHC(lm2, type = 'HC3')
+get_stargazer(
+  lm2, 
+  dep_var = 'Life Expectancy', 
+  robust = TRUE,
+  type = 'html',
+  out = 'preso/data/val2.html',
+  single_row = FALSE
+)
+```
+
+::: flex-container
+<iframe src="data/val2.html" width="100%" height="600" style="border: none;">
+</iframe>
 :::
 
-## Validation 2
+### Food Environment Index
 
--   PCA with all indicators
+Food Environment Index (UW Population Health Institute 2024)
+
+GLMnet variable importance:
+
+```{r}
+#| fig-height: 4
+#| fig-width: 6
+#| fig-align: center
+importance <- readRDS('preso/plots/val3_food_env_glmnet_importance.rds')
+plot(importance)
+```
+
+Random forest variable importance:
+
+```{r}
+#| fig-height: 4
+#| fig-width: 6
+#| fig-align: center
+importance <- readRDS('preso/plots/val3_rf_importance.rds')
+plot(importance)
+```
+
+### Happiness Score
+
+Total Happiness Score (WalletHub 2025)
+
+```{r}
+#| include: false
+lm4 <- lm(
+  happinessScore ~ economics + environment + health + production + social,
+  data = dat
+)
+get_stargazer(
+  lm4, 
+  dep_var = 'Happiness Score', 
+  type = 'html', 
+  out = 'preso/data/val4_happiness.html',
+  single_row = FALSE
+)
+```
+
+::: flex-container
+<iframe src="data/val4_happiness.html" width="100%" height="600" style="border: none;">
+
+</iframe>
+:::
+
+::::::
+
+::: notes
+
+-   Food Environment Index: 0 (worst) 10 (best). Distance to grocery,
+    cost of health diet.
+-   Happiness (WalletHub):
+    -   emotional and physical wellbeing (health index, depression,
+        alcohol use disorder, adequate sleep rate...)
+    -   Work environment (work hours, commute time, income,
+        unemployment...)
+    -   Community and environment (ideal weather, leisure time, safety,
+        volunteer rate)
+        
+:::
+
+## Validation: PCA {.smaller}
+
+:::: {.columns}
+
+::: {.column width = '30%'}
+
+* Factor extraction:
+  + Parallel Analysis (PA) suggests 6 components
+  + Velicer MAP suggests 8 factors
+  + VSS suggests 6 or 7 factors
+* Key to loadings:
+  + x < 0.2 ~ ''
+  + x < 0.32 ~ '.'
+  + x >= 0.32 ~ x
+ 
+:::
+
+::: {.column width = '70%'}
+
+::: panel-tabset
+
+### Scree Plot
+
+![](plots/scree.png){fig-align="center" width="90%"}
+
+### Loadings
+
+
+```{r}
+#| label: pca_table
+#| class: centered
+pca_table <- readRDS('preso/data/pca_table.rds')
+get_reactable(
+  pca_table,
+  pagination = FALSE,
+  defaultPageSize = 50,
+  showPageSizeOptions = FALSE,
+  fullWidth = FALSE,
+  defaultColDef = colDef(minWidth = 50),
+  columns = list(
+    indicator = colDef(minWidth = 200),
+    dimension = colDef(minWidth = 100)
+  )
+)
+```
+:::
+
+:::
+
+::::
+
+::: notes
+Jacobi et al (2020)
+:::
 
 ## Sensitivity by Dimension {.smaller}
 
-::: columns
+:::: {.columns}
+
 ::: {.column width = '40%'}
 
--   400 combinations of uncertain inputs
+-   Sample from uncertain inputs [@oecdHandbookConstructingComposite2008]
+    -   Normalizations (5)
+    -   Aggregations (2)
+    -   Leave out one indicator (40)
 -   Higher ranks are desirable
--   Some dimensions are stable (Health)
--   Some are quite unstable (Economics)
+-   Some dimensions are quite unstable (Economics)
+-   Some are quite stable (Health)
+
 :::
 
 ::: {.column width = '60%'}
 
 ::: panel-tabset
 ### Economics
+
+Distribution for Vermont
 
 ```{r}
 #| fig-align: center
@@ -467,6 +942,8 @@ dim_sens_plots$economics
 
 ### Environment
 
+Distribution for Vermont
+
 ```{r}
 #| fig-align: center
 #| fig-height: 6
@@ -475,6 +952,8 @@ dim_sens_plots$environment
 ```
 
 ### Health
+
+Distribution for Vermont
 
 ```{r}
 #| fig-align: center
@@ -485,6 +964,8 @@ dim_sens_plots$health
 
 ### Production
 
+Distribution for Vermont
+
 ```{r}
 #| fig-align: center
 #| fig-height: 6
@@ -494,12 +975,15 @@ dim_sens_plots$production
 
 ### Social
 
+Distribution for Vermont
+
 ```{r}
 #| fig-align: center
 #| fig-height: 6
 #| fig-width: 8
 dim_sens_plots$social
 ```
+
 :::
 
 :::
@@ -508,24 +992,26 @@ dim_sens_plots$social
 
 ## Indicator Influence {.smaller}
 
-::: columns
+:::: {.columns}
+
 ::: {.column width = '30%'}
 
 -   Some points before plot
 -   another point before the plot
 -   some other important point
+
 :::
 
 ::: {.column width = '70%'}
 
 ::: panel-tabset
+
 ### Economics
 
 ```{r}
 #| fig-align: center
 #| fig-width: 8
 #| fig-height: 6
-#| out-width: 90%
 get_plotly <- function(plot) {
   ggplotly(
     plot,
@@ -544,7 +1030,6 @@ get_plotly(ind_inf_plots$economics)
 #| fig-align: center
 #| fig-width: 8
 #| fig-height: 6
-#| out-width: 50%
 get_plotly(ind_inf_plots$environment)
 ```
 
@@ -552,6 +1037,8 @@ get_plotly(ind_inf_plots$environment)
 
 ```{r}
 #| fig-align: center
+#| fig-width: 8
+#| fig-height: 6
 get_plotly(ind_inf_plots$health)
 ```
 
@@ -559,8 +1046,8 @@ get_plotly(ind_inf_plots$health)
 
 ```{r}
 #| fig-align: center
-#| fig-width: 10
-#| fig-height: 4
+#| fig-width: 8
+#| fig-height: 6
 get_plotly(ind_inf_plots$production)
 ```
 
@@ -570,13 +1057,35 @@ get_plotly(ind_inf_plots$production)
 #| fig-align: center
 #| fig-width: 8
 #| fig-height: 6
-#| out-width: 90%
 get_plotly(ind_inf_plots$social)
 ```
+
 :::
 
 :::
 
 ::::
+
+## Conclusions and Discussion
+
+-   Conclusions
+    -   Gaps
+    -   Stability and Sensitivity
+    -   Metric counts
+    -   We have way more indicators than most other frameworks. 
+    -   Influential indicators
+      -   access to land
+-   Discussion
+    -   How well do these data represent the system?
+    -   Can we reasonably assign desirable directions to metrics and
+        indicators?
+    -   What are fair and interpretable methods of transformations and
+        aggregation?
+
+## To Add
+
+-   Monte Carlo to explore metric numbers (bootstrapped confidence
+    intervals?)
+-   Scenario Analysis with RF for predictions
 
 ## References

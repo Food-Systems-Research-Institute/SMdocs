@@ -1,0 +1,28 @@
+---
+title: "Principal Components Analysis"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+```{r}
+#| label: setup
+#| include: false
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::arrange(),
+  dplyr::summarize(),
+  dplyr::as_data_frame(),
+  dplyr::pull(),
+  .quiet = TRUE
+)
+```
+
+```{r}
+
+```
+

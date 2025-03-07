@@ -316,6 +316,7 @@ food_env_glmnet <- train(
 #| out-width: 75%
 #| fig-height: 3
 importance <- varImp(food_env_glmnet, scale = TRUE)
+saveRDS(importance, 'preso/plots/val3_food_env_glmnet_importance.rds')
 plot(importance)
 ```
 
@@ -345,6 +346,7 @@ OOB prediction error (MSE): `r food_env_rf$finalModel$prediction.error`
 #| fig-height: 3
 #| fig-align: center
 importance <- varImp(food_env_rf, scale = TRUE)
+saveRDS(importance, 'preso/plots/val3_rf_importance.rds')
 plot(importance)
 ```
 

@@ -24,4 +24,4 @@ conflicts_prefer(
 )
 ```
 
-Remember to remove `execute: false` from teh YAML header.
+Remember to remove `execute: false` from the YAML header.

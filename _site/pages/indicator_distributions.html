@@ -74,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-913bc11c8dbd843f740ffa41caa7f6dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-c13c16da28e0410aa238ee153deafd3b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -430,8 +430,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-37"><a href="#cb1-37" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div class="reactable html-widget html-fill-item" id="htmlwidget-45895384db433ead7a74" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-45895384db433ead7a74">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Transformation":["boxcox_arithmetic","boxcox_geometric","minmax_arithmetic","minmax_geometric","rank_arithmetic","rank_geometric","winsor_arithmetic","winsor_geometric","zscore_arithmetic","zscore_geometric"],"Indicators with Skew > 2":[1,1,4,7,0,0,0,1,4,6]},"columns":[{"id":"Transformation","name":"Transformation","type":"character","minWidth":200},{"id":"Indicators with Skew > 2","name":"Indicators with Skew > 2","type":"numeric","minWidth":200}],"resizable":true,"filterable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"inline":true,"dataKey":"122570488f45519a3917ce318d62db42"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-c61bfa36f64627b0664c" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-c61bfa36f64627b0664c">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Transformation":["boxcox_arithmetic","boxcox_geometric","minmax_arithmetic","minmax_geometric","rank_arithmetic","rank_geometric","winsor_arithmetic","winsor_geometric","zscore_arithmetic","zscore_geometric"],"Indicators with Skew > 2":[1,1,4,7,0,0,0,1,4,6]},"columns":[{"id":"Transformation","name":"Transformation","type":"character","minWidth":200},{"id":"Indicators with Skew > 2","name":"Indicators with Skew > 2","type":"numeric","minWidth":200}],"resizable":true,"filterable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"inline":true,"dataKey":"122570488f45519a3917ce318d62db42"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 </div>
@@ -470,7 +470,15 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'minmax_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>dists <span class="ot">&lt;-</span> <span class="fu">get_indicator_distributions</span>(scores, <span class="st">'minmax_geometric'</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">'preso/plots/indic_dists.png'</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> dists,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">10</span>,</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">height =</span> <span class="dv">15</span>,</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">'in'</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>dists</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
