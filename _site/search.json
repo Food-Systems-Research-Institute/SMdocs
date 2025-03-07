@@ -873,7 +873,7 @@
     "href": "preso/preso.html#sensitivity-by-dimension",
     "title": "Sustainability Metrics Secondary Data",
     "section": "Sensitivity by Dimension",
-    "text": "Sensitivity by Dimension\n\n\n\n400 combinations of uncertain inputs\n\nNormalizations (5)\nAggregations (2)\nLeave out one indicator (40)\n\nHigher ranks are desirable\nSome dimensions are quite unstable (Economics)\nSome are quite stable (Health)\n\n\n\nEconomicsEnvironmentHealthProductionSocial\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont"
+    "text": "Sensitivity by Dimension\n\n\n\nSample from uncertain inputs (OECD 2008)\n\nNormalizations (5)\nAggregations (2)\nLeave out one indicator (40)\n\nHigher ranks are desirable\nSome dimensions are quite unstable (Economics)\nSome are quite stable (Health)\n\n\n\nEconomicsEnvironmentHealthProductionSocial\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont"
   },
   {
     "objectID": "preso/preso.html#indicator-influence",
@@ -936,7 +936,7 @@
     "href": "preso/preso.html#indicator-correlations",
     "title": "Sustainability Metrics Secondary Data",
     "section": "Indicator Correlations",
-    "text": "Indicator Correlations\nMin Max geometric aggregation"
+    "text": "Indicator Correlations\nMin Max geometric aggregation\n\n\n\n\n\n\n\n\nHighly correlating indicators from different dimensions are a problem"
   },
   {
     "objectID": "preso/preso.html#framework-2",

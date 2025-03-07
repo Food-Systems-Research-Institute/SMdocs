@@ -5,7 +5,7 @@ institute: "Food Systems Research Center"
 date: today
 format:
   revealjs:
-    embed-resources: false
+    embed-resources: true
     incremental: false
     theme: [serif, preso.scss]
     transition: fade
@@ -546,6 +546,7 @@ I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 
 -   Arithmetic [@jacobi2020NewUnderstandingEvaluation]
 -   Geometric
+-   Compensatory and non compensatory
 -   Some did both and compared, came out similar [@gomez-limon2010EmpiricalEvaluationAgricultural]
 -   Make this a normal slide, with figures from these papers on right
     
@@ -661,7 +662,9 @@ get_vt_spiders(dat, 'boxcox')
 ```
 :::
 
-## Dimension Score Map
+## Dimension Score Map {.smaller}
+
+Using Min Max normalization and geometric aggregation
 
 ::: panel-tabset
 ```{r}
