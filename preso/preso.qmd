@@ -5,7 +5,7 @@ institute: "Food Systems Research Center"
 date: today
 format:
   revealjs:
-    embed-resources: true
+    embed-resources: false
     incremental: false
     theme: [serif, preso.scss]
     transition: fade
@@ -65,32 +65,34 @@ conflicted::conflicts_prefer(
 )
 ```
 
-## Introduction
+## Introduction {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '40%'}
 
--   Goals of secondary data work
-    -   explore methods of aggregation
-    -   highlight existing data and important gaps
--   Goals for today
-    -   share preliminary findings
-    -   feedback from content experts
-        -   how well do data represesent the system
-        -   normalization, aggregation, values
-        -   where and how to incorporate qualitative data
-        -   how to guide next RFP
-
+-   Secondary data goals:
+    -   Identify existing data and gaps
+    -   Explore methods of aggregating data
+-   Goals for today:
+    -   Share preliminary findings
+    -   Feedback and discussion
+-   Guiding topics:
+    -   How well do the data represesent the system?
+    -   Normalization, aggregation, and values
+    -   Where and how do we incorporate qualitative data?
+    -   Informing the next RFP
+    
 :::
 
 ::: {.column width = '60%'}
 
-* Pictures of FSRC SM stuff here
+![Intervale Farm, Sally McCay, UVM
+Photo](../images/intervale_small.png){fig-align='center' width=80%
+fig-alt='A picture of a field at Intervale Farm.}
 
 :::
 
-:::: 
+::::
 
 ::: notes
 Speaker notes go here.
@@ -241,8 +243,7 @@ htmltools::browsable(
 ```
 
 ::: notes
-
--   ~650 metrics, plus another thousand NAICS variables
+-   \~650 metrics, plus another thousand NAICS variables
 
 Sources
 
@@ -445,13 +446,13 @@ htmltools::browsable(
 
 ## Desirable Directions {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '30%'}
 
-* Official benchmarks where possible, otherwise largest value is 100% [@jacobi2020NewUnderstandingEvaluation]
-* Every indicator gets a good direction and bad direction [@schneider2023StateFoodSystems]
-
+-   Official benchmarks where possible, otherwise largest value is 100%
+    [@jacobi2020NewUnderstandingEvaluation]
+-   Every indicator gets a good direction and bad direction
+    [@schneider2023StateFoodSystems]
 :::
 
 ::: {.column width = '70%'}
@@ -474,6 +475,7 @@ desirable_table %>%
     )
   )
 ```
+
 :::
 
 ::::
@@ -489,9 +491,16 @@ desirable_table %>%
 -   Useful for comparing other transformation methods
 -   Loss of information
 
-### Winsorization
+### Winsor
 
 **Winsorization**
+
+-   Reduce all outliers to a percentile (95th and 5th)
+-   Doesn't reward overperformance in one area
+-   Used in the Environmental Performance Indicator (EPI) before scaling
+    from 0 to 100 [@esty2008Pilot2006Environmental]
+-   More robust than leaving keeping outliers
+    [@mayerStrengthsWeaknessesCommon2008]
 
 ### Min Max
 
@@ -536,25 +545,36 @@ I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 {\rm For}\ \lambda = 0,\ f_0(x) = log(x)
 \end{equation}
 
+### Distance
+
+**Distance to Target** [@oecdHandbookConstructingComposite2008]
+
+-   Ratio of the indicator to a reference system or reference value
+-   Used with official benchmarks like minimum wage [@jacobi2020NewUnderstandingEvaluation]
+-   Difficult to set targets in many applications
+
+\begin{equation}
+I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
+\end{equation}
+
 :::
 
 ## Aggregation
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '40%'}
 
 -   Arithmetic [@jacobi2020NewUnderstandingEvaluation]
 -   Geometric
 -   Compensatory and non compensatory
--   Some did both and compared, came out similar [@gomez-limon2010EmpiricalEvaluationAgricultural]
+-   Some did both and compared, came out similar
+    [@gomez-limon2010EmpiricalEvaluationAgricultural]
 -   Make this a normal slide, with figures from these papers on right
-    
 :::
 
 ::: {.column width = '60%'}
 
-* images here
+-   images here
 
 :::
 
@@ -567,7 +587,10 @@ methods
 
 ![](plots/indic_dists.png){height="1500"}
 
-## Indicator Correlations
+## Indicator Correlations {.smaller}
+
+::: panel-tabset
+### Correlation Matrix
 
 Min Max geometric aggregation
 
@@ -600,7 +623,7 @@ plot <- cor_r %>%
     y = NULL,
     fill = 'Correlation'
   )
-
+  
 ggplotly(
   plot, 
   tooltip = 'text',
@@ -609,12 +632,23 @@ ggplotly(
 )
 ```
 
-::: notes
+### Influential Indicators
 
-* Highly correlating indicators from different dimensions are a problem
-
+```{r}
+#| class: centered
+cor_counts <- readRDS('preso/data/correlation_counts.rds')
+cor_counts %>% 
+  setNames(c('Indicator', 'N Correlations')) %>% 
+  get_reactable(
+    fullWidth = FALSE
+  )
+```
 :::
 
+::: notes
+-   Highly correlating indicators from different dimensions are a
+    problem (double counting)
+:::
 
 ## Comparisons {.smaller}
 
@@ -736,7 +770,6 @@ get_mapview(map_dat, 'social')
 ## Validation: Regression {.smaller}
 
 :::::: panel-tabset
-
 ### Food Insecurity
 
 Food Insecurity Index (UW Population Health Institute 2024)
@@ -789,6 +822,7 @@ get_stargazer(
 
 ::: flex-container
 <iframe src="data/val2.html" width="100%" height="600" style="border: none;">
+
 </iframe>
 :::
 
@@ -844,7 +878,6 @@ get_stargazer(
 ::::::
 
 ::: notes
-
 -   Food Environment Index: 0 (worst) 10 (best). Distance to grocery,
     cost of health diet.
 -   Happiness (WalletHub):
@@ -859,31 +892,27 @@ get_stargazer(
 
 ## Validation: PCA {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '30%'}
 
-* Factor extraction:
-  + Parallel Analysis (PA) suggests 6 components
-  + Velicer MAP suggests 8 factors
-  + VSS suggests 6 or 7 factors
-* Key to loadings:
-  + x < 0.2 ~ ''
-  + x < 0.32 ~ '.'
-  + x >= 0.32 ~ x
- 
+-   Factor extraction:
+    -   Parallel Analysis (PA) suggests 6 components
+    -   Velicer MAP suggests 8 factors
+    -   VSS suggests 6 or 7 factors
+-   Key to loadings:
+    -   x \< 0.2 \~ ''
+    -   x \< 0.32 \~ '.'
+    -   x \>= 0.32 \~ x
 :::
 
 ::: {.column width = '70%'}
 
 ::: panel-tabset
-
 ### Scree Plot
 
 ![](plots/scree.png){fig-align="center" width="90%"}
 
 ### Loadings
-
 
 ```{r}
 #| label: pca_table
@@ -909,23 +938,27 @@ get_reactable(
 ::::
 
 ::: notes
-Jacobi et al (2020)
+
+* Could try more rotations to see if we find a better solution
+* Could fix it to 5 components
+* PA: randomize rows, do PCA. Keep PCs that explain significantly more variance than expected by chance
+* MAP: get average squared partial correlations for each PC. Keep PCs that lead to lowest average squared partial correlation
+* VSS: compare fit of simplified model to original correlations. VSS = 1-sumsquares(r*)/sumsquares(r)Peaks at optimal (most interpretable) number of factors.
 :::
 
 ## Sensitivity by Dimension {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '40%'}
 
--   Sample from uncertain inputs [@oecdHandbookConstructingComposite2008]
+-   Sample from uncertain inputs
+    [@oecdHandbookConstructingComposite2008]
     -   Normalizations (5)
     -   Aggregations (2)
     -   Leave out one indicator (40)
 -   Higher ranks are desirable
 -   Some dimensions are quite unstable (Economics)
 -   Some are quite stable (Health)
-
 :::
 
 ::: {.column width = '60%'}
@@ -986,7 +1019,6 @@ Distribution for Vermont
 #| fig-width: 8
 dim_sens_plots$social
 ```
-
 :::
 
 :::
@@ -995,20 +1027,17 @@ dim_sens_plots$social
 
 ## Indicator Influence {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '30%'}
 
 -   Some points before plot
 -   another point before the plot
 -   some other important point
-
 :::
 
 ::: {.column width = '70%'}
 
 ::: panel-tabset
-
 ### Economics
 
 ```{r}
@@ -1062,7 +1091,6 @@ get_plotly(ind_inf_plots$production)
 #| fig-height: 6
 get_plotly(ind_inf_plots$social)
 ```
-
 :::
 
 :::
@@ -1074,10 +1102,8 @@ get_plotly(ind_inf_plots$social)
 -   Conclusions
     -   Gaps
     -   Stability and Sensitivity
-    -   Metric counts
-    -   We have way more indicators than most other frameworks. 
+    -   Framework complexity
     -   Influential indicators
-      -   access to land
 -   Discussion
     -   How well do these data represent the system?
     -   Can we reasonably assign desirable directions to metrics and
@@ -1085,10 +1111,30 @@ get_plotly(ind_inf_plots$social)
     -   What are fair and interpretable methods of transformations and
         aggregation?
 
+::: notes
+
+* Gaps:
+  + NASS stats lean toward commodity crops
+  + Soil health
+  + Food distribution capacity (have some of this)
+  + Food loss and waste
+  + Embodied Carbon
+  + Carbon stocks
+  + forest complexity
+  + water quality
+  + Water quantity
+  + precarity, market health indices
+  + diversity of Farm Types (this one tricky for VT)
+  + nutrition
+  + all of social dimension
+* Sensitivity:
+  + Economics, environment need to be refined
+  
+:::
+
 ## To Add
 
--   Monte Carlo to explore metric numbers (bootstrapped confidence
-    intervals?)
--   Scenario Analysis with RF for predictions
+-   Monte Carlo to explore metric numbers
+-   Scenario Analysis with random forest for predictions
 
 ## References

@@ -145,7 +145,18 @@ sig <- sig %>%
   setNames(c('Indicator 1', 'Indicator 2', 'Correlation', 'P Value'))
 get_str(sig)
 
+# Get reactable table for next cell
 table_out <- get_reactable(sig)
+
+# But while we're at it, count how many times each indicator appears
+cor_counts <- c(sig[[1]], sig[[2]]) %>% 
+  table() %>%
+  sort(decreasing = TRUE) %>% 
+  as.data.frame() %>% 
+  setNames(c('indicator', 'n_cors'))
+
+# Save this for preso  
+saveRDS(cor_counts, 'preso/data/correlation_counts.rds')
 ```
 
 ```{r}
