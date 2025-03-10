@@ -128,7 +128,7 @@ get_dimension_ggraph <- function(csv_path = NULL,
   ggraph(graph, layout = 'dendrogram', circular = FALSE) +
     
     # Color edges by dimension
-    geom_edge_diagonal(aes(color = group), width = 0.5) +
+    geom_edge_diagonal(aes(color = group), width = 0.6) +
     
     # Create text for indicators using angles, hjust, and dimension groupings
     geom_node_text(
@@ -137,7 +137,9 @@ get_dimension_ggraph <- function(csv_path = NULL,
         y = y,
         filter = leaf,
         label = name,
-        colour = group
+        # colour = group
+        colour = ifelse(grepl('NONE', name), 'red', group)
+        # This doesn't work, but making them disappear is just as good
       ),
       size = leaf_font_size,
       alpha = 1,

@@ -100,9 +100,13 @@ imp_dat <- mf_out$ximp
 
 We had `{r} mis_dat`% missing data, which is rather little, and gives us flexibility in handling it. The Out-of-Bag (OOB) error, quantified by the normalized residual mean squared error (NRMSE) the missForest imputation algorithm was `r round(oob, 3)`.
 
-# Normalization
+# Rescaling
 
-We are normalizing our data using three methods: min-max, Box-Cox, and Z-scores. (We might also consider Winsorizing at some point.) Results will be saved to a list of three normalized datasets so we can compare outcomes of each one and see what the consequences are.
+We are rescaling our data using five methods: rank order, winsorizing, Min-Max, Box-Cox, and Z-scores. Results will be saved to a list of five rescaled datasets so we can compare outcomes of each one and see what the consequences are.
+
+**Rank Order** 
+
+**Winsorization**
 
 **Min Max** [@oecdHandbookConstructingComposite2008]
 
@@ -135,11 +139,6 @@ Box-Cox transformations are non-linear transformations that use an optimal value
 \begin{equation}
 {\rm For}\ \lambda = 0,\ f_0(x) = log(x)
 \end{equation}
-
-**Rank Order** 
-
-**Winsorization**
-
 
 ```{r}
 #| label: normalization
@@ -191,8 +190,6 @@ normed$winsor <- imp_dat %>%
 # Check
 map(normed, get_str)
 
-# Save this for later
-saveRDS(normed, 'data/normalized_metrics_df.rds')
 ```
 
 # Directional Values
@@ -203,14 +200,12 @@ Alas, for now we will invert variables in each of the transformed datasets as ne
 
 ```{r}
 #| label: directional_values
+#| output: false
 pacman::p_load(
   reactable,
   purrr
 )
 source('dev/get_reactable.R')
-
-# map(normed, get_str)
-# (names <- names(normed[[1]]))
 
 # Higher numbers should be better. Reverse metrics that are the opposite, 
 # where lower numbers are better. Only listing reverse here - metrics are 
@@ -266,7 +261,8 @@ reverse <- c(
   'totalValueDairyMarginProtPayments',
   'totalValueAllLossCoveragePayments',
   'totalValueAgRiskCoveragePayments',
-  'totalCapExpBldgsLandNoDwellings'
+  'totalCapExpBldgsLandNoDwellings',
+  'alcoholImpairedDrivingDeaths' 
 )
 
 # Iffy: landValPF, landValPerAcre - in good column for now, but unclear
@@ -291,28 +287,36 @@ remove <- c(
 # boxcox and winsor: trickier. want to just reverse the distribution. 
 #   max(x) - x + min(x)
 # Could we have just done this in the beginning, before normalization? Maybe
-out <- imap(normed, \(df, method) {
+valued_data <- imap(normed, \(df, method) {
   df %>% 
     select(-matches(remove)) %>% 
-    mutate(across(all_of(reverse), ~ case_when(
-      method == 'zscore' ~ .x * -1,
-      method == 'minmax' ~ 1 - .x,
-      method %in% c('boxcox', 'winsor') ~ max(.x) - .x + min(.x),
-      method == 'rank' ~ max(.x) - .x + 1
-    )))
+    mutate(
+      across(any_of(reverse), ~ case_when(
+        method == 'zscore' ~ .x * -1,
+        method == 'minmax' ~ 1 - .x,
+        method %in% c('boxcox', 'winsor') ~ max(.x) - .x + min(.x),
+        method == 'rank' ~ max(.x) - .x + 1
+      )),
+      across(everything(), as.numeric)
+    )
 })
-# map(out, get_str)
-# map(normed, get_str)
+map(valued_data, get_str)
 
 # Compare
-# checklist <- list(normed, out)
-# map(checklist, ~ .x$rank[[2]])
+checklist <- list(normed, valued_data)
+map(checklist, ~ .x$rank[[2]])
 
+# Check one that should get flipped
+valued_data$minmax$unemploymentRate
+normed$minmax$unemploymentRate
+# Looks good
 
-# Use the table from refined metrics here instead of making it again
+# Save this as our 'normalized data' that we use for building scores
+saveRDS(valued_data, 'data/valued_rescaled_metrics.rds')
+```
 
-
-
+```{r}
+#| label: wrangle_table
 ## Show table of which metrics were set in which direction
 sm_data <- readRDS('data/sm_data.rds')
 meta <- sm_data$metadata
@@ -338,7 +342,11 @@ table <- meta %>%
 
 # Save this desirable direction table for preso
 saveRDS(table, 'preso/data/desirable_directions_table.rds')
-  
+```
+
+
+```{r}
+#| label: direction_table
 # Make reactable table
 table %>% 
   get_reactable(
@@ -370,9 +378,10 @@ Indicator aggregation:
 #| output: false
 # We need to attach these back to framework from metadata
 # Filter frame from earlier down to our current metrics
+# We are also removing the 'remove' metrics without clear directional values
 frame <- readRDS('data/frame.rds')
 filtered_frame <- frame %>% 
-  dplyr::filter(variable_name %in% names(normed[[1]])) %>% 
+  dplyr::filter(variable_name %in% names(valued_data[[1]])) %>% 
   dplyr::select(variable_name, indicator, index, dimension)
 get_str(filtered_frame)
 
@@ -388,7 +397,7 @@ geometric_mean <- function(x, na.rm = TRUE){
 }
 
 # Get indicator scores across all three normalization methods
-indicator_scores <- map(normed, \(df) {
+indicator_scores <- map(valued_data, \(df) {
   
   # For each df, calculate indicator means
   indicators_out <- map(unique(filtered_frame$indicator), \(ind) {
@@ -402,7 +411,7 @@ indicator_scores <- map(normed, \(df) {
       pull(variable_name) %>% 
       unique()
     indicator_metrics <- df %>% 
-      select(all_of(variables))
+      dplyr::select(any_of(variables))
     
     # Get arithmetic and geo means for each indicator
     dfs <- list()
@@ -411,7 +420,7 @@ indicator_scores <- map(normed, \(df) {
       mutate(
         !!sym(ind_snake) := mean(c_across(everything())),
       ) %>%
-      select(!!sym(ind_snake))
+      dplyr::select(!!sym(ind_snake))
     dfs$geometric <- indicator_metrics %>% 
       rowwise() %>% 
       mutate(
@@ -443,12 +452,6 @@ get_str(indicator_scores, 4)
 ```
 
 Index aggregation:
-
-```{r}
-#| label: test_pca_aggregation
-get_str(indicator_scores)
-
-```
 
 ```{r}
 #| label: index_aggregation

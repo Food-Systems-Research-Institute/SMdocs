@@ -7,23 +7,36 @@ warnings: false
 ---
 
 ```{r}
-#| label: prep
+#| label: setup
 #| echo: false
-source('dev/get_setup.R')
-get_setup()
-# pacman::p_load(
-#   dplyr,
-#   conflicted
-# )
-# conflicts_prefer(
-#   dplyr::select(),
-#   dplyr::filter(),
-#   dplyr::arrange(),
-#   dplyr::summarize(),
-#   dplyr::as_data_frame(),
-#   .quiet = TRUE
-# )
-# pacman::p_load_gh('ChrisDonovan307/projecter')
+# source('dev/get_setup.R')
+# get_setup()
+pacman::p_load(
+  dplyr,
+  conflicted,
+  purrr,
+  stringr,
+  ggraph,
+  igraph,
+  dplyr,
+  readr,
+  RColorBrewer,
+  paletteer,
+  snakecase,
+  tibble, 
+  tidyr,
+  htmltools,
+  reactable
+)
+pacman::p_load_gh('ChrisDonovan307/projecter')
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::arrange(),
+  dplyr::summarize(),
+  dplyr::as_data_frame(),
+  .quiet = TRUE
+)
 ```
 
 This page shows the partially refined framework as it stands after three dimension meetings: economics, environment, and production. It also includes a selection of preliminary secondary data metrics to match those indicators. We have collected around 1500 metrics so far, although many of those are fluff. Effectively, we have around 600 meaningful metrics. Here, we are using a selection of ~129 of them to make a preliminary framework for preliminary analyses. This is more than we have been planning for the refined framework, which will give us a chance to see how aggregate scores change with different combinations of metrics and under different methods of aggregation. 
@@ -38,6 +51,7 @@ Here is the framework with a selection of secondary metrics, split into each dim
 
 ```{r}
 #| label: wrangle_framework
+#| output: false
 pacman::p_load(
   conflicted,
   dplyr,
@@ -63,7 +77,7 @@ frame <- raw_frame %>%
       metric
     )
   )
-# get_str(frame)
+get_str(frame)
 
 # Save frame to rds for use in subsequent scripts
 saveRDS(frame, 'data/frame.rds')
@@ -189,17 +203,19 @@ Here we pull out the set of 129 metrics from the larger collection and arrange t
 
 ```{r}
 #| label: wrangle_metrics
-pacman::p_load(
-  dplyr,
-  tidyr,
-  tibble
-)
+#| output: false
+# pacman::p_load(
+#   dplyr,
+#   tidyr,
+#   tibble
+# )
 
 # Get latest year function
 source('dev/data_pipeline_functions.R')
 
 # Load metrics data
 sm_data <- readRDS('data/sm_data.rds')
+metrics <- sm_data$metrics
 
 # Load refined framework
 raw_tree <- sm_data[['refined_tree']]
@@ -209,23 +225,23 @@ frame <- readRDS('data/frame.rds')
 
 
 ## Join with metadata to double check the resolution of our metrics
-meta <- sm_data$metadata
+# meta <- sm_data$metadata
 # get_str(meta)
-
-dat <- frame %>% 
-  filter(variable_name != 'NONE') %>% 
-  select(variable_name) %>% 
-  left_join(meta, by = 'variable_name') %>% 
-  unique()
+# 
+# dat <- frame %>% 
+#   dplyr::filter(variable_name != 'NONE') %>% 
+#   dplyr::select(variable_name) %>% 
+#   left_join(meta, by = 'variable_name') %>% 
+#   unique()
 # get_str(dat)
 
 # Pull it from the actual metrics data
 metrics <- sm_data$metrics %>% 
-  filter(
+  dplyr::filter(
     variable_name %in% frame$variable_name,
     fips %in% sm_data$state_key$state_code
   )
-# get_str(metrics)
+get_str(metrics)
 
 # Filter to latest year for each metric, and pivot wider
 # Also removing census participation - don't really have data at state level
@@ -241,17 +257,17 @@ metrics_df <- metrics %>%
     names_from = 'variable_name',
     values_from = 'value'
   ) %>% 
-  unnest(cols = !fips) %>%
+  unnest(cols = !fips) %>% 
   unique()
-# get_str(metrics_df)
+get_str(metrics_df)
 
 # Let's get rid of the years so they are easier to work with
 names(metrics_df) <- str_split_i(names(metrics_df), '_', 1)
-# get_str(metrics_df)
+get_str(metrics_df)
 
 # Also get rid of DC - too many missing values
 metrics_df <- metrics_df %>% 
-  filter(fips != '11')
+  dplyr::filter(fips != '11')
 
 # Save this for use in subsequent pages
 saveRDS(metrics_df, 'data/metrics_df.rds')
@@ -273,11 +289,22 @@ pacman::p_load(
 vars <- unique(frame$variable_name) %>% 
   str_subset('NONE', negate = TRUE)
 
-# Load full metadata table
+
+## Load metadata table, but keep framework from frame []
 metadata <- sm_data$metadata %>% 
+  select(-c(dimension, index, indicator)) %>% 
   dplyr::filter(variable_name %in% vars)
 
-# Pick out variables to display
+# Grab the framework variables from the frame to combine with metadata
+updated_framework <- frame %>% 
+  dplyr::select(variable_name, dimension, index, indicator)
+
+# Combine them
+metadata <- inner_join(metadata, updated_framework, by = 'variable_name')
+# get_str(metadata)
+
+
+## Pick out variables to display
 metadata <- metadata %>% 
   select(
     metric,

@@ -1,9 +1,9 @@
-pacman::p_load(
-  purrr,
-  psych,
-  dplyr,
-  tibble
-)
+# pacman::p_load(
+#   purrr,
+#   psych,
+#   dplyr,
+#   tibble
+# )
 
 get_indicator_distributions <- function(scores_list,
                                         transformation,
@@ -12,14 +12,14 @@ get_indicator_distributions <- function(scores_list,
   # Pull the indicators at desired transformation
   # Also remove averages, new england
   df <- scores_list[[transformation]]$indicator_scores %>% 
-    dplyr::filter(!state %in% c('US_mean', 'US_median', 'NewEng'))
+    dplyr::filter(!state %in% c('US_mean', 'US_median', 'NE_mean', 'NE_median'))
   
   # Get skews of variables
   skewed <- psych::describe(df) %>% 
     as.data.frame() %>% 
     rownames_to_column('variable_name') %>% 
-    select(variable_name, skew) %>% 
-    filter(abs(skew) > 2) %>% 
+    dplyr::select(variable_name, skew) %>% 
+    dplyr::filter(abs(skew) > 2) %>% 
     pull(variable_name)
   
   plots <- map(names(df)[names(df) != 'state'], \(var){

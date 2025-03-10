@@ -2,8 +2,8 @@ dplyr
 conflicted
 projecter
 purrr
+psych
 tibble
 reactable
 ggplot2
 ggpubr
-psych

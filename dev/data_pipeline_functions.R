@@ -4,13 +4,11 @@
 # Several functions to help in wrangle aggregated long data and prepare for 
 # mapping and analysis.
 
-pacman::p_load(
-  purrr,
-  dplyr,
-  stringr,
-  purrr,
-  rlang
-)
+# pacman::p_load(
+#   purrr,
+#   dplyr,
+#   stringr
+# )
 
 
 # Convenience function to filter so that each variable_name only has latest year
@@ -23,7 +21,7 @@ get_latest_year <- function(df, var_col = 'variable_name', year_col = 'year'){
   vars <- unique(df[[var_col]])
   
   # Before 
-  filtered_df <- map(vars, \(var) {
+  filtered_df <- purrr::map(vars, \(var) {
     unique_years <- df %>%
       dplyr::filter(.data[[var_col]] == var) %>%
       pull({{ year_col }}) %>% 
@@ -34,7 +32,7 @@ get_latest_year <- function(df, var_col = 'variable_name', year_col = 'year'){
         .data[[year_col]] == max(unique_years)
       ) %>% 
       mutate({{ var_col }} := paste0(.data[[var_col]], '_', .data[[year_col]])) %>% 
-      select(-{{ year_col }})
+      dplyr::select(-{{ year_col }})
     return(out)
   }) %>% 
     bind_rows()

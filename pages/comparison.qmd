@@ -24,18 +24,19 @@ pacman::p_load(
   fmsb
 )
 
+state_key <- readRDS('data/state_key.rds')
+fips_key <- readRDS('data/fips_key.rds')
+ne_states <- c('VT', 'NH', 'ME', 'MA', 'CT', 'RI') %>% sort
+
+source('dev/get_vt_spiders.R')
+source('dev/get_reactable_scores.R')
+
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
   dplyr::summarize(),
   .quiet = TRUE
 )
-
-state_key <- readRDS('data/state_key.rds')
-fips_key <- readRDS('data/fips_key.rds')
-ne_states <- c('VT', 'NH', 'ME', 'MA', 'CT', 'RI') %>% sort
-source('dev/get_vt_spiders.R')
-source('dev/get_reactable_scores.R')
 ```
 
 # Min Max

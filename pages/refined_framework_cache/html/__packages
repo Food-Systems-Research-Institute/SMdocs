@@ -3,15 +3,14 @@ conflicted
 projecter
 purrr
 stringr
-readr
 ggplot2
 ggraph
 igraph
+readr
 RColorBrewer
 paletteer
 snakecase
-tidyr
 tibble
-rlang
+tidyr
 reactable
 htmltools

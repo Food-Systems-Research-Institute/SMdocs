@@ -1,6 +1,6 @@
-pacman::p_load(
-  reactable
-)
+# pacman::p_load(
+#   reactable
+# )
 
 get_reactable <- function(df, 
                           sortable = TRUE,

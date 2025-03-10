@@ -2,7 +2,7 @@
 title: "Sustainability Metrics Secondary Data"
 author: "Chris Donovan"
 institute: "Food Systems Research Center"
-date: today
+date: '2025-03-19'
 format:
   revealjs:
     embed-resources: false
@@ -43,7 +43,6 @@ pacman::p_load(
   conflicted,
   knitr,
   kableExtra,
-  mapview,
   sf,
   leaflet,
   ggraph,
@@ -51,10 +50,11 @@ pacman::p_load(
   readr,
   RColorBrewer,
   paletteer,
-  fmsb
+  fmsb,
+  purrr
 )
 
-source('dev/get_reactable.r')
+source('dev/get_reactable.R')
 source('dev/get_vt_spiders.R')
 
 conflicted::conflicts_prefer(
@@ -86,9 +86,7 @@ conflicted::conflicts_prefer(
 
 ::: {.column width = '60%'}
 
-![Intervale Farm, Sally McCay, UVM
-Photo](../images/intervale_small.png){fig-align='center' width=80%
-fig-alt='A picture of a field at Intervale Farm.}
+![Intervale Farm, Sally McCay, UVM Photo](../images/intervale_small.png){fig-align='center' width=80% fig-alt='A picture of a field at Intervale Farm.}
 
 :::
 
@@ -480,7 +478,7 @@ desirable_table %>%
 
 ::::
 
-## Normalization
+## Rescaling
 
 ::: panel-tabset
 ### Rank Order
@@ -506,44 +504,45 @@ desirable_table %>%
 
 **Min Max** [@oecdHandbookConstructingComposite2008]
 
--   Scales all data from 0 to 1
--   Intuitive (0 is worst, 1 is best)
--   Linear transformation
-
 \begin{equation}
 I^t_qc = \frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}
 \end{equation}
 
+::: {.center}
 Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
+:::
 
+-   Scales all data from 0 to 1
+-   Intuitive (0 is worst, 1 is best)
+-   Linear transformation
 -   [@schneider2025, @schneider2023StateFoodSystems]
 
 ### Z-Scores
 
 **Z-Scores** [@oecdHandbookConstructingComposite2008]
 
--   Scales data to mean of 0 and standard deviation of 1
--   Larger numbers are better, but no limits
--   Linear transformation
-
 \begin{equation}
 I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 \end{equation}
 
+-   Scales data to mean of 0 and standard deviation of 1
+-   Larger numbers are better, but no limits
+-   Linear transformation
+
 ### Box Cox
 
 **Box Cox** [@bickel1981]
-
--   Finds an optimal value of $\lambda$ to make distribution normal
--   More tractable distribution for analysis
--   Harder to interpret
--   Non-linear transformation
 
 \begin{equation}
 {\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
 \end{equation} \begin{equation}
 {\rm For}\ \lambda = 0,\ f_0(x) = log(x)
 \end{equation}
+
+-   Finds an optimal value of $\lambda$ to make distribution normal
+-   More tractable distribution for analysis
+-   Harder to interpret
+-   Non-linear transformation
 
 ### Distance
 
@@ -575,7 +574,7 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 ::: {.column width = '60%'}
 
 -   images here
-
+  
 :::
 
 ::::
@@ -595,42 +594,43 @@ methods
 Min Max geometric aggregation
 
 ```{r}
-#| class: centered
-mat <- readRDS('preso/data/correlation_data.rds')
-cor <- rcorr(mat, type = 'pearson')
-cor_r <- melt(cor$r) %>% 
-  setNames(c('var_1', 'var_2', 'value'))
-cor_p <- melt(cor$P)
-p.value <- cor_p$value
-
-plot <- cor_r %>% 
-  ggplot(aes(var_1, var_2, fill = value, text = paste0(
-    'Var 1: ', var_1, '\n',
-    'Var 2: ', var_2, '\n',
-    'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
-    'P-Value: ', format(round(p.value, 3), nsmall = 3)
-  ))) + 
-  geom_tile() + 
-  scale_fill_gradient2(
-    low = "#762a83", 
-    mid = "white", 
-    high = "#1b7837", 
-    midpoint = 0
-  ) +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = 'Correlation'
-  )
-  
-ggplotly(
-  plot, 
-  tooltip = 'text',
-  width = 850,
-  height = 650
-)
+# mat <- readRDS('preso/data/correlation_data.rds')
+# cor <- rcorr(mat, type = 'pearson')
+# cor_r <- melt(cor$r) %>% 
+#   setNames(c('var_1', 'var_2', 'value'))
+# cor_p <- melt(cor$P)
+# p.value <- cor_p$value
+# 
+# plot <- cor_r %>% 
+#   ggplot(aes(var_1, var_2, fill = value, text = paste0(
+#     'Var 1: ', var_1, '\n',
+#     'Var 2: ', var_2, '\n',
+#     'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
+#     'P-Value: ', format(round(p.value, 3), nsmall = 3)
+#   ))) + 
+#   geom_tile() + 
+#   scale_fill_gradient2(
+#     low = "#762a83", 
+#     mid = "white", 
+#     high = "#1b7837", 
+#     midpoint = 0
+#   ) +
+#   theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
+#   labs(
+#     x = NULL,
+#     y = NULL,
+#     fill = 'Correlation'
+#   )
+#   
+# ggplotly(
+#   plot, 
+#   tooltip = 'text',
+#   width = 850,
+#   height = 650
+# )
 ```
+
+<iframe src="plots/correlation_plotly.html" width="100%" height="650"></iframe>
 
 ### Influential Indicators
 
@@ -696,7 +696,7 @@ get_vt_spiders(dat, 'boxcox')
 ```
 :::
 
-## Dimension Score Map {.smaller}
+## Dimension Score Maps {.smaller}
 
 Using Min Max normalization and geometric aggregation
 
@@ -723,47 +723,77 @@ map_dat <- left_join(
   select(state:name, geometry) %>% 
   mutate(across(where(is.numeric), ~ round(.x, 2))) %>% 
   st_as_sf()
-# get_str(map_dat)
 
-get_mapview <- function(map_dat,
-                        dimension) {
-  dimension_map <- mapview(
-    map_dat,
-    zcol = dimension,
-    layer.name = stringr::str_to_title(dimension)
+get_leaflet <- function(map_dat, dimension) {
+  
+  # Two palettes, one reversed, so we can swap legend order
+  pal1 <- colorNumeric(
+    palette = rev(brewer.pal(n = 11, name = 'YlGn')),
+    domain = map_dat[[dimension]],
+    reverse = TRUE
   )
-  dimension_map@map %>% setView(-98.583333, 39.833333, zoom = 4)
+  pal2 <- colorNumeric(
+    palette = rev(brewer.pal(n = 11, name = 'YlGn')),
+    domain = map_dat[[dimension]]
+  )
+
+  # Create leaflet map
+  leaflet(map_dat) %>%
+    addProviderTiles(providers$Stadia.AlidadeSmooth) %>% 
+    addPolygons(
+      fillColor = ~pal1(map_dat[[dimension]]),
+      color = 'black',
+      weight = 1.5,
+      fillOpacity = 0.8,
+      popup = ~paste0(
+        "<strong>State:</strong> ", map_dat$name, "<br>",
+        "<strong>Economics:</strong> ", map_dat$economics, "<br>",
+        "<strong>Environment:</strong> ", map_dat$environment, "<br>",
+        "<strong>Health:</strong> ", map_dat$health, "<br>",
+        "<strong>Production:</strong> ", map_dat$production, "<br>",
+        "<strong>Social:</strong> ", map_dat$social
+      )
+    ) %>%
+    addLegend(
+      pal = pal2,
+      values = map_dat[[dimension]],
+      title = str_to_title(dimension),
+      position = "bottomright",
+      labFormat = labelFormat(transform = \(x) sort(x, decreasing = TRUE)),
+      opacity = 0.8
+    ) %>%
+    setView(lng = -98.583333, lat = 39.833333, zoom = 4)
 }
 ```
 
 ### Economics
 
 ```{r}
-get_mapview(map_dat, 'economics')
+get_leaflet(map_dat, 'economics')
 ```
 
 ### Environment
 
 ```{r}
-get_mapview(map_dat, 'environment')
+get_leaflet(map_dat, 'environment')
 ```
 
 ### Health
 
 ```{r}
-get_mapview(map_dat, 'health')
+get_leaflet(map_dat, 'health')
 ```
 
 ### Production
 
 ```{r}
-get_mapview(map_dat, 'production')
+get_leaflet(map_dat, 'production')
 ```
 
 ### Social
 
 ```{r}
-get_mapview(map_dat, 'social')
+get_leaflet(map_dat, 'social')
 ```
 :::
 

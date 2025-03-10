@@ -12,7 +12,6 @@ fig-responsive: false
 ```{r}
 #| label: setup
 #| include: false
-source('dev/get_aggregations.R')
 pacman::p_load(
   dplyr,
   purrr,
@@ -24,6 +23,7 @@ pacman::p_load(
   forcats,
   plotly
 )
+source('dev/get_aggregations.R')
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
@@ -48,7 +48,7 @@ Steps
 ## Load data for aggregations
 state_key <- readRDS('data/sm_data.rds')[['state_key']]
 metrics_df <- readRDS('data/metrics_df.rds')
-normed_data <- readRDS('data/normalized_metrics_df.rds')
+valued_scaled_data <- readRDS('data/valued_rescaled_metrics.rds')
 framework <- readRDS('data/filtered_frame.rds')
 
 
@@ -316,7 +316,6 @@ ind_plots <- imap(dim_dfs, ~ {
     expand_limits(y = c(max(.x$rank_diff + 4), min(.x$rank_diff - 4)))
 }) %>% 
   setNames(c(stringr::str_to_lower(dimension_ranks)))
-ind_plots[[1]]
 
 # Save these for preso
 saveRDS(ind_plots, 'preso/plots/ind_influence_plots.rds')
@@ -374,3 +373,10 @@ get_plotly(ind_plots[[4]])
 #| class: centered
 get_plotly(ind_plots[[5]])
 ```
+
+# Metric Selection
+
+Plan:
+
+- Start with normed_data (already rescaled 5 ways)
+- For each rescaling method, choose between 

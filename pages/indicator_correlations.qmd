@@ -28,8 +28,8 @@ This page will explore correlations between variables at the indicator level.
 # Correlation Matrix
 
 ```{r}
-#| label: correlation_plot
-#| fig-cap: Interactive Correlation Plot
+#| label: wrangle
+#| output: false
 pacman::p_load(
   dplyr,
   tidyr,
@@ -46,12 +46,26 @@ pacman::p_load(
 
 # Load indicator data.
 final_scores <- readRDS('data/state_score_iterations.rds')
-# get_str(final_scores)
+get_str(final_scores)
+
+# Get filtered frame subset to be able to color indicators by dimension later
+filtered_frame <- readRDS('data/filtered_frame.rds')
+inds_and_dims <- filtered_frame %>% 
+  select(indicator, dimension) %>%
+  unique() %>% 
+  mutate(color = case_when(
+    dimension == 'economics' ~ 'royalblue',
+    dimension == 'environment' ~ 'darkgreen',
+    dimension == 'health' ~ 'orange',
+    dimension == 'production' ~ 'darkred',
+    dimension == 'social' ~ 'black'
+  ))
+color_map <- setNames(inds_and_dims$color, inds_and_dims$indicator)
 
 # Pull out minmax geo indicators only. Also use states only, no aggregates
 minmax_geo_indicators <- final_scores$minmax_geometric$indicator_scores %>% 
-  filter(! state %in% c('US_mean', 'US_median', 'NewEng'))
-# get_str(minmax_geo_indicators)
+  filter(! state %in% c('US_mean', 'US_median', 'NE_median', 'NE_mean'))
+get_str(minmax_geo_indicators)
 
 # Make a correlation matrix using all the selected variables
 mat <- minmax_geo_indicators %>% 
@@ -70,7 +84,7 @@ cor_p <- melt(cor$P)
 p.value <- cor_p$value
 
 # Make heatmap with custom text aesthetic for tooltip
-plot <- cor_r %>% 
+plot_out <- cor_r %>% 
   ggplot(aes(var_1, var_2, fill = value, text = paste0(
     'Var 1: ', var_1, '\n',
     'Var 2: ', var_2, '\n',
@@ -84,24 +98,243 @@ plot <- cor_r %>%
     high = "#1b7837", 
     midpoint = 0
   ) +
-  theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
+  theme(
+    axis.text.x = element_text(
+      # color = color_map[levels(factor(cor_r$var_1))],
+      hjust = 1, 
+      angle = 45
+    )
+    # axis.text.y = element_text(
+      # color = color_map[levels(factor(cor_r$var_2))]
+    # )
+  ) +
   labs(
     x = NULL,
     y = NULL,
-    fill = 'Correlation'
+    fill = NULL
   )
 
 # Save this for preso
+# preso_matrix <- list(mat, color_map)
 saveRDS(mat, 'preso/data/correlation_data.rds')
-# saveRDS(plot, 'preso/plots/indicator_correlations.rds')
+```
 
+
+```{r}
+#| label: correlation_plot
+#| fig-cap: Interactive Correlation Plot
 # Convert to interactive plotly figure with text tooltip
-ggplotly(
-  plot, 
+plot <- ggplotly(
+  plot_out, 
   tooltip = 'text',
-  width = 1000,
-  height = 800
+  # width = 1000,
+  # height = 800
+  width = 850,
+  height = 650
 )
+
+plot <- plot %>% add_trace(xaxis = 'x2', showscale = FALSE)
+plot <- plot %>% add_trace(xaxis = 'x3', showscale = FALSE)
+plot <- plot %>% add_trace(xaxis = 'x4', showscale = FALSE)
+plot <- plot %>% add_trace(xaxis = 'x5', showscale = FALSE)
+
+plot <- plot %>%
+  plotly::layout(
+    xaxis = list(
+      range = list(0.5, 38.5),
+      tickvals = list(1, 2, 3, 4, 5),
+      tickfont = list(color = 'royalblue')
+    ),
+    xaxis2 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'x',
+      tickangle = -45,
+      ticktext = list(
+        'carbon fluxes',
+        'carbon stocks',
+        'embodied carbon',
+        'forest health',
+        'biodiversity',
+        'land use diversity',
+        'sensitive or rare habitats',
+        'water quality',
+        'water quantity'
+      ),
+      tickvals = list(6, 7, 8, 9, 10, 11, 12, 13, 14),
+      tickfont = list(
+        color = 'red',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    xaxis3 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'x',
+      tickangle = -45,
+      ticktext = list(
+        'educational attainment',
+        'access to culturally appropriate food',
+        'dietary quality',
+        'food access',
+        'food affordability',
+        'mental health tbd',
+        'access to care',
+        'housing supply and quality',
+        'physical health tbd'
+      ),
+      tickvals = list(15, 16, 17, 18, 19, 20, 21, 22, 23),
+      tickfont = list(
+        color = 'darkgreen',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    xaxis4 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'x',
+      tickangle = -45,
+      ticktext = list(
+        'total quantity exported',
+        'production species diversity',
+        'production inputs',
+        'total quantity food products',
+        'total quantity forest products',
+        'total quantity non-food ag products',
+        'value added market',
+        'crop failure'
+      ),
+      tickvals = list(24, 25, 26, 27, 28, 29, 30, 31),
+      tickfont = list(
+        color = 'darkorange',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    xaxis5 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'x',
+      tickangle = -45,
+      ticktext = list(
+        'social connectedness',
+        'community safety',
+        'diverse representation',
+        'age diversity',
+        'gender diversity',
+        'racial diversity',
+        'participatory governance'
+      ),
+      tickvals = list(32, 33, 34, 35, 36, 37, 38),
+      tickfont = list(
+        color = 'black',
+        family = 'Arial',
+        size = 12
+      )
+    )
+  )
+
+plot <- plot %>% add_trace(yaxis = 'y2', showscale = FALSE)
+plot <- plot %>% add_trace(yaxis = 'y3', showscale = FALSE)
+plot <- plot %>% add_trace(yaxis = 'y4', showscale = FALSE)
+plot <- plot %>% add_trace(yaxis = 'y5', showscale = FALSE)
+
+plot <- plot %>%
+  plotly::layout(
+    yaxis = list(
+      range = list(0.5, 38.5),
+      tickvals = list(1, 2, 3, 4, 5),
+      tickfont = list(color = 'royalblue')
+    ),
+    yaxis2 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'y',
+      tickangle = 0,
+      ticktext = list(
+        'carbon fluxes',
+        'carbon stocks',
+        'embodied carbon',
+        'forest health',
+        'biodiversity',
+        'land use diversity',
+        'sensitive or rare habitats',
+        'water quality',
+        'water quantity'
+      ),
+      tickvals = list(6, 7, 8, 9, 10, 11, 12, 13, 14),
+      tickfont = list(
+        color = 'red',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    yaxis3 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'y',
+      tickangle = 0,
+      ticktext = list(
+        'educational attainment',
+        'access to culturally appropriate food',
+        'dietary quality',
+        'food access',
+        'food affordability',
+        'mental health tbd',
+        'access to care',
+        'housing supply and quality',
+        'physical health tbd'
+      ),
+      tickvals = list(15, 16, 17, 18, 19, 20, 21, 22, 23),
+      tickfont = list(
+        color = 'darkgreen',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    yaxis4 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'y',
+      tickangle = 0,
+      ticktext = list(
+        'total quantity exported',
+        'production species diversity',
+        'production inputs',
+        'total quantity food products',
+        'total quantity forest products',
+        'total quantity non-food ag products',
+        'value added market',
+        'crop failure'
+      ),
+      tickvals = list(24, 25, 26, 27, 28, 29, 30, 31),
+      tickfont = list(
+        color = 'darkorange',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    yaxis5 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'y',
+      tickangle = 0,
+      ticktext = list(
+        'social connectedness',
+        'community safety',
+        'diverse representation',
+        'age diversity',
+        'gender diversity',
+        'racial diversity',
+        'participatory governance'
+      ),
+      tickvals = list(32, 33, 34, 35, 36, 37, 38),
+      tickfont = list(
+        color = 'black',
+        family = 'Arial',
+        size = 12
+      )
+    )
+  )
+
+# Save this for preso
+htmlwidgets::saveWidget(plot, 'preso/plots/correlation_plotly.html')
+
+plot
 ```
 
 # Strong Correlations
