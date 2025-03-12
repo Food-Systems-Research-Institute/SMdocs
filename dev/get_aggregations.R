@@ -55,7 +55,12 @@ conflicted::conflicts_prefer(
 
 
 get_geo_mean <- function(x, na.rm = TRUE){
-  exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
+  if (all(x > 0)) {
+    exp(mean(log(x), na.rm = na.rm))
+  } else if (any(x <= 0)) {
+    horizontal_shift <- abs(min(x)) + 1
+    exp(mean(log(x + horizontal_shift), na.rm = na.rm)) - horizontal_shift
+  } 
 }
 
 

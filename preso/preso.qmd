@@ -21,7 +21,7 @@ citeproc: true
 ---
 
 ```{r}
-#| label: setup
+#| label: prep
 #| include: false
 pacman::p_load(
   ggplot2,
@@ -67,7 +67,8 @@ conflicted::conflicts_prefer(
 
 ## Introduction {.smaller}
 
-::: columns
+:::: {.columns}
+
 ::: {.column width = '40%'}
 
 -   Secondary data goals:
@@ -97,171 +98,10 @@ conflicted::conflicts_prefer(
 The point is to take stock of existing data, use primary research 
 :::
 
-## Secondary Data
-
-```{r}
-#| label: metadata_table_all
-
-# Load full metadata table
-metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
-
-# Pick out variables to display
-metadata <- metadata_all %>% 
-  select(
-    metric,
-    'Variable Name' = variable_name,
-    definition,
-    dimension,
-    index,
-    indicator,
-    units,
-    'Year' = latest_year, # Renaming latest year as year, not including og year
-    source,
-    scope,
-    resolution,
-    url
-) %>% 
-  setNames(c(str_to_title(names(.))))
-
-###
-htmltools::browsable(
-  tagList(
-    
-    tags$div(
-      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
-      
-      tags$button(
-        class = "btn btn-primary",
-        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
-        tagList(fontawesome::fa("download"), "Show/hide more columns"),
-        onclick = "Reactable.setHiddenColumns('metadata_table', prevColumns => {
-          return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
-        })"
-      ),
-      
-      tags$button(
-        class = "btn btn-primary",
-        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
-        tagList(fontawesome::fa("download"), "Download as CSV"),
-        onclick = "Reactable.downloadDataCSV('metadata_table', 'sustainability_metadata.csv')"
-      )
-    ),
-    
-    reactable(
-      metadata,
-      sortable = TRUE,
-      resizable = TRUE,
-      filterable = TRUE,
-      searchable = TRUE,
-      pagination = TRUE,
-      bordered = TRUE,
-      wrap = TRUE,
-      rownames = FALSE,
-      onClick = 'select',
-      striped = TRUE,
-      pageSizeOptions = c(5, 10, 25, 50, 100),
-      defaultPageSize = 5,
-      showPageSizeOptions = TRUE,
-      highlight = TRUE,
-      style = list(fontSize = "14px"),
-      compact = TRUE,
-      fullWidth = TRUE,
-      columns = list(
-        Metric = colDef(
-          minWidth = 150,
-          sticky = 'left'
-        ),
-        'Variable Name' = colDef(
-          minWidth = 125
-        ),
-        Definition = colDef(
-          minWidth = 300
-        ),
-        'Latest Year' = colDef(minWidth = 75),
-        Source = colDef(minWidth = 250),
-        Scope = colDef(show = FALSE),
-        Resolution = colDef(show = FALSE),
-        Url = colDef(
-          minWidth = 300,
-          show = FALSE
-        )
-      ),
-      defaultColDef = colDef(minWidth = 100),
-      elementId = "metadata_table",
-      details = function(index) {
-        div(
-          style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
-             background-color: #E0EEEE; border-radius: 10px; border-color: black;
-             box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);",
-          
-          tags$h4(
-            strong("Details"), 
-          ),
-          tags$p(
-            strong('Metric Name: '), 
-            as.character(metadata_all[index, 'metric']),
-          ),
-          tags$p(
-            strong('Variable Name: '), 
-            as.character(metadata_all[index, 'variable_name']),
-          ),
-          tags$p(
-            strong('Definition: '), 
-            as.character(metadata_all[index, 'definition']),
-          ),
-          tags$p(
-            strong('Source: '), 
-            as.character(metadata_all[index, 'source'])
-          ),
-          tags$p(
-            strong('Latest Year: '), 
-            as.character(metadata_all[index, 'latest_year'])
-          ),
-          tags$p(
-            strong('All Years (cleaned, wrangled, and included): '), 
-            as.character(metadata_all[index, 'year'])
-          ),
-          tags$p(
-            strong('Updates: '), 
-            str_to_title(as.character(metadata_all[index, 'updates']))
-          ),
-          tags$p(
-            strong('URL: '), 
-            tags$a(
-              href = as.character(metadata_all[index, 'url']),
-              target = '_blank',
-              as.character(metadata_all[index, 'url'])
-            )
-          )
-        )
-      }
-    )
-  )
-)
-
-```
-
-::: notes
--   \~650 metrics, plus another thousand NAICS variables
-
-Sources
-
--   USDA NASS
--   USDA ERS Farm Income and Wealth Statistics
--   USDA ERS Food Environment Atlas
--   USDA Farm Service Agency Distaster Assistance
--   USDA Food and Nutrition Service
--   USDA Food Safety and Inspection Service
--   University of Wisconsin
--   US Census
--   EPA State GHG Data
--   TreeMap 2016
--   NatureServe - biodiversity data
-:::
-
 ## Framework {.smaller}
 
-::: panel-tabset
+::: {.panel-tabset}
+
 ### Economics
 
 ```{r}
@@ -321,7 +161,7 @@ plots$social
 
 ## Secondary Data - Refined {.smaller}
 
-A set of 129 metrics to match the refined framework
+A set of 130 metrics to match the refined framework
 
 ```{r}
 #| label: metadata_table_refined
@@ -443,9 +283,29 @@ htmltools::browsable(
 )
 ```
 
+::: {.notes}
+
+-   \~650 metrics, plus another thousand NAICS variables
+
+Sources
+
+-   USDA NASS
+-   USDA ERS Farm Income and Wealth Statistics
+-   USDA ERS Food Environment Atlas
+-   USDA Farm Service Agency Distaster Assistance
+-   USDA Food and Nutrition Service
+-   USDA Food Safety and Inspection Service
+-   University of Wisconsin
+-   US Census
+-   EPA State GHG Data
+-   TreeMap 2016
+-   NatureServe - biodiversity data
+
+:::
+
 ## Desirable Directions {.smaller}
 
-::: columns
+:::: {.columns}
 ::: {.column width = '30%'}
 
 -   Official benchmarks where possible, otherwise largest value is 100%
@@ -545,7 +405,7 @@ I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 -   Harder to interpret
 -   Non-linear transformation
 
-### Distance
+### Distance*
 
 **Distance to Target** [@oecdHandbookConstructingComposite2008]
 
@@ -561,20 +421,26 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 
 ## Aggregation
 
-::: columns
+:::: {.columns}
+
 ::: {.column width = '40%'}
 
 -   Arithmetic [@jacobi2020NewUnderstandingEvaluation]
--   Geometric
+-   Geometric:
+
+\begin{equation}
+\sqrt[n]{x_1 * x_2 * ... * x_n}
+\end{equation}
+
 -   Compensatory and non compensatory
 -   Some did both and compared, came out similar
     [@gomez-limon2010EmpiricalEvaluationAgricultural]
--   Make this a normal slide, with figures from these papers on right
+    
 :::
 
 ::: {.column width = '60%'}
 
--   images here
+-   images here?
   
 :::
 
@@ -586,70 +452,6 @@ An example of indicator distributions with the Min Max + geometric means
 methods
 
 ![](plots/indic_dists.png){height="1500"}
-
-## Indicator Correlations {.smaller}
-
-::: panel-tabset
-### Correlation Matrix
-
-Min Max geometric aggregation
-
-```{r}
-# mat <- readRDS('preso/data/correlation_data.rds')
-# cor <- rcorr(mat, type = 'pearson')
-# cor_r <- melt(cor$r) %>% 
-#   setNames(c('var_1', 'var_2', 'value'))
-# cor_p <- melt(cor$P)
-# p.value <- cor_p$value
-# 
-# plot <- cor_r %>% 
-#   ggplot(aes(var_1, var_2, fill = value, text = paste0(
-#     'Var 1: ', var_1, '\n',
-#     'Var 2: ', var_2, '\n',
-#     'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
-#     'P-Value: ', format(round(p.value, 3), nsmall = 3)
-#   ))) + 
-#   geom_tile() + 
-#   scale_fill_gradient2(
-#     low = "#762a83", 
-#     mid = "white", 
-#     high = "#1b7837", 
-#     midpoint = 0
-#   ) +
-#   theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
-#   labs(
-#     x = NULL,
-#     y = NULL,
-#     fill = 'Correlation'
-#   )
-#   
-# ggplotly(
-#   plot, 
-#   tooltip = 'text',
-#   width = 850,
-#   height = 650
-# )
-```
-
-<iframe src="plots/correlation_plotly.html" width="100%" height="650"></iframe>
-
-### Influential Indicators
-
-```{r}
-#| class: centered
-cor_counts <- readRDS('preso/data/correlation_counts.rds')
-cor_counts %>% 
-  setNames(c('Indicator', 'N Correlations')) %>% 
-  get_reactable(
-    fullWidth = FALSE
-  )
-```
-:::
-
-::: notes
--   Highly correlating indicators from different dimensions are a
-    problem (double counting)
-:::
 
 ## Comparisons {.smaller}
 
@@ -740,7 +542,8 @@ get_leaflet <- function(map_dat, dimension) {
 
   # Create leaflet map
   leaflet(map_dat) %>%
-    addProviderTiles(providers$Stadia.AlidadeSmooth) %>% 
+    # addProviderTiles(providers$Stadia.AlidadeSmooth) %>% 
+    addTiles() %>% 
     addPolygons(
       fillColor = ~pal1(map_dat[[dimension]]),
       color = 'black',
@@ -796,6 +599,84 @@ get_leaflet(map_dat, 'production')
 ```{r}
 get_leaflet(map_dat, 'social')
 ```
+:::
+
+::: {.notes}
+
+* Note: cannot compare across dimensions
+* Env:
+  + Scaling, everything looks good compared to NV
+  + Bias toward biodiverse areas with denser population?
+* Prod: California skews everything
+* Social: Arkansas skews everything
+
+:::
+
+## Indicator Correlations {.smaller}
+
+::: panel-tabset
+### Correlation Matrix
+
+Min Max geometric aggregation
+
+```{r}
+# mat <- readRDS('preso/data/correlation_data.rds')
+# cor <- rcorr(mat, type = 'pearson')
+# cor_r <- melt(cor$r) %>% 
+#   setNames(c('var_1', 'var_2', 'value'))
+# cor_p <- melt(cor$P)
+# p.value <- cor_p$value
+# 
+# plot <- cor_r %>% 
+#   ggplot(aes(var_1, var_2, fill = value, text = paste0(
+#     'Var 1: ', var_1, '\n',
+#     'Var 2: ', var_2, '\n',
+#     'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
+#     'P-Value: ', format(round(p.value, 3), nsmall = 3)
+#   ))) + 
+#   geom_tile() + 
+#   scale_fill_gradient2(
+#     low = "#762a83", 
+#     mid = "white", 
+#     high = "#1b7837", 
+#     midpoint = 0
+#   ) +
+#   theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
+#   labs(
+#     x = NULL,
+#     y = NULL,
+#     fill = 'Correlation'
+#   )
+#   
+# ggplotly(
+#   plot, 
+#   tooltip = 'text',
+#   width = 850,
+#   height = 650
+# )
+```
+
+<iframe src="plots/correlation_plotly.html" width="100%" height="650"></iframe>
+
+### Influential Indicators
+
+```{r}
+#| class: centered
+cor_table <- readRDS('preso/data/correlation_counts.rds')
+cor_table %>% 
+  get_reactable(
+    fullWidth = FALSE,
+    columns = list(
+      Index = colDef(minWidth = 150),
+      Indicator = colDef(minWidth = 150)
+    )
+  )
+```
+:::
+
+::: notes
+-   Highly correlating indicators from different dimensions are a
+    problem (double counting)
 :::
 
 ## Validation: Regression {.smaller}
@@ -901,10 +782,11 @@ plot(importance)
 ::: columns
 ::: {.column width = '30%'}
 
+-   EXPLAIN WHAT IT IS
 -   Factor extraction:
-    -   Parallel Analysis (PA) suggests 4 components
-    -   Velicer MAP suggests 5 
-    -   VSS suggests 3 or 4
+    -   Parallel Analysis (PA) suggests 5 components
+    -   Velicer MAP suggests 6 
+    -   VSS suggests 2 or 3
 -   Key to loadings:
     -   x \< 0.2 \~ ''
     -   x \< 0.32 \~ '.'
@@ -919,7 +801,7 @@ plot(importance)
 
 ![](plots/scree.png){fig-align="center" width="90%"}
 
-### Simplimax
+### Promax
 
 ```{r}
 pca_tables <- readRDS('preso/data/pca_tables.rds')
@@ -939,19 +821,13 @@ get_pca_table <- function(table) {
   )  
 }
 
-get_pca_table(pca_tables$simplimax)
-```
-
-### Promax
-
-```{r}
-get_pca_table(pca_tables$Promax)
-```
-
-### Kaiser Promax
-
-```{r}
 get_pca_table(pca_tables$promax)
+```
+
+### Simplimax
+
+```{r}
+get_pca_table(pca_tables$simplimax)
 ```
 
 ### Oblimin
@@ -974,15 +850,15 @@ get_pca_table(pca_tables$cluster)
 
 ::: notes
 
-* Could try more rotations to see if we find a better solution
-* Could fix it to 5 components
+* Might be better off with 6 components - sign indicators are not cohesive
 * PA: randomize rows, do PCA. Keep PCs that explain significantly more variance than expected by chance
 * MAP: get average squared partial correlations for each PC. Keep PCs that lead to lowest average squared partial correlation
 * VSS: compare fit of simplified model to original correlations. VSS = 1-sumsquares(r*)/sumsquares(r)Peaks at optimal (most interpretable) number of factors.
+* Promax is best interpretation, but not great
 
 :::
 
-## Uncertainty {.smaller}
+## Metric Uncertainty {.smaller}
 
 :::: {.columns}
 
@@ -995,6 +871,10 @@ get_pca_table(pca_tables$cluster)
 
 ::: {.column width = '70%'}
 
+::: {.panel-tabset}
+
+### Dimension Scores 
+
 ```{r}
 #| fig-align: center
 uncertainty_plots <- readRDS('preso/plots/uncertainty_plots.rds')
@@ -1006,22 +886,44 @@ ggplotly(
 )
 ```
 
+### Standard Deviations
+
+```{r}
+#| fig-align: center
+ggplotly(
+  uncertainty_plots$sd,
+  width = 700,
+  height = 400,
+  tooltip = 'text'
+)
+```
+
+:::
 
 :::
 
 ::::
 
+::: {.notes}
+
+* Scores stay about stable 
+* SD only goes down for health and economics - both have an indicator with many metrics
+* Not sure this is anything
+
+:::
+
 ## Sensitivity by Dimension {.smaller}
 
-::: columns
+:::: {.columns}
 
 ::: {.column width = '40%'}
 
 -   Sample from uncertain inputs
     [@oecdHandbookConstructingComposite2008]
-    -   Normalizations (5)
-    -   Aggregations (2)
-    -   Leave out one indicator (40)
+    -   Rescaling methods (5)
+    -   Aggregation methods (2)
+    -   Leave out one indicator (39)
+    -   = 390 iterations
 -   Higher ranks are desirable
 -   Some dimensions are quite unstable (Economics)
 -   Some are quite stable (Health)
@@ -1201,7 +1103,6 @@ get_plotly(ind_inf_plots$social)
 
 ## To Add
 
--   Monte Carlo to explore metric numbers
--   Scenario Analysis with random forest for predictions
+-   Scenario Analysis with random forest for predictions?
 
 ## References

@@ -45,9 +45,23 @@ Exploring methods of aggregating data into index and dimension scores. To Add:
 ```{r}
 #| label: prep
 #| echo: false
+pacman::p_load(
+  reactable,
+  purrr,
+  missForest,
+  tibble,
+  dplyr,
+  forecast,
+  DescTools
+)
+source('dev/get_reactable.R')
 source('dev/get_setup.R')
 source('dev/get_aggregations.R')
-get_setup()
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  .quiet = TRUE
+)
 ```
 
 # Imputation
@@ -57,11 +71,6 @@ First, check how much missing data there are. If it is within reason, use missFo
 ```{r}
 #| label: imputation
 #| output: false
-pacman::p_load(
-  missForest,
-  tibble,
-  dplyr
-)
 
 metrics_df <- readRDS('data/metrics_df.rds')
 get_str(metrics_df)
@@ -143,12 +152,6 @@ Box-Cox transformations are non-linear transformations that use an optimal value
 ```{r}
 #| label: normalization
 #| output: false
-pacman::p_load(
-  forecast,
-  DescTools,
-  purrr
-)
-
 # List of results
 normed <- list()
 get_str(imp_dat)
@@ -185,7 +188,7 @@ get_str(normed$rank)
 
 # Winsorization
 normed$winsor <- imp_dat %>% 
-  mutate(across(everything(), Winsorize))
+  mutate(across(everything(), DescTools::Winsorize))
 
 # Check
 map(normed, get_str)
@@ -201,11 +204,6 @@ Alas, for now we will invert variables in each of the transformed datasets as ne
 ```{r}
 #| label: directional_values
 #| output: false
-pacman::p_load(
-  reactable,
-  purrr
-)
-source('dev/get_reactable.R')
 
 # Higher numbers should be better. Reverse metrics that are the opposite, 
 # where lower numbers are better. Only listing reverse here - metrics are 
@@ -272,7 +270,6 @@ reverse <- c(
 # Some are unclear - without clear direction, better to remove:
 remove <- c(
   'vacancyRate',
-  'salesAnimalPctSales',
   'expHiredLaborPercOpExp',
   'acresPF',
   'medianAcresPF',
@@ -289,9 +286,9 @@ remove <- c(
 # Could we have just done this in the beginning, before normalization? Maybe
 valued_data <- imap(normed, \(df, method) {
   df %>% 
-    select(-matches(remove)) %>% 
+    select(-all_of(remove)) %>% 
     mutate(
-      across(any_of(reverse), ~ case_when(
+      across(all_of(reverse), ~ case_when(
         method == 'zscore' ~ .x * -1,
         method == 'minmax' ~ 1 - .x,
         method %in% c('boxcox', 'winsor') ~ max(.x) - .x + min(.x),
@@ -313,10 +310,12 @@ normed$minmax$unemploymentRate
 
 # Save this as our 'normalized data' that we use for building scores
 saveRDS(valued_data, 'data/valued_rescaled_metrics.rds')
+
 ```
 
 ```{r}
 #| label: wrangle_table
+#| output: false
 ## Show table of which metrics were set in which direction
 sm_data <- readRDS('data/sm_data.rds')
 meta <- sm_data$metadata
@@ -339,9 +338,13 @@ table <- meta %>%
     definition, 
     source
   )
+get_str(table)
 
 # Save this desirable direction table for preso
 saveRDS(table, 'preso/data/desirable_directions_table.rds')
+
+# CHECK
+# check <- readRDS('preso/data/meta_for_table.rds')
 ```
 
 
@@ -393,9 +396,13 @@ scores <- list()
 
 # Function for geometric mean
 geometric_mean <- function(x, na.rm = TRUE){
-  exp(sum(log(x[x > 0]), na.rm = na.rm) / length(x))
+  if (all(x > 0)) {
+    exp(mean(log(x), na.rm = na.rm))
+  } else if (any(x <= 0)) {
+    horizontal_shift <- abs(min(x)) + 1
+    exp(mean(log(x + horizontal_shift), na.rm = na.rm)) - horizontal_shift
+  } 
 }
-
 # Get indicator scores across all three normalization methods
 indicator_scores <- map(valued_data, \(df) {
   
@@ -544,10 +551,6 @@ Here, we organize arithmetic and geometric means for each level of the framework
 ```{r}
 #| label: wrangle
 #| output: false
-pacman::p_load(
-  purrr
-)
-
 get_str(indicator_scores, 4)
 get_str(index_scores, 4)
 get_str(dimension_scores, 4)

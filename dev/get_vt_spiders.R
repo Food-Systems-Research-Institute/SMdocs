@@ -1,7 +1,7 @@
-pacman::p_load(
-  fmsb,
-  snakecase
-)
+# pacman::p_load(
+#   fmsb,
+#   snakecase
+# )
 
 get_vt_spiders <- function(df_list,
                            norm_type) {
@@ -50,7 +50,7 @@ get_vt_spiders <- function(df_list,
         vt_dims
       ) %>% 
         radarchart(
-          axistype = 1,
+          axistype = 0,
           
           # Polygon
           pcol = c('#b16286', '#427b58'),

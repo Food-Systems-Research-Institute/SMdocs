@@ -99,19 +99,18 @@ pca_dat <- dat %>%
 # get_str(pca_dat)
 
 # Explore how many factors to extract
-VSS(pca_dat, n = 8, fm = 'pc', rotate = 'promax')
+VSS(pca_dat, n = 8, fm = 'pc', rotate = 'Promax')
 set.seed(42)
 fa.parallel(pca_dat, fm = 'ml')
 ```
 
-MAP suggest 5, VSS 3 or 4, PA suggests 4. Not half bad. I think we are justified to go with 5.
+MAP suggests 6, VSS 2 or 3, PA suggests 5. Not half bad. I think we are justified to go with 5.
 
 ```{r}
 #| label: scree
 # Oblique rotations: promax, oblimin, simplimax, cluster
 rotations <- c(
   'Promax',
-  'promax',
   'oblimin',
   'simplimax',
   'cluster'

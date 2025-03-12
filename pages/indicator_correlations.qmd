@@ -12,7 +12,7 @@ pacman::p_load(
   dplyr,
   conflicted
 )
-
+source('dev/get_reactable.r')
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
@@ -20,7 +20,6 @@ conflicts_prefer(
   .quiet = TRUE
 )
 
-source('dev/get_reactable.r')
 ```
 
 This page will explore correlations between variables at the indicator level.
@@ -386,10 +385,22 @@ cor_counts <- c(sig[[1]], sig[[2]]) %>%
   table() %>%
   sort(decreasing = TRUE) %>% 
   as.data.frame() %>% 
-  setNames(c('indicator', 'n_cors'))
+  setNames(c('indicator', 'correlations'))
+get_str(cor_counts)
+
+# Clean it up for preso
+framework <- readRDS('data/filtered_frame.rds') %>% 
+  select(indicator, index, dimension)
+cor_table <- cor_counts %>% 
+  left_join(framework) %>% 
+  select(indicator, index, dimension, correlations) %>% 
+  unique() %>%
+  filter(correlations > 0) %>% 
+  setNames(c(str_to_title(names(.))))
+get_str(cor_table)
 
 # Save this for preso  
-saveRDS(cor_counts, 'preso/data/correlation_counts.rds')
+saveRDS(cor_table, 'preso/data/correlation_counts.rds')
 ```
 
 ```{r}
