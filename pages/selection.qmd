@@ -24,8 +24,11 @@ pacman::p_load(
   DHARMa, 
   lmtest,
   snakecase,
-  tibble
+  tibble,
+  reactable
 )
+
+source('dev/get_reactable.r')
 
 conflicted::conflicts_prefer(
  dplyr::select(),
@@ -76,7 +79,7 @@ get_str(dat)
 saveRDS(dat, 'data/minmax_geo_all_levels.rds')
 
 # Get filtered frame, which shows which indicators belong to which dimensions
-frame <- readRDS('data/filtered_frame.rds')
+framework <- readRDS('data/filtered_frame.rds')
 ```
 
 # PCA
@@ -101,13 +104,25 @@ set.seed(42)
 fa.parallel(pca_dat, fm = 'ml')
 ```
 
-VSS suggests 6 or 7, MAP suggests 8, Parallel Analysis suggests 6.
+MAP suggest 5, VSS 3 or 4, PA suggests 4. Not half bad. I think we are justified to go with 5.
 
 ```{r}
 #| label: scree
-pca_out <- pca(pca_dat, nfactors = 6, rotate = 'promax')
+# Oblique rotations: promax, oblimin, simplimax, cluster
+rotations <- c(
+  'Promax',
+  'promax',
+  'oblimin',
+  'simplimax',
+  'cluster'
+)
 
-# First save it for preso
+pca_outs <- map(rotations, ~ {
+  pca(pca_dat, nfactors = 5, rotate = .x)
+}) %>% 
+  setNames(c(rotations))
+
+# Save a version of promax for preso?
 png(
   filename = 'preso/plots/scree.png',
   width = 800,
@@ -116,7 +131,7 @@ png(
   res = 150
 )
 plot(
-  pca_out$values,
+  pca_outs$simplimax$values,
   xlab = 'Number of Components',
   ylab = 'Eigen Values'
 )
@@ -125,65 +140,53 @@ dev.off()
 
 # Now actually show it 
 plot(
-  pca_out$values,
+  pca_outs$simplimax$values,
   xlab = 'Number of Components',
   ylab = 'Eigen Values'
 )
 ```
 
-The scree plot is not all that convincing, though. One could make an argument for seven components.
+The scree plot makes a reasonably convincing case for 5 components, as the slope falls off substantially after the fifth.
 
 ## Run PCA
 
-Let's go ahead with the recommended components from MAP and PA, which are generally more reliable than scree plots.
-
 ```{r}
-#| label: pca
-pca_out
-```
-
-Let's try this again with just the loadings table in a format that is easier to read.
-
-```{r}
-#| label: pca_table
-pca_table <- pca_out$loadings %>% 
-  unclass() %>% 
-  as.data.frame() %>% 
-  select(order(colnames(.))) %>%
-  mutate(
-    across(everything(), ~ round(.x, 3)),
-    across(everything(), ~ case_when(
-      .x < 0.20 ~ '',
-      .x >= 0.20 & .x < 0.32 ~ '.',
-      .x >= 0.32 ~ as.character(.x),
-      .default = NA
-    ))
-  ) %>% 
-  rownames_to_column() %>% 
-  rename(indicator = 1) %>% 
-  mutate(dimension = frame$dimension[match(indicator, frame$indicator)]) %>% 
-  select(indicator, dimension, everything())
+#| label: pca_table_wrangle
+pca_tables <- map(pca_outs, ~ {
+  .x$loadings %>% 
+    unclass() %>% 
+    as.data.frame() %>% 
+    select(order(colnames(.))) %>%
+    mutate(
+      across(everything(), ~ round(.x, 3)),
+      across(everything(), ~ case_when(
+        .x < 0.20 ~ '',
+        .x >= 0.20 & .x < 0.32 ~ '.',
+        .x >= 0.32 ~ as.character(.x),
+        .default = NA
+      ))
+    ) %>% 
+    rownames_to_column() %>% 
+    rename(indicator = 1) %>% 
+    mutate(
+      dimension = framework$dimension[match(indicator, framework$indicator)]
+    ) %>% 
+    select(indicator, dimension, everything())
+})
+get_str(pca_tables)  
 
 # Save it for preso
-saveRDS(pca_table, 'preso/data/pca_table.rds')
-
-# Print it here
-pca_table
+saveRDS(pca_tables, 'preso/data/pca_tables.rds')
 ```
 
-There is a lot to look at here, but here are some impressions.
 
-Most of our current economics indicators (access to land to income stability), are coalescing into RC1. However, access to land splits out into RC3, alongside environment indicators like carbon stocks and forest health, as well as production indicators like inputs and total quantity of food products. The access to land indicator does not have an ideal set of metrics under it currently - it is made up of land and building value per farm and acreage per farm as a proxy for access. So it seems reasonable enough that this indicator is pulling away from the rest of the economics indicators.
+```{r}
+#| label: pca_reactable
+#| class: centered
+get_reactable(pca_tables$simplimax)
+```
 
-The environment indicators (carbon stocks to water quantity) mostly make up RC5, but are also split between several other components. The carbon stocks and forest health indicators are currently both derived from the USFS TreeMap dataset, so it makes sense they fall together in RC5. This is a particularly scattered dimension though - perhaps partly from hinky proxy metrics and partly for the diversity of the dimension itself.
-
-Health indicators (education to physical health) fall pretty consistently into RC2. A notable exception is food access, which falls into RC5 along with TreeMap data. I have a hunch that RC5 is measuring the rural/urban divide at this point. The culturally appropriate food indicator also moves over to RC1 alongside economics indicators. Given that this indicator currently consists only of the ability of School Food Authorities to provide culturally appropriate foods, this is probably tracking with wealth.
-
-Production indicators (richness to value added markets) fall mostly into RC2. However, richness (measured by crop diversity) swings out into RC4, which is a bit of a grab bag but does contain some forest indicators. The economics dimension RC1 also loads strongly onto the value added markets indicator.
-
-Finally, the social dimension is scattered all over the place. I can't make much sense of it as a whole, given that it has a pretty unsatisfactory set of metrics behind it at this point.
-
-The next step for this PCA path is to see how things look if we aggregate our indices and dimensions based on these PCA loadings in the style of @nicolettiSummaryIndicatorsProduct2000, rather than working with the arithmetic/geometric means as we do below.
+Add interpretation here []
 
 # Regression
 

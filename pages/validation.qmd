@@ -11,11 +11,32 @@ warnings: false
 ```{r}
 #| label: prep
 #| include: false
+pacman::p_load(
+  dplyr,
+  purrr,
+  stringr,
+  tidyr,
+  performance,
+  AER,
+  sandwich,
+  sjPlot,
+  htmltools,
+  caret,
+  ranger,
+  glmnet
+)
 source('dev/data_pipeline_functions.R')
 source('dev/get_res_plots.R')
 source('dev/get_setup.R')
 source('dev/get_stargazer.R')
-get_setup()
+
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::select(),
+  caret::cluster(),
+  .quiet = TRUE
+)
 ```
 
 # Introduction
@@ -36,13 +57,6 @@ To Add:
 ```{r}
 #| label: wrangle
 #| output: false
-pacman::p_load(
-  dplyr,
-  purrr,
-  stringr,
-  tidyr
-)
-
 # Load sm_data
 sm_data <- readRDS('data/sm_data.rds')
 
@@ -139,13 +153,7 @@ saveRDS(dat, 'data/metrics_df_with_vals_and_covars.rds')
 
 ```{r}
 #| label: food_insecurity_reg
-pacman::p_load(
-  performance,
-  AER,
-  sandwich,
-  sjPlot,
-  htmltools
-)
+
 
 lm1 <- lm(
   foodInsecurity ~ economics + environment + health + production + social,
@@ -264,11 +272,7 @@ Let's try this one again with a random forest instead of linear model:
 ```{r}
 #| label: food_env_split
 #| output: false
-pacman::p_load(
-  caret,
-  ranger,
-  glmnet
-)
+
 
 # Split data 60/40
 set.seed(42)

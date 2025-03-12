@@ -84,34 +84,33 @@ grid <- expand.grid(
 
 
 ```{r}
-#| label: 400_iterations
+#| label: 390_iterations
 #| eval: false
 #| include: false
-# For each set of input factors, get dimension scores for VT
+# # For each set of input factors, get dimension scores for VT
 # tic()
 # out <- map(1:nrow(grid), \(i) {
-#   
-#   # Print outputs for debugging
-#   print(grid[i, ])
-#   
-#   get_time(c('~~~~~ Starting row ', i, ' at:'))
-#   # Run model
-#   model_out <- get_all_aggregations(
-#     normed_data = normed_data[as.character(grid$norms[i])],
-#     framework = framework,
-#     state_key = state_key,
-#     metrics_df = metrics_df,
-#     aggregation = grid$aggs[i],
-#     remove_indicators = grid$indics[i]
-#   )
+#  
+#  # Print outputs for debugging
+#  print(grid[i, ])
+#  
+#  get_time(c('\n~~~~~ Starting row ', i, ' at:'))
+#  # Run model
+#  model_out <- get_all_aggregations(
+#    normed_data = valued_scaled_data[as.character(grid$norms[i])],
+#    framework = framework,
+#    state_key = state_key,
+#    aggregation = grid$aggs[i],
+#    remove_indicators = grid$indics[i]
+#  )
 # }, .progress = TRUE)
 # toc()
-# # ~ 8 minutes 20 seconds
+# # ~ 8 minutes
 # 
 # get_str(out)
 # get_str(out, 4)
-
-# Save this so we don't have to run it again
+# 
+# # Save this so we don't have to run it again
 # saveRDS(out, 'data/objects/sensitivity_out.RDS')
 ```
 
@@ -560,6 +559,8 @@ saveRDS(metric_sampling_iters, 'data/metric_sampling_iterations.rds')
 
 Now we want to organize these so that we can see curves of the average of each all dimension scores for Vermont given each number of metrics chosen. So on x-axis is metric count, 1 to 12. On Y axis are dimension scores, 5 colored lines for each dimension.
 
+## Wrangle Metrics
+
 ```{r}
 #| label: wrangle_metric_iterations
 #| output: false
@@ -631,18 +632,13 @@ dat <- full_join(dat, sds)
 get_str(dat)
 
 # Pivot longer to make it easier to graph
-out <- dat %>% 
+dat <- dat %>% 
   as.data.frame() %>% 
   pivot_longer(
     economics:social,
     names_to = 'dimension',
     values_to = 'mean_rank'
   ) %>% 
-  # pivot_longer(
-  #   ends_with('sd'),
-  #   names_to = 'sd',
-  #   values_to = 'sds'
-  # ) %>%
   mutate(sd = case_when(
     dimension == "economics" ~ economics_sd,
     dimension == "environment" ~ environment_sd,
@@ -652,13 +648,15 @@ out <- dat %>%
     TRUE ~ NA_real_
   )) %>% 
   mutate(n_metrics = factor(as.numeric(n_metrics)))
-get_str(out)
-# This is what we use to graph!
+get_str(dat)
+# This is what we use to graph
 ```
+
+## Dimension Ranks for Varying Metrics
 
 ```{r}
 #| label: metric_count_dimension_graph
-plot <- out %>% 
+plot <- dat %>% 
   ggplot(aes(
     x = n_metrics, 
     y = mean_rank, 
@@ -674,14 +672,6 @@ plot <- out %>%
     lwd = 1.25,
     alpha = 0.6
   ) +
-  # geom_ribbon(
-  #   aes(
-  #     ymin = mean_rank - sd,
-  #     ymax = mean_rank + sd,
-  #     fill = dimension
-  #   ),
-  #   alpha = 0.2
-  # ) +
  theme_classic() +
   labs(
     x = 'Number of Metrics per Indicator',
@@ -690,6 +680,61 @@ plot <- out %>%
     color = 'Dimension'
   )
 
+# Save for preso
+uncertainty_plots <- list()
+uncertainty_plots$dimension_ranks <- plot
+
+# Plot
 plotly::ggplotly(plot, tooltip = 'text') 
 ```
+
+## Graphs of SDs
+
+```{r}
+#| label: individual_graphs_sds
+get_str(dat)
+
+plot_dat <- dat %>% 
+  select(n_metrics, matches('_sd')) %>% 
+  pivot_longer(
+    !n_metrics,
+    values_to = 'SD',
+    names_to = 'Dimension'
+  ) %>% 
+  mutate(n_metrics = factor(as.numeric(n_metrics))) %>% 
+  mutate(Dimension = Dimension %>% 
+           str_remove('_sd') %>% 
+           str_to_title())
+plot_dat
+
+sd_plot <- plot_dat %>% 
+  ggplot(aes(
+    x = n_metrics, 
+    y = SD,
+    group = Dimension,
+    color = Dimension,
+    text = paste0(
+      '<b>Dimension:</b> ', Dimension, '\n',
+      '<b>Metrics:</b> ', n_metrics, '\n',
+      '<b>Std Dev:</b> ', round(SD, 2)
+    )
+  )) +
+  geom_line(
+    lwd = 1.25,
+    alpha = 0.6
+  ) +
+  theme_classic() + 
+  labs(
+    x = 'Number of Metrics per Indicator',
+    y = 'SD of Dimension Score',
+    title = 'Variation in Dimension Scores for VT'
+  )
+
+# Save for posterity
+uncertainty_plots$sd <- sd_plot
+saveRDS(uncertainty_plots, 'preso/plots/uncertainty_plots.rds')
+
+plotly::ggplotly(sd_plot, tooltip = 'text')
+```
+
 

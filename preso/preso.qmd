@@ -5,7 +5,7 @@ institute: "Food Systems Research Center"
 date: '2025-03-19'
 format:
   revealjs:
-    embed-resources: false
+    embed-resources: true
     incremental: false
     theme: [serif, preso.scss]
     transition: fade
@@ -74,6 +74,7 @@ conflicted::conflicts_prefer(
     -   Identify existing data and gaps
     -   Explore methods of aggregating data
 -   Goals for today:
+    -   Share methods
     -   Share preliminary findings
     -   Feedback and discussion
 -   Guiding topics:
@@ -86,14 +87,14 @@ conflicted::conflicts_prefer(
 
 ::: {.column width = '60%'}
 
-![Intervale Farm, Sally McCay, UVM Photo](../images/intervale_small.png){fig-align='center' width=80% fig-alt='A picture of a field at Intervale Farm.}
+![Intervale Farm, Sally McCay, UVM Photo](../images/intervale_small.png){fig-align="center" width=90% fig-alt="A picture of a field at Intervale Farm."}
 
 :::
 
 ::::
 
 ::: notes
-Speaker notes go here.
+The point is to take stock of existing data, use primary research 
 :::
 
 ## Secondary Data
@@ -880,31 +881,6 @@ importance <- readRDS('preso/plots/val3_rf_importance.rds')
 plot(importance)
 ```
 
-### Happiness Score
-
-Total Happiness Score (WalletHub 2025)
-
-```{r}
-#| include: false
-lm4 <- lm(
-  happinessScore ~ economics + environment + health + production + social,
-  data = dat
-)
-get_stargazer(
-  lm4, 
-  dep_var = 'Happiness Score', 
-  type = 'html', 
-  out = 'preso/data/val4_happiness.html',
-  single_row = FALSE
-)
-```
-
-::: flex-container
-<iframe src="data/val4_happiness.html" width="100%" height="600" style="border: none;">
-
-</iframe>
-:::
-
 ::::::
 
 ::: notes
@@ -926,13 +902,14 @@ get_stargazer(
 ::: {.column width = '30%'}
 
 -   Factor extraction:
-    -   Parallel Analysis (PA) suggests 6 components
-    -   Velicer MAP suggests 8 factors
-    -   VSS suggests 6 or 7 factors
+    -   Parallel Analysis (PA) suggests 4 components
+    -   Velicer MAP suggests 5 
+    -   VSS suggests 3 or 4
 -   Key to loadings:
     -   x \< 0.2 \~ ''
     -   x \< 0.32 \~ '.'
     -   x \>= 0.32 \~ x
+    
 :::
 
 ::: {.column width = '70%'}
@@ -942,25 +919,53 @@ get_stargazer(
 
 ![](plots/scree.png){fig-align="center" width="90%"}
 
-### Loadings
+### Simplimax
 
 ```{r}
-#| label: pca_table
-#| class: centered
-pca_table <- readRDS('preso/data/pca_table.rds')
-get_reactable(
-  pca_table,
-  pagination = FALSE,
-  defaultPageSize = 50,
-  showPageSizeOptions = FALSE,
-  fullWidth = FALSE,
-  defaultColDef = colDef(minWidth = 50),
-  columns = list(
-    indicator = colDef(minWidth = 200),
-    dimension = colDef(minWidth = 100)
-  )
-)
+pca_tables <- readRDS('preso/data/pca_tables.rds')
+
+get_pca_table <- function(table) {
+  get_reactable(
+    table,
+    pagination = FALSE,
+    defaultPageSize = 50,
+    showPageSizeOptions = FALSE,
+    fullWidth = TRUE,
+    defaultColDef = colDef(minWidth = 50),
+    columns = list(
+      indicator = colDef(minWidth = 200),
+      dimension = colDef(minWidth = 100)
+    )
+  )  
+}
+
+get_pca_table(pca_tables$simplimax)
 ```
+
+### Promax
+
+```{r}
+get_pca_table(pca_tables$Promax)
+```
+
+### Kaiser Promax
+
+```{r}
+get_pca_table(pca_tables$promax)
+```
+
+### Oblimin
+
+```{r}
+get_pca_table(pca_tables$oblimin)
+```
+
+### Cluster
+
+```{r}
+get_pca_table(pca_tables$cluster)
+```
+
 :::
 
 :::
@@ -974,11 +979,42 @@ get_reactable(
 * PA: randomize rows, do PCA. Keep PCs that explain significantly more variance than expected by chance
 * MAP: get average squared partial correlations for each PC. Keep PCs that lead to lowest average squared partial correlation
 * VSS: compare fit of simplified model to original correlations. VSS = 1-sumsquares(r*)/sumsquares(r)Peaks at optimal (most interpretable) number of factors.
+
 :::
+
+## Uncertainty {.smaller}
+
+:::: {.columns}
+
+::: {.column width = '30%'}
+
+* notes here
+* is this even interesting?
+
+:::
+
+::: {.column width = '70%'}
+
+```{r}
+#| fig-align: center
+uncertainty_plots <- readRDS('preso/plots/uncertainty_plots.rds')
+ggplotly(
+  uncertainty_plots$sd,
+  width = 700,
+  height = 400,
+  tooltip = 'text'
+)
+```
+
+
+:::
+
+::::
 
 ## Sensitivity by Dimension {.smaller}
 
 ::: columns
+
 ::: {.column width = '40%'}
 
 -   Sample from uncertain inputs
@@ -989,6 +1025,7 @@ get_reactable(
 -   Higher ranks are desirable
 -   Some dimensions are quite unstable (Economics)
 -   Some are quite stable (Health)
+
 :::
 
 ::: {.column width = '60%'}

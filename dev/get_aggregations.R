@@ -324,7 +324,6 @@ get_all_aggregations <- function(normed_data,
   # Pull out proper fips vector from normed_data for use get_organized
   fips_vector <- rownames(normed_data[[1]])
   
-  
   ## Reduce inputs if removing indicators or metrics
   # If sampling metrics, remove them from all inputs
   if (!is.null(sample_metrics)) {
@@ -381,24 +380,26 @@ get_all_aggregations <- function(normed_data,
   ## Start with normed data, get each level of scores
   scores <- list()
   
-  cat('\nStarting indicators\n')
+  # cat('\nStarting indicators\n')
   scores$indicator_scores <- get_agg_indicators(normed_data, framework, aggregation = aggregation)
   
-  cat('\nStarting indices\n')
+  # cat('\nStarting indices\n')
   scores$index_scores <- get_agg_indices(scores$indicator_scores, framework)
   
-  cat('\nStarting dimensions\n')
+  # cat('\nStarting dimensions\n')
   scores$dimension_scores <- get_agg_dimensions(scores$index_scores, framework)
   
   # Now organize and add groupings
-  cat('\nStarting organization\n')
+  # cat('\nStarting organization\n')
   organized_scores <- get_organized_scores(scores, state_key, fips_vector, aggregation = aggregation)
   
-  cat('\nStarting groupings\n')
+  # cat('\nStarting groupings\n')
   groupings <- get_groupings(organized_scores)
   
   # Finally, if metrics were selected, add a record of that
-  groupings$sampled_metrics <- sampled_metrics
+  if (!is.null(sample_metrics)) {
+    groupings$sampled_metrics <- sampled_metrics
+  }
   
   ## Print message about removing metrics or indicators
   if (!is.null(sample_metrics)) {

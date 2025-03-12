@@ -791,76 +791,77 @@ I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 <summary>Code</summary>
 <div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># We need to attach these back to framework from metadata</span></span>
 <span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># Filter frame from earlier down to our current metrics</span></span>
-<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>frame <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/frame.rds'</span>)</span>
-<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>filtered_frame <span class="ot">&lt;-</span> frame <span class="sc">%&gt;%</span> </span>
-<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(variable_name <span class="sc">%in%</span> <span class="fu">names</span>(valued_data[[<span class="dv">1</span>]])) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(variable_name, indicator, index, dimension)</span>
-<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(filtered_frame)</span>
-<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a><span class="co"># Save this for later - use in regression and variable selection </span></span>
-<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(filtered_frame, <span class="st">'data/filtered_frame.rds'</span>)</span>
-<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a list where we hold scores for indicators, indices, and dimensions</span></span>
-<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Function for geometric mean</span></span>
-<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>geometric_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>){</span>
-<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">exp</span>(<span class="fu">sum</span>(<span class="fu">log</span>(x[x <span class="sc">&gt;</span> <span class="dv">0</span>]), <span class="at">na.rm =</span> na.rm) <span class="sc">/</span> <span class="fu">length</span>(x))</span>
-<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>}</span>
-<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Get indicator scores across all three normalization methods</span></span>
-<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>indicator_scores <span class="ot">&lt;-</span> <span class="fu">map</span>(valued_data, \(df) {</span>
-<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  <span class="co"># For each df, calculate indicator means</span></span>
-<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  indicators_out <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="fu">unique</span>(filtered_frame<span class="sc">$</span>indicator), \(ind) {</span>
-<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Column name based on indicator</span></span>
-<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    ind_snake <span class="ot">&lt;-</span> ind</span>
-<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Split into groups by indicator, with one or more metrics each</span></span>
-<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    variables <span class="ot">&lt;-</span> filtered_frame <span class="sc">%&gt;%</span> </span>
-<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(indicator <span class="sc">==</span> ind) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pull</span>(variable_name) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">unique</span>()</span>
-<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>    indicator_metrics <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
-<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">any_of</span>(variables))</span>
-<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>    </span>
-<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get arithmetic and geo means for each indicator</span></span>
-<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    dfs <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    dfs<span class="sc">$</span>arithmetic <span class="ot">&lt;-</span> indicator_metrics <span class="sc">%&gt;%</span></span>
-<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
-<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(</span>
-<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!!</span><span class="fu">sym</span>(ind_snake) <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(<span class="fu">c_across</span>(<span class="fu">everything</span>())),</span>
-<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!!</span><span class="fu">sym</span>(ind_snake))</span>
-<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>    dfs<span class="sc">$</span>geometric <span class="ot">&lt;-</span> indicator_metrics <span class="sc">%&gt;%</span> </span>
-<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
-<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(</span>
-<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!!</span><span class="fu">sym</span>(ind_snake) <span class="sc">:</span><span class="er">=</span> <span class="fu">geometric_mean</span>(<span class="fu">c_across</span>(<span class="fu">everything</span>())),</span>
-<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
-<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">!!</span><span class="fu">sym</span>(ind_snake))</span>
-<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(dfs) </span>
-<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>  })</span>
-<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Rearrange so we put each aggregation method (arith, geo) together</span></span>
-<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  norm_out <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
-<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>  norm_out<span class="sc">$</span>arithmetic <span class="ot">&lt;-</span> <span class="fu">map</span>(indicators_out, <span class="sc">~</span> {</span>
-<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>    .x[<span class="fu">grep</span>(<span class="st">"arithmetic"</span>, <span class="fu">names</span>(.x))]</span>
-<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>()</span>
-<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>  norm_out<span class="sc">$</span>geometric <span class="ot">&lt;-</span> <span class="fu">map</span>(indicators_out, <span class="sc">~</span> {</span>
-<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>    .x[<span class="fu">grep</span>(<span class="st">"geometric"</span>, <span class="fu">names</span>(.x))]</span>
-<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span> </span>
-<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>()</span>
-<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(norm_out) </span>
-<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>})</span>
-<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>  </span>
-<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(indicator_scores, <span class="dv">3</span>)</span>
-<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(indicator_scores, <span class="dv">4</span>)</span>
-<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a><span class="co"># Test function</span></span>
-<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="co"># test &lt;- get_agg_indicators(normed, filtered_frame)</span></span>
-<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="co"># identical(indicator_scores, test)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co"># We are also removing the 'remove' metrics without clear directional values</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>frame <span class="ot">&lt;-</span> <span class="fu">readRDS</span>(<span class="st">'data/frame.rds'</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>filtered_frame <span class="ot">&lt;-</span> frame <span class="sc">%&gt;%</span> </span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">filter</span>(variable_name <span class="sc">%in%</span> <span class="fu">names</span>(valued_data[[<span class="dv">1</span>]])) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>  dplyr<span class="sc">::</span><span class="fu">select</span>(variable_name, indicator, index, dimension)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(filtered_frame)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Save this for later - use in regression and variable selection </span></span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(filtered_frame, <span class="st">'data/filtered_frame.rds'</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="co"># Make a list where we hold scores for indicators, indices, and dimensions</span></span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>scores <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Function for geometric mean</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>geometric_mean <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>){</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">exp</span>(<span class="fu">sum</span>(<span class="fu">log</span>(x[x <span class="sc">&gt;</span> <span class="dv">0</span>]), <span class="at">na.rm =</span> na.rm) <span class="sc">/</span> <span class="fu">length</span>(x))</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Get indicator scores across all three normalization methods</span></span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>indicator_scores <span class="ot">&lt;-</span> <span class="fu">map</span>(valued_data, \(df) {</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># For each df, calculate indicator means</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>  indicators_out <span class="ot">&lt;-</span> <span class="fu">map</span>(<span class="fu">unique</span>(filtered_frame<span class="sc">$</span>indicator), \(ind) {</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Column name based on indicator</span></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>    ind_snake <span class="ot">&lt;-</span> ind</span>
+<span id="cb6-29"><a href="#cb6-29" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-30"><a href="#cb6-30" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Split into groups by indicator, with one or more metrics each</span></span>
+<span id="cb6-31"><a href="#cb6-31" aria-hidden="true" tabindex="-1"></a>    variables <span class="ot">&lt;-</span> filtered_frame <span class="sc">%&gt;%</span> </span>
+<span id="cb6-32"><a href="#cb6-32" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">filter</span>(indicator <span class="sc">==</span> ind) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-33"><a href="#cb6-33" aria-hidden="true" tabindex="-1"></a>      <span class="fu">pull</span>(variable_name) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-34"><a href="#cb6-34" aria-hidden="true" tabindex="-1"></a>      <span class="fu">unique</span>()</span>
+<span id="cb6-35"><a href="#cb6-35" aria-hidden="true" tabindex="-1"></a>    indicator_metrics <span class="ot">&lt;-</span> df <span class="sc">%&gt;%</span> </span>
+<span id="cb6-36"><a href="#cb6-36" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="fu">any_of</span>(variables))</span>
+<span id="cb6-37"><a href="#cb6-37" aria-hidden="true" tabindex="-1"></a>    </span>
+<span id="cb6-38"><a href="#cb6-38" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Get arithmetic and geo means for each indicator</span></span>
+<span id="cb6-39"><a href="#cb6-39" aria-hidden="true" tabindex="-1"></a>    dfs <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb6-40"><a href="#cb6-40" aria-hidden="true" tabindex="-1"></a>    dfs<span class="sc">$</span>arithmetic <span class="ot">&lt;-</span> indicator_metrics <span class="sc">%&gt;%</span></span>
+<span id="cb6-41"><a href="#cb6-41" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb6-42"><a href="#cb6-42" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(</span>
+<span id="cb6-43"><a href="#cb6-43" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!!</span><span class="fu">sym</span>(ind_snake) <span class="sc">:</span><span class="er">=</span> <span class="fu">mean</span>(<span class="fu">c_across</span>(<span class="fu">everything</span>())),</span>
+<span id="cb6-44"><a href="#cb6-44" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-45"><a href="#cb6-45" aria-hidden="true" tabindex="-1"></a>      dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">!!</span><span class="fu">sym</span>(ind_snake))</span>
+<span id="cb6-46"><a href="#cb6-46" aria-hidden="true" tabindex="-1"></a>    dfs<span class="sc">$</span>geometric <span class="ot">&lt;-</span> indicator_metrics <span class="sc">%&gt;%</span> </span>
+<span id="cb6-47"><a href="#cb6-47" aria-hidden="true" tabindex="-1"></a>      <span class="fu">rowwise</span>() <span class="sc">%&gt;%</span> </span>
+<span id="cb6-48"><a href="#cb6-48" aria-hidden="true" tabindex="-1"></a>      <span class="fu">mutate</span>(</span>
+<span id="cb6-49"><a href="#cb6-49" aria-hidden="true" tabindex="-1"></a>        <span class="sc">!!</span><span class="fu">sym</span>(ind_snake) <span class="sc">:</span><span class="er">=</span> <span class="fu">geometric_mean</span>(<span class="fu">c_across</span>(<span class="fu">everything</span>())),</span>
+<span id="cb6-50"><a href="#cb6-50" aria-hidden="true" tabindex="-1"></a>      ) <span class="sc">%&gt;%</span></span>
+<span id="cb6-51"><a href="#cb6-51" aria-hidden="true" tabindex="-1"></a>      <span class="fu">select</span>(<span class="sc">!!</span><span class="fu">sym</span>(ind_snake))</span>
+<span id="cb6-52"><a href="#cb6-52" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(dfs) </span>
+<span id="cb6-53"><a href="#cb6-53" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb6-54"><a href="#cb6-54" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-55"><a href="#cb6-55" aria-hidden="true" tabindex="-1"></a>  <span class="co"># Rearrange so we put each aggregation method (arith, geo) together</span></span>
+<span id="cb6-56"><a href="#cb6-56" aria-hidden="true" tabindex="-1"></a>  norm_out <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb6-57"><a href="#cb6-57" aria-hidden="true" tabindex="-1"></a>  norm_out<span class="sc">$</span>arithmetic <span class="ot">&lt;-</span> <span class="fu">map</span>(indicators_out, <span class="sc">~</span> {</span>
+<span id="cb6-58"><a href="#cb6-58" aria-hidden="true" tabindex="-1"></a>    .x[<span class="fu">grep</span>(<span class="st">"arithmetic"</span>, <span class="fu">names</span>(.x))]</span>
+<span id="cb6-59"><a href="#cb6-59" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-60"><a href="#cb6-60" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>()</span>
+<span id="cb6-61"><a href="#cb6-61" aria-hidden="true" tabindex="-1"></a>  norm_out<span class="sc">$</span>geometric <span class="ot">&lt;-</span> <span class="fu">map</span>(indicators_out, <span class="sc">~</span> {</span>
+<span id="cb6-62"><a href="#cb6-62" aria-hidden="true" tabindex="-1"></a>    .x[<span class="fu">grep</span>(<span class="st">"geometric"</span>, <span class="fu">names</span>(.x))]</span>
+<span id="cb6-63"><a href="#cb6-63" aria-hidden="true" tabindex="-1"></a>  }) <span class="sc">%&gt;%</span> </span>
+<span id="cb6-64"><a href="#cb6-64" aria-hidden="true" tabindex="-1"></a>    <span class="fu">bind_cols</span>()</span>
+<span id="cb6-65"><a href="#cb6-65" aria-hidden="true" tabindex="-1"></a>  <span class="fu">return</span>(norm_out) </span>
+<span id="cb6-66"><a href="#cb6-66" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb6-67"><a href="#cb6-67" aria-hidden="true" tabindex="-1"></a>  </span>
+<span id="cb6-68"><a href="#cb6-68" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(indicator_scores, <span class="dv">3</span>)</span>
+<span id="cb6-69"><a href="#cb6-69" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(indicator_scores, <span class="dv">4</span>)</span>
+<span id="cb6-70"><a href="#cb6-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-71"><a href="#cb6-71" aria-hidden="true" tabindex="-1"></a><span class="co"># Test function</span></span>
+<span id="cb6-72"><a href="#cb6-72" aria-hidden="true" tabindex="-1"></a><span class="co"># test &lt;- get_agg_indicators(normed, filtered_frame)</span></span>
+<span id="cb6-73"><a href="#cb6-73" aria-hidden="true" tabindex="-1"></a><span class="co"># identical(indicator_scores, test)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
 <p>Index aggregation:</p>

@@ -357,7 +357,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
   <li><a href="#production" id="toc-production" class="nav-link" data-scroll-target="#production"><span class="header-section-number">2.4</span> Production</a></li>
   <li><a href="#social" id="toc-social" class="nav-link" data-scroll-target="#social"><span class="header-section-number">2.5</span> Social</a></li>
   </ul></li>
-  <li><a href="#metric-selection" id="toc-metric-selection" class="nav-link" data-scroll-target="#metric-selection"><span class="header-section-number">3</span> Metric Selection</a></li>
+  <li><a href="#metric-selection" id="toc-metric-selection" class="nav-link" data-scroll-target="#metric-selection"><span class="header-section-number">3</span> Metric Selection</a>
+  <ul>
+  <li><a href="#wrangle-metrics" id="toc-wrangle-metrics" class="nav-link" data-scroll-target="#wrangle-metrics"><span class="header-section-number">3.1</span> Wrangle Metrics</a></li>
+  <li><a href="#dimension-ranks-for-varying-metrics" id="toc-dimension-ranks-for-varying-metrics" class="nav-link" data-scroll-target="#dimension-ranks-for-varying-metrics"><span class="header-section-number">3.2</span> Dimension Ranks for Varying Metrics</a></li>
+  <li><a href="#graphs-of-sds" id="toc-graphs-of-sds" class="nav-link" data-scroll-target="#graphs-of-sds"><span class="header-section-number">3.3</span> Graphs of SDs</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -2646,6 +2651,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 </div>
 <p>Now we want to organize these so that we can see curves of the average of each all dimension scores for Vermont given each number of metrics chosen. So on x-axis is metric count, 1 to 12. On Y axis are dimension scores, 5 colored lines for each dimension.</p>
+<section id="wrangle-metrics" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="wrangle-metrics"><span class="header-section-number">3.1</span> Wrangle Metrics</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
@@ -2717,35 +2724,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb30-66"><a href="#cb30-66" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(dat)</span>
 <span id="cb30-67"><a href="#cb30-67" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb30-68"><a href="#cb30-68" aria-hidden="true" tabindex="-1"></a><span class="co"># Pivot longer to make it easier to graph</span></span>
-<span id="cb30-69"><a href="#cb30-69" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
+<span id="cb30-69"><a href="#cb30-69" aria-hidden="true" tabindex="-1"></a>dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
 <span id="cb30-70"><a href="#cb30-70" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb30-71"><a href="#cb30-71" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
 <span id="cb30-72"><a href="#cb30-72" aria-hidden="true" tabindex="-1"></a>    economics<span class="sc">:</span>social,</span>
 <span id="cb30-73"><a href="#cb30-73" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">'dimension'</span>,</span>
 <span id="cb30-74"><a href="#cb30-74" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">'mean_rank'</span></span>
 <span id="cb30-75"><a href="#cb30-75" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-76"><a href="#cb30-76" aria-hidden="true" tabindex="-1"></a>  <span class="co"># pivot_longer(</span></span>
-<span id="cb30-77"><a href="#cb30-77" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ends_with('sd'),</span></span>
-<span id="cb30-78"><a href="#cb30-78" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   names_to = 'sd',</span></span>
-<span id="cb30-79"><a href="#cb30-79" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   values_to = 'sds'</span></span>
-<span id="cb30-80"><a href="#cb30-80" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ) %&gt;%</span></span>
-<span id="cb30-81"><a href="#cb30-81" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sd =</span> <span class="fu">case_when</span>(</span>
-<span id="cb30-82"><a href="#cb30-82" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"economics"</span> <span class="sc">~</span> economics_sd,</span>
-<span id="cb30-83"><a href="#cb30-83" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"environment"</span> <span class="sc">~</span> environment_sd,</span>
-<span id="cb30-84"><a href="#cb30-84" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"health"</span> <span class="sc">~</span> health_sd,</span>
-<span id="cb30-85"><a href="#cb30-85" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"production"</span> <span class="sc">~</span> production_sd,</span>
-<span id="cb30-86"><a href="#cb30-86" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"social"</span> <span class="sc">~</span> social_sd,</span>
-<span id="cb30-87"><a href="#cb30-87" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
-<span id="cb30-88"><a href="#cb30-88" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
-<span id="cb30-89"><a href="#cb30-89" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_metrics =</span> <span class="fu">factor</span>(<span class="fu">as.numeric</span>(n_metrics)))</span>
-<span id="cb30-90"><a href="#cb30-90" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(out)</span>
-<span id="cb30-91"><a href="#cb30-91" aria-hidden="true" tabindex="-1"></a><span class="co"># This is what we use to graph!</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb30-76"><a href="#cb30-76" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">sd =</span> <span class="fu">case_when</span>(</span>
+<span id="cb30-77"><a href="#cb30-77" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"economics"</span> <span class="sc">~</span> economics_sd,</span>
+<span id="cb30-78"><a href="#cb30-78" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"environment"</span> <span class="sc">~</span> environment_sd,</span>
+<span id="cb30-79"><a href="#cb30-79" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"health"</span> <span class="sc">~</span> health_sd,</span>
+<span id="cb30-80"><a href="#cb30-80" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"production"</span> <span class="sc">~</span> production_sd,</span>
+<span id="cb30-81"><a href="#cb30-81" aria-hidden="true" tabindex="-1"></a>    dimension <span class="sc">==</span> <span class="st">"social"</span> <span class="sc">~</span> social_sd,</span>
+<span id="cb30-82"><a href="#cb30-82" aria-hidden="true" tabindex="-1"></a>    <span class="cn">TRUE</span> <span class="sc">~</span> <span class="cn">NA_real_</span></span>
+<span id="cb30-83"><a href="#cb30-83" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">%&gt;%</span> </span>
+<span id="cb30-84"><a href="#cb30-84" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_metrics =</span> <span class="fu">factor</span>(<span class="fu">as.numeric</span>(n_metrics)))</span>
+<span id="cb30-85"><a href="#cb30-85" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(dat)</span>
+<span id="cb30-86"><a href="#cb30-86" aria-hidden="true" tabindex="-1"></a><span class="co"># This is what we use to graph</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 </div>
+</section>
+<section id="dimension-ranks-for-varying-metrics" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="dimension-ranks-for-varying-metrics"><span class="header-section-number">3.2</span> Dimension Ranks for Varying Metrics</h2>
 <div class="cell">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plot <span class="ot">&lt;-</span> out <span class="sc">%&gt;%</span> </span>
+<div class="sourceCode cell-code" id="cb31"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>plot <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
 <span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
 <span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> n_metrics, </span>
 <span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> mean_rank, </span>
@@ -2761,31 +2766,405 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">lwd =</span> <span class="fl">1.25</span>,</span>
 <span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span></span>
 <span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>  <span class="co"># geom_ribbon(</span></span>
-<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   aes(</span></span>
-<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     ymin = mean_rank - sd,</span></span>
-<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     ymax = mean_rank + sd,</span></span>
-<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>  <span class="co">#     fill = dimension</span></span>
-<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   ),</span></span>
-<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>  <span class="co">#   alpha = 0.2</span></span>
-<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a>  <span class="co"># ) +</span></span>
-<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
-<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
-<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">'Number of Metrics per Indicator'</span>,</span>
-<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">'Mean Rank'</span>,</span>
-<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">'Mean Dimension Ranks for Vermont'</span>,</span>
-<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">'Dimension'</span></span>
-<span id="cb31-31"><a href="#cb31-31" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb31-32"><a href="#cb31-32" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb31-33"><a href="#cb31-33" aria-hidden="true" tabindex="-1"></a>plotly<span class="sc">::</span><span class="fu">ggplotly</span>(plot, <span class="at">tooltip =</span> <span class="st">'text'</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a> <span class="fu">theme_classic</span>() <span class="sc">+</span></span>
+<span id="cb31-18"><a href="#cb31-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb31-19"><a href="#cb31-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">'Number of Metrics per Indicator'</span>,</span>
+<span id="cb31-20"><a href="#cb31-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">'Mean Rank'</span>,</span>
+<span id="cb31-21"><a href="#cb31-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">'Mean Dimension Ranks for Vermont'</span>,</span>
+<span id="cb31-22"><a href="#cb31-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> <span class="st">'Dimension'</span></span>
+<span id="cb31-23"><a href="#cb31-23" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb31-24"><a href="#cb31-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-25"><a href="#cb31-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Save for preso</span></span>
+<span id="cb31-26"><a href="#cb31-26" aria-hidden="true" tabindex="-1"></a>uncertainty_plots <span class="ot">&lt;-</span> <span class="fu">list</span>()</span>
+<span id="cb31-27"><a href="#cb31-27" aria-hidden="true" tabindex="-1"></a>uncertainty_plots<span class="sc">$</span>dimension_ranks <span class="ot">&lt;-</span> plot</span>
+<span id="cb31-28"><a href="#cb31-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-29"><a href="#cb31-29" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot</span></span>
+<span id="cb31-30"><a href="#cb31-30" aria-hidden="true" tabindex="-1"></a>plotly<span class="sc">::</span><span class="fu">ggplotly</span>(plot, <span class="at">tooltip =</span> <span class="st">'text'</span>) </span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="plotly html-widget html-fill-item" id="htmlwidget-7ed175a238e03fb50068" style="width:1400px;height:1000px;"></div>
-<script type="application/json" data-for="htmlwidget-7ed175a238e03fb50068">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[27.011494252873565,24.506024096385541,25.333333333333332,27.846153846153847,27.913580246913579,28.057971014492754,28.494252873563219,29.359375,27.391891891891891,28.325581395348838,28.655555555555555,29.209523809523809],"text":["<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 27","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 24.5","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 25.3","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 27.8","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 27.9","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 28.1","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 28.5","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 29.4","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 27.4","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 28.3","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 28.7","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 29.2"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(248,118,109,0.6)","dash":"solid"},"hoveron":"points","name":"economics","legendgroup":"economics","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[38.52873563218391,42.349397590361448,41.822916666666664,42.948717948717949,42.456790123456791,40.028985507246375,43.448275862068968,42.46875,42.95945945945946,42.837209302325583,42.344444444444441,42.914285714285711],"text":["<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 38.5","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 42.3","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 41.8","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 42.9","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 42.5","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 40","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 43.4","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 42.5","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 43","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 42.8","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 42.3","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 42.9"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(163,165,0,0.6)","dash":"solid"},"hoveron":"points","name":"environment","legendgroup":"environment","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[45.52873563218391,47.277108433734938,48.510416666666664,49.307692307692307,49.308641975308639,49.376811594202898,49.448275862068968,49.21875,49.243243243243242,49.313953488372093,49.422222222222224,49.590476190476188],"text":["<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 45.5","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 47.3","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 48.5","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 49.3","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 49.3","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 49.4","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 49.4","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 49.2","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 49.2","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 49.3","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 49.4","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 49.6"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(0,191,125,0.6)","dash":"solid"},"hoveron":"points","name":"health","legendgroup":"health","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[8.4597701149425291,7.8554216867469879,10.927083333333334,9.1282051282051277,7.7777777777777777,10.260869565217391,9.862068965517242,7.734375,9.878378378378379,9,9.3000000000000007,7.6761904761904765],"text":["<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 8.5","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 7.9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 10.9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 9.1","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 7.8","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 10.3","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 9.9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 7.7","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 9.9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 9.3","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 7.7"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(0,176,246,0.6)","dash":"solid"},"hoveron":"points","name":"production","legendgroup":"production","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[42.091954022988503,42.722891566265062,42.927083333333336,43.910256410256409,41.246913580246911,38.536231884057969,44.195402298850574,41.171875,42.310810810810814,42.127906976744185,42.011111111111113,42.352380952380955],"text":["<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 42.1","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 42.7","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 42.9","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 43.9","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 41.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 38.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 44.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 41.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 42.3","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 42.1","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 42","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 42.4"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(231,107,243,0.6)","dash":"solid"},"hoveron":"points","name":"social","legendgroup":"social","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.762557077625573,"r":7.3059360730593621,"b":40.182648401826498,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Mean Dimension Ranks for Vermont","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342468},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,12.6],"tickmode":"array","ticktext":["1","2","3","4","5","6","7","8","9","10","11","12"],"tickvals":[1,2,3,4.0000000000000009,5,6,7.0000000000000009,8,9,10,11,12],"categoryorder":"array","categoryarray":["1","2","3","4","5","6","7","8","9","10","11","12"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"Number of Metrics per Indicator","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[5.5804761904761904,51.686190476190475],"tickmode":"array","ticktext":["10","20","30","40","50"],"tickvals":[10,20,29.999999999999996,40,50],"categoryorder":"array","categoryarray":["10","20","30","40","50"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Mean Rank","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Dimension","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"ca44964152":{"x":{},"y":{},"colour":{},"text":{},"type":"scatter"}},"cur_data":"ca44964152","visdat":{"ca44964152":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+<script type="application/json" data-for="htmlwidget-7ed175a238e03fb50068">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[27.011494252873565,24.506024096385541,25.333333333333332,27.846153846153847,27.913580246913579,28.057971014492754,28.494252873563219,29.359375,27.391891891891891,28.325581395348838,28.655555555555555,29.209523809523809],"text":["<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 27","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 24.5","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 25.3","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 27.8","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 27.9","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 28.1","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 28.5","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 29.4","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 27.4","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 28.3","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 28.7","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 29.2"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(248,118,109,0.6)","dash":"solid"},"hoveron":"points","name":"economics","legendgroup":"economics","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[38.52873563218391,42.349397590361448,41.822916666666664,42.948717948717949,42.456790123456791,40.028985507246375,43.448275862068968,42.46875,42.95945945945946,42.837209302325583,42.344444444444441,42.914285714285711],"text":["<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 38.5","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 42.3","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 41.8","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 42.9","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 42.5","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 40","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 43.4","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 42.5","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 43","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 42.8","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 42.3","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 42.9"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(163,165,0,0.6)","dash":"solid"},"hoveron":"points","name":"environment","legendgroup":"environment","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[45.52873563218391,47.277108433734938,48.510416666666664,49.307692307692307,49.308641975308639,49.376811594202898,49.448275862068968,49.21875,49.243243243243242,49.313953488372093,49.422222222222224,49.590476190476188],"text":["<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 45.5","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 47.3","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 48.5","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 49.3","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 49.3","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 49.4","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 49.4","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 49.2","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 49.2","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 49.3","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 49.4","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 49.6"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(0,191,125,0.6)","dash":"solid"},"hoveron":"points","name":"health","legendgroup":"health","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[8.4597701149425291,7.8554216867469879,10.927083333333334,9.1282051282051277,7.7777777777777777,10.260869565217391,9.862068965517242,7.734375,9.878378378378379,9,9.3000000000000007,7.6761904761904765],"text":["<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 8.5","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 7.9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 10.9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 9.1","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 7.8","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 10.3","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 9.9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 7.7","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 9.9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 9","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 9.3","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 7.7"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(0,176,246,0.6)","dash":"solid"},"hoveron":"points","name":"production","legendgroup":"production","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[42.091954022988503,42.722891566265062,42.927083333333336,43.910256410256409,41.246913580246911,38.536231884057969,44.195402298850574,41.171875,42.310810810810814,42.127906976744185,42.011111111111113,42.352380952380955],"text":["<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 1<br /><b>Mean Rank:<\/b> 42.1","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 2<br /><b>Mean Rank:<\/b> 42.7","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 3<br /><b>Mean Rank:<\/b> 42.9","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 4<br /><b>Mean Rank:<\/b> 43.9","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 5<br /><b>Mean Rank:<\/b> 41.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 6<br /><b>Mean Rank:<\/b> 38.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 7<br /><b>Mean Rank:<\/b> 44.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 8<br /><b>Mean Rank:<\/b> 41.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 9<br /><b>Mean Rank:<\/b> 42.3","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 10<br /><b>Mean Rank:<\/b> 42.1","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 11<br /><b>Mean Rank:<\/b> 42","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 12<br /><b>Mean Rank:<\/b> 42.4"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(231,107,243,0.6)","dash":"solid"},"hoveron":"points","name":"social","legendgroup":"social","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.762557077625573,"r":7.3059360730593621,"b":40.182648401826498,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Mean Dimension Ranks for Vermont","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342468},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,12.6],"tickmode":"array","ticktext":["1","2","3","4","5","6","7","8","9","10","11","12"],"tickvals":[1,2,3,4.0000000000000009,5,6,7.0000000000000009,8,9,10,11,12],"categoryorder":"array","categoryarray":["1","2","3","4","5","6","7","8","9","10","11","12"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"Number of Metrics per Indicator","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[5.5804761904761904,51.686190476190475],"tickmode":"array","ticktext":["10","20","30","40","50"],"tickvals":[10,20,29.999999999999996,40,50],"categoryorder":"array","categoryarray":["10","20","30","40","50"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"Mean Rank","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Dimension","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"1cb077df2e26":{"x":{},"y":{},"colour":{},"text":{},"type":"scatter"}},"cur_data":"1cb077df2e26","visdat":{"1cb077df2e26":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+</div>
+</section>
+<section id="graphs-of-sds" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="graphs-of-sds"><span class="header-section-number">3.3</span> Graphs of SDs</h2>
+<div class="cell">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_str</span>(dat)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code>tibble [60 × 9] (S3: tbl_df/tbl/data.frame)
+ $ n_metrics     : Factor w/ 12 levels "1","2","3","4",..: 1 1 1 1 1 10 10 10 ..
+ $ economics_sd  : num [1:60] 13.5 13.5 13.5 13.5 13.5 10.4 10.4 10.4 10.4 10...
+ $ environment_sd: num [1:60] 10.01 10.01 10.01 10.01 10.01 9.82 9.82 9.82 9.8..
+ $ health_sd     : num [1:60] 5.657 5.657 5.657 5.657 5.657 1.433 1.433 1.433 ..
+ $ production_sd : num [1:60] 9.73 9.73 9.73 9.73 9.73 11.85 11.85 11.85 11.85..
+ $ social_sd     : num [1:60] 8.42 8.42 8.42 8.42 8.42 10.5 10.5 10.5 10.5 10...
+ $ dimension     : chr [1:60] "economics" "environment" "health" "production""..
+ $ mean_rank     : num [1:60] 27.01 38.53 45.53 8.46 42.09 28.33 42.84 49.31 9..
+ $ sd            : num [1:60] 13.522 10.009 5.657 9.726 8.424 10.449 9.818 1.4..</code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb34"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>plot_dat <span class="ot">&lt;-</span> dat <span class="sc">%&gt;%</span> </span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">select</span>(n_metrics, <span class="fu">matches</span>(<span class="st">'_sd'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-3"><a href="#cb34-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pivot_longer</span>(</span>
+<span id="cb34-4"><a href="#cb34-4" aria-hidden="true" tabindex="-1"></a>    <span class="sc">!</span>n_metrics,</span>
+<span id="cb34-5"><a href="#cb34-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">values_to =</span> <span class="st">'SD'</span>,</span>
+<span id="cb34-6"><a href="#cb34-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">names_to =</span> <span class="st">'Dimension'</span></span>
+<span id="cb34-7"><a href="#cb34-7" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-8"><a href="#cb34-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">n_metrics =</span> <span class="fu">factor</span>(<span class="fu">as.numeric</span>(n_metrics))) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-9"><a href="#cb34-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">Dimension =</span> Dimension <span class="sc">%&gt;%</span> </span>
+<span id="cb34-10"><a href="#cb34-10" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_remove</span>(<span class="st">'_sd'</span>) <span class="sc">%&gt;%</span> </span>
+<span id="cb34-11"><a href="#cb34-11" aria-hidden="true" tabindex="-1"></a>           <span class="fu">str_to_title</span>())</span>
+<span id="cb34-12"><a href="#cb34-12" aria-hidden="true" tabindex="-1"></a>plot_dat</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 300 × 3
+    n_metrics Dimension       SD
+    &lt;fct&gt;     &lt;chr&gt;        &lt;dbl&gt;
+  1 1         Economics   13.5  
+  2 1         Environment 10.0  
+  3 1         Health       5.66 
+  4 1         Production   9.73 
+  5 1         Social       8.42 
+  6 1         Economics   13.5  
+  7 1         Environment 10.0  
+  8 1         Health       5.66 
+  9 1         Production   9.73 
+ 10 1         Social       8.42 
+ 11 1         Economics   13.5  
+ 12 1         Environment 10.0  
+ 13 1         Health       5.66 
+ 14 1         Production   9.73 
+ 15 1         Social       8.42 
+ 16 1         Economics   13.5  
+ 17 1         Environment 10.0  
+ 18 1         Health       5.66 
+ 19 1         Production   9.73 
+ 20 1         Social       8.42 
+ 21 1         Economics   13.5  
+ 22 1         Environment 10.0  
+ 23 1         Health       5.66 
+ 24 1         Production   9.73 
+ 25 1         Social       8.42 
+ 26 10        Economics   10.4  
+ 27 10        Environment  9.82 
+ 28 10        Health       1.43 
+ 29 10        Production  11.9  
+ 30 10        Social      10.5  
+ 31 10        Economics   10.4  
+ 32 10        Environment  9.82 
+ 33 10        Health       1.43 
+ 34 10        Production  11.9  
+ 35 10        Social      10.5  
+ 36 10        Economics   10.4  
+ 37 10        Environment  9.82 
+ 38 10        Health       1.43 
+ 39 10        Production  11.9  
+ 40 10        Social      10.5  
+ 41 10        Economics   10.4  
+ 42 10        Environment  9.82 
+ 43 10        Health       1.43 
+ 44 10        Production  11.9  
+ 45 10        Social      10.5  
+ 46 10        Economics   10.4  
+ 47 10        Environment  9.82 
+ 48 10        Health       1.43 
+ 49 10        Production  11.9  
+ 50 10        Social      10.5  
+ 51 11        Economics   10.3  
+ 52 11        Environment  9.93 
+ 53 11        Health       1.59 
+ 54 11        Production  12.2  
+ 55 11        Social      10.5  
+ 56 11        Economics   10.3  
+ 57 11        Environment  9.93 
+ 58 11        Health       1.59 
+ 59 11        Production  12.2  
+ 60 11        Social      10.5  
+ 61 11        Economics   10.3  
+ 62 11        Environment  9.93 
+ 63 11        Health       1.59 
+ 64 11        Production  12.2  
+ 65 11        Social      10.5  
+ 66 11        Economics   10.3  
+ 67 11        Environment  9.93 
+ 68 11        Health       1.59 
+ 69 11        Production  12.2  
+ 70 11        Social      10.5  
+ 71 11        Economics   10.3  
+ 72 11        Environment  9.93 
+ 73 11        Health       1.59 
+ 74 11        Production  12.2  
+ 75 11        Social      10.5  
+ 76 12        Economics   10.5  
+ 77 12        Environment  9.55 
+ 78 12        Health       0.968
+ 79 12        Production  10.3  
+ 80 12        Social      10.9  
+ 81 12        Economics   10.5  
+ 82 12        Environment  9.55 
+ 83 12        Health       0.968
+ 84 12        Production  10.3  
+ 85 12        Social      10.9  
+ 86 12        Economics   10.5  
+ 87 12        Environment  9.55 
+ 88 12        Health       0.968
+ 89 12        Production  10.3  
+ 90 12        Social      10.9  
+ 91 12        Economics   10.5  
+ 92 12        Environment  9.55 
+ 93 12        Health       0.968
+ 94 12        Production  10.3  
+ 95 12        Social      10.9  
+ 96 12        Economics   10.5  
+ 97 12        Environment  9.55 
+ 98 12        Health       0.968
+ 99 12        Production  10.3  
+100 12        Social      10.9  
+101 2         Economics   13.1  
+102 2         Environment  8.73 
+103 2         Health       4.52 
+104 2         Production   7.70 
+105 2         Social       8.91 
+106 2         Economics   13.1  
+107 2         Environment  8.73 
+108 2         Health       4.52 
+109 2         Production   7.70 
+110 2         Social       8.91 
+111 2         Economics   13.1  
+112 2         Environment  8.73 
+113 2         Health       4.52 
+114 2         Production   7.70 
+115 2         Social       8.91 
+116 2         Economics   13.1  
+117 2         Environment  8.73 
+118 2         Health       4.52 
+119 2         Production   7.70 
+120 2         Social       8.91 
+121 2         Economics   13.1  
+122 2         Environment  8.73 
+123 2         Health       4.52 
+124 2         Production   7.70 
+125 2         Social       8.91 
+126 3         Economics   12.1  
+127 3         Environment  9.80 
+128 3         Health       2.72 
+129 3         Production  13.6  
+130 3         Social       9.50 
+131 3         Economics   12.1  
+132 3         Environment  9.80 
+133 3         Health       2.72 
+134 3         Production  13.6  
+135 3         Social       9.50 
+136 3         Economics   12.1  
+137 3         Environment  9.80 
+138 3         Health       2.72 
+139 3         Production  13.6  
+140 3         Social       9.50 
+141 3         Economics   12.1  
+142 3         Environment  9.80 
+143 3         Health       2.72 
+144 3         Production  13.6  
+145 3         Social       9.50 
+146 3         Economics   12.1  
+147 3         Environment  9.80 
+148 3         Health       2.72 
+149 3         Production  13.6  
+150 3         Social       9.50 
+151 4         Economics   11.7  
+152 4         Environment  9.67 
+153 4         Health       1.83 
+154 4         Production  12.2  
+155 4         Social       9.20 
+156 4         Economics   11.7  
+157 4         Environment  9.67 
+158 4         Health       1.83 
+159 4         Production  12.2  
+160 4         Social       9.20 
+161 4         Economics   11.7  
+162 4         Environment  9.67 
+163 4         Health       1.83 
+164 4         Production  12.2  
+165 4         Social       9.20 
+166 4         Economics   11.7  
+167 4         Environment  9.67 
+168 4         Health       1.83 
+169 4         Production  12.2  
+170 4         Social       9.20 
+171 4         Economics   11.7  
+172 4         Environment  9.67 
+173 4         Health       1.83 
+174 4         Production  12.2  
+175 4         Social       9.20 
+176 5         Economics   12.0  
+177 5         Environment  9.73 
+178 5         Health       1.77 
+179 5         Production  10.0  
+180 5         Social      11.1  
+181 5         Economics   12.0  
+182 5         Environment  9.73 
+183 5         Health       1.77 
+184 5         Production  10.0  
+185 5         Social      11.1  
+186 5         Economics   12.0  
+187 5         Environment  9.73 
+188 5         Health       1.77 
+189 5         Production  10.0  
+190 5         Social      11.1  
+191 5         Economics   12.0  
+192 5         Environment  9.73 
+193 5         Health       1.77 
+194 5         Production  10.0  
+195 5         Social      11.1  
+196 5         Economics   12.0  
+197 5         Environment  9.73 
+198 5         Health       1.77 
+199 5         Production  10.0  
+200 5         Social      11.1  
+201 6         Economics   12.4  
+202 6         Environment 11.2  
+203 6         Health       1.52 
+204 6         Production  12.9  
+205 6         Social      11.8  
+206 6         Economics   12.4  
+207 6         Environment 11.2  
+208 6         Health       1.52 
+209 6         Production  12.9  
+210 6         Social      11.8  
+211 6         Economics   12.4  
+212 6         Environment 11.2  
+213 6         Health       1.52 
+214 6         Production  12.9  
+215 6         Social      11.8  
+216 6         Economics   12.4  
+217 6         Environment 11.2  
+218 6         Health       1.52 
+219 6         Production  12.9  
+220 6         Social      11.8  
+221 6         Economics   12.4  
+222 6         Environment 11.2  
+223 6         Health       1.52 
+224 6         Production  12.9  
+225 6         Social      11.8  
+226 7         Economics   10.4  
+227 7         Environment  9.54 
+228 7         Health       1.24 
+229 7         Production  13.0  
+230 7         Social       9.04 
+231 7         Economics   10.4  
+232 7         Environment  9.54 
+233 7         Health       1.24 
+234 7         Production  13.0  
+235 7         Social       9.04 
+236 7         Economics   10.4  
+237 7         Environment  9.54 
+238 7         Health       1.24 
+239 7         Production  13.0  
+240 7         Social       9.04 
+241 7         Economics   10.4  
+242 7         Environment  9.54 
+243 7         Health       1.24 
+244 7         Production  13.0  
+245 7         Social       9.04 
+246 7         Economics   10.4  
+247 7         Environment  9.54 
+248 7         Health       1.24 
+249 7         Production  13.0  
+250 7         Social       9.04 
+251 8         Economics   11.2  
+252 8         Environment  9.68 
+253 8         Health       1.97 
+254 8         Production  10.0  
+255 8         Social      11.4  
+256 8         Economics   11.2  
+257 8         Environment  9.68 
+258 8         Health       1.97 
+259 8         Production  10.0  
+260 8         Social      11.4  
+261 8         Economics   11.2  
+262 8         Environment  9.68 
+263 8         Health       1.97 
+264 8         Production  10.0  
+265 8         Social      11.4  
+266 8         Economics   11.2  
+267 8         Environment  9.68 
+268 8         Health       1.97 
+269 8         Production  10.0  
+270 8         Social      11.4  
+271 8         Economics   11.2  
+272 8         Environment  9.68 
+273 8         Health       1.97 
+274 8         Production  10.0  
+275 8         Social      11.4  
+276 9         Economics   10.9  
+277 9         Environment  9.76 
+278 9         Health       1.68 
+279 9         Production  12.6  
+280 9         Social      10.1  
+281 9         Economics   10.9  
+282 9         Environment  9.76 
+283 9         Health       1.68 
+284 9         Production  12.6  
+285 9         Social      10.1  
+286 9         Economics   10.9  
+287 9         Environment  9.76 
+288 9         Health       1.68 
+289 9         Production  12.6  
+290 9         Social      10.1  
+291 9         Economics   10.9  
+292 9         Environment  9.76 
+293 9         Health       1.68 
+294 9         Production  12.6  
+295 9         Social      10.1  
+296 9         Economics   10.9  
+297 9         Environment  9.76 
+298 9         Health       1.68 
+299 9         Production  12.6  
+300 9         Social      10.1  </code></pre>
+</div>
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb36"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>sd_plot <span class="ot">&lt;-</span> plot_dat <span class="sc">%&gt;%</span> </span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> n_metrics, </span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> SD,</span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">group =</span> Dimension,</span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">color =</span> Dimension,</span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">text =</span> <span class="fu">paste0</span>(</span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">'&lt;b&gt;Dimension:&lt;/b&gt; '</span>, Dimension, <span class="st">'</span><span class="sc">\n</span><span class="st">'</span>,</span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">'&lt;b&gt;Metrics:&lt;/b&gt; '</span>, n_metrics, <span class="st">'</span><span class="sc">\n</span><span class="st">'</span>,</span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">'&lt;b&gt;Std Dev:&lt;/b&gt; '</span>, <span class="fu">round</span>(SD, <span class="dv">2</span>)</span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  )) <span class="sc">+</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(</span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">lwd =</span> <span class="fl">1.25</span>,</span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> <span class="fl">0.6</span></span>
+<span id="cb36-16"><a href="#cb36-16" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb36-17"><a href="#cb36-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_classic</span>() <span class="sc">+</span> </span>
+<span id="cb36-18"><a href="#cb36-18" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb36-19"><a href="#cb36-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">'Number of Metrics per Indicator'</span>,</span>
+<span id="cb36-20"><a href="#cb36-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">'SD of Dimension Score'</span>,</span>
+<span id="cb36-21"><a href="#cb36-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">'Variation in Dimension Scores for VT'</span></span>
+<span id="cb36-22"><a href="#cb36-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb36-23"><a href="#cb36-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-24"><a href="#cb36-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Save for posterity</span></span>
+<span id="cb36-25"><a href="#cb36-25" aria-hidden="true" tabindex="-1"></a>uncertainty_plots<span class="sc">$</span>sd <span class="ot">&lt;-</span> sd_plot</span>
+<span id="cb36-26"><a href="#cb36-26" aria-hidden="true" tabindex="-1"></a><span class="fu">saveRDS</span>(uncertainty_plots, <span class="st">'preso/plots/uncertainty_plots.rds'</span>)</span>
+<span id="cb36-27"><a href="#cb36-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb36-28"><a href="#cb36-28" aria-hidden="true" tabindex="-1"></a>plotly<span class="sc">::</span><span class="fu">ggplotly</span>(sd_plot, <span class="at">tooltip =</span> <span class="st">'text'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="plotly html-widget html-fill-item" id="htmlwidget-59b39ba6ea0434b6cb31" style="width:1400px;height:1000px;"></div>
+<script type="application/json" data-for="htmlwidget-59b39ba6ea0434b6cb31">{"x":{"data":[{"x":[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9,10,10,10,10,10,11,11,11,11,11,12,12,12,12,12],"y":[13.522156024658166,13.522156024658166,13.522156024658166,13.522156024658166,13.522156024658166,13.146801052037386,13.146801052037386,13.146801052037386,13.146801052037386,13.146801052037386,12.130576127826018,12.130576127826018,12.130576127826018,12.130576127826018,12.130576127826018,11.668669253939893,11.668669253939893,11.668669253939893,11.668669253939893,11.668669253939893,11.978311161077965,11.978311161077965,11.978311161077965,11.978311161077965,11.978311161077965,12.390560992345335,12.390560992345335,12.390560992345335,12.390560992345335,12.390560992345335,10.449072022019847,10.449072022019847,10.449072022019847,10.449072022019847,10.449072022019847,11.177311468625479,11.177311468625479,11.177311468625479,11.177311468625479,11.177311468625479,10.887742973483792,10.887742973483792,10.887742973483792,10.887742973483792,10.887742973483792,10.449251997394912,10.449251997394912,10.449251997394912,10.449251997394912,10.449251997394912,10.324141133156227,10.324141133156227,10.324141133156227,10.324141133156227,10.324141133156227,10.517106246944728,10.517106246944728,10.517106246944728,10.517106246944728,10.517106246944728],"text":["<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 13.52","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 13.52","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 13.52","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 13.52","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 13.52","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 13.15","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 13.15","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 13.15","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 13.15","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 13.15","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 12.13","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 12.13","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 12.13","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 12.13","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 12.13","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 11.67","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 11.67","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 11.67","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 11.67","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 11.67","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.98","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.98","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.98","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.98","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.98","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.39","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.39","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.39","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.39","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.39","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.18","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.18","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.18","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.18","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.18","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.89","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.89","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.89","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.89","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.89","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.45","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.32","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.32","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.32","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.32","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.32","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.52","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.52","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.52","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.52","<b>Dimension:<\/b> Economics<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.52"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(248,118,109,0.6)","dash":"solid"},"hoveron":"points","name":"Economics","legendgroup":"Economics","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9,10,10,10,10,10,11,11,11,11,11,12,12,12,12,12],"y":[10.009111059266894,10.009111059266894,10.009111059266894,10.009111059266894,10.009111059266894,8.7267932463410851,8.7267932463410851,8.7267932463410851,8.7267932463410851,8.7267932463410851,9.8033235950248994,9.8033235950248994,9.8033235950248994,9.8033235950248994,9.8033235950248994,9.6657078078073226,9.6657078078073226,9.6657078078073226,9.6657078078073226,9.6657078078073226,9.7327403421596141,9.7327403421596141,9.7327403421596141,9.7327403421596141,9.7327403421596141,11.16714062945489,11.16714062945489,11.16714062945489,11.16714062945489,11.16714062945489,9.5390977837354409,9.5390977837354409,9.5390977837354409,9.5390977837354409,9.5390977837354409,9.6789228542771024,9.6789228542771024,9.6789228542771024,9.6789228542771024,9.6789228542771024,9.7593498396591212,9.7593498396591212,9.7593498396591212,9.7593498396591212,9.7593498396591212,9.8181829696876903,9.8181829696876903,9.8181829696876903,9.8181829696876903,9.8181829696876903,9.9280117962871088,9.9280117962871088,9.9280117962871088,9.9280117962871088,9.9280117962871088,9.5485744865542479,9.5485744865542479,9.5485744865542479,9.5485744865542479,9.5485744865542479],"text":["<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 10.01","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 10.01","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 10.01","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 10.01","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 10.01","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.8","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.8","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.8","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.8","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.8","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.67","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.67","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.67","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.67","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.67","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.17","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.17","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.17","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.17","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.17","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.54","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.54","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.54","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.54","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.54","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 9.68","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 9.68","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 9.68","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 9.68","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 9.68","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 9.76","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 9.76","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 9.76","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 9.76","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 9.76","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 9.82","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 9.82","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 9.82","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 9.82","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 9.82","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 9.93","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 9.93","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 9.93","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 9.93","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 9.93","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 9.55","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 9.55","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 9.55","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 9.55","<b>Dimension:<\/b> Environment<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 9.55"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(163,165,0,0.6)","dash":"solid"},"hoveron":"points","name":"Environment","legendgroup":"Environment","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9,10,10,10,10,10,11,11,11,11,11,12,12,12,12,12],"y":[5.6565234627915171,5.6565234627915171,5.6565234627915171,5.6565234627915171,5.6565234627915171,4.5164016893768482,4.5164016893768482,4.5164016893768482,4.5164016893768482,4.5164016893768482,2.7222080498497294,2.7222080498497294,2.7222080498497294,2.7222080498497294,2.7222080498497294,1.8255594574451233,1.8255594574451233,1.8255594574451233,1.8255594574451233,1.8255594574451233,1.7723005903954467,1.7723005903954467,1.7723005903954467,1.7723005903954467,1.7723005903954467,1.5156191636672329,1.5156191636672329,1.5156191636672329,1.5156191636672329,1.5156191636672329,1.2366366679815992,1.2366366679815992,1.2366366679815992,1.2366366679815992,1.2366366679815992,1.9717750443183992,1.9717750443183992,1.9717750443183992,1.9717750443183992,1.9717750443183992,1.6783130050029227,1.6783130050029227,1.6783130050029227,1.6783130050029227,1.6783130050029227,1.4329043144194262,1.4329043144194262,1.4329043144194262,1.4329043144194262,1.4329043144194262,1.5933695324426016,1.5933695324426016,1.5933695324426016,1.5933695324426016,1.5933695324426016,0.9677018582429644,0.9677018582429644,0.9677018582429644,0.9677018582429644,0.9677018582429644],"text":["<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 5.66","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 5.66","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 5.66","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 5.66","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 5.66","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 4.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 4.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 4.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 4.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 4.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 2.72","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 2.72","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 2.72","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 2.72","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 2.72","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 1.83","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 1.83","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 1.83","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 1.83","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 1.83","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 1.77","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 1.77","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 1.77","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 1.77","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 1.77","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 1.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 1.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 1.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 1.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 1.52","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 1.24","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 1.24","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 1.24","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 1.24","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 1.24","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 1.97","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 1.97","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 1.97","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 1.97","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 1.97","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 1.68","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 1.68","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 1.68","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 1.68","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 1.68","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 1.43","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 1.43","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 1.43","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 1.43","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 1.43","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 1.59","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 1.59","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 1.59","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 1.59","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 1.59","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 0.97","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 0.97","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 0.97","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 0.97","<b>Dimension:<\/b> Health<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 0.97"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(0,191,125,0.6)","dash":"solid"},"hoveron":"points","name":"Health","legendgroup":"Health","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9,10,10,10,10,10,11,11,11,11,11,12,12,12,12,12],"y":[9.7262586292614355,9.7262586292614355,9.7262586292614355,9.7262586292614355,9.7262586292614355,7.698800239315851,7.698800239315851,7.698800239315851,7.698800239315851,7.698800239315851,13.587335273134368,13.587335273134368,13.587335273134368,13.587335273134368,13.587335273134368,12.222354412548647,12.222354412548647,12.222354412548647,12.222354412548647,12.222354412548647,10.048631747655996,10.048631747655996,10.048631747655996,10.048631747655996,10.048631747655996,12.915622293669653,12.915622293669653,12.915622293669653,12.915622293669653,12.915622293669653,13.009095578195677,13.009095578195677,13.009095578195677,13.009095578195677,13.009095578195677,10.020997300905828,10.020997300905828,10.020997300905828,10.020997300905828,10.020997300905828,12.610012006884556,12.610012006884556,12.610012006884556,12.610012006884556,12.610012006884556,11.852028865780497,11.852028865780497,11.852028865780497,11.852028865780497,11.852028865780497,12.239602328856087,12.239602328856087,12.239602328856087,12.239602328856087,12.239602328856087,10.297026492087634,10.297026492087634,10.297026492087634,10.297026492087634,10.297026492087634],"text":["<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 9.73","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 7.7","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 7.7","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 7.7","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 7.7","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 7.7","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 13.59","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 13.59","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 13.59","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 13.59","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 13.59","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 12.22","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 12.22","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 12.22","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 12.22","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 12.22","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 10.05","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 10.05","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 10.05","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 10.05","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 10.05","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.92","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.92","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.92","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.92","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 12.92","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 13.01","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 13.01","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 13.01","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 13.01","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 13.01","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 10.02","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 10.02","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 10.02","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 10.02","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 10.02","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 12.61","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 12.61","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 12.61","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 12.61","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 12.61","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 11.85","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 11.85","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 11.85","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 11.85","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 11.85","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 12.24","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 12.24","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 12.24","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 12.24","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 12.24","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.3","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.3","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.3","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.3","<b>Dimension:<\/b> Production<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.3"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(0,176,246,0.6)","dash":"solid"},"hoveron":"points","name":"Production","legendgroup":"Production","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1,1,1,1,1,2,2,2,2,2,3,3,3,3,3,4,4,4,4,4,5,5,5,5,5,6,6,6,6,6,7,7,7,7,7,8,8,8,8,8,9,9,9,9,9,10,10,10,10,10,11,11,11,11,11,12,12,12,12,12],"y":[8.424262004676903,8.424262004676903,8.424262004676903,8.424262004676903,8.424262004676903,8.9105490414343187,8.9105490414343187,8.9105490414343187,8.9105490414343187,8.9105490414343187,9.5026254451534182,9.5026254451534182,9.5026254451534182,9.5026254451534182,9.5026254451534182,9.2035931682211594,9.2035931682211594,9.2035931682211594,9.2035931682211594,9.2035931682211594,11.069700610447343,11.069700610447343,11.069700610447343,11.069700610447343,11.069700610447343,11.783063256647013,11.783063256647013,11.783063256647013,11.783063256647013,11.783063256647013,9.044899732638445,9.044899732638445,9.044899732638445,9.044899732638445,9.044899732638445,11.401134289851958,11.401134289851958,11.401134289851958,11.401134289851958,11.401134289851958,10.122436324413176,10.122436324413176,10.122436324413176,10.122436324413176,10.122436324413176,10.502432784419279,10.502432784419279,10.502432784419279,10.502432784419279,10.502432784419279,10.519638610920508,10.519638610920508,10.519638610920508,10.519638610920508,10.519638610920508,10.857451316227445,10.857451316227445,10.857451316227445,10.857451316227445,10.857451316227445],"text":["<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 8.42","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 8.42","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 8.42","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 8.42","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 1<br /><b>Std Dev:<\/b> 8.42","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.91","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.91","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.91","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.91","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 2<br /><b>Std Dev:<\/b> 8.91","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 3<br /><b>Std Dev:<\/b> 9.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 4<br /><b>Std Dev:<\/b> 9.2","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.07","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.07","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.07","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.07","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 5<br /><b>Std Dev:<\/b> 11.07","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.78","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.78","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.78","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.78","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 6<br /><b>Std Dev:<\/b> 11.78","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.04","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.04","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.04","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.04","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 7<br /><b>Std Dev:<\/b> 9.04","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.4","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.4","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.4","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.4","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 8<br /><b>Std Dev:<\/b> 11.4","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.12","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.12","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.12","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.12","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 9<br /><b>Std Dev:<\/b> 10.12","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 10<br /><b>Std Dev:<\/b> 10.5","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.52","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.52","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.52","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.52","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 11<br /><b>Std Dev:<\/b> 10.52","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.86","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.86","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.86","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.86","<b>Dimension:<\/b> Social<br /><b>Metrics:<\/b> 12<br /><b>Std Dev:<\/b> 10.86"],"type":"scatter","mode":"lines","line":{"width":4.7244094488188981,"color":"rgba(231,107,243,0.6)","dash":"solid"},"hoveron":"points","name":"Social","legendgroup":"Social","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":43.762557077625573,"r":7.3059360730593621,"b":40.182648401826498,"l":37.260273972602747},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724},"title":{"text":"Variation in Dimension Scores for VT","font":{"color":"rgba(0,0,0,1)","family":"","size":17.534246575342468},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.40000000000000002,12.6],"tickmode":"array","ticktext":["1","2","3","4","5","6","7","8","9","10","11","12"],"tickvals":[1,2,3,4.0000000000000009,5,6,7.0000000000000009,8,9,10,11,12],"categoryorder":"array","categoryarray":["1","2","3","4","5","6","7","8","9","10","11","12"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"y","title":{"text":"Number of Metrics per Indicator","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.33672018749839416,14.218316943878937],"tickmode":"array","ticktext":["5","10"],"tickvals":[5,10],"categoryorder":"array","categoryarray":["5","10"],"nticks":null,"ticks":"outside","tickcolor":"rgba(51,51,51,1)","ticklen":3.6529680365296811,"tickwidth":0.66417600664176002,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.68949771689498},"tickangle":-0,"showline":true,"linecolor":"rgba(0,0,0,1)","linewidth":0.66417600664176002,"showgrid":false,"gridcolor":null,"gridwidth":0,"zeroline":false,"anchor":"x","title":{"text":"SD of Dimension Score","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.8897637795275593,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.68949771689498},"title":{"text":"Dimension","font":{"color":"rgba(0,0,0,1)","family":"","size":14.611872146118724}}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"source":"A","attrs":{"1cb0642b7b77":{"x":{},"y":{},"colour":{},"text":{},"type":"scatter"}},"cur_data":"1cb0642b7b77","visdat":{"1cb0642b7b77":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.20000000000000001,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->
