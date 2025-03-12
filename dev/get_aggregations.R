@@ -70,9 +70,10 @@ agg_function <- function(x, agg_type) {
 
 # Also put state names back in as a column and with real names, not codes
 # Takes a list of the indicator, index, and dimension scores
+# scores_list is a list with scores at each level (indicator, index, dimension)
 get_organized_scores <- function(scores_list,
                                  state_key,
-                                 metrics_df,
+                                 fips_vector,
                                  aggregation = c('both', 'arithmetic', 'geometric')) {
   
   # Aggregations to put into expand grid combos
@@ -106,17 +107,12 @@ get_organized_scores <- function(scores_list,
     
     map(dfs, ~ {
       .x %>% 
-        # Note that we are binding fips back in - this is hinky, note to fix
-        bind_cols(
-          metrics_df %>% 
-            # rownames_to_column('fips') %>% 
-            select(fips)
-        ) %>% 
+        bind_cols(as.data.frame(fips_vector)) %>% 
         left_join(
           select(state_key, state, state_code),
-          by = join_by(fips == state_code) 
+          by = join_by(fips_vector == state_code) 
         ) %>% 
-        select(-fips)
+        select(-fips_vector)
     })
   }) %>% 
     setNames(c(combos$name))
@@ -173,6 +169,14 @@ get_groupings <- function(scores_list) {
 }
 
 
+# Use framework to get unique indicators
+# n_metrics is how many metrics we want to sample
+# result is the variable_names that we are keeping
+sample_metrics <- function(framework,
+                           n_metrics,
+                           seed) {
+  
+}
 
 # Aggregation Functions ---------------------------------------------------
 
@@ -303,39 +307,67 @@ get_agg_dimensions <- function(index_scores,
 # Everything --------------------------------------------------------------
 
 
-# Putting everything into a single function so we can run start to finish
-# Normed data is saved in 'data/normalized_metrics_df.rds'
-# Note that this takes a list of every transformation. Could technically give it
-# a list of one element though if we need to. 
+#' Putting everything into a single function so we can run start to finish
+
+#' Normed data is at 'data/valued_scaled_data.rds'. It includes all 10
+#'  iterations of scaling and aggregation.
+#' Framework should be filtered to proper metrics at 'data/filtered_frame.rds'
+#' If sample_metrics is TRUE, n_metrics MUST be included
 get_all_aggregations <- function(normed_data,
                                  framework,
                                  state_key,
-                                 metrics_df,
                                  aggregation = c('both', 'arithmetic', 'geometric'),
-                                 remove_metrics = NULL,
-                                 remove_indicators = NULL) {
-  # Make empty list for results from each level
-  scores <- list()
+                                 remove_indicators = NULL,
+                                 sample_metrics = NULL,
+                                 n_metrics = NULL) {
   
-  # If removing variable names, remove them from all of the above
-  if (!is.null(remove_metrics)) {
-    metrics_df <- dplyr::select(metrics_df, -any_of(remove_metrics))
+  # Pull out proper fips vector from normed_data for use get_organized
+  fips_vector <- rownames(normed_data[[1]])
+  
+  
+  ## Reduce inputs if removing indicators or metrics
+  # If sampling metrics, remove them from all inputs
+  if (!is.null(sample_metrics)) {
+    if (is.null(n_metrics)) stop('Must provide n_metrics if sampling metrics')
+    
+    # Get a vector of metrics to keep based on n_metrics input
+    sampled_metrics <- map(unique(framework$indicator), \(indic) {
+      
+      # Get the child metrics from each indicator
+      child_metrics <- framework %>% 
+        dplyr::filter(indicator == indic) %>% 
+        pull(variable_name)
+      
+      # Get count of child metrics - don't need to sample more than that
+      n_child_metrics <- length(child_metrics)
+      
+      # If capping out on metrics, just take whole child_metrics set
+      # Otherwise, sample from child_metrics
+      if (n_metrics >= n_child_metrics) {
+        sampled_metrics <- child_metrics
+      } else if (n_metrics < n_child_metrics) {
+        sampled_metrics <- sample(child_metrics, n_metrics, replace = FALSE)
+      }
+      
+      return(sampled_metrics)
+    }) %>% 
+      unlist()
+        
+    # Reduce the framework and valued_scaled_data inputs based on those metrics
     normed_data <- map(normed_data, ~ {
-      dplyr::select(.x, -any_of(remove_metrics))
+      dplyr::select(.x, all_of(sampled_metrics))
     })
-    framework <- dplyr::filter(framework, !variable_name %in% remove_metrics)
-    cat('\nRemoving metrics\n')
+    framework <- dplyr::filter(framework, variable_name %in% sampled_metrics)
+    cat('\nSampling metrics\n')
   }
   
+  
   # If removing indicators, remove from all of the above
-  if (!is.null(remove_indicators) & remove_indicators != 'none') {
+  if (!is.null(remove_indicators) && remove_indicators != 'none') {
     
     # Reduce framework by removing indicators (and with them, metrics)
     framework <- framework %>% 
       filter(!indicator %in% remove_indicators)
-    
-    # Keep only the metrics in the new framework (and fips)
-    metrics_df <- dplyr::select(metrics_df, fips, all_of(framework$variable_name))
     
     # Reduce normed datasets
     normed_data <- map(normed_data, ~ {
@@ -345,7 +377,10 @@ get_all_aggregations <- function(normed_data,
     cat('\nRemoving indicators\n')
   } 
   
-  # Start with normed data, get each level of scores
+  
+  ## Start with normed data, get each level of scores
+  scores <- list()
+  
   cat('\nStarting indicators\n')
   scores$indicator_scores <- get_agg_indicators(normed_data, framework, aggregation = aggregation)
   
@@ -357,16 +392,19 @@ get_all_aggregations <- function(normed_data,
   
   # Now organize and add groupings
   cat('\nStarting organization\n')
-  organized_scores <- get_organized_scores(scores, state_key, metrics_df, aggregation = aggregation)
+  organized_scores <- get_organized_scores(scores, state_key, fips_vector, aggregation = aggregation)
   
   cat('\nStarting groupings\n')
   groupings <- get_groupings(organized_scores)
   
-  # Print message about removing metrics or indicators
-  if (!is.null(remove_metrics)) {
-    cat('\nMetrics removed:', paste0(remove_metrics, sep = ','), '\n')
+  # Finally, if metrics were selected, add a record of that
+  groupings$sampled_metrics <- sampled_metrics
+  
+  ## Print message about removing metrics or indicators
+  if (!is.null(sample_metrics)) {
+    cat('\nMetrics sampled:', paste0(sampled_metrics, sep = ','), '\n')
   } else {
-    cat('\nNo metrics removed\n')
+    cat('\nNo metric sampling - all included\n')
   }
   
   if (!is.null(remove_indicators)) {

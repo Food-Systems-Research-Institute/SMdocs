@@ -1,0 +1,7 @@
+# Metrics 
+- metrics_df has 131 variables. this is before we lose six that don't have clear directions. it should only be used in the aggregation doc, starting at imputation.
+- valued_rescaled_metrics has 125 variables. it has already lost six without clear directions. it has all ten iterations of rescaling methods and aggregation methods. this is what we should use to start our get_all_aggregations processes
+
+# Frameworks
+- frame is a slightly cleaned up version of the raw refined_tree from csv. it has too many metrics (165), but has been reduced by only choosing the x's to keep variables
+- filtered frame is our proper framework for the 125 variables we are going to use. this is what we need to run get_all_aggregations and do all the sensitivity and uncertainty analyses.

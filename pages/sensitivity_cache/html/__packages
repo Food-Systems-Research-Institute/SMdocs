@@ -10,3 +10,7 @@ ggpubr
 snakecase
 forcats
 plotly
+future
+furrr
+parallelly
+tidyr

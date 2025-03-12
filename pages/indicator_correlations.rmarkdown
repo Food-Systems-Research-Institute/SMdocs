@@ -1,0 +1,445 @@
+---
+title: "Indicator Correlations"
+editor_options: 
+  chunk_output_type: console
+warnings: false
+fig-responsive: false
+---
+
+```{r}
+#| label: prep
+pacman::p_load(
+  dplyr,
+  conflicted
+)
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
+
+source('dev/get_reactable.r')
+```
+
+
+
+
+
+
+
+This page will explore correlations between variables at the indicator level.
+
+# Correlation Matrix
+
+
+
+
+
+
+
+```{r}
+#| label: wrangle
+#| output: false
+pacman::p_load(
+  dplyr,
+  tidyr,
+  tibble,
+  stringr,
+  purrr,
+  tidyr,
+  ggplot2,
+  plotly,
+  reshape,
+  Hmisc,
+  viridisLite
+)
+
+# Load indicator data.
+final_scores <- readRDS('data/state_score_iterations.rds')
+get_str(final_scores)
+
+# Get filtered frame subset to be able to color indicators by dimension later
+filtered_frame <- readRDS('data/filtered_frame.rds')
+inds_and_dims <- filtered_frame %>% 
+  select(indicator, dimension) %>%
+  unique() %>% 
+  mutate(color = case_when(
+    dimension == 'economics' ~ 'royalblue',
+    dimension == 'environment' ~ 'darkgreen',
+    dimension == 'health' ~ 'orange',
+    dimension == 'production' ~ 'darkred',
+    dimension == 'social' ~ 'black'
+  ))
+color_map <- setNames(inds_and_dims$color, inds_and_dims$indicator)
+
+# Pull out minmax geo indicators only. Also use states only, no aggregates
+minmax_geo_indicators <- final_scores$minmax_geometric$indicator_scores %>% 
+  filter(! state %in% c('US_mean', 'US_median', 'NE_median', 'NE_mean'))
+get_str(minmax_geo_indicators)
+
+# Make a correlation matrix using all the selected variables
+mat <- minmax_geo_indicators %>% 
+  select(-state) %>% 
+  as.matrix()
+
+# Get correlations
+cor <- rcorr(mat, type = 'pearson')
+
+# Melt correlation values and rename columns
+cor_r <- melt(cor$r) %>% 
+  setNames(c('var_1', 'var_2', 'value'))
+
+# Save p values
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+# Make heatmap with custom text aesthetic for tooltip
+plot_out <- cor_r %>% 
+  ggplot(aes(var_1, var_2, fill = value, text = paste0(
+    'Var 1: ', var_1, '\n',
+    'Var 2: ', var_2, '\n',
+    'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
+    'P-Value: ', format(round(p.value, 3), nsmall = 3)
+  ))) + 
+  geom_tile() + 
+  scale_fill_gradient2(
+    low = "#762a83", 
+    mid = "white", 
+    high = "#1b7837", 
+    midpoint = 0
+  ) +
+  theme(
+    axis.text.x = element_text(
+      # color = color_map[levels(factor(cor_r$var_1))],
+      hjust = 1, 
+      angle = 45
+    )
+    # axis.text.y = element_text(
+      # color = color_map[levels(factor(cor_r$var_2))]
+    # )
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL
+  )
+
+# Save this for preso
+# preso_matrix <- list(mat, color_map)
+saveRDS(mat, 'preso/data/correlation_data.rds')
+```
+
+```{r}
+#| label: correlation_plot
+#| fig-cap: Interactive Correlation Plot
+# Convert to interactive plotly figure with text tooltip
+plot <- ggplotly(
+  plot_out, 
+  tooltip = 'text',
+  # width = 1000,
+  # height = 800
+  width = 850,
+  height = 650
+)
+
+plot <- plot %>% add_trace(xaxis = 'x2', showscale = FALSE)
+plot <- plot %>% add_trace(xaxis = 'x3', showscale = FALSE)
+plot <- plot %>% add_trace(xaxis = 'x4', showscale = FALSE)
+plot <- plot %>% add_trace(xaxis = 'x5', showscale = FALSE)
+
+plot <- plot %>%
+  plotly::layout(
+    xaxis = list(
+      range = list(0.5, 38.5),
+      tickvals = list(1, 2, 3, 4, 5),
+      tickfont = list(color = 'royalblue')
+    ),
+    xaxis2 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'x',
+      tickangle = -45,
+      ticktext = list(
+        'carbon fluxes',
+        'carbon stocks',
+        'embodied carbon',
+        'forest health',
+        'biodiversity',
+        'land use diversity',
+        'sensitive or rare habitats',
+        'water quality',
+        'water quantity'
+      ),
+      tickvals = list(6, 7, 8, 9, 10, 11, 12, 13, 14),
+      tickfont = list(
+        color = 'red',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    xaxis3 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'x',
+      tickangle = -45,
+      ticktext = list(
+        'educational attainment',
+        'access to culturally appropriate food',
+        'dietary quality',
+        'food access',
+        'food affordability',
+        'mental health tbd',
+        'access to care',
+        'housing supply and quality',
+        'physical health tbd'
+      ),
+      tickvals = list(15, 16, 17, 18, 19, 20, 21, 22, 23),
+      tickfont = list(
+        color = 'darkgreen',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    xaxis4 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'x',
+      tickangle = -45,
+      ticktext = list(
+        'total quantity exported',
+        'production species diversity',
+        'production inputs',
+        'total quantity food products',
+        'total quantity forest products',
+        'total quantity non-food ag products',
+        'value added market',
+        'crop failure'
+      ),
+      tickvals = list(24, 25, 26, 27, 28, 29, 30, 31),
+      tickfont = list(
+        color = 'darkorange',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    xaxis5 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'x',
+      tickangle = -45,
+      ticktext = list(
+        'social connectedness',
+        'community safety',
+        'diverse representation',
+        'age diversity',
+        'gender diversity',
+        'racial diversity',
+        'participatory governance'
+      ),
+      tickvals = list(32, 33, 34, 35, 36, 37, 38),
+      tickfont = list(
+        color = 'black',
+        family = 'Arial',
+        size = 12
+      )
+    )
+  )
+
+plot <- plot %>% add_trace(yaxis = 'y2', showscale = FALSE)
+plot <- plot %>% add_trace(yaxis = 'y3', showscale = FALSE)
+plot <- plot %>% add_trace(yaxis = 'y4', showscale = FALSE)
+plot <- plot %>% add_trace(yaxis = 'y5', showscale = FALSE)
+
+plot <- plot %>%
+  plotly::layout(
+    yaxis = list(
+      range = list(0.5, 38.5),
+      tickvals = list(1, 2, 3, 4, 5),
+      tickfont = list(color = 'royalblue')
+    ),
+    yaxis2 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'y',
+      tickangle = 0,
+      ticktext = list(
+        'carbon fluxes',
+        'carbon stocks',
+        'embodied carbon',
+        'forest health',
+        'biodiversity',
+        'land use diversity',
+        'sensitive or rare habitats',
+        'water quality',
+        'water quantity'
+      ),
+      tickvals = list(6, 7, 8, 9, 10, 11, 12, 13, 14),
+      tickfont = list(
+        color = 'red',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    yaxis3 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'y',
+      tickangle = 0,
+      ticktext = list(
+        'educational attainment',
+        'access to culturally appropriate food',
+        'dietary quality',
+        'food access',
+        'food affordability',
+        'mental health tbd',
+        'access to care',
+        'housing supply and quality',
+        'physical health tbd'
+      ),
+      tickvals = list(15, 16, 17, 18, 19, 20, 21, 22, 23),
+      tickfont = list(
+        color = 'darkgreen',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    yaxis4 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'y',
+      tickangle = 0,
+      ticktext = list(
+        'total quantity exported',
+        'production species diversity',
+        'production inputs',
+        'total quantity food products',
+        'total quantity forest products',
+        'total quantity non-food ag products',
+        'value added market',
+        'crop failure'
+      ),
+      tickvals = list(24, 25, 26, 27, 28, 29, 30, 31),
+      tickfont = list(
+        color = 'darkorange',
+        family = 'Arial',
+        size = 12
+      )
+    ),
+    yaxis5 = list(
+      range = list(0.5, 38.5),
+      overlaying = 'y',
+      tickangle = 0,
+      ticktext = list(
+        'social connectedness',
+        'community safety',
+        'diverse representation',
+        'age diversity',
+        'gender diversity',
+        'racial diversity',
+        'participatory governance'
+      ),
+      tickvals = list(32, 33, 34, 35, 36, 37, 38),
+      tickfont = list(
+        color = 'black',
+        family = 'Arial',
+        size = 12
+      )
+    )
+  )
+
+# Save this for preso
+htmlwidgets::saveWidget(plot, 'preso/plots/correlation_plotly.html')
+
+plot
+```
+
+
+
+
+
+
+
+# Strong Correlations
+
+We have many significant correlations between indicators, but we probably don't care too much about weak correlations. Let's isolate the correlations that are significant and > 0.5. These are the ones that might suggest we are double-counting certain aspects of the food system.
+
+
+
+
+
+
+
+```{r}
+#| label: explore_correlations
+#| output: false
+pacman::p_load(
+  reactable,
+  Hmisc
+)
+
+# Isolate all significant correlations
+get_str(cor_r)
+
+# Save p values
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+# Add p values to dataframe with correlations
+cor_r$p <- cor_p$value
+get_str(cor_r)
+
+# filter for correlations over 0.5
+sig <- cor_r %>% 
+  rowwise() %>%
+  mutate(pair = paste(sort(c(var_1, var_2)), collapse = "_")) %>%
+  ungroup() %>%
+  distinct(pair, .keep_all = TRUE) %>%
+  select(-pair) %>% 
+  filter(!is.na(p), abs(value) > 0.5)
+
+# Clean up columns for table
+sig <- sig %>% 
+  mutate(
+    value = abs(value),
+    across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))
+  ) %>% 
+  setNames(c('Indicator 1', 'Indicator 2', 'Correlation', 'P Value'))
+get_str(sig)
+
+# Get reactable table for next cell
+table_out <- get_reactable(sig)
+
+# But while we're at it, count how many times each indicator appears
+cor_counts <- c(sig[[1]], sig[[2]]) %>% 
+  table() %>%
+  sort(decreasing = TRUE) %>% 
+  as.data.frame() %>% 
+  setNames(c('indicator', 'n_cors'))
+
+# Save this for preso  
+saveRDS(cor_counts, 'preso/data/correlation_counts.rds')
+```
+
+```{r}
+#| label: table_out
+#| class: centered-table
+#| echo: false
+table_out
+```
+
+
+
+
+
+
+
+The wealth/income distribution indicator (economics) is correlating strongly with several indicators, some from the economics dimension and some from health. Note that there are several metrics in that indicator related to median earnings, which might be a proxy for gdp per capita. Now that I look at this, it might be worth including gdp per capita at least as a control variable to see how much fo the variation it accounts for. 
+
+It looks like all the indicators from the carbon index (embodied, fluxes, stocks) correlate with one another, which makes enough sense. I imagine that one shouldn't be too much of a problem if they are being aggregated at the index level anyway.
+
+Forest health and carbon stocks are currently quite highly correlated, but this is because the metrics for carbon stocks are not ideal. The metrics for carbon stocks and forest health all come from the same TreeMap dataset. I suspect that if we include a better set of metrics for carbon stocks, this won't be a such a problem. 
+
+Value-added markets and operations diversification are all using a very similar set of metrics as well. They mostly come from NASS, and it would be worth digging into the NASS docs to see how whether value-added sales might overlap with agritourism, direct to consumer sales, or local marketing channel sales.
+
+Food affordability and food security also unsurprisingly correlate strongly. The current framework here is a work in progress and a bit haphazard. It will need some reworking. Curiously, these indicators also strongly correlate with participatory governance. That's quite an interesting finding. 
+
+As for what to do about highly correlating indicators in general:
+
+- They could be reworked to use metrics that don't lead to indicator correlations. This sounds rather difficult to me, and maybe impossible. It seems likely to be the reality that aspects of the economics and health dimensions are indeed related, for example.
+- They could be weighted in their respective dimensions to account for the correlations. This might be done with PCA loadings or by expert opinion.
+- We could also leave them as is. This would mean potentially double-counting certain aspects, but may be a reasonable approximation of reality.

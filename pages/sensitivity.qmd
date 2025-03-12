@@ -15,13 +15,17 @@ fig-responsive: false
 pacman::p_load(
   dplyr,
   purrr,
+  furrr,
+  parallelly,
   tictoc,
   stringr,
   ggplot2,
   ggpubr,
+  plotly,
   snakecase,
   forcats,
-  plotly
+  plotly,
+  tidyr
 )
 source('dev/get_aggregations.R')
 conflicts_prefer(
@@ -54,16 +58,20 @@ framework <- readRDS('data/filtered_frame.rds')
 
 ## Set up options for uncertain input factors
 normalizations <- c(
+  'rank',
+  'winsor',
   'minmax',
   'zscore',
-  'winsor',
-  'rank',
   'boxcox'
 )
 aggregations <- c('geometric', 'arithmetic')
-# metrics <- c('none', framework$variable_name) # 129 metrics
-indicators <- c('none', unique(framework$indicator)) # 39 indicators
 
+# Get unique values of metrics and indicators. We will leave each one out once,
+# plus the 'none' value means we use them all (don't remove any)
+metrics <- c('none', framework$variable_name)
+length(metrics) # 125 metrics (plus none is 126)
+indicators <- c('none', unique(framework$indicator))
+length(indicators) # 38 indicators (plus none is 39)
 
 ## Try a grid of all possible combinations
 grid <- expand.grid(
@@ -72,7 +80,6 @@ grid <- expand.grid(
   indicators
 ) %>% 
   setNames(c('norms', 'aggs', 'indics'))
-# Could loop through it just once, or sample from it?
 ```
 
 
@@ -380,3 +387,309 @@ Plan:
 
 - Start with normed_data (already rescaled 5 ways)
 - For each rescaling method, choose between 
+
+```{r}
+#| label: metric_sampling_prep
+state_key <- readRDS('data/sm_data.rds')[['state_key']]
+valued_scaled_data <- readRDS('data/valued_rescaled_metrics.rds')
+framework <- readRDS('data/filtered_frame.rds')
+
+get_str(valued_scaled_data)
+
+#' We have 125 metrics. 
+#' Within each dimension, we want to randomly sample between 1 and all
+#' Consequently, reduce indicators and indices as well
+#' Also want to be sampling from first two cols of grid (norms and aggs)
+
+#' So, for every iteration:
+#'  1. Select one row from adapted grid
+#'  2. For each dimension, select between 1 and all of the metrics
+#'  3. Reduce all our inputs accordingly
+#'  4. Continue function to get dimension scores
+
+#' But do we want to remove indicators completely? No, we don't
+#' So, minimum selection will be one metric from each indicator.
+#' Then if selecting more than 1, it will only select from those available
+#' This means that at higher numbers, the only changes will be in indicators
+#'  with a ton of metrics, like physical health TBD
+#' This also means we might be interested in more than just dimensino scores
+#'  also want to look at index and indicators
+#'  This is fine though, each output has them all
+
+#' physical health tbd has 12, and wealth/income distribution has 10
+#'  these are the ones where this will matter
+#'  also, means we only have to select up to 12 from each indicator
+
+#' so basically, sampling from grid, and also sampling from 1-12 
+
+# Get max number of metrics in a single indicator
+max_metrics <- framework %>% 
+  group_by(indicator) %>% 
+  summarize(count = n()) %>% 
+  pull(count) %>% 
+  max()
+
+# Grid with just norms and agg methods, 10 total
+normalizations <- c(
+  'rank',
+  'winsor',
+  'minmax',
+  'zscore',
+  'boxcox'
+)
+aggregations <- c('geometric', 'arithmetic')
+norm_agg_grid <- expand.grid(normalizations, aggregations) %>% 
+  setNames(c('norm', 'agg'))
+
+# Create 1000 samples of norms, aggs, and metric counts
+set.seed(42)
+metric_sample_grid <- slice_sample(norm_agg_grid, n = 1000, replace = TRUE) %>% 
+  mutate(n_metrics = sample(max_metrics, 1000, replace = TRUE))
+get_str(metric_sample_grid)
+# Now we can map through this sample grid and run the function each time
+
+
+# Which metrics to remove?
+get_str(valued_scaled_data)
+get_str(framework)
+
+n_metrics <- 5
+out <- map(unique(framework$indicator)[1:5], \(indic) {
+  
+  # Get the child metrics from each indicator
+  child_metrics <- framework %>% 
+    dplyr::filter(indicator == indic) %>% 
+    pull(variable_name)
+  
+  # Get count of child metrics - don't need to sample more than that
+  n_child_metrics <- length(child_metrics)
+  
+  # If capping out on metrics, just take whole child_metrics set
+  # Otherwise, sample from child_metrics
+  if (n_metrics >= n_child_metrics) {
+    sampled_metrics <- child_metrics
+  } else if (n_metrics < n_child_metrics) {
+    sampled_metrics <- sample(child_metrics, n_metrics, replace = FALSE)
+  }
+  
+  return(sampled_metrics)
+}) %>% 
+  unlist()
+get_str(out)
+
+# Now that we have this, we can reduce our framework and normed data
+```
+
+
+```{r}
+#| label: metric_sampling
+#| eval: false
+
+# tic()
+# plan(multisession, workers = parallelly::availableCores(omit = 1))
+# 
+# metric_sampling_out <- map(1:nrow(metric_sample_grid), \(i) {
+# # out <- map(1:3, \(i) {
+#  
+#   # Printouts for debugging
+#   get_time(c('\n\n========== Starting sample ', i, ' at:'))
+#   cat('\nMetric sample grid:\n')
+#   print(metric_sample_grid[i, ])
+#   
+#   # Run model
+#   model_out <- get_all_aggregations(
+#     normed_data = valued_scaled_data[as.character(metric_sample_grid$norm[i])],
+#     framework = framework,
+#     state_key = state_key,
+#     aggregation = metric_sample_grid$agg[i],
+#     sample_metrics = TRUE,
+#     n_metrics = metric_sample_grid$n_metrics[i]
+#   )
+# }, .progress = TRUE)
+# 
+# plan(sequential)
+# toc()
+# 
+# get_str(metric_sampling_out)
+# # get_str(out, 4)
+# get_str(out[[1]][[1]][[1]])
+# Won't be able to see different sets of metrics because they are lost in func
+
+# 12 seconds for 10 sequential
+# 40 seconds for 10 in parallel
+
+# 128 seconds for 100 sequential
+# 46 seconds for 100 in parallel
+
+# Do it parallel bb
+# Whole thing: 20 minutes, 40 seconds
+
+# Save raw out file for posterity
+# saveRDS(metric_sampling_out, 'data/objects/metric_sampling_out.rds')
+```
+
+```{r}
+#| label: wrangle_metric_sampling
+metric_sampling_out <- readRDS('data/objects/metric_sampling_out.rds')
+get_str(metric_sampling_out)
+get_str(metric_sampling_out[[1]])
+get_str(metric_sample_grid)
+# We might want to explore dimension scores, indices, and indicators here
+
+# Get names that identify each iteration
+names <- map_chr(1:nrow(metric_sample_grid), ~ {
+  paste0(
+    as.character(metric_sample_grid[.x, 1]),
+    '_',
+    as.character(metric_sample_grid[.x, 2]),
+    '_',
+    metric_sample_grid[.x, 3]
+  )
+})
+
+# Set names for samples
+metric_sampling_iters <- map(metric_sampling_out, ~ {
+  .x[[1]]
+}) %>% 
+  setNames(c(names))
+get_str(metric_sampling_iters)
+
+# save this for posterity
+saveRDS(metric_sampling_iters, 'data/metric_sampling_iterations.rds')
+```
+
+Now we want to organize these so that we can see curves of the average of each all dimension scores for Vermont given each number of metrics chosen. So on x-axis is metric count, 1 to 12. On Y axis are dimension scores, 5 colored lines for each dimension.
+
+```{r}
+#| label: wrangle_metric_iterations
+#| output: false
+dat <- metric_sampling_iters
+get_str(dat)
+
+# Start by just pulling dimension scores
+# Then make new column, and join DFs row-wise. Then we can group by and mean
+dat <- imap(dat, ~ {
+  metric_count <- str_split_i(.y, '_', 3)
+  .x$dimension_scores %>% 
+    as.data.frame() %>% 
+    dplyr::filter(str_length(state) == 2) %>% 
+    mutate(
+      across(
+        !state,
+        ~ dense_rank(.x),
+        .names = "{.col}_rank"
+      ),
+      metric_count = metric_count
+    )
+})
+get_str(dat)
+get_str(dat[[1]])
+# Ranks working fine
+
+# Filter to VT, select ranks and metric count
+dat <- dat %>% 
+  bind_rows() %>% 
+  dplyr::filter(state == 'VT') %>% 
+  select(metric_count, matches('rank'))
+get_str(dat)
+
+# Pull out standard deviation of distributions?
+sds <- dat %>% 
+  group_by(metric_count) %>% 
+  summarize(
+    across(
+      everything(),
+      ~ sd(.x)
+    )
+  ) %>% 
+  setNames(c(
+    names(.) %>% 
+      str_replace('_rank', '_sd') %>% 
+      str_replace('metric_count', 'n_metrics')
+  ))
+get_str(sds)
+
+# Group by metric count, get average ranks for VT
+dat <- dat %>% 
+  group_by(metric_count) %>% 
+  summarize(
+    across(
+      everything(),
+      ~ mean(.x)
+    )
+  ) %>% 
+  setNames(c(
+    names(.) %>% 
+      str_remove('_rank') %>% 
+      str_replace('metric_count', 'n_metrics')
+  ))
+get_str(dat) 
+
+# Join with SDs?
+get_str(sds)
+dat <- full_join(dat, sds)
+get_str(dat)
+
+# Pivot longer to make it easier to graph
+out <- dat %>% 
+  as.data.frame() %>% 
+  pivot_longer(
+    economics:social,
+    names_to = 'dimension',
+    values_to = 'mean_rank'
+  ) %>% 
+  # pivot_longer(
+  #   ends_with('sd'),
+  #   names_to = 'sd',
+  #   values_to = 'sds'
+  # ) %>%
+  mutate(sd = case_when(
+    dimension == "economics" ~ economics_sd,
+    dimension == "environment" ~ environment_sd,
+    dimension == "health" ~ health_sd,
+    dimension == "production" ~ production_sd,
+    dimension == "social" ~ social_sd,
+    TRUE ~ NA_real_
+  )) %>% 
+  mutate(n_metrics = factor(as.numeric(n_metrics)))
+get_str(out)
+# This is what we use to graph!
+```
+
+```{r}
+#| label: metric_count_dimension_graph
+plot <- out %>% 
+  ggplot(aes(
+    x = n_metrics, 
+    y = mean_rank, 
+    group = dimension, 
+    color = dimension,
+    text = paste0(
+      '<b>Dimension:</b> ', str_to_title(dimension), '\n',
+      '<b>Metrics:</b> ', n_metrics, '\n',
+      '<b>Mean Rank:</b> ', round(mean_rank, 1)
+    )
+  )) +
+  geom_line(
+    lwd = 1.25,
+    alpha = 0.6
+  ) +
+  # geom_ribbon(
+  #   aes(
+  #     ymin = mean_rank - sd,
+  #     ymax = mean_rank + sd,
+  #     fill = dimension
+  #   ),
+  #   alpha = 0.2
+  # ) +
+ theme_classic() +
+  labs(
+    x = 'Number of Metrics per Indicator',
+    y = 'Mean Rank',
+    title = 'Mean Dimension Ranks for Vermont',
+    color = 'Dimension'
+  )
+
+plotly::ggplotly(plot, tooltip = 'text') 
+```
+

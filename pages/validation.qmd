@@ -62,6 +62,7 @@ get_str(dimension_scores)
 
 # Pull raw metrics data
 metrics_df <- readRDS('data/metrics_df.rds')
+metrics_df <- readRDS('data/valued_rescaled_metrics.rds')
 get_str(metrics_df)
 
 
