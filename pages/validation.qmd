@@ -74,12 +74,6 @@ dimension_scores <- minmax_geo %>%
   setNames(c(str_remove(names(.), 'dimen_')))
 get_str(dimension_scores)
 
-# Pull raw metrics data
-metrics_df <- readRDS('data/metrics_df.rds')
-metrics_df <- readRDS('data/valued_rescaled_metrics.rds')
-get_str(metrics_df)
-
-
 # Pull validation variables out of sm_data, wrangle them to match metrics_df
 # Also including covariates, gdp and population
 validation_vars <- sm_data$metadata %>% 

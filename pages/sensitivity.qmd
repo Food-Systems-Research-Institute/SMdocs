@@ -25,7 +25,8 @@ pacman::p_load(
   snakecase,
   forcats,
   plotly,
-  tidyr
+  tidyr,
+  DescTools
 )
 source('dev/get_aggregations.R')
 conflicts_prefer(
@@ -46,6 +47,8 @@ Steps
 - Explore distributions of each dimension rank
 
 # Dimensions
+
+## Sensitivity
 
 ```{r}
 #| label: input_grid
@@ -199,6 +202,70 @@ annotate_figure(
   )
 )
 ```
+
+## Cronbach
+
+Take valued scaled (but not aggregated) data and see what Cronbach looks like at index level, and possibly dimension level.
+
+```{r}
+#| label: cronbach
+valued_scaled_data <- readRDS('data/valued_rescaled_metrics.rds')
+framework <- readRDS('data/filtered_frame.rds')
+
+# Do this with filtered framework of 125 metrics, using minmax
+minmax_dat <- valued_scaled_data$minmax %>%
+  select(all_of(unique(framework$variable_name)))
+get_str(minmax_dat)
+
+# For each dimension, get cronbach for all metrics within it
+dimensions <- unique(framework$dimension)
+cronbachs <- map(dimensions, ~ {
+  dim_metrics <- framework %>% 
+    dplyr::filter(dimension == .x) %>% 
+    pull(variable_name) %>% 
+    unique()
+  cronbach <- minmax_dat %>% 
+    select(all_of(dim_metrics)) %>% 
+    psych::alpha(check.keys = FALSE)
+  return(cronbach)
+}) %>% 
+  setNames(c(dimensions))
+cronbachs
+(cronbach_alphas <- map(cronbachs, ~ .x$total$raw_alpha))
+
+# Save this for presentation
+# First make it a nice table
+out <- cronbach_alphas %>% 
+  as.data.frame() %>% 
+  t() %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column() %>% 
+  setNames(c('Dimension', 'Alpha')) %>% 
+  mutate(Alpha = round(Alpha, 3))
+out
+saveRDS(out, 'preso/data/cronbach_dimensions.rds')
+
+
+## Try it for indices
+indices <- unique(framework$index)
+test <- map(indices, ~ {
+  index_metrics <- framework %>% 
+    dplyr::filter(index == .x) %>% 
+    pull(variable_name) %>% 
+    unique()
+  if (length(index_metrics) <= 1) {
+    out <- NULL
+  } else {
+    out <- minmax_dat %>% 
+      select(all_of(index_metrics)) %>% 
+      psych::alpha(check.keys = FALSE)
+  }
+  return(out)
+})
+length(test)
+map(test, ~ .x$total$raw_alpha)
+```
+
 
 # Indicators
 

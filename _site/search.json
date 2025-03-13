@@ -871,23 +871,23 @@
   {
     "objectID": "preso/preso.html#sensitivity-by-dimension",
     "href": "preso/preso.html#sensitivity-by-dimension",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Sensitivity by Dimension",
     "text": "Sensitivity by Dimension\n\n\n\nSample from uncertain inputs (OECD 2008)\n\nRescaling methods (5)\nAggregation methods (2)\nLeave out one indicator (39)\n= 390 iterations\n\nHigher ranks are desirable\nSome dimensions are quite unstable (Economics)\nSome are quite stable (Health)\n\n\n\nEconomicsEnvironmentHealthProductionSocial\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont"
   },
   {
     "objectID": "preso/preso.html#indicator-influence",
     "href": "preso/preso.html#indicator-influence",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Indicator Influence",
     "text": "Indicator Influence\n\n\n\nSome points before plot\nanother point before the plot\nsome other important point\n\n\n\nEconomicsEnvironmentHealthProductionSocial"
   },
   {
     "objectID": "preso/preso.html#introduction",
     "href": "preso/preso.html#introduction",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Introduction",
-    "text": "Introduction\n\n\n\nSecondary data goals:\n\nIdentify existing data and gaps\nExplore methods of aggregating data\n\nGoals for today:\n\nShare methods\nShare preliminary findings\nFeedback and discussion\n\nGuiding topics:\n\nHow well do the data represesent the system?\nNormalization, aggregation, and values\nWhere and how do we incorporate qualitative data?\nInforming the next RFP\n\n\n\n\n\n\nIntervale Farm, Sally McCay, UVM Photo\n\n\n\n\nThe point is to take stock of existing data, use primary research"
+    "text": "Introduction\n\n\n\nGoals for secondary data:\n\nIdentify existing data and gaps\nExplore methods of aggregating data\n\nStructure of presentation:\n\nExplore framework and methods\nShare results of case study\nUncertainty and sensitivity\n\nGuiding questions:\n\nHow well do the data represesent the system?\nValuation, scaling, weighting, aggregation\nWhere and how do we incorporate qualitative data?\n\n\n\n\n\n\nIntervale Farm, Sally McCay, UVM Photo\n\n\n\n\nThe point is to take stock of existing data, use primary research"
   },
   {
     "objectID": "preso/preso.html#indicator-influence-plotlyy",
@@ -906,14 +906,14 @@
   {
     "objectID": "preso/preso.html#secondary-data",
     "href": "preso/preso.html#secondary-data",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Secondary Data",
-    "text": "Secondary Data\n\n\n\n\n\nShow/hide more columns\n\n\n\nDownload as CSV\n\n\n\n\n\n\n\n\n~650 metrics, plus another thousand NAICS variables\n\nSources\n\nUSDA NASS\nUSDA ERS Farm Income and Wealth Statistics\nUSDA ERS Food Environment Atlas\nUSDA Farm Service Agency Distaster Assistance\nUSDA Food and Nutrition Service\nUSDA Food Safety and Inspection Service\nUniversity of Wisconsin\nUS Census\nEPA State GHG Data\nTreeMap 2016\nNatureServe - biodiversity data"
+    "text": "Secondary Data\n\n\n\n\n\nDownload as CSV\n\n\n\n\n\n\n\n\n~650 metrics, available on website\nSet of 130 to match refined framework\n\nSources\n\nUSDA NASS: income, expenses, labor, size, d2c sales\nUSDA ERS Farm Income and Wealth Statistics: imports, exports, margin protection payments, emergency program payments, indemnities, capital expenditures and consumption\nUSDA ERS Food Environment Atlas: WIC, SNAP, grocery store density\nUSDA Farm Service Agency Disaster Assistance: emergency declarations (proxy for EWE)\nUSDA Food and Nutrition Service Farm to School program: SNAP and WIC eligibility rates, coverage rates, school food authority spending, farm to school program, culturally relevant foods\nU Wisconsin Population health institute, county health rankings and roadmaps: all health stuff, social associations, connectedness, voter turnout, health care infrastructure\nUS Census ACS: earnings for FFF and Food service jobs, rental vacancy rates, income inequality\nEPA State GHG Data: emissions form agriculture (N20, CO2, CH4)\nEPA National Aquatic Surveys: water quality, conditions based on phosphorus, nitrogen, habitat complexity,\nTreeMap 2016: carbon stocks, forest health\nNatureServe - biodiversity data, ecosystem data"
   },
   {
     "objectID": "preso/preso.html#framework",
     "href": "preso/preso.html#framework",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Framework",
     "text": "Framework\n\nEconomicsEnvironmentHealthProductionSocial\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNONE is a placeholder for when I don’t have a metric there\nAll ears for more datasets if you can fill in some NONEs"
   },
@@ -927,14 +927,14 @@
   {
     "objectID": "preso/preso.html#indicator-distributions",
     "href": "preso/preso.html#indicator-distributions",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Indicator Distributions",
-    "text": "Indicator Distributions\nAn example of indicator distributions with the Min Max + geometric means methods"
+    "text": "Indicator Distributions\nAn example of indicator distributions with min-max scaling and geometric aggregation"
   },
   {
     "objectID": "preso/preso.html#indicator-correlations",
     "href": "preso/preso.html#indicator-correlations",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Indicator Correlations",
     "text": "Indicator Correlations\n\nCorrelation MatrixInfluential Indicators\n\n\nMin Max geometric aggregation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHighly correlating indicators from different dimensions are a problem (double counting)"
   },
@@ -955,9 +955,9 @@
   {
     "objectID": "preso/preso.html#comparisons",
     "href": "preso/preso.html#comparisons",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Comparisons",
-    "text": "Comparisons\n\nRank OrderWinsorizationMin MaxZ-ScoreBox Cox"
+    "text": "Comparisons\n\nRank OrderWinsorizationMin MaxZ-ScoreBox Cox\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nWe now have 10 combinations of scaling and aggregation.\nNote that Z-score geometric transformation is hinky\nTRANSITION INTO CASE STUDY OF MIN MAX GEO"
   },
   {
     "objectID": "preso/preso.html#validation",
@@ -969,9 +969,9 @@
   {
     "objectID": "preso/preso.html#references",
     "href": "preso/preso.html#references",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "References",
-    "text": "References\n\n\n\n\nBickel, Peter J., and Kjell A. Doksum. 1981. “An Analysis of Transformations Revisited.” Journal of the American Statistical Association 76 (374): 296–311. https://doi.org/10.1080/01621459.1981.10477649.\n\n\nEsty, Daniel. 2008. “Pilot 2006 Environmental Performance Index.” Yale Center for Environmental Law & Policy, January, 45-2621-45-2621. https://doi.org/10.5860/CHOICE.45-2621.\n\n\nGómez-Limón, José A., and Gabriela Sanchez-Fernandez. 2010. “Empirical Evaluation of Agricultural Sustainability Using Composite Indicators.” Ecological Economics 69 (5): 1062–75. https://doi.org/10.1016/j.ecolecon.2009.11.027.\n\n\nJacobi, Johanna, Stellah Mukhovi, Aymara Llanque, Markus Giger, Adriana Bessa, Christophe Golay, Chinwe Ifejika Speranza, et al. 2020. “A New Understanding and Evaluation of Food Sustainability in Six Different Food Systems in Kenya and Bolivia.” Scientific Reports 10 (1): 19145. https://doi.org/10.1038/s41598-020-76284-y.\n\n\nMayer, Audrey L. 2008. “Strengths and Weaknesses of Common Sustainability Indices for Multidimensional Systems.” Environment International 34 (2): 277–91. https://doi.org/10.1016/j.envint.2007.09.004.\n\n\nOECD. 2008. Handbook on Constructing Composite Indicators: Methodology and User Guide. Paris: Organisation for Economic Co-operation and Development.\n\n\nSchneider, Kate R., Jessica Fanzo, Lawrence Haddad, Mario Herrero, Jose Rosero Moncayo, Anna Herforth, Roseline Remans, et al. 2023. “The State of Food Systems Worldwide in the Countdown to 2030.” Nature Food 4 (12): 1090–110. https://doi.org/10.1038/s43016-023-00885-9.\n\n\nSchneider, Kate R., Roseline Remans, Tesfaye Hailu Bekele, Destan Aytekin, Piero Conforti, Shouro Dasgupta, Fabrice DeClerck, et al. 2025. “Governance and Resilience as Entry Points for Transforming Food Systems in the Countdown to 2030.” Nature Food 6 (1): 105–16. https://doi.org/10.1038/s43016-024-01109-4."
+    "text": "References\n\n\n\n\nAdriaanse, A. 1993. “Environmental Policy Performance Indicators,” May. https://www.osti.gov/etdeweb/biblio/6352065.\n\n\nBéné, Christophe, Steven D. Prager, Harold A. E. Achicanoy, Patricia Alvarez Toro, Lea Lamotte, Camila Bonilla, and Brendan R. Mapes. 2019. “Global Map and Indicators of Food System Sustainability.” Scientific Data 6 (1): 279. https://doi.org/10.1038/s41597-019-0301-5.\n\n\nBickel, Peter J., and Kjell A. Doksum. 1981. “An Analysis of Transformations Revisited.” Journal of the American Statistical Association 76 (374): 296–311. https://doi.org/10.1080/01621459.1981.10477649.\n\n\nCronbach, Lee J. 1951. “Coefficient Alpha and the Internal Structure of Tests.” Psychometrika 16 (3): 297–334. https://doi.org/10.1007/BF02310555.\n\n\nEsty, Daniel. 2008. “Pilot 2006 Environmental Performance Index.” Yale Center for Environmental Law & Policy, January, 45-2621-45-2621. https://doi.org/10.5860/CHOICE.45-2621.\n\n\nEsty, Daniel C, Ilmi M E Granoff, and Barbara Ruth. 2002. “Yale Center for Environmental Law and Policy (YCELP).”\n\n\nGómez-Limón, José A., and Gabriela Sanchez-Fernandez. 2010. “Empirical Evaluation of Agricultural Sustainability Using Composite Indicators.” Ecological Economics 69 (5): 1062–75. https://doi.org/10.1016/j.ecolecon.2009.11.027.\n\n\nJacobi, Johanna, Stellah Mukhovi, Aymara Llanque, Markus Giger, Adriana Bessa, Christophe Golay, Chinwe Ifejika Speranza, et al. 2020. “A New Understanding and Evaluation of Food Sustainability in Six Different Food Systems in Kenya and Bolivia.” Scientific Reports 10 (1): 19145. https://doi.org/10.1038/s41598-020-76284-y.\n\n\nMayer, Audrey L. 2008. “Strengths and Weaknesses of Common Sustainability Indices for Multidimensional Systems.” Environment International 34 (2): 277–91. https://doi.org/10.1016/j.envint.2007.09.004.\n\n\nNardo, Michela, Michaela Saisana, Andrea Saltelli, and Stefano Tarantola. 2005. “Tools for Composite Indicators Building.”\n\n\nNicoletti, Giuseppe. 2000. “Summary Indicators of Product Market Regulation with an Extension to Employment Protection Legislation.” {{OECD Economics Department Working Papers}} 226. Vol. 226. OECD Economics Department Working Papers. https://doi.org/10.1787/215182844604.\n\n\nOECD. 2008. Handbook on Constructing Composite Indicators: Methodology and User Guide. Paris: Organisation for Economic Co-operation and Development.\n\n\nSchneider, Kate R., Jessica Fanzo, Lawrence Haddad, Mario Herrero, Jose Rosero Moncayo, Anna Herforth, Roseline Remans, et al. 2023. “The State of Food Systems Worldwide in the Countdown to 2030.” Nature Food 4 (12): 1090–110. https://doi.org/10.1038/s43016-023-00885-9.\n\n\nSchneider, Kate R., Roseline Remans, Tesfaye Hailu Bekele, Destan Aytekin, Piero Conforti, Shouro Dasgupta, Fabrice DeClerck, et al. 2025. “Governance and Resilience as Entry Points for Transforming Food Systems in the Countdown to 2030.” Nature Food 6 (1): 105–16. https://doi.org/10.1038/s43016-024-01109-4.\n\n\nTabachnick, Barbara G., Linda S. Fidell, and Jodie B. Ullman. 2019. Using Multivariate Statistics. Seventh edition. NY, NY: Pearson.\n\n\nTaber, Keith S. 2018. “The Use of Cronbach’s Alpha When Developing and Reporting Research Instruments in Science Education.” Research in Science Education 48 (6): 1273–96. https://doi.org/10.1007/s11165-016-9602-2."
   },
   {
     "objectID": "preso/test.html#slide-with-column-and-tabset",
@@ -1011,7 +1011,7 @@
   {
     "objectID": "preso/preso.html#secondary-data---refined",
     "href": "preso/preso.html#secondary-data---refined",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Secondary Data - Refined",
     "text": "Secondary Data - Refined\nA set of 130 metrics to match the refined framework\n\n\n\n\n\nShow/hide more columns\n\n\n\nDownload as CSV\n\n\n\n\n\n\n\n\n~650 metrics, plus another thousand NAICS variables\n\nSources\n\nUSDA NASS\nUSDA ERS Farm Income and Wealth Statistics\nUSDA ERS Food Environment Atlas\nUSDA Farm Service Agency Distaster Assistance\nUSDA Food and Nutrition Service\nUSDA Food Safety and Inspection Service\nUniversity of Wisconsin\nUS Census\nEPA State GHG Data\nTreeMap 2016\nNatureServe - biodiversity data"
   },
@@ -1025,16 +1025,16 @@
   {
     "objectID": "preso/preso.html#validation-regression",
     "href": "preso/preso.html#validation-regression",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Validation: Regression",
     "text": "Validation: Regression\n\nFood InsecurityLife ExpectancyFood Environment Index\n\n\nFood Insecurity Index (UW Population Health Institute 2024)\n\n\n\n\n\n\nLife Expectancy (UW Population Health Institute 2024)\n\n\n\n\n\n\nFood Environment Index (UW Population Health Institute 2024)\nGLMnet variable importance:\n\n\n\n\n\n\n\n\n\nRandom forest variable importance:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFood Environment Index: 0 (worst) 10 (best). Distance to grocery, cost of health diet.\nHappiness (WalletHub):\n\nemotional and physical wellbeing (health index, depression, alcohol use disorder, adequate sleep rate…)\nWork environment (work hours, commute time, income, unemployment…)\nCommunity and environment (ideal weather, leisure time, safety, volunteer rate)"
   },
   {
     "objectID": "preso/preso.html#validation-pca",
     "href": "preso/preso.html#validation-pca",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Validation: PCA",
-    "text": "Validation: PCA\n\n\n\nFactor extraction:\n\nParallel Analysis (PA) suggests 5 components\nVelicer MAP suggests 6\nVSS suggests 2 or 3\n\nKey to loadings:\n\nx &lt; 0.2 ~ ’’\nx &lt; 0.32 ~ ‘.’\nx &gt;= 0.32 ~ x\n\n\n\n\nScree PlotSimplimaxPromaxObliminCluster\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMight be better off with 6 components - sign indicators are not cohesive\nPA: randomize rows, do PCA. Keep PCs that explain significantly more variance than expected by chance\nMAP: get average squared partial correlations for each PC. Keep PCs that lead to lowest average squared partial correlation\nVSS: compare fit of simplified model to original correlations. VSS = 1-sumsquares(r*)/sumsquares(r)Peaks at optimal (most interpretable) number of factors.\nPromax is best interpretation, but not great"
+    "text": "Validation: PCA\n\n\n\nEXPLAIN WHAT IT IS\nFactor extraction:\n\nParallel Analysis (PA) suggests 5 components\nVelicer MAP suggests 6\nVSS suggests 2 or 3\n\nKey to loadings:\n\nx &lt; 0.2 ~ ’’\nx &lt; 0.32 ~ ‘.’\nx &gt;= 0.32 ~ x\n\n\n\n\nScree PlotPromaxSimplimaxObliminCluster\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMight be better off with 6 components - sign indicators are not cohesive\nPA: randomize rows, do PCA. Keep PCs that explain significantly more variance than expected by chance\nMAP: get average squared partial correlations for each PC. Keep PCs that lead to lowest average squared partial correlation\nVSS: compare fit of simplified model to original correlations. VSS = 1-sumsquares(r*)/sumsquares(r)Peaks at optimal (most interpretable) number of factors.\nPromax is best interpretation, but not great\nEigenvalue (ss loadings): varaince explained by component\nCommunality (h2): proportion of common variance present in variable\nUniquenss (u2): unique variable for each var (1-h2)\nComplexity (com): how well it reflects a construct (1 for 1, loading evenly on 2 is 2)"
   },
   {
     "objectID": "preso/preso.html#maps",
@@ -1053,9 +1053,9 @@
   {
     "objectID": "preso/preso.html#desirable-directions",
     "href": "preso/preso.html#desirable-directions",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Desirable Directions",
-    "text": "Desirable Directions\n\n\n\nOfficial benchmarks where possible, otherwise largest value is 100% (Jacobi et al. 2020)\nEvery indicator gets a good direction and bad direction (Schneider et al. 2023)"
+    "text": "Desirable Directions\n\n\n\nHow do we decide if values for an indicator are good or bad?\nSchneider et al. (2023) gave every indicator a positive and negative direction\nJacobi et al. (2020) used official benchmarks where possible, otherwise the largest value set to 100%\nOthers have used the distance to a reference system (Adriaanse 1993)"
   },
   {
     "objectID": "preso/preso.html#conclusions",
@@ -1067,37 +1067,37 @@
   {
     "objectID": "preso/preso.html#to-add",
     "href": "preso/preso.html#to-add",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "To Add",
-    "text": "To Add\n\nMonte Carlo to explore metric numbers\nScenario Analysis with random forest for predictions"
+    "text": "To Add\n\nScenario Analysis with random forest for predictions?\nIndicator sensitivity across all states, not just Vermont?"
   },
   {
     "objectID": "preso/preso.html#conclusions-and-discussion",
     "href": "preso/preso.html#conclusions-and-discussion",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Conclusions and Discussion",
-    "text": "Conclusions and Discussion\n\nConclusions\n\nGaps\nStability and Sensitivity\nFramework complexity\nInfluential indicators\n\nDiscussion\n\nHow well do these data represent the system?\nCan we reasonably assign desirable directions to metrics and indicators?\nWhat are fair and interpretable methods of transformations and aggregation?\n\n\n\n\nGaps:\n\nNASS stats lean toward commodity crops\nSoil health\nFood distribution capacity (have some of this)\nFood loss and waste\nEmbodied Carbon\nCarbon stocks\nforest complexity\nwater quality\nWater quantity\nprecarity, market health indices\ndiversity of Farm Types (this one tricky for VT)\nnutrition\nall of social dimension\n\nSensitivity:\n\nEconomics, environment need to be refined"
+    "text": "Conclusions and Discussion\n\nConclusions\n\nGaps\nStability and Sensitivity\nFramework complexity\nInfluential indicators\n\nDiscussion\n\nHow well do these data represent the system?\nCan we reasonably assign desirable directions to metrics and indicators?\nWhat are fair and interpretable methods of transformations and aggregation?\n\n\n\n\nGaps:\n\nNASS stats lean toward commodity crops\nSoil health\nFood distribution capacity (have some of this)\nFood loss and waste\nEmbodied Carbon\nCarbon stocks\nforest complexity\nwater quality\nWater quantity\nprecarity, market health indices\ndiversity of Farm Types (this one tricky for VT)\nnutrition*\nall of social dimension*\n\nSensitivity:"
   },
   {
     "objectID": "preso/preso.html#aggregation",
     "href": "preso/preso.html#aggregation",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Aggregation",
     "text": "Aggregation\n\n\n\nArithmetic (Jacobi et al. 2020)\nGeometric:\n\n\\[\\begin{equation}\n\\sqrt[n]{x_1 * x_2 * ... * x_n}\n\\end{equation}\\]\n\nCompensatory and non compensatory\nSome did both and compared, came out similar (Gómez-Limón and Sanchez-Fernandez 2010)\n\n\n\nimages here?"
   },
   {
     "objectID": "preso/preso.html#rescaling",
     "href": "preso/preso.html#rescaling",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Rescaling",
-    "text": "Rescaling\n\nRank OrderWinsorMin MaxZ-ScoresBox CoxDistance*\n\n\nRank Order\n\nMakes no distributional assumptions (Schneider et al. 2025)\nUseful for comparing other transformation methods\nLoss of information\n\n\n\nWinsorization\n\nReduce all outliers to a percentile (95th and 5th)\nDoesn’t reward overperformance in one area\nUsed in the Environmental Performance Indicator (EPI) before scaling from 0 to 100 (Esty 2008)\nMore robust than leaving keeping outliers (Mayer 2008)\n\n\n\nMin Max (OECD 2008)\n\\[\\begin{equation}\nI^t_qc = \\frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}\n\\end{equation}\\]\n\nWhere \\(x^t_qc\\) is the metric \\(q\\) for state \\(c\\) at time \\(t\\).\n\n\nScales all data from 0 to 1\nIntuitive (0 is worst, 1 is best)\nLinear transformation\nSchneider et al. (2023)\n\n\n\nZ-Scores (OECD 2008)\n\\[\\begin{equation}\nI^t_{qc} = \\frac{x^t_{qc}-x^t_{qc=\\overline{c}}}{\\sigma^t_{qc=\\overline{c}}}\n\\end{equation}\\]\n\nScales data to mean of 0 and standard deviation of 1\nLarger numbers are better, but no limits\nLinear transformation\n\n\n\nBox Cox (Bickel and Doksum 1981)\n\\[\\begin{equation}\n{\\rm For}\\ \\lambda\\neq0,\\ f\\lambda(x) = (sign(x)|x|^\\lambda-1)/\\lambda\n\\end{equation}\\] \\[\\begin{equation}\n{\\rm For}\\ \\lambda = 0,\\ f_0(x) = log(x)\n\\end{equation}\\]\n\nFinds an optimal value of \\(\\lambda\\) to make distribution normal\nMore tractable distribution for analysis\nHarder to interpret\nNon-linear transformation\n\n\n\nDistance to Target (OECD 2008)\n\nRatio of the indicator to a reference system or reference value\nUsed with official benchmarks like minimum wage (Jacobi et al. 2020)\nDifficult to set targets in many applications\n\n\\[\\begin{equation}\nI^t_qc = \\frac{x^t_qc}{x^t_{qc=\\overline{c}}}\n\\end{equation}\\]"
+    "text": "Rescaling\n\nRank OrderWinsorMin MaxZ-ScoresBox CoxDistance*\n\n\nRank Order\n\nRank against other states (50 is best, 1 is worst)\nStrengths:\n\nMakes no distributional assumptions\nUseful for comparing other transformation methods\n\nWeaknesses:\n\nLoss of information\n\nUsed by Schneider et al. (2025) for lack of robust data\n\n\n\nWinsorization\n\nReduce extreme values to a percentile (95th and 5th)\nDoesn’t reward overperformance\nUsed in the Environmental Performance Indicator (EPI) before scaling from 0 to 100 (D. Esty 2008)\nAllows for more robust than leaving outliers (Mayer 2008)\n\n\n\nMin Max (OECD 2008)\n\nScales all data from 0 (worst) to 1 (best)\n\n\\[\\begin{equation}\nI^t_qc = \\frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}\n\\end{equation}\\]\n\nWhere \\(x^t_qc\\) is the metric \\(q\\) for state \\(c\\) at time \\(t\\).\n\n\nStrengths:\n\nIntitive, approachable\nLinear transformation preserves relationships\n\nWeaknesses:\n\nSusceptible to outliers\n\nWidely used in sustainability composite indices Béné et al. (2019)\n\n\n\nZ-Scores (OECD 2008)\n\nScales data to mean of 0 and standard deviation of 1\n\n\\[\\begin{equation}\nI^t_{qc} = \\frac{x^t_{qc}-x^t_{qc=\\overline{c}}}{\\sigma^t_{qc=\\overline{c}}}\n\\end{equation}\\]\n\nLarger numbers are better, but no limits\nLinear transformation\nHarder to interpret\n\n\n\nBox Cox (Bickel and Doksum 1981)\n\nFinds an optimal value of \\(\\lambda\\) to normalize distribution\n\n\\[\\begin{equation}\n{\\rm For}\\ \\lambda\\neq0,\\ f\\lambda(x) = (sign(x)|x|^\\lambda-1)/\\lambda\n\\end{equation}\\] \\[\\begin{equation}\n{\\rm For}\\ \\lambda = 0,\\ f_0(x) = log(x)\n\\end{equation}\\]\n\nStrengths:\n\nMore tractable distributions for analysis\n\nWeaknesses:\n\nChallenging to interpret\nChanges relationships between variables\n\nBéné et al. (2019) used Box Cox transformations on skewed indicators (&gt;2) before using min-max scaling.\n\n\n\nDistance to Target (OECD 2008)\n\nDimensionless ratio of the indicator to a reference system or reference value\n\n\\[\\begin{equation}\nI^t_qc = \\frac{x^t_qc}{x^t_{qc=\\overline{c}}}\n\\end{equation}\\]\n\nUsed with official benchmarks like minimum wage (Jacobi et al. 2020)\nFlexible and intuitive premise\nChallenging to set targets in many applications"
   },
   {
     "objectID": "preso/preso.html#dimension-score-maps",
     "href": "preso/preso.html#dimension-score-maps",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Dimension Score Maps",
-    "text": "Dimension Score Maps\nUsing Min Max normalization and geometric aggregation\n\nEconomicsEnvironmentHealthProductionSocial\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote: cannot compare across dimensions\nEnv:\n\nScaling, everything looks good compared to NV\nBias toward biodiverse areas with denser population?\n\nProd: California skews everything\nSocial: Arkansas skews everything"
+    "text": "Dimension Score Maps\nUsing min-max scaling and geometric aggregation\n\nEconomicsEnvironmentHealthProductionSocial\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote: cannot compare across dimensions\nEnv:\n\nScaling, everything looks good compared to NV\nBias toward biodiverse areas with denser population?\n\nProd: California skews everything\nSocial: Arkansas skews everything"
   },
   {
     "objectID": "preso/preso.html",
@@ -1116,8 +1116,99 @@
   {
     "objectID": "preso/preso.html#metric-uncertainty",
     "href": "preso/preso.html#metric-uncertainty",
-    "title": "Sustainability Metrics Secondary Data",
+    "title": "Sustainability MetricsSecondary Data",
     "section": "Metric Uncertainty",
     "text": "Metric Uncertainty\n\n\n\nnotes here\nis this even interesting?\n\n\n\nDimension ScoresStandard Deviations\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScores stay about stable\nSD only goes down for health and economics - both have an indicator with many metrics\nNot sure this is anything"
+  },
+  {
+    "objectID": "preso/preso.html#weighting-and-aggregation",
+    "href": "preso/preso.html#weighting-and-aggregation",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Weighting and Aggregation",
+    "text": "Weighting and Aggregation\n\nArithmeticGeometricPCA/FA*Budget*Analytic*Conjoint*\n\n\n\nPlain old means\nArithmetic (Jacobi et al. 2020)\nCompensatory and non compensatory\nSome did both and compared, came out similar (Gómez-Limón and Sanchez-Fernandez 2010)\n\n\n\n\\[\\begin{equation}\n\\sqrt[n]{x_1 * x_2 * ... * x_n}\n\\end{equation}\\]"
+  },
+  {
+    "objectID": "preso/preso.html#aggregation-and-weighting",
+    "href": "preso/preso.html#aggregation-and-weighting",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Aggregation and Weighting",
+    "text": "Aggregation and Weighting\n\nArithmeticGeometricBudget*PCA*Others*\n\n\n\nPlain old means\nStrengths:\n\nSimple, interpretable\n\nWeaknesses:\n\nCompensatory method - make up for underperformance in one area with overperformance in another\nEqual weighting\n\nCommonly used in composite index literature (Jacobi et al. 2020)\n\n\n\n\n\\[n\\]th root of the product\n\n\\[\\begin{equation}\n\\sqrt[n]{x_1 * x_2 * ... * x_n}\n\\end{equation}\\]\n\nPartially compensable - rewards even performance across areas\nNot compatible with negative values*\nGómez-Limón and Sanchez-Fernandez (2010) compared results of both arithmetic and geometric means\nBéné et al. (2019) used arithmetic means for social and food dimensions, geometric means for environmental and economic dimensions\n\n\n\nBudget Allocation (Nardo et al. 2005)\n\nWeight based on expert or stakeholder opinion\n\nAllocate a budget of 100 ‘points’ to distribute among indicators\nTake means of allocations to get weights\nDiscussion, iteration, convergence\n\nStrengths:\n\nLeverage knowledge and experience\nFlexible and holistic\n\nWeaknesses:\n\nParticipant selection\nLimited generalizability\n\n\n\n\nPrincipal Components Analysis\n\nReduces variables to a smaller set of uncorrelated components\nLoadings show contribution of variables to component\nStrengths:\n\nEmpirical, quantitative results\n\nWeaknesses:\n\nExtraction\nInterpretation\nIncompatible with a priori hypotheses\n\nUse loadings to weight indicators, calculate weighted sum as domain score (Nicoletti 2000)\nD. C. Esty, Granoff, and Ruth (2002) tried PCA to develop composite but found the components were uninterpretable\n\n\n\nAnalytic Hierarchy Process\n\nAnalysis of pairwise preferences\nQuantify tradeoffs between indicators\n\nConjoint Analysis\n\nSurvey-based\nStated preference research\nDiscrete choice analysis\n\nMulticriteria Approach (Nardo et al. 2005)\n\nNon-compensatory, based on pair-wise ratio comparisons between units\n\nData Envelopment Analysis (OECD 2008)\n\nUse an efficiency frontier to define relative performance of countries"
+  },
+  {
+    "objectID": "preso/preso.html#case-study-min-max-and-geometric-means-classcenter-middle",
+    "href": "preso/preso.html#case-study-min-max-and-geometric-means-classcenter-middle",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Case Study: Min Max and Geometric Means {class=center, middle}",
+    "text": "Case Study: Min Max and Geometric Means {class=center, middle}"
+  },
+  {
+    "objectID": "preso/preso.html#uncertainty-and-sensitivity-classcenter-middle",
+    "href": "preso/preso.html#uncertainty-and-sensitivity-classcenter-middle",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Uncertainty and Sensitivity {class=center, middle}",
+    "text": "Uncertainty and Sensitivity {class=center, middle}"
+  },
+  {
+    "objectID": "preso/preso.html#case-study-indicator-distributions",
+    "href": "preso/preso.html#case-study-indicator-distributions",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Case Study: Indicator Distributions",
+    "text": "Case Study: Indicator Distributions\nAn example of indicator distributions with min-max scaling and geometric aggregation"
+  },
+  {
+    "objectID": "preso/preso.html#case-study-dimension-score-maps",
+    "href": "preso/preso.html#case-study-dimension-score-maps",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Case Study: Dimension Score Maps",
+    "text": "Case Study: Dimension Score Maps\nUsing min-max scaling and geometric aggregation\n\nEconomicsEnvironmentHealthProductionSocial\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nNote: cannot compare across dimensions\nEnv:\n\nScaling, everything looks good compared to NV\nBias toward biodiverse areas with denser population?\n\nProd: California skews everything\nSocial: Arkansas skews everything"
+  },
+  {
+    "objectID": "preso/preso.html#case-study-indicator-correlations",
+    "href": "preso/preso.html#case-study-indicator-correlations",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Case Study: Indicator Correlations",
+    "text": "Case Study: Indicator Correlations\n\nCorrelation MatrixInfluential Indicators\n\n\nMin Max geometric aggregation\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nHighly correlating indicators from different dimensions are a problem (double counting)\nTRANSITION TO VALIDATION"
+  },
+  {
+    "objectID": "preso/preso.html#case-study-validation-by-cronbach",
+    "href": "preso/preso.html#case-study-validation-by-cronbach",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Case Study: Validation by Cronbach",
+    "text": "Case Study: Validation by Cronbach\n\n\n\nCronbach’s Alpha is a measure of internal reliability or consistency (Cronbach 1951)\nArbitrary guideline of 0.7 to validate a measurement tool (Taber 2018)\n\n\\[\\begin{equation}\n\\alpha=\\frac{n}{n-1}\\left( 1-\\frac{\\sum_{i}^{V_i}}{V_t} \\right)\n\\end{equation}\\]\nWhere \\(n\\) is the number of items, \\(V_t\\) is the variance of item \\(i\\), and \\(V_t\\) is the variance of all items\n\nIt is not supposed to be negative."
+  },
+  {
+    "objectID": "preso/preso.html#case-study-validation-by-regression",
+    "href": "preso/preso.html#case-study-validation-by-regression",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Case Study: Validation by Regression",
+    "text": "Case Study: Validation by Regression\n\nFood InsecurityLife ExpectancyFood Environment Index\n\n\nFood Insecurity Index (UW Population Health Institute 2024)\n\n\n\n\n\n\nLife Expectancy (UW Population Health Institute 2024)\n\n\n\n\n\n\nFood Environment Index (UW Population Health Institute 2024)\nGLMnet variable importance:\n\n\n\n\n\n\n\n\n\nRandom forest variable importance:\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nFood Environment Index: 0 (worst) 10 (best). Distance to grocery, cost of health diet.\nHappiness (WalletHub):\n\nemotional and physical wellbeing (health index, depression, alcohol use disorder, adequate sleep rate…)\nWork environment (work hours, commute time, income, unemployment…)\nCommunity and environment (ideal weather, leisure time, safety, volunteer rate)"
+  },
+  {
+    "objectID": "preso/preso.html#case-study-validation-by-pca",
+    "href": "preso/preso.html#case-study-validation-by-pca",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Case Study: Validation by PCA",
+    "text": "Case Study: Validation by PCA\n\n\n\nEXPLAIN WHAT IT IS\nFactor extraction:\n\nParallel Analysis (PA) suggests 5 components\nVelicer MAP suggests 6\nVSS suggests 2 or 3\n\nGuideline: loadings &gt; 0.32 are meaningful (Tabachnick, Fidell, and Ullman 2019)\nKey to loadings:\n\nx &lt; 0.2 ~ ’ ’\nx &lt; 0.32 ~ ‘.’\nx &gt;= 0.32 ~ x\n\n\n\n\nScree PlotPromaxSimplimaxObliminCluster\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nMight be better off with 6 components - sign indicators are not cohesive\nPA: randomize rows, do PCA. Keep PCs that explain significantly more variance than expected by chance\nMAP: get average squared partial correlations for each PC. Keep PCs that lead to lowest average squared partial correlation\nVSS: compare fit of simplified model to original correlations. VSS = 1-sumsquares(r*)/sumsquares(r)Peaks at optimal (most interpretable) number of factors.\nPromax is best interpretation, but not great\nEigenvalue (ss loadings): varaince explained by component\nCommunality (h2): proportion of common variance present in variable\nUniquenss (u2): unique variable for each var (1-h2)\nComplexity (com): how well it reflects a construct (1 for 1, loading evenly on 2 is 2)"
+  },
+  {
+    "objectID": "preso/preso.html#uncertainty-metric-counts",
+    "href": "preso/preso.html#uncertainty-metric-counts",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Uncertainty: Metric Counts",
+    "text": "Uncertainty: Metric Counts\n\n\n\nIs this even interesting?\n\n\n\nDimension ScoresStandard Deviations\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nScores stay about stable\nSD only goes down for health and economics - both have an indicator with many metrics\nNot sure this is anything"
+  },
+  {
+    "objectID": "preso/preso.html#sensitivity-dimensions",
+    "href": "preso/preso.html#sensitivity-dimensions",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Sensitivity: Dimensions",
+    "text": "Sensitivity: Dimensions\n\n\n\nSample from uncertain inputs (OECD 2008)\n\nRescaling methods (5)\nAggregation methods (2)\nLeave out one indicator (39)\n= 390 iterations\n\nHigher ranks are desirable\nSome dimensions are quite unstable (Economics)\nSome are quite stable (Health)\n\n\n\nEconomicsEnvironmentHealthProductionSocial\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont\n\n\n\n\n\n\n\n\n\n\n\nDistribution for Vermont"
+  },
+  {
+    "objectID": "preso/preso.html#sensitivity-indicators",
+    "href": "preso/preso.html#sensitivity-indicators",
+    "title": "Sustainability MetricsSecondary Data",
+    "section": "Sensitivity: Indicators",
+    "text": "Sensitivity: Indicators\n\n\n\nSome points before plot\nanother point before the plot\nsome other important point\n\n\n\nEconomicsEnvironmentHealthProductionSocial"
   }
 ]

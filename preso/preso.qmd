@@ -1,8 +1,9 @@
 ---
-title: "Sustainability Metrics Secondary Data"
+title: "Sustainability Metrics<br>Secondary Data"
 author: "Chris Donovan"
 institute: "Food Systems Research Center"
 date: '2025-03-19'
+date-format: long
 format:
   revealjs:
     embed-resources: true
@@ -10,6 +11,7 @@ format:
     theme: [serif, preso.scss]
     transition: fade
     scrollable: true
+    # chalkboard: true
     revealjs-plugins:
       - revealjs-text-resizer
 editor: 
@@ -18,6 +20,13 @@ editor:
 bibliography: ../fsrc.bib
 citations-hover: true
 citeproc: true
+include-in-header:
+ - text: |
+     <style>
+     #title-slide .title {
+       font-size: 2em;
+     }
+     </style>
 ---
 
 ```{r}
@@ -67,41 +76,39 @@ conflicted::conflicts_prefer(
 
 ## Introduction {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '40%'}
 
--   Secondary data goals:
+-   Goals for secondary data:
     -   Identify existing data and gaps
     -   Explore methods of aggregating data
--   Goals for today:
-    -   Share methods
-    -   Share preliminary findings
-    -   Feedback and discussion
--   Guiding topics:
+-   Structure of presentation:
+    -   Explore framework and methods
+    -   Share results of case study
+    -   Uncertainty and sensitivity
+-   Guiding questions:
     -   How well do the data represesent the system?
-    -   Normalization, aggregation, and values
+    -   Valuation, scaling, weighting, aggregation
     -   Where and how do we incorporate qualitative data?
-    -   Informing the next RFP
-    
 :::
 
 ::: {.column width = '60%'}
 
-![Intervale Farm, Sally McCay, UVM Photo](../images/intervale_small.png){fig-align="center" width=90% fig-alt="A picture of a field at Intervale Farm."}
+![Intervale Farm, Sally McCay, UVM
+Photo](../images/intervale_small.png){fig-align="center" width="90%"
+fig-alt="A picture of a field at Intervale Farm."}
 
 :::
 
 ::::
 
 ::: notes
-The point is to take stock of existing data, use primary research 
+The point is to take stock of existing data, use primary research
 :::
 
 ## Framework {.smaller}
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Economics
 
 ```{r}
@@ -159,9 +166,7 @@ plots$social
 -   All ears for more datasets if you can fill in some NONEs
 :::
 
-## Secondary Data - Refined {.smaller}
-
-A set of 130 metrics to match the refined framework
+## Secondary Data {.smaller}
 
 ```{r}
 #| label: metadata_table_refined
@@ -171,16 +176,17 @@ htmltools::browsable(
   tagList(
     
     tags$div(
-      style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
+      # style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
+      style = "display: flex; margin-bottom: 20px; justify-content: center;",
       
-      tags$button(
-        class = "btn btn-primary",
-        style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
-        tagList(fontawesome::fa("download"), "Show/hide more columns"),
-        onclick = "Reactable.setHiddenColumns('metadata_table_refined', prevColumns => {
-          return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
-        })"
-      ),
+      # tags$button(
+      #   class = "btn btn-primary",
+      #   style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+      #   tagList(fontawesome::fa("arrows-left-right-to-line"), "Show/hide more columns"),
+      #   onclick = "Reactable.setHiddenColumns('metadata_table_refined', prevColumns => {
+      #     return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Updates', 'Units', 'Url'] : []
+      #   })"
+      # ),
       
       tags$button(
         class = "btn btn-primary",
@@ -283,35 +289,45 @@ htmltools::browsable(
 )
 ```
 
-::: {.notes}
-
--   \~650 metrics, plus another thousand NAICS variables
+::: notes
+-   \~650 metrics, available on website
+-   Set of 130 to match refined framework
 
 Sources
 
--   USDA NASS
--   USDA ERS Farm Income and Wealth Statistics
--   USDA ERS Food Environment Atlas
--   USDA Farm Service Agency Distaster Assistance
--   USDA Food and Nutrition Service
--   USDA Food Safety and Inspection Service
--   University of Wisconsin
--   US Census
--   EPA State GHG Data
--   TreeMap 2016
--   NatureServe - biodiversity data
-
+-   USDA NASS: income, expenses, labor, size, d2c sales
+-   USDA ERS Farm Income and Wealth Statistics: imports, exports, margin
+    protection payments, emergency program payments, indemnities,
+    capital expenditures and consumption
+-   USDA ERS Food Environment Atlas: WIC, SNAP, grocery store density
+-   USDA Farm Service Agency Disaster Assistance: emergency declarations
+    (proxy for EWE)
+-   USDA Food and Nutrition Service Farm to School program: SNAP and WIC
+    eligibility rates, coverage rates, school food authority spending,
+    farm to school program, culturally relevant foods
+-   U Wisconsin Population health institute, county health rankings and
+    roadmaps: all health stuff, social associations, connectedness,
+    voter turnout, health care infrastructure
+-   US Census ACS: earnings for FFF and Food service jobs, rental
+    vacancy rates, income inequality
+-   EPA State GHG Data: emissions form agriculture (N20, CO2, CH4)
+-   EPA National Aquatic Surveys: water quality, conditions based on
+    phosphorus, nitrogen, habitat complexity,
+-   TreeMap 2016: carbon stocks, forest health
+-   NatureServe - biodiversity data, ecosystem data
 :::
 
 ## Desirable Directions {.smaller}
 
-:::: {.columns}
+::: columns
 ::: {.column width = '30%'}
 
--   Official benchmarks where possible, otherwise largest value is 100%
-    [@jacobi2020NewUnderstandingEvaluation]
--   Every indicator gets a good direction and bad direction
-    [@schneider2023StateFoodSystems]
+-   How do we decide if values for an indicator are good or bad?
+-   @schneider2023StateFoodSystems gave every indicator a positive and
+    negative direction
+-   @jacobi2020NewUnderstandingEvaluation used official benchmarks where
+    possible, otherwise the largest value set to 100%
+-   Others have used the distance to a reference system [@adriaanse1993]
 :::
 
 ::: {.column width = '70%'}
@@ -329,8 +345,10 @@ desirable_table %>%
   get_reactable(
     defaultPageSize = 5,
     columns = list(
-      Metric = colDef(minWidth = 150),
-      Desirable = colDef(minWidth = 100)
+      Metric = colDef(minWidth = 125),
+      Desirable = colDef(minWidth = 75),
+      Definition = colDef(minWidth = 150),
+      Source = colDef(minWidth = 150)
     )
   )
 ```
@@ -341,58 +359,71 @@ desirable_table %>%
 
 ## Rescaling
 
-::: panel-tabset
+:::: panel-tabset
 ### Rank Order
 
 **Rank Order**
 
--   Makes no distributional assumptions [@schneider2025]
--   Useful for comparing other transformation methods
--   Loss of information
+-   Rank against other states (50 is best, 1 is worst)
+-   Strengths:
+    -   Makes no distributional assumptions
+    -   Useful for comparing other transformation methods
+-   Weaknesses:
+    -   Loss of information
+-   Used by @schneider2025 for lack of robust data
 
 ### Winsor
 
 **Winsorization**
 
--   Reduce all outliers to a percentile (95th and 5th)
--   Doesn't reward overperformance in one area
+-   Reduce extreme values to a percentile (95th and 5th)
+-   Doesn't reward overperformance
 -   Used in the Environmental Performance Indicator (EPI) before scaling
     from 0 to 100 [@esty2008Pilot2006Environmental]
--   More robust than leaving keeping outliers
+-   Allows for more robust than leaving outliers
     [@mayerStrengthsWeaknessesCommon2008]
 
 ### Min Max
 
 **Min Max** [@oecdHandbookConstructingComposite2008]
 
+-   Scales all data from 0 (worst) to 1 (best)
+
 \begin{equation}
 I^t_qc = \frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}
 \end{equation}
 
-::: {.center}
+::: center
 Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
 :::
 
--   Scales all data from 0 to 1
--   Intuitive (0 is worst, 1 is best)
--   Linear transformation
--   [@schneider2025, @schneider2023StateFoodSystems]
+-   Strengths:
+    -   Intitive, approachable
+    -   Linear transformation preserves relationships
+-   Weaknesses:
+    -   Susceptible to outliers
+-   Widely used in sustainability composite indices
+    [@schneider2025,@schneider2023StateFoodSystems,@bene2019GlobalMapIndicators]
 
 ### Z-Scores
 
 **Z-Scores** [@oecdHandbookConstructingComposite2008]
 
+-   Scales data to mean of 0 and standard deviation of 1
+
 \begin{equation}
 I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 \end{equation}
 
--   Scales data to mean of 0 and standard deviation of 1
 -   Larger numbers are better, but no limits
 -   Linear transformation
+-   Harder to interpret
 
 ### Box Cox
 
 **Box Cox** [@bickel1981]
+
+-   Finds an optimal value of $\lambda$ to normalize distribution
 
 \begin{equation}
 {\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
@@ -400,58 +431,116 @@ I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 {\rm For}\ \lambda = 0,\ f_0(x) = log(x)
 \end{equation}
 
--   Finds an optimal value of $\lambda$ to make distribution normal
--   More tractable distribution for analysis
--   Harder to interpret
--   Non-linear transformation
+-   Strengths:
+    -   More tractable distributions for analysis
+-   Weaknesses:
+    -   Challenging to interpret
+    -   Changes relationships between variables
+-   @bene2019GlobalMapIndicators used Box Cox transformations on skewed
+    indicators (\>2) before using min-max scaling.
 
-### Distance*
+### Distance\*
 
 **Distance to Target** [@oecdHandbookConstructingComposite2008]
 
--   Ratio of the indicator to a reference system or reference value
--   Used with official benchmarks like minimum wage [@jacobi2020NewUnderstandingEvaluation]
--   Difficult to set targets in many applications
+-   Dimensionless ratio of the indicator to a reference system or
+    reference value
 
 \begin{equation}
 I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 \end{equation}
 
-:::
+-   Used with official benchmarks like minimum wage
+    [@jacobi2020NewUnderstandingEvaluation]
+-   Flexible and intuitive premise
+-   Challenging to set targets in many applications
+::::
 
-## Aggregation
+## Aggregation and Weighting
 
-:::: {.columns}
+::: panel-tabset
+### Arithmetic
 
-::: {.column width = '40%'}
+-   Plain old means
+-   Strengths:
+    -   Simple, interpretable
+-   Weaknesses:
+    -   Compensatory method - make up for underperformance in one area
+        with overperformance in another
+    -   Equal weighting
+-   Commonly used in composite index literature
+    [@jacobi2020NewUnderstandingEvaluation]
 
--   Arithmetic [@jacobi2020NewUnderstandingEvaluation]
--   Geometric:
+### Geometric
+
+-   $$n$$th root of the product
 
 \begin{equation}
 \sqrt[n]{x_1 * x_2 * ... * x_n}
 \end{equation}
 
--   Compensatory and non compensatory
--   Some did both and compared, came out similar
-    [@gomez-limon2010EmpiricalEvaluationAgricultural]
-    
+-   Partially compensable - rewards even performance across areas
+-   Not compatible with negative values\*
+-   @gomez-limon2010EmpiricalEvaluationAgricultural compared results of
+    both arithmetic and geometric means
+-   @bene2019GlobalMapIndicators used arithmetic means for social and
+    food dimensions, geometric means for environmental and economic
+    dimensions
+
+### Budget\*
+
+**Budget Allocation** [@nardo2005]
+
+-   Weight based on expert or stakeholder opinion
+    -   Allocate a budget of 100 'points' to distribute among indicators
+    -   Take means of allocations to get weights
+    -   Discussion, iteration, convergence
+-   Strengths:
+    -   Leverage knowledge and experience
+    -   Flexible and holistic
+-   Weaknesses:
+    -   Participant selection
+    -   Limited generalizability
+
+### PCA\*
+
+**Principal Components Analysis**
+
+-   Reduces variables to a smaller set of uncorrelated components
+-   Loadings show contribution of variables to component
+-   Strengths:
+    -   Empirical, quantitative results
+-   Weaknesses:
+    -   Extraction
+    -   Interpretation
+    -   Incompatible with a priori hypotheses
+-   Use loadings to weight indicators, calculate weighted sum as domain
+    score [@nicolettiSummaryIndicatorsProduct2000]
+-   @esty2002 tried PCA to develop composite but found the components
+    were uninterpretable
+
+### Others\*
+
+**Analytic Hierarchy Process**
+
+-   Analysis of pairwise preferences
+-   Quantify tradeoffs between indicators
+
+**Conjoint Analysis**
+
+-   Survey-based
+-   Stated preference research
+-   Discrete choice analysis
+
+**Multicriteria Approach** [@nardo2005]
+
+-   Non-compensatory, based on pair-wise ratio comparisons between units
+
+**Data Envelopment Analysis** [@oecdHandbookConstructingComposite2008]
+
+-   Use an efficiency frontier to define relative performance of
+    countries
 :::
-
-::: {.column width = '60%'}
-
--   images here?
-  
-:::
-
-::::
-
-## Indicator Distributions
-
-An example of indicator distributions with the Min Max + geometric means
-methods
-
-![](plots/indic_dists.png){height="1500"}
 
 ## Comparisons {.smaller}
 
@@ -461,7 +550,6 @@ methods
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
-# source('dev/get_vt_spiders.R')
 dat <- readRDS('data/state_score_iterations.rds')
 get_vt_spiders(dat, 'rank')
 ```
@@ -499,9 +587,22 @@ get_vt_spiders(dat, 'boxcox')
 ```
 :::
 
-## Dimension Score Maps {.smaller}
+::: notes
+-   We now have 10 combinations of scaling and aggregation.
+-   Note that Z-score geometric transformation is hinky
+-   TRANSITION INTO CASE STUDY OF MIN MAX GEO
+:::
 
-Using Min Max normalization and geometric aggregation
+## Case Study: Indicator Distributions
+
+An example of indicator distributions with min-max scaling and geometric
+aggregation
+
+![](plots/indic_dists.png){height="1500"}
+
+## Case Study: Dimension Score Maps {.smaller}
+
+Using min-max scaling and geometric aggregation
 
 ::: panel-tabset
 ```{r}
@@ -601,18 +702,16 @@ get_leaflet(map_dat, 'social')
 ```
 :::
 
-::: {.notes}
-
-* Note: cannot compare across dimensions
-* Env:
-  + Scaling, everything looks good compared to NV
-  + Bias toward biodiverse areas with denser population?
-* Prod: California skews everything
-* Social: Arkansas skews everything
-
+::: notes
+-   Note: cannot compare across dimensions
+-   Env:
+    -   Scaling, everything looks good compared to NV
+    -   Bias toward biodiverse areas with denser population?
+-   Prod: California skews everything
+-   Social: Arkansas skews everything
 :::
 
-## Indicator Correlations {.smaller}
+## Case Study: Indicator Correlations {.smaller}
 
 ::: panel-tabset
 ### Correlation Matrix
@@ -656,7 +755,9 @@ Min Max geometric aggregation
 # )
 ```
 
-<iframe src="plots/correlation_plotly.html" width="100%" height="650"></iframe>
+<iframe src="plots/correlation_plotly.html" width="100%" height="650">
+
+</iframe>
 
 ### Influential Indicators
 
@@ -677,11 +778,50 @@ cor_table %>%
 ::: notes
 -   Highly correlating indicators from different dimensions are a
     problem (double counting)
+-   TRANSITION TO VALIDATION
 :::
 
-## Validation: Regression {.smaller}
+## Case Study: Validation by Cronbach {.smaller}
 
-:::::: panel-tabset
+::: columns
+::: {.column width = '40%'}
+
+-   Cronbach's Alpha is a measure of internal reliability or consistency
+    [@cronbach1951CoefficientAlphaInternal]
+-   Arbitrary guideline of 0.7 to validate a measurement tool
+    [@taber2018UseCronbachAlpha]
+
+\begin{equation}
+\alpha=\frac{n}{n-1}\left( 1-\frac{\sum_{i}^{V_i}}{V_t} \right)
+\end{equation}
+
+Where $n$ is the number of items, $V_t$ is the variance of item $i$, and
+$V_t$ is the variance of all items
+
+-   It is not supposed to be negative.
+
+:::
+
+::: {.column width = '60%'}
+
+```{r}
+#| class: centered
+cronbachs <- readRDS('preso/data/cronbach_dimensions.rds')
+get_reactable(
+  cronbachs,
+  fullWidth = FALSE,
+  searchable = FALSE,
+  filterable = FALSE
+)
+```
+
+:::
+
+::::
+
+## Case Study: Validation by Regression {.smaller}
+
+::::: panel-tabset
 ### Food Insecurity
 
 Food Insecurity Index (UW Population Health Institute 2024)
@@ -761,8 +901,7 @@ Random forest variable importance:
 importance <- readRDS('preso/plots/val3_rf_importance.rds')
 plot(importance)
 ```
-
-::::::
+:::::
 
 ::: notes
 -   Food Environment Index: 0 (worst) 10 (best). Distance to grocery,
@@ -774,10 +913,9 @@ plot(importance)
         unemployment...)
     -   Community and environment (ideal weather, leisure time, safety,
         volunteer rate)
-        
 :::
 
-## Validation: PCA {.smaller}
+## Case Study: Validation by PCA {.smaller}
 
 ::: columns
 ::: {.column width = '30%'}
@@ -785,10 +923,11 @@ plot(importance)
 -   EXPLAIN WHAT IT IS
 -   Factor extraction:
     -   Parallel Analysis (PA) suggests 5 components
-    -   Velicer MAP suggests 6 
+    -   Velicer MAP suggests 6
     -   VSS suggests 2 or 3
+-   Guideline: loadings \> 0.32 are meaningful [@tabachnick2019]
 -   Key to loadings:
-    -   x \< 0.2 \~ ''
+    -   x \< 0.2 \~ ' '
     -   x \< 0.32 \~ '.'
     -   x \>= 0.32 \~ x
     
@@ -807,21 +946,22 @@ plot(importance)
 pca_tables <- readRDS('preso/data/pca_tables.rds')
 
 get_pca_table <- function(table) {
-  get_reactable(
-    table,
-    pagination = FALSE,
-    defaultPageSize = 50,
-    showPageSizeOptions = FALSE,
-    fullWidth = TRUE,
-    defaultColDef = colDef(minWidth = 50),
-    columns = list(
-      indicator = colDef(minWidth = 200),
-      dimension = colDef(minWidth = 100)
-    )
-  )  
+  table %>% 
+    setNames(c(stringr::str_to_title(names(.)))) %>% 
+    get_reactable(
+      pagination = FALSE,
+      defaultPageSize = 50,
+      showPageSizeOptions = FALSE,
+      fullWidth = TRUE,
+      defaultColDef = colDef(minWidth = 50),
+      columns = list(
+        indicator = colDef(minWidth = 200),
+        dimension = colDef(minWidth = 100)
+      )
+    )  
 }
 
-get_pca_table(pca_tables$promax)
+get_pca_table(pca_tables$Promax)
 ```
 
 ### Simplimax
@@ -841,7 +981,6 @@ get_pca_table(pca_tables$oblimin)
 ```{r}
 get_pca_table(pca_tables$cluster)
 ```
-
 :::
 
 :::
@@ -849,37 +988,41 @@ get_pca_table(pca_tables$cluster)
 ::::
 
 ::: notes
-
-* Might be better off with 6 components - sign indicators are not cohesive
-* PA: randomize rows, do PCA. Keep PCs that explain significantly more variance than expected by chance
-* MAP: get average squared partial correlations for each PC. Keep PCs that lead to lowest average squared partial correlation
-* VSS: compare fit of simplified model to original correlations. VSS = 1-sumsquares(r*)/sumsquares(r)Peaks at optimal (most interpretable) number of factors.
-* Promax is best interpretation, but not great
-
+-   Might be better off with 6 components - sign indicators are not
+    cohesive
+-   PA: randomize rows, do PCA. Keep PCs that explain significantly more
+    variance than expected by chance
+-   MAP: get average squared partial correlations for each PC. Keep PCs
+    that lead to lowest average squared partial correlation
+-   VSS: compare fit of simplified model to original correlations. VSS =
+    1-sumsquares(r\*)/sumsquares(r)Peaks at optimal (most interpretable)
+    number of factors.
+-   Promax is best interpretation, but not great
+-   Eigenvalue (ss loadings): varaince explained by component
+-   Communality (h2): proportion of common variance present in variable
+-   Uniquenss (u2): unique variable for each var (1-h2)
+-   Complexity (com): how well it reflects a construct (1 for 1, loading
+    evenly on 2 is 2)
 :::
 
-## Metric Uncertainty {.smaller}
+## Uncertainty: Metric Counts {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '30%'}
 
-* notes here
-* is this even interesting?
-
+-   Is this even interesting?
 :::
 
 ::: {.column width = '70%'}
 
-::: {.panel-tabset}
-
-### Dimension Scores 
+::: panel-tabset
+### Dimension Scores
 
 ```{r}
 #| fig-align: center
 uncertainty_plots <- readRDS('preso/plots/uncertainty_plots.rds')
 ggplotly(
-  uncertainty_plots$sd,
+  uncertainty_plots$dimension_ranks,
   width = 700,
   height = 400,
   tooltip = 'text'
@@ -897,25 +1040,22 @@ ggplotly(
   tooltip = 'text'
 )
 ```
-
 :::
 
 :::
 
 ::::
 
-::: {.notes}
-
-* Scores stay about stable 
-* SD only goes down for health and economics - both have an indicator with many metrics
-* Not sure this is anything
-
+::: notes
+-   Scores stay about stable
+-   SD only goes down for health and economics - both have an indicator
+    with many metrics
+-   Not sure this is anything
 :::
 
-## Sensitivity by Dimension {.smaller}
+## Sensitivity: Dimensions {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '40%'}
 
 -   Sample from uncertain inputs
@@ -927,7 +1067,6 @@ ggplotly(
 -   Higher ranks are desirable
 -   Some dimensions are quite unstable (Economics)
 -   Some are quite stable (Health)
-
 :::
 
 ::: {.column width = '60%'}
@@ -994,7 +1133,7 @@ dim_sens_plots$social
 
 ::::
 
-## Indicator Influence {.smaller}
+## Sensitivity: Indicators {.smaller}
 
 ::: columns
 ::: {.column width = '30%'}
@@ -1081,28 +1220,26 @@ get_plotly(ind_inf_plots$social)
         aggregation?
 
 ::: notes
-
-* Gaps:
-  + NASS stats lean toward commodity crops
-  + Soil health
-  + Food distribution capacity (have some of this)
-  + Food loss and waste
-  + Embodied Carbon
-  + Carbon stocks
-  + forest complexity
-  + water quality
-  + Water quantity
-  + precarity, market health indices
-  + diversity of Farm Types (this one tricky for VT)
-  + nutrition
-  + all of social dimension
-* Sensitivity:
-  + Economics, environment need to be refined
-  
+-   Gaps:
+    -   NASS stats lean toward commodity crops
+    -   Soil health
+    -   Food distribution capacity (have some of this)
+    -   Food loss and waste
+    -   Embodied Carbon
+    -   Carbon stocks
+    -   forest complexity
+    -   water quality
+    -   Water quantity
+    -   precarity, market health indices
+    -   diversity of Farm Types (this one tricky for VT)
+    -   nutrition\*
+    -   all of social dimension\*
+-   Sensitivity:
 :::
 
 ## To Add
 
 -   Scenario Analysis with random forest for predictions?
+-   Indicator sensitivity across all states, not just Vermont?
 
 ## References

@@ -204,6 +204,8 @@ Alas, for now we will invert variables in each of the transformed datasets as ne
 ```{r}
 #| label: directional_values
 #| output: false
+# Check variable names
+vars <- names(normed[[1]])
 
 # Higher numbers should be better. Reverse metrics that are the opposite, 
 # where lower numbers are better. Only listing reverse here - metrics are 
