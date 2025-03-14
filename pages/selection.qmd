@@ -115,9 +115,10 @@ rotations <- c(
   'simplimax',
   'cluster'
 )
-
 pca_outs <- map(rotations, ~ {
-  pca(pca_dat, nfactors = 5, rotate = .x)
+  pca_dat %>% 
+    # scale() %>% 
+    pca(nfactors = 5, rotate = .x)
 }) %>% 
   setNames(c(rotations))
 

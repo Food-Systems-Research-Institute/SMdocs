@@ -6,12 +6,12 @@ date: '2025-03-19'
 date-format: long
 format:
   revealjs:
-    embed-resources: true
+    embed-resources: false
     incremental: false
     theme: [serif, preso.scss]
     transition: fade
     scrollable: true
-    # chalkboard: true
+    chalkboard: true
     revealjs-plugins:
       - revealjs-text-resizer
 editor: 
@@ -83,13 +83,14 @@ conflicted::conflicts_prefer(
     -   Identify existing data and gaps
     -   Explore methods of aggregating data
 -   Structure of presentation:
-    -   Explore framework and methods
-    -   Share results of case study
-    -   Uncertainty and sensitivity
+    1.  Framework and methods
+    2.  Preliminary results of case study
+    3.  Uncertainty and sensitivity
 -   Guiding questions:
     -   How well do the data represesent the system?
     -   Valuation, scaling, weighting, aggregation
     -   Where and how do we incorporate qualitative data?
+    
 :::
 
 ::: {.column width = '60%'}
@@ -103,8 +104,13 @@ fig-alt="A picture of a field at Intervale Farm."}
 ::::
 
 ::: notes
-The point is to take stock of existing data, use primary research
+
+-   The point is to take stock of existing data, swap out and fill in with primary research where necessary. 
+-   Skeleton of a framework.
+
 :::
+
+# 1. Framework and Methods {.center}
 
 ## Framework {.smaller}
 
@@ -163,10 +169,10 @@ plots$social
 
 ::: notes
 -   NONE is a placeholder for when I don't have a metric there
--   All ears for more datasets if you can fill in some NONEs
+-   Many of these are not ideal. All ears for more datasets
 :::
 
-## Secondary Data {.smaller}
+## Framework: Secondary Data {.smaller}
 
 ```{r}
 #| label: metadata_table_refined
@@ -317,7 +323,7 @@ Sources
 -   NatureServe - biodiversity data, ecosystem data
 :::
 
-## Desirable Directions {.smaller}
+## Methods: Desirable Directions {.smaller}
 
 ::: columns
 ::: {.column width = '30%'}
@@ -357,7 +363,7 @@ desirable_table %>%
 
 ::::
 
-## Rescaling
+## Methods: Rescaling {.smaller}
 
 :::: panel-tabset
 ### Rank Order
@@ -456,12 +462,14 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 -   Challenging to set targets in many applications
 ::::
 
-## Aggregation and Weighting
+## Methods: Aggregation and Weighting {.smaller}
 
 ::: panel-tabset
 ### Arithmetic
 
--   Plain old means
+**Arithmetic Means**
+
+-   Plain old average
 -   Strengths:
     -   Simple, interpretable
 -   Weaknesses:
@@ -473,7 +481,9 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 
 ### Geometric
 
--   $$n$$th root of the product
+**Geometric Means**
+
+-   $n$th root of the product of values
 
 \begin{equation}
 \sqrt[n]{x_1 * x_2 * ... * x_n}
@@ -542,7 +552,7 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
     countries
 :::
 
-## Comparisons {.smaller}
+## Methods: Comparisons {.smaller}
 
 ::: panel-tabset
 ### Rank Order
@@ -592,6 +602,8 @@ get_vt_spiders(dat, 'boxcox')
 -   Note that Z-score geometric transformation is hinky
 -   TRANSITION INTO CASE STUDY OF MIN MAX GEO
 :::
+
+# 2. Case Study
 
 ## Case Study: Indicator Distributions
 
@@ -704,19 +716,19 @@ get_leaflet(map_dat, 'social')
 
 ::: notes
 -   Note: cannot compare across dimensions
--   Env:
-    -   Scaling, everything looks good compared to NV
-    -   Bias toward biodiverse areas with denser population?
+-   **This is where I want qualitative data**
+-   Env: Nevada skews everything
+-   Health: Mississippi skews everything
 -   Prod: California skews everything
 -   Social: Arkansas skews everything
 :::
 
 ## Case Study: Indicator Correlations {.smaller}
 
+Min max scaling and geometric aggregation
+
 ::: panel-tabset
 ### Correlation Matrix
-
-Min Max geometric aggregation
 
 ```{r}
 # mat <- readRDS('preso/data/correlation_data.rds')
@@ -778,6 +790,8 @@ cor_table %>%
 ::: notes
 -   Highly correlating indicators from different dimensions are a
     problem (double counting)
+-   Note: social dimension has strong positive AND negative correlations
+-   Note: social connectedness is pretty high (social associations, disconnected youth, single parent households)
 -   TRANSITION TO VALIDATION
 :::
 
@@ -920,8 +934,9 @@ plot(importance)
 ::: columns
 ::: {.column width = '30%'}
 
--   EXPLAIN WHAT IT IS
--   Factor extraction:
+-   Principal Components Analysis is a dimension reduction method
+-   Characterize variance of many variables using smaller set of components
+-   Component extraction:
     -   Parallel Analysis (PA) suggests 5 components
     -   Velicer MAP suggests 6
     -   VSS suggests 2 or 3
@@ -988,22 +1003,24 @@ get_pca_table(pca_tables$cluster)
 ::::
 
 ::: notes
--   Might be better off with 6 components - sign indicators are not
-    cohesive
+-   Scree plot: would say 6 components
 -   PA: randomize rows, do PCA. Keep PCs that explain significantly more
     variance than expected by chance
 -   MAP: get average squared partial correlations for each PC. Keep PCs
     that lead to lowest average squared partial correlation
 -   VSS: compare fit of simplified model to original correlations. VSS =
-    1-sumsquares(r\*)/sumsquares(r)Peaks at optimal (most interpretable)
+    1-sumsquares(r\*)/sumsquares(r). Peaks at optimal (most interpretable)
     number of factors.
 -   Promax is best interpretation, but not great
+-   Loadings: correlation coefficients between variables and components
 -   Eigenvalue (ss loadings): varaince explained by component
 -   Communality (h2): proportion of common variance present in variable
--   Uniquenss (u2): unique variable for each var (1-h2)
+-   Uniqueness (u2): unique variable for each var (1-h2)
 -   Complexity (com): how well it reflects a construct (1 for 1, loading
     evenly on 2 is 2)
 :::
+
+# 3. Uncertainty and Sensitivity
 
 ## Uncertainty: Metric Counts {.smaller}
 
@@ -1053,7 +1070,7 @@ ggplotly(
 -   Not sure this is anything
 :::
 
-## Sensitivity: Dimensions {.smaller}
+## Uncertainty: Dimensions {.smaller}
 
 ::: columns
 ::: {.column width = '40%'}
@@ -1138,9 +1155,12 @@ dim_sens_plots$social
 ::: columns
 ::: {.column width = '30%'}
 
--   Some points before plot
--   another point before the plot
--   some other important point
+-   Steps:
+    1. Run all 10 methods without the indicator
+    2. Run all 10 methods with the indicator
+    3. Calculate average change in VT dimension rank
+-   Shows how influential an indicator is on Vermont dimension scores
+
 :::
 
 ::: {.column width = '70%'}
@@ -1205,21 +1225,17 @@ get_plotly(ind_inf_plots$social)
 
 ::::
 
-## Conclusions and Discussion
+## Conclusions
 
--   Conclusions
-    -   Gaps
-    -   Stability and Sensitivity
-    -   Framework complexity
-    -   Influential indicators
--   Discussion
-    -   How well do these data represent the system?
-    -   Can we reasonably assign desirable directions to metrics and
-        indicators?
-    -   What are fair and interpretable methods of transformations and
-        aggregation?
+-   Gaps in secondary data
+-   Framework complexity and coherence
+-   Stability and sensitivity
+-   Influential indicators
+
+-   (Format and add image on the right)
 
 ::: notes
+
 -   Gaps:
     -   NASS stats lean toward commodity crops
     -   Soil health
@@ -1234,12 +1250,41 @@ get_plotly(ind_inf_plots$social)
     -   diversity of Farm Types (this one tricky for VT)
     -   nutrition\*
     -   all of social dimension\*
+-   Complexity and coherence:
+    -   Cronbach: Some are coherent (health, and lesser extent economics and environment)
+    -   Is this important to us? What does this mean for social dimension?
 -   Sensitivity:
+    -   Some dimensions stable (health)
+    -   Others ambiguous (economics)
+    -   Metric counts: fewer means risk of poor fit
+    -   Diagnostic for indicator influence (production species diversity)
+-   Metric counts: fewer increases risks?
+-   Influential indicators:
+    -   Carbon fluxes (10 interactions)
+    -   Access to care, value added market (6)
+    -   Operations diversification, phyiscal health, production quantities (5)
+    -   More about GDP? Need to deal with this
+    -   Social connectedness (5)
+    -   From indicator sensitivity: social connectedness and production diversity
+    
 :::
 
-## To Add
+## Discussion
+
+-   How well do these data represent the system? What should be changed or added?
+-   How should we assign values to metrics and indicators?
+-   What are fair and interpretable methods of transformations and
+    aggregation?
+-   Where and how should we incorporate qualitative data?
+-   What does this mean for shaping the next RFP?
+
+-   (Format and add image on the right)
+
+## To Add or Change
 
 -   Scenario Analysis with random forest for predictions?
 -   Indicator sensitivity across all states, not just Vermont?
+-   Should I remove the part where I ditch 5 metrics that I can't put a direction on?
+-   Should I remove or change the production species diversity metric?
 
 ## References
