@@ -314,8 +314,8 @@ get_agg_dimensions <- function(index_scores,
 
 #' Putting everything into a single function so we can run start to finish
 
-#' Normed data is at 'data/valued_scaled_data.rds'. It includes all 10
-#'  iterations of scaling and aggregation.
+#' Normed data input is at data/rescaled_valued_metrics.rds. It includes all 9*
+#'  iterations of transformation and scaling
 #' Framework should be filtered to proper metrics at 'data/filtered_frame.rds'
 #' If sample_metrics is TRUE, n_metrics MUST be included
 get_all_aggregations <- function(normed_data,
@@ -326,7 +326,7 @@ get_all_aggregations <- function(normed_data,
                                  sample_metrics = NULL,
                                  n_metrics = NULL) {
   
-  # Pull out proper fips vector from normed_data for use get_organized
+  # Pull out proper fips vector from normed_data for use in get_organized
   fips_vector <- rownames(normed_data[[1]])
   
   ## Reduce inputs if removing indicators or metrics

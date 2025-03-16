@@ -258,12 +258,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Metrics Data</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/sm-explorer.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SM-Explorer</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -348,16 +342,33 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#summary" id="toc-summary" class="nav-link active" data-scroll-target="#summary"><span class="header-section-number">1</span> Summary</a></li>
-  <li><a href="#rank-arithmetic" id="toc-rank-arithmetic" class="nav-link" data-scroll-target="#rank-arithmetic"><span class="header-section-number">2</span> Rank Arithmetic</a></li>
-  <li><a href="#rank-geometric" id="toc-rank-geometric" class="nav-link" data-scroll-target="#rank-geometric"><span class="header-section-number">3</span> Rank Geometric</a></li>
-  <li><a href="#winsor-arithmetic" id="toc-winsor-arithmetic" class="nav-link" data-scroll-target="#winsor-arithmetic"><span class="header-section-number">4</span> Winsor Arithmetic</a></li>
-  <li><a href="#winsor-geometric" id="toc-winsor-geometric" class="nav-link" data-scroll-target="#winsor-geometric"><span class="header-section-number">5</span> Winsor Geometric</a></li>
-  <li><a href="#min-max-arithmetic" id="toc-min-max-arithmetic" class="nav-link" data-scroll-target="#min-max-arithmetic"><span class="header-section-number">6</span> Min Max Arithmetic</a></li>
-  <li><a href="#min-max-geometric" id="toc-min-max-geometric" class="nav-link" data-scroll-target="#min-max-geometric"><span class="header-section-number">7</span> Min Max Geometric</a></li>
-  <li><a href="#z-score-arithmetic" id="toc-z-score-arithmetic" class="nav-link" data-scroll-target="#z-score-arithmetic"><span class="header-section-number">8</span> Z-Score Arithmetic</a></li>
-  <li><a href="#z-score-geometric" id="toc-z-score-geometric" class="nav-link" data-scroll-target="#z-score-geometric"><span class="header-section-number">9</span> Z-Score Geometric</a></li>
-  <li><a href="#box-cox-arithmetic" id="toc-box-cox-arithmetic" class="nav-link" data-scroll-target="#box-cox-arithmetic"><span class="header-section-number">10</span> Box Cox Arithmetic</a></li>
-  <li><a href="#box-cox-geometric" id="toc-box-cox-geometric" class="nav-link" data-scroll-target="#box-cox-geometric"><span class="header-section-number">11</span> Box Cox Geometric</a></li>
+  <li><a href="#raw" id="toc-raw" class="nav-link" data-scroll-target="#raw"><span class="header-section-number">2</span> Raw</a>
+  <ul>
+  <li><a href="#rank-arithmetic" id="toc-rank-arithmetic" class="nav-link" data-scroll-target="#rank-arithmetic"><span class="header-section-number">2.1</span> Rank Arithmetic</a></li>
+  <li><a href="#rank-geometric" id="toc-rank-geometric" class="nav-link" data-scroll-target="#rank-geometric"><span class="header-section-number">2.2</span> Rank Geometric</a></li>
+  <li><a href="#min-max-arithmetic" id="toc-min-max-arithmetic" class="nav-link" data-scroll-target="#min-max-arithmetic"><span class="header-section-number">2.3</span> Min Max Arithmetic</a></li>
+  <li><a href="#min-max-geometric" id="toc-min-max-geometric" class="nav-link" data-scroll-target="#min-max-geometric"><span class="header-section-number">2.4</span> Min Max Geometric</a></li>
+  <li><a href="#z-score-arithmetic" id="toc-z-score-arithmetic" class="nav-link" data-scroll-target="#z-score-arithmetic"><span class="header-section-number">2.5</span> Z-Score Arithmetic</a></li>
+  <li><a href="#z-score-geometric" id="toc-z-score-geometric" class="nav-link" data-scroll-target="#z-score-geometric"><span class="header-section-number">2.6</span> Z-Score Geometric</a></li>
+  </ul></li>
+  <li><a href="#winsor" id="toc-winsor" class="nav-link" data-scroll-target="#winsor"><span class="header-section-number">3</span> Winsor</a>
+  <ul>
+  <li><a href="#rank-arithmetic-1" id="toc-rank-arithmetic-1" class="nav-link" data-scroll-target="#rank-arithmetic-1"><span class="header-section-number">3.1</span> Rank Arithmetic</a></li>
+  <li><a href="#rank-geometric-1" id="toc-rank-geometric-1" class="nav-link" data-scroll-target="#rank-geometric-1"><span class="header-section-number">3.2</span> Rank Geometric</a></li>
+  <li><a href="#min-max-arithmetic-1" id="toc-min-max-arithmetic-1" class="nav-link" data-scroll-target="#min-max-arithmetic-1"><span class="header-section-number">3.3</span> Min Max Arithmetic</a></li>
+  <li><a href="#min-max-geometric-1" id="toc-min-max-geometric-1" class="nav-link" data-scroll-target="#min-max-geometric-1"><span class="header-section-number">3.4</span> Min Max Geometric</a></li>
+  <li><a href="#z-score-arithmetic-1" id="toc-z-score-arithmetic-1" class="nav-link" data-scroll-target="#z-score-arithmetic-1"><span class="header-section-number">3.5</span> Z-Score Arithmetic</a></li>
+  <li><a href="#z-score-geometric-1" id="toc-z-score-geometric-1" class="nav-link" data-scroll-target="#z-score-geometric-1"><span class="header-section-number">3.6</span> Z-Score Geometric</a></li>
+  </ul></li>
+  <li><a href="#box-cox" id="toc-box-cox" class="nav-link" data-scroll-target="#box-cox"><span class="header-section-number">4</span> Box Cox</a>
+  <ul>
+  <li><a href="#rank-arithmetic-2" id="toc-rank-arithmetic-2" class="nav-link" data-scroll-target="#rank-arithmetic-2"><span class="header-section-number">4.1</span> Rank Arithmetic</a></li>
+  <li><a href="#rank-geometric-2" id="toc-rank-geometric-2" class="nav-link" data-scroll-target="#rank-geometric-2"><span class="header-section-number">4.2</span> Rank Geometric</a></li>
+  <li><a href="#min-max-arithmetic-2" id="toc-min-max-arithmetic-2" class="nav-link" data-scroll-target="#min-max-arithmetic-2"><span class="header-section-number">4.3</span> Min Max Arithmetic</a></li>
+  <li><a href="#min-max-geometric-2" id="toc-min-max-geometric-2" class="nav-link" data-scroll-target="#min-max-geometric-2"><span class="header-section-number">4.4</span> Min Max Geometric</a></li>
+  <li><a href="#z-score-arithmetic-2" id="toc-z-score-arithmetic-2" class="nav-link" data-scroll-target="#z-score-arithmetic-2"><span class="header-section-number">4.5</span> Z-Score Arithmetic</a></li>
+  <li><a href="#z-score-geometric-2" id="toc-z-score-geometric-2" class="nav-link" data-scroll-target="#z-score-geometric-2"><span class="header-section-number">4.6</span> Z-Score Geometric</a></li>
+  </ul></li>
   </ul>
 </nav>
     </div>
@@ -397,7 +408,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># Rearrange data to make a single DF as table</span></span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>out <span class="ot">&lt;-</span> <span class="fu">map_vec</span>(scores, <span class="sc">~</span> {</span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  .x[[<span class="st">'indicator_scores'</span>]] <span class="sc">%&gt;%</span> </span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="sc">!</span>state <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">'US_mean'</span>, <span class="st">'US_median'</span>, <span class="st">'NewEng'</span>)) <span class="sc">%&gt;%</span> </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">filter</span>(<span class="fu">str_detect</span>(state, <span class="st">'US_|NE_'</span>, <span class="at">negate =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(<span class="sc">-</span>state) <span class="sc">%&gt;%</span> </span>
 <span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>    psych<span class="sc">::</span><span class="fu">describe</span>() <span class="sc">%&gt;%</span> </span>
 <span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>    dplyr<span class="sc">::</span><span class="fu">select</span>(skew) <span class="sc">%&gt;%</span> </span>
@@ -418,202 +429,316 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  out, </span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fullWidth =</span> <span class="cn">FALSE</span>,</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">searchable =</span> <span class="cn">FALSE</span>,</span>
-<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">defaultColDef =</span> <span class="fu">colDef</span>(</span>
-<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">minWidth =</span> <span class="dv">200</span></span>
-<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  )</span>
-<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">defaultPageSize =</span> <span class="dv">20</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">defaultColDef =</span> <span class="fu">colDef</span>(</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">minWidth =</span> <span class="dv">200</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
-<div class="reactable html-widget html-fill-item" id="htmlwidget-f997aff3b21aa78951c9" style="width:auto;height:auto;"></div>
-<script type="application/json" data-for="htmlwidget-f997aff3b21aa78951c9">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Transformation":["boxcox_arithmetic","boxcox_geometric","minmax_arithmetic","minmax_geometric","rank_arithmetic","rank_geometric","winsor_arithmetic","winsor_geometric","zscore_arithmetic","zscore_geometric"],"Indicators with Skew > 2":[1,1,5,4,0,0,0,0,5,6]},"columns":[{"id":"Transformation","name":"Transformation","type":"character","minWidth":200},{"id":"Indicators with Skew > 2","name":"Indicators with Skew > 2","type":"numeric","minWidth":200}],"resizable":true,"filterable":true,"defaultPageSize":10,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"inline":true,"dataKey":"7009b2c013713f881fd12a4ede61ee67"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
+<div class="reactable html-widget html-fill-item" id="htmlwidget-e9c86acacfaa2b941c2f" style="width:auto;height:auto;"></div>
+<script type="application/json" data-for="htmlwidget-e9c86acacfaa2b941c2f">{"x":{"tag":{"name":"Reactable","attribs":{"data":{"Transformation":["boxcox_minmax_arithmetic","boxcox_minmax_geometric","boxcox_rank_arithmetic","boxcox_rank_geometric","boxcox_zscore_arithmetic","boxcox_zscore_geometric","raw_minmax_arithmetic","raw_minmax_geometric","raw_rank_arithmetic","raw_rank_geometric","raw_zscore_arithmetic","raw_zscore_geometric","winsor_minmax_arithmetic","winsor_minmax_geometric","winsor_rank_arithmetic","winsor_rank_geometric","winsor_zscore_arithmetic","winsor_zscore_geometric"],"Indicators with Skew > 2":[1,1,0,0,1,1,5,5,0,0,5,7,0,0,0,0,0,0]},"columns":[{"id":"Transformation","name":"Transformation","type":"character","minWidth":200},{"id":"Indicators with Skew > 2","name":"Indicators with Skew > 2","type":"numeric","minWidth":200}],"resizable":true,"filterable":true,"defaultPageSize":20,"showPageSizeOptions":true,"onClick":"select","highlight":true,"bordered":true,"striped":true,"compact":true,"style":{"fontSize":"14px"},"inline":true,"dataKey":"6e63c1ae9635d4bf350158617dad12c7"},"children":[]},"class":"reactR_markup"},"evals":[],"jsHooks":[]}</script>
 </div>
 </div>
-<p>It looks like the Box Cox procedure transformed distributions at the metric level enough that there are no skewed distributions at the indicator level. Both the min-max and z-score transformations left us with only three skewed indicators: access to culturally appropriate food, total quantity exported, and total quantity imported. The latter two are not surprising, as big agricultural states likely have a disproportionate impact. The Z-score with geometric aggregation is a slightly nonsensical combination of methods that we will ignore for now.</p>
-<p>This is providing some evidence that Box-Cox transformations could be warranted on at least these three problematic indicators (or the metrics therein). Below are the indicator distributions for each transformation. Inidicators with skew &gt; 2 are shown in red.</p>
 </section>
-<section id="rank-arithmetic" class="level1" data-number="2">
-<h1 data-number="2"><span class="header-section-number">2</span> Rank Arithmetic</h1>
+<section id="raw" class="level1" data-number="2">
+<h1 data-number="2"><span class="header-section-number">2</span> Raw</h1>
+<section id="rank-arithmetic" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="rank-arithmetic"><span class="header-section-number">2.1</span> Rank Arithmetic</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'rank_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb3"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'raw_rank_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/rank_arithmetic-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the rank arithmetic transformations</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="rank-geometric" class="level1" data-number="3">
-<h1 data-number="3"><span class="header-section-number">3</span> Rank Geometric</h1>
+<section id="rank-geometric" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="rank-geometric"><span class="header-section-number">2.2</span> Rank Geometric</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'rank_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'raw_rank_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/rank_geometric-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the rank geometric transformations</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="winsor-arithmetic" class="level1" data-number="4">
-<h1 data-number="4"><span class="header-section-number">4</span> Winsor Arithmetic</h1>
+<section id="min-max-arithmetic" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="min-max-arithmetic"><span class="header-section-number">2.3</span> Min Max Arithmetic</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'winsor_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb5"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'raw_minmax_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/winsor_arithmetic-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the winsor arithmetic transformations</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="winsor-geometric" class="level1" data-number="5">
-<h1 data-number="5"><span class="header-section-number">5</span> Winsor Geometric</h1>
+<section id="min-max-geometric" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="min-max-geometric"><span class="header-section-number">2.4</span> Min Max Geometric</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'winsor_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'raw_minmax_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/winsor_geometric-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the winsor geometric transformations</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="min-max-arithmetic" class="level1" data-number="6">
-<h1 data-number="6"><span class="header-section-number">6</span> Min Max Arithmetic</h1>
+<section id="z-score-arithmetic" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="z-score-arithmetic"><span class="header-section-number">2.5</span> Z-Score Arithmetic</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Load custom function</span></span>
-<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">source</span>(<span class="st">'dev/get_indicator_distributions.R'</span>)</span>
-<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot them</span></span>
-<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'minmax_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb7"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'raw_zscore_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/minmax_arithmetic-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the min-max arithmetic transformations.</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-8-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="min-max-geometric" class="level1" data-number="7">
-<h1 data-number="7"><span class="header-section-number">7</span> Min Max Geometric</h1>
+<section id="z-score-geometric" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="z-score-geometric"><span class="header-section-number">2.6</span> Z-Score Geometric</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>dists <span class="ot">&lt;-</span> <span class="fu">get_indicator_distributions</span>(scores, <span class="st">'minmax_geometric'</span>)</span>
-<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ggsave</span>(</span>
-<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">'preso/plots/indic_dists.png'</span>,</span>
-<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">plot =</span> dists,</span>
-<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">width =</span> <span class="dv">10</span>,</span>
-<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">height =</span> <span class="dv">15</span>,</span>
-<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">units =</span> <span class="st">'in'</span></span>
-<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span>
-<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>dists</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'raw_zscore_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/minmax_geo-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the min-max geometric transformations</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="z-score-arithmetic" class="level1" data-number="8">
-<h1 data-number="8"><span class="header-section-number">8</span> Z-Score Arithmetic</h1>
+</section>
+<section id="winsor" class="level1" data-number="3">
+<h1 data-number="3"><span class="header-section-number">3</span> Winsor</h1>
+<section id="rank-arithmetic-1" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="rank-arithmetic-1"><span class="header-section-number">3.1</span> Rank Arithmetic</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'zscore_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb9"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'winsor_rank_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/zscore_arithmetic-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the Z-score arithmetic transformations</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="z-score-geometric" class="level1" data-number="9">
-<h1 data-number="9"><span class="header-section-number">9</span> Z-Score Geometric</h1>
+<section id="rank-geometric-1" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="rank-geometric-1"><span class="header-section-number">3.2</span> Rank Geometric</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'zscore_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'winsor_rank_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/zscore_geometric-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the Z-score geometric transformations</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-11-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="box-cox-arithmetic" class="level1" data-number="10">
-<h1 data-number="10"><span class="header-section-number">10</span> Box Cox Arithmetic</h1>
+<section id="min-max-arithmetic-1" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="min-max-arithmetic-1"><span class="header-section-number">3.3</span> Min Max Arithmetic</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'boxcox_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb11"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'winsor_minmax_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/boxcox_arithmetic-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the Box Cox arithmetic transformations</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 </section>
-<section id="box-cox-geometric" class="level1" data-number="11">
-<h1 data-number="11"><span class="header-section-number">11</span> Box Cox Geometric</h1>
+<section id="min-max-geometric-1" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="min-max-geometric-1"><span class="header-section-number">3.4</span> Min Max Geometric</h2>
 <div class="cell" data-layout-align="center">
 <details class="code-fold">
 <summary>Code</summary>
-<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'boxcox_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'winsor_minmax_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </details>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="indicator_distributions_files/figure-html/boxcox_geometric-1.png" class="img-fluid figure-img" width="2000"></p>
-<figcaption>Distributions of indicators at the state level for the Box Cox geometric transformations</figcaption>
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-13-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="z-score-arithmetic-1" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="z-score-arithmetic-1"><span class="header-section-number">3.5</span> Z-Score Arithmetic</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb13"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'winsor_zscore_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="z-score-geometric-1" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="z-score-geometric-1"><span class="header-section-number">3.6</span> Z-Score Geometric</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb14"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'winsor_zscore_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="box-cox" class="level1" data-number="4">
+<h1 data-number="4"><span class="header-section-number">4</span> Box Cox</h1>
+<section id="rank-arithmetic-2" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="rank-arithmetic-2"><span class="header-section-number">4.1</span> Rank Arithmetic</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'boxcox_rank_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="rank-geometric-2" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="rank-geometric-2"><span class="header-section-number">4.2</span> Rank Geometric</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb16"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'boxcox_rank_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="min-max-arithmetic-2" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="min-max-arithmetic-2"><span class="header-section-number">4.3</span> Min Max Arithmetic</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'boxcox_minmax_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="min-max-geometric-2" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="min-max-geometric-2"><span class="header-section-number">4.4</span> Min Max Geometric</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'boxcox_minmax_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-19-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="z-score-arithmetic-2" class="level2" data-number="4.5">
+<h2 data-number="4.5" class="anchored" data-anchor-id="z-score-arithmetic-2"><span class="header-section-number">4.5</span> Z-Score Arithmetic</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'boxcox_zscore_arithmetic'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="z-score-geometric-2" class="level2" data-number="4.6">
+<h2 data-number="4.6" class="anchored" data-anchor-id="z-score-geometric-2"><span class="header-section-number">4.6</span> Z-Score Geometric</h2>
+<div class="cell" data-layout-align="center">
+<details class="code-fold">
+<summary>Code</summary>
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get_indicator_distributions</span>(scores, <span class="st">'boxcox_zscore_geometric'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</details>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="indicator_distributions_files/figure-html/unnamed-chunk-21-1.png" class="img-fluid quarto-figure quarto-figure-center figure-img" width="2000"></p>
 </figure>
 </div>
 </div>
 </div>
 
 
+</section>
 </section>
 
 <a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a></main> <!-- /main -->

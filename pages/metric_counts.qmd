@@ -6,6 +6,7 @@ format:
 editor_options: 
   chunk_output_type: console
 warnings: false
+eval: false
 ---
 
 ```{r}

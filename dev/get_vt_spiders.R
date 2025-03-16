@@ -65,7 +65,8 @@ get_vt_spiders <- function(df_list,
           axislabcol = 'darkgrey',
           
           # titles
-          title = paste0('Vermont Dimension Scores\n', .y),
+          # title = paste0('Vermont Dimension Scores\n', .y),
+          title = .y,
           
           # scaling
           calcex = 0.6,

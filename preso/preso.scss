@@ -23,8 +23,22 @@ $link-color: #154734;
   justify-content: center;
 }
 
+/* Does not work */
 .centered-vertical {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
+}
+
+/* For centering section headers */
+.centered-section h1 {
+  text-align: center;
+}
+
+.v-center-container {
+  display: flex !important;
+  justify-content: center;
+  align-items: center;
+  height: 80%;
 }

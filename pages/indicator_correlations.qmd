@@ -10,7 +10,18 @@ fig-responsive: false
 #| label: prep
 pacman::p_load(
   dplyr,
-  conflicted
+  conflicted,
+  tidyr,
+  tibble,
+  stringr,
+  purrr,
+  tidyr,
+  ggplot2,
+  plotly,
+  reshape,
+  Hmisc,
+  viridisLite,
+  reactable
 )
 source('dev/get_reactable.r')
 conflicts_prefer(
@@ -29,20 +40,6 @@ This page will explore correlations between variables at the indicator level.
 ```{r}
 #| label: wrangle
 #| output: false
-pacman::p_load(
-  dplyr,
-  tidyr,
-  tibble,
-  stringr,
-  purrr,
-  tidyr,
-  ggplot2,
-  plotly,
-  reshape,
-  Hmisc,
-  viridisLite
-)
-
 # Load indicator data.
 final_scores <- readRDS('data/state_score_iterations.rds')
 get_str(final_scores)
@@ -62,7 +59,7 @@ inds_and_dims <- filtered_frame %>%
 color_map <- setNames(inds_and_dims$color, inds_and_dims$indicator)
 
 # Pull out minmax geo indicators only. Also use states only, no aggregates
-minmax_geo_indicators <- final_scores$minmax_geometric$indicator_scores %>% 
+minmax_geo_indicators <- final_scores$raw_minmax_geometric$indicator_scores %>% 
   filter(! state %in% c('US_mean', 'US_median', 'NE_median', 'NE_mean'))
 get_str(minmax_geo_indicators)
 
@@ -75,7 +72,7 @@ mat <- minmax_geo_indicators %>%
 cor <- rcorr(mat, type = 'pearson')
 
 # Melt correlation values and rename columns
-cor_r <- melt(cor$r) %>% 
+cor_r <- reshape::melt(cor$r) %>% 
   setNames(c('var_1', 'var_2', 'value'))
 
 # Save p values
@@ -97,21 +94,26 @@ plot_out <- cor_r %>%
     high = "#1b7837", 
     midpoint = 0
   ) +
+  geom_hline(yintercept = 5.5) +
+  geom_hline(yintercept = 14.5) +
+  geom_hline(yintercept = 23.5) +
+  geom_hline(yintercept = 31.5) +
+  geom_vline(xintercept = 5.5) +
+  geom_vline(xintercept = 14.5) +
+  geom_vline(xintercept = 23.5) +
+  geom_vline(xintercept = 31.5) +
   theme(
     axis.text.x = element_text(
-      # color = color_map[levels(factor(cor_r$var_1))],
       hjust = 1, 
       angle = 45
     )
-    # axis.text.y = element_text(
-      # color = color_map[levels(factor(cor_r$var_2))]
-    # )
   ) +
   labs(
     x = NULL,
     y = NULL,
     fill = NULL
   )
+plot_out
 
 # Save this for preso
 # preso_matrix <- list(mat, color_map)
@@ -131,6 +133,12 @@ plot <- ggplotly(
   width = 850,
   height = 650
 )
+
+# plot$x$data[[2]]$hoverinfo <- 'none'
+# plot$x$data[[2]]$hoveron <- NULL
+# get_str(plot$x$data)
+# plot
+
 
 plot <- plot %>% add_trace(xaxis = 'x2', showscale = FALSE)
 plot <- plot %>% add_trace(xaxis = 'x3', showscale = FALSE)
@@ -343,11 +351,6 @@ We have many significant correlations between indicators, but we probably don't 
 ```{r}
 #| label: explore_correlations
 #| output: false
-pacman::p_load(
-  reactable,
-  Hmisc
-)
-
 # Isolate all significant correlations
 get_str(cor_r)
 

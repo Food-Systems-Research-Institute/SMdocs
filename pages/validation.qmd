@@ -65,11 +65,11 @@ state_key <- sm_data[['state_key']] %>%
   select(state, state_code)
 
 # Load cleaned aggregated data for all levels of regresion
-minmax_geo <- readRDS('data/minmax_geo_all_levels.rds')
-get_str(minmax_geo)
+raw_minmax_geo <- readRDS('data/raw_minmax_geo.rds')
+get_str(raw_minmax_geo)
 
 # Reduce to just dimension scores, and remove prefix
-dimension_scores <- minmax_geo %>% 
+dimension_scores <- raw_minmax_geo %>% 
   select(state, starts_with('dimen')) %>% 
   setNames(c(str_remove(names(.), 'dimen_')))
 get_str(dimension_scores)
@@ -143,12 +143,12 @@ skimr::skim(dat)
 saveRDS(dat, 'data/metrics_df_with_vals_and_covars.rds')
 ```
 
-# Food Insecurity
+# Regression
+
+## Food Insecurity
 
 ```{r}
 #| label: food_insecurity_reg
-
-
 lm1 <- lm(
   foodInsecurity ~ economics + environment + health + production + social,
   data = dat
@@ -182,7 +182,7 @@ lmtest::bptest(lm1)
 Heteroskedasticity looks not to be a problem. We could try a non-linear analysis here though (note to add GLMnet and RF).
 
 
-# Life Expectancy
+## Life Expectancy
 
 ```{r}
 #| label: life_exp
@@ -230,7 +230,7 @@ get_stargazer(lm2, dep_var = 'Life Expectancy', robust = TRUE)
 
 When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model without GDP is already explaining `r round(summary(lm2)$adj.r.squared * 100)`% of the variance in life expectancy, which is surprisingly strong.
 
-# Food Environment Index
+## Food Environment Index
 
 ```{r}
 #| label: food_env
@@ -289,7 +289,7 @@ nearZeroVar(dat, names = TRUE, saveMetrics = TRUE)
 # All clear
 ```
 
-## GLMnet
+### GLMnet
 
 ```{r}
 #| label: food_env_glmnet
@@ -321,7 +321,7 @@ plot(importance)
 
 It looks like GDP is a better predictor of the Food Environment Index than anything else, but the health dimension is far more influential than any other.
 
-## Random Forest
+### Random Forest
 
 ```{r}
 #| label: food_env_rf
@@ -349,7 +349,7 @@ saveRDS(importance, 'preso/plots/val3_rf_importance.rds')
 plot(importance)
 ```
 
-# Happiness Score
+## Happiness Score
 
 ```{r}
 #| label: happiness

@@ -17,7 +17,8 @@ pacman::p_load(
   tibble,
   reactable,
   ggplot2,
-  ggpubr
+  ggpubr,
+  stringr
 )
 pacman::p_load_gh('ChrisDonovan307/projecter')
 source('dev/get_reactable.R')
@@ -47,7 +48,7 @@ get_str(scores)
 # Rearrange data to make a single DF as table
 out <- map_vec(scores, ~ {
   .x[['indicator_scores']] %>% 
-    dplyr::filter(!state %in% c('US_mean', 'US_median', 'NewEng')) %>% 
+    dplyr::filter(str_detect(state, 'US_|NE_', negate = TRUE)) %>% 
     dplyr::select(-state) %>% 
     psych::describe() %>% 
     dplyr::select(skew) %>% 
@@ -69,134 +70,176 @@ get_reactable(
   out, 
   fullWidth = FALSE,
   searchable = FALSE,
+  defaultPageSize = 20,
   defaultColDef = colDef(
     minWidth = 200
   )
 )
 ```
+# Raw 
 
-It looks like the Box Cox procedure transformed distributions at the metric level enough that there are no skewed distributions at the indicator level. Both the min-max and z-score transformations left us with only three skewed indicators: access to culturally appropriate food, total quantity exported, and total quantity imported. The latter two are not surprising, as big agricultural states likely have a disproportionate impact. The Z-score with geometric aggregation is a slightly nonsensical combination of methods that we will ignore for now.
-
-This is providing some evidence that Box-Cox transformations could be warranted on at least these three problematic indicators (or the metrics therein). Below are the indicator distributions for each transformation. Inidicators with skew > 2 are shown in red.
-
-# Rank Arithmetic
+## Rank Arithmetic
 
 ```{r}
-#| label: rank_arithmetic
-#| fig-cap: Distributions of indicators at the state level for the rank arithmetic transformations 
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-get_indicator_distributions(scores, 'rank_arithmetic')
+get_indicator_distributions(scores, 'raw_rank_arithmetic')
 ```
 
-# Rank Geometric
+## Rank Geometric
 
 ```{r}
-#| label: rank_geometric
-#| fig-cap: Distributions of indicators at the state level for the rank geometric transformations 
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-get_indicator_distributions(scores, 'rank_geometric')
+get_indicator_distributions(scores, 'raw_rank_geometric')
 ```
 
-# Winsor Arithmetic
+## Min Max Arithmetic
 
 ```{r}
-#| label: winsor_arithmetic
-#| fig-cap: Distributions of indicators at the state level for the winsor arithmetic transformations 
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-get_indicator_distributions(scores, 'winsor_arithmetic')
+get_indicator_distributions(scores, 'raw_minmax_arithmetic')
 ```
 
-# Winsor Geometric
+## Min Max Geometric
 
 ```{r}
-#| label: winsor_geometric
-#| fig-cap: Distributions of indicators at the state level for the winsor geometric transformations 
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-get_indicator_distributions(scores, 'winsor_geometric')
+get_indicator_distributions(scores, 'raw_minmax_geometric')
 ```
 
-# Min Max Arithmetic
+## Z-Score Arithmetic
 
 ```{r}
-#| label: minmax_arithmetic
-#| fig-cap: Distributions of indicators at the state level for the min-max arithmetic transformations.
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-# Load custom function
-source('dev/get_indicator_distributions.R')
-
-# Plot them
-get_indicator_distributions(scores, 'minmax_arithmetic')
+get_indicator_distributions(scores, 'raw_zscore_arithmetic')
 ```
 
-# Min Max Geometric
+## Z-Score Geometric
 
 ```{r}
-#| label: minmax_geo
-#| fig-cap: Distributions of indicators at the state level for the min-max geometric transformations
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-dists <- get_indicator_distributions(scores, 'minmax_geometric')
-ggsave(
-  'preso/plots/indic_dists.png',
-  plot = dists,
-  width = 10,
-  height = 15,
-  units = 'in'
-)
-dists
+get_indicator_distributions(scores, 'raw_zscore_geometric')
 ```
 
-# Z-Score Arithmetic
+# Winsor
+
+## Rank Arithmetic
 
 ```{r}
-#| label: zscore_arithmetic
-#| fig-cap: Distributions of indicators at the state level for the Z-score arithmetic transformations 
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-get_indicator_distributions(scores, 'zscore_arithmetic')
+get_indicator_distributions(scores, 'winsor_rank_arithmetic')
 ```
 
-# Z-Score Geometric
+## Rank Geometric
 
 ```{r}
-#| label: zscore_geometric
-#| fig-cap: Distributions of indicators at the state level for the Z-score geometric transformations 
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-get_indicator_distributions(scores, 'zscore_geometric')
+get_indicator_distributions(scores, 'winsor_rank_geometric')
 ```
 
-# Box Cox Arithmetic
+## Min Max Arithmetic
 
 ```{r}
-#| label: boxcox_arithmetic
-#| fig-cap: Distributions of indicators at the state level for the Box Cox arithmetic transformations 
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-get_indicator_distributions(scores, 'boxcox_arithmetic')
+get_indicator_distributions(scores, 'winsor_minmax_arithmetic')
 ```
 
-# Box Cox Geometric
+## Min Max Geometric
 
 ```{r}
-#| label: boxcox_geometric
-#| fig-cap: Distributions of indicators at the state level for the Box Cox geometric transformations 
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
-get_indicator_distributions(scores, 'boxcox_geometric')
+get_indicator_distributions(scores, 'winsor_minmax_geometric')
+```
+
+## Z-Score Arithmetic
+
+```{r}
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'winsor_zscore_arithmetic')
+```
+
+## Z-Score Geometric
+
+```{r}
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'winsor_zscore_geometric')
+```
+
+# Box Cox
+
+## Rank Arithmetic
+
+```{r}
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'boxcox_rank_arithmetic')
+```
+
+## Rank Geometric
+
+```{r}
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'boxcox_rank_geometric')
+```
+
+## Min Max Arithmetic
+
+```{r}
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'boxcox_minmax_arithmetic')
+```
+
+## Min Max Geometric
+
+```{r}
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'boxcox_minmax_geometric')
+```
+
+## Z-Score Arithmetic
+
+```{r}
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'boxcox_zscore_arithmetic')
+```
+
+## Z-Score Geometric
+
+```{r}
+#| fig-height: 15
+#| fig-width: 10
+#| fig-align: center
+get_indicator_distributions(scores, 'boxcox_zscore_geometric')
 ```

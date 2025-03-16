@@ -21,7 +21,10 @@ pacman::p_load(
   dplyr,
   purrr,
   conflicted,
-  fmsb
+  fmsb,
+  tidyr,
+  ggplot2,
+  ggpubr
 )
 
 state_key <- readRDS('data/state_key.rds')
@@ -46,38 +49,26 @@ We are starting with min max normalization, which is probably the most intuitive
 The transformation is easy to understand, but has some drawbacks, including being quite sensitive to outliers. Strong outliers in either direction could condense the rest of the distribution, making it seem like most states are very low or very high.
 
 ```{r}
-#| label: minmax_spider
 #| fig-width: 10
 #| fig-height: 5
-pacman::p_load(
-  tidyr,
-  ggplot2,
-  ggpubr,
-  fmsb
-)
-
 # Load state score data
 dat <- readRDS('data/state_score_iterations.rds')
 # get_str(dat)
 
 # Custom function to create spider plots
-get_vt_spiders(dat, 'minmax')
+get_vt_spiders(dat, 'raw_minmax')
 ```
 
-The difference in the production dimension between arithmetic and geometric averages suggests Vermont is scoring highly in some production, but low in others. Arithmetic means are fully compensable such that a high score in one area can fully make up for a low score in another. The geometric mean seems be applying quite a penalty to Vermont production here. In either case, Vermont comes out looking pretty good in terms of the health and social dimensions.
-
-## Arithmetic Table
-
 ```{r}
-#| label: minmax_geo_table
-get_reactable_scores(dat, 'minmax_arithmetic')
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'winsor_minmax')
 ```
 
-## Geometric Table
-
 ```{r}
-#| label: minmax_ari_table
-get_reactable_scores(dat, 'minmax_geometric')
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'boxcox_minmax')
 ```
 
 # Z-Scores
@@ -85,99 +76,41 @@ get_reactable_scores(dat, 'minmax_geometric')
 Z-scores are standardized values. We subtract the mean from every metric to center it at 0, then divide by the standard deviation to get units in terms of standard deviations. This should be more robust to outliers than the min-max method; extreme values have no effect on values. However, rescaling Z-scores to fit the spider plots might have a similar effect.
 
 ```{r}
-#| label: zscore_spider
 #| fig-width: 10
 #| fig-height: 5
-get_vt_spiders(dat, 'zscore')
+get_vt_spiders(dat, 'raw_zscore')
 ```
 
-The arithmetic plot is functionally identical to the min-max plots. The difference might be in the scaling of the spider plot itself - it shouldn't make much of a difference whether scores are on a 0-1 scale or z-score scale. The geometric will have to get dropped or reworked here - geometric means of z-scores that includes negatives doesn't make sense. We could try logarithmic means, or skipping the centering step so that all the z-scores stay positive. Either way, I don't find the z-scores particularly convincing, and they are less approachable than min-maxing.
-
-## Arithmetic Table
-
 ```{r}
-#| label: zscore_ari_table
-get_reactable_scores(dat, 'zscore_arithmetic')
-```
-
-## Geometric Table
-
-```{r}
-#| label: zscore_geo_table
-get_reactable_scores(dat, 'zscore_geometric')
-```
-
-# Box Cox
-
-The Box-Cox procedure explores a range of lambda values with which to transform a distribution, choosing the value that leads to the most "normal" distribution. It has been used on skewed sustainability indicators, sometimes before a min-max scaling procedure [@bene2019GlobalMapIndicators]. It should have the effect of smoothing out some of the outlying data. On the other hand, since this is a non-linear transformation, it will also fundamentally change the relationships between variables.
-
-```{r}
-#| label: boxcox_spider
 #| fig-width: 10
 #| fig-height: 5
-get_vt_spiders(dat, 'boxcox')
+get_vt_spiders(dat, 'winsor_zscore')
 ```
 
-We can see that all values are less extreme - both the lows and highs and pulled toward the center. The underlying US averages are also quite well centered. However, interpreting correlations between metrics, indicators, indices, and dimensions will be harder here.
-
-## Arithmetic Table
-
 ```{r}
-#| label: boxcox_ari_table
-get_reactable_scores(dat, 'boxcox_arithmetic')
-```
-
-## Geometric Table
-
-```{r}
-#| label: boxcox_geo_table
-get_reactable_scores(dat, 'boxcox_geometric')
-```
-
-# Rank Order 
-
-```{r}
-#| label: rank_spider
 #| fig-width: 10
 #| fig-height: 5
-get_vt_spiders(dat, 'rank')
+get_vt_spiders(dat, 'boxcox_zscore')
 ```
 
-## Arithmetic Table
+# Rank
 
 ```{r}
-#| label: rank_ari_table
-get_reactable_scores(dat, 'rank_arithmetic')
-```
-
-## Geometric Table
-
-```{r}
-#| label: rank_geo_table
-get_reactable_scores(dat, 'rank_geometric')
-```
-
-# Winsorization 
-
-```{r}
-#| label: winsor_spider
 #| fig-width: 10
 #| fig-height: 5
-get_vt_spiders(dat, 'winsor')
+get_vt_spiders(dat, 'raw_rank')
 ```
 
-## Arithmetic Table
-
 ```{r}
-#| label: winsor_ari_table
-get_reactable_scores(dat, 'winsor_arithmetic')
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'winsor_rank')
 ```
 
-## Geometric Table
-
 ```{r}
-#| label: winsor_geo_table
-get_reactable_scores(dat, 'winsor_geometric')
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'boxcox_rank')
 ```
 
 # References

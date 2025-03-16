@@ -1,9 +1,10 @@
 dplyr
 conflicted
 projecter
+reactable
 purrr
-tibble
 missForest
+tibble
 forecast
 DescTools
-reactable
+stringr

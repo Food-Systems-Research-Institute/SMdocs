@@ -76,7 +76,8 @@ conflicted::conflicts_prefer(
 
 ## Introduction {.smaller}
 
-::: columns
+:::: {.columns .v-center-container}
+
 ::: {.column width = '40%'}
 
 -   Goals for secondary data:
@@ -110,7 +111,7 @@ fig-alt="A picture of a field at Intervale Farm."}
 
 :::
 
-# 1. Framework and Methods {.center}
+# 1. Framework and Methods {.centered-section}
 
 ## Framework {.smaller}
 
@@ -325,7 +326,8 @@ Sources
 
 ## Methods: Desirable Directions {.smaller}
 
-::: columns
+:::: {.columns}
+
 ::: {.column width = '30%'}
 
 -   How do we decide if values for an indicator are good or bad?
@@ -363,6 +365,57 @@ desirable_table %>%
 
 ::::
 
+## Methods: Transformations {.smaller}
+
+:::: {.panel-tabset}
+### Raw? {.v-center-container}
+
+**Raw Values**
+
+-   Do nothing
+-   Strengths:
+    -   Transparent
+    -   Unbiased
+-   Weaknesses:
+    -   Vulnerable to outliers
+    -   Harder to distinguish between similar systems
+
+### Winsor
+
+**Winsorization**
+
+-   Reduce extreme values to a percentile (95th and 5th)
+-   Strengths:
+    -   Doesn't reward overperformance
+    -   Allows for more robust analyses without outliers [@mayerStrengthsWeaknessesCommon2008]
+-   Weaknesses
+    -   Loss of information
+    -   Non-linear transformation of data
+-   Used in the Environmental Performance Indicator (EPI) before scaling
+    from 0 to 100 [@esty2008Pilot2006Environmental]
+
+### Box Cox
+
+**Box Cox** [@bickel1981]
+
+-   Finds an optimal value of $\lambda$ to normalize distribution
+
+\begin{equation}
+{\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
+\end{equation} \begin{equation}
+{\rm For}\ \lambda = 0,\ f_0(x) = log(x)
+\end{equation}
+
+-   Strengths:
+    -   More tractable distributions for analysis
+-   Weaknesses:
+    -   Challenging to interpret
+    -   Changes relationships between variables
+-   @bene2019GlobalMapIndicators used Box Cox transformations on skewed
+    indicators (\>2) before using min-max scaling.
+    
+::::
+
 ## Methods: Rescaling {.smaller}
 
 :::: panel-tabset
@@ -377,17 +430,6 @@ desirable_table %>%
 -   Weaknesses:
     -   Loss of information
 -   Used by @schneider2025 for lack of robust data
-
-### Winsor
-
-**Winsorization**
-
--   Reduce extreme values to a percentile (95th and 5th)
--   Doesn't reward overperformance
--   Used in the Environmental Performance Indicator (EPI) before scaling
-    from 0 to 100 [@esty2008Pilot2006Environmental]
--   Allows for more robust than leaving outliers
-    [@mayerStrengthsWeaknessesCommon2008]
 
 ### Min Max
 
@@ -424,26 +466,6 @@ I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 -   Larger numbers are better, but no limits
 -   Linear transformation
 -   Harder to interpret
-
-### Box Cox
-
-**Box Cox** [@bickel1981]
-
--   Finds an optimal value of $\lambda$ to normalize distribution
-
-\begin{equation}
-{\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
-\end{equation} \begin{equation}
-{\rm For}\ \lambda = 0,\ f_0(x) = log(x)
-\end{equation}
-
--   Strengths:
-    -   More tractable distributions for analysis
--   Weaknesses:
-    -   Challenging to interpret
-    -   Changes relationships between variables
--   @bene2019GlobalMapIndicators used Box Cox transformations on skewed
-    indicators (\>2) before using min-max scaling.
 
 ### Distance\*
 
@@ -489,8 +511,12 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 \sqrt[n]{x_1 * x_2 * ... * x_n}
 \end{equation}
 
--   Partially compensable - rewards even performance across areas
--   Not compatible with negative values\*
+-   Strengths:
+    -   Partially compensable
+    -   Rewards even performance across areas
+-   Weaknesses:
+    -   Not compatible with negative values\*
+    -   Limits to variance-based sensitivity analysis
 -   @gomez-limon2010EmpiricalEvaluationAgricultural compared results of
     both arithmetic and geometric means
 -   @bene2019GlobalMapIndicators used arithmetic means for social and
@@ -555,71 +581,97 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 ## Methods: Comparisons {.smaller}
 
 ::: panel-tabset
-### Rank Order
+### Raw Rank
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
 dat <- readRDS('data/state_score_iterations.rds')
-get_vt_spiders(dat, 'rank')
+get_vt_spiders(dat, 'raw_rank')
 ```
 
-### Winsorization
+### Winsor Rank
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
-get_vt_spiders(dat, 'winsor')
+get_vt_spiders(dat, 'winsor_rank')
 ```
 
-### Min Max
+### Box Cox Rank
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
-get_vt_spiders(dat, 'minmax')
+get_vt_spiders(dat, 'boxcox_rank')
 ```
 
-### Z-Score
+### Raw Min Max
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
-get_vt_spiders(dat, 'zscore')
+get_vt_spiders(dat, 'raw_minmax')
 ```
 
-### Box Cox
+### Winsor Min Max
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
-get_vt_spiders(dat, 'boxcox')
+get_vt_spiders(dat, 'winsor_minmax')
+```
+
+### Box Cox Min Max
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'boxcox_minmax')
+```
+
+### Raw Z-Score
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'raw_zscore')
+```
+
+### Winsor Z-Score
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'winsor_zscore')
+```
+
+### Box Cox Z-Score
+
+```{r}
+#| fig-width: 10
+#| fig-height: 5
+get_vt_spiders(dat, 'boxcox_zscore')
 ```
 :::
 
 ::: notes
 -   We now have 10 combinations of scaling and aggregation.
+-   No one way is objectively better than any other - just exploring options
 -   Note that Z-score geometric transformation is hinky
 -   TRANSITION INTO CASE STUDY OF MIN MAX GEO
 :::
 
-# 2. Case Study
-
-## Case Study: Indicator Distributions
-
-An example of indicator distributions with min-max scaling and geometric
-aggregation
-
-![](plots/indic_dists.png){height="1500"}
+# 2. Case Study {.centered-section}
 
 ## Case Study: Dimension Score Maps {.smaller}
 
-Using min-max scaling and geometric aggregation
+Raw + min max scaling + geometric aggregation
 
 ::: panel-tabset
 ```{r}
 #| label: map
-dim_scores <- readRDS('data/minmax_geo_all_levels.rds')
+dim_scores <- readRDS('data/raw_minmax_geo.rds')
 state_key <- readRDS('data/state_key.rds')
 dim_scores <- dim_scores %>% 
   as.data.frame() %>% 
@@ -715,17 +767,14 @@ get_leaflet(map_dat, 'social')
 :::
 
 ::: notes
+-   Note: Why state level? So that we have some benchmarks to compare VT to. Allows us to use empirical methods. 
 -   Note: cannot compare across dimensions
 -   **This is where I want qualitative data**
--   Env: Nevada skews everything
--   Health: Mississippi skews everything
--   Prod: California skews everything
--   Social: Arkansas skews everything
 :::
 
 ## Case Study: Indicator Correlations {.smaller}
 
-Min max scaling and geometric aggregation
+Raw + min max scaling + geometric aggregation
 
 ::: panel-tabset
 ### Correlation Matrix
@@ -797,21 +846,21 @@ cor_table %>%
 
 ## Case Study: Validation by Cronbach {.smaller}
 
-::: columns
+Raw + min max scaling + geometric aggregation
+
+:::: {.columns .v-center-container}
+
 ::: {.column width = '40%'}
 
 -   Cronbach's Alpha is a measure of internal reliability or consistency
     [@cronbach1951CoefficientAlphaInternal]
 -   Arbitrary guideline of 0.7 to validate a measurement tool
     [@taber2018UseCronbachAlpha]
-
 \begin{equation}
 \alpha=\frac{n}{n-1}\left( 1-\frac{\sum_{i}^{V_i}}{V_t} \right)
 \end{equation}
-
 Where $n$ is the number of items, $V_t$ is the variance of item $i$, and
 $V_t$ is the variance of all items
-
 -   It is not supposed to be negative.
 
 :::
@@ -833,7 +882,16 @@ get_reactable(
 
 ::::
 
+::: {.notes}
+
+-   Context for Cronbach: not necessarily what we want, just one way to show consistency within dimension. 
+-   Might be okay if dimension is scattered
+
+:::
+
 ## Case Study: Validation by Regression {.smaller}
+
+Raw + min max scaling + geometric aggregation
 
 ::::: panel-tabset
 ### Food Insecurity
@@ -918,6 +976,7 @@ plot(importance)
 :::::
 
 ::: notes
+
 -   Food Environment Index: 0 (worst) 10 (best). Distance to grocery,
     cost of health diet.
 -   Happiness (WalletHub):
@@ -927,19 +986,17 @@ plot(importance)
         unemployment...)
     -   Community and environment (ideal weather, leisure time, safety,
         volunteer rate)
+
 :::
 
 ## Case Study: Validation by PCA {.smaller}
 
-::: columns
+:::: {.columns}
+
 ::: {.column width = '30%'}
 
 -   Principal Components Analysis is a dimension reduction method
 -   Characterize variance of many variables using smaller set of components
--   Component extraction:
-    -   Parallel Analysis (PA) suggests 5 components
-    -   Velicer MAP suggests 6
-    -   VSS suggests 2 or 3
 -   Guideline: loadings \> 0.32 are meaningful [@tabachnick2019]
 -   Key to loadings:
     -   x \< 0.2 \~ ' '
@@ -950,19 +1007,15 @@ plot(importance)
 
 ::: {.column width = '70%'}
 
-::: panel-tabset
-### Scree Plot
-
-![](plots/scree.png){fig-align="center" width="90%"}
-
-### Promax
-
 ```{r}
 pca_tables <- readRDS('preso/data/pca_tables.rds')
 
 get_pca_table <- function(table) {
   table %>% 
-    setNames(c(stringr::str_to_title(names(.)))) %>% 
+    setNames(c(stringr::str_to_title(
+      names(.)) %>% 
+        str_replace('Rc', 'RC'))
+      ) %>% 
     get_reactable(
       pagination = FALSE,
       defaultPageSize = 50,
@@ -970,8 +1023,8 @@ get_pca_table <- function(table) {
       fullWidth = TRUE,
       defaultColDef = colDef(minWidth = 50),
       columns = list(
-        indicator = colDef(minWidth = 200),
-        dimension = colDef(minWidth = 100)
+        Indicator = colDef(minWidth = 150),
+        Dimension = colDef(minWidth = 125)
       )
     )  
 }
@@ -979,31 +1032,12 @@ get_pca_table <- function(table) {
 get_pca_table(pca_tables$Promax)
 ```
 
-### Simplimax
-
-```{r}
-get_pca_table(pca_tables$simplimax)
-```
-
-### Oblimin
-
-```{r}
-get_pca_table(pca_tables$oblimin)
-```
-
-### Cluster
-
-```{r}
-get_pca_table(pca_tables$cluster)
-```
-:::
-
 :::
 
 ::::
 
 ::: notes
--   Scree plot: would say 6 components
+
 -   PA: randomize rows, do PCA. Keep PCs that explain significantly more
     variance than expected by chance
 -   MAP: get average squared partial correlations for each PC. Keep PCs
@@ -1018,57 +1052,10 @@ get_pca_table(pca_tables$cluster)
 -   Uniqueness (u2): unique variable for each var (1-h2)
 -   Complexity (com): how well it reflects a construct (1 for 1, loading
     evenly on 2 is 2)
+    
 :::
 
-# 3. Uncertainty and Sensitivity
-
-## Uncertainty: Metric Counts {.smaller}
-
-::: columns
-::: {.column width = '30%'}
-
--   Is this even interesting?
-:::
-
-::: {.column width = '70%'}
-
-::: panel-tabset
-### Dimension Scores
-
-```{r}
-#| fig-align: center
-uncertainty_plots <- readRDS('preso/plots/uncertainty_plots.rds')
-ggplotly(
-  uncertainty_plots$dimension_ranks,
-  width = 700,
-  height = 400,
-  tooltip = 'text'
-)
-```
-
-### Standard Deviations
-
-```{r}
-#| fig-align: center
-ggplotly(
-  uncertainty_plots$sd,
-  width = 700,
-  height = 400,
-  tooltip = 'text'
-)
-```
-:::
-
-:::
-
-::::
-
-::: notes
--   Scores stay about stable
--   SD only goes down for health and economics - both have an indicator
-    with many metrics
--   Not sure this is anything
-:::
+# 3. Uncertainty and Sensitivity {.centered-section}
 
 ## Uncertainty: Dimensions {.smaller}
 
@@ -1084,6 +1071,7 @@ ggplotly(
 -   Higher ranks are desirable
 -   Some dimensions are quite unstable (Economics)
 -   Some are quite stable (Health)
+
 :::
 
 ::: {.column width = '60%'}
@@ -1156,8 +1144,8 @@ dim_sens_plots$social
 ::: {.column width = '30%'}
 
 -   Steps:
-    1. Run all 10 methods without the indicator
-    2. Run all 10 methods with the indicator
+    1. Run all 18 methods without the indicator
+    2. Run all 18 methods with the indicator
     3. Calculate average change in VT dimension rank
 -   Shows how influential an indicator is on Vermont dimension scores
 
@@ -1225,14 +1213,19 @@ get_plotly(ind_inf_plots$social)
 
 ::::
 
-## Conclusions
+::: {.notes}
+
+-   This is VT centric. 
+-   Could also see how each indicator changes all states on average
+
+:::
+
+## Conclusions {.smaller}
 
 -   Gaps in secondary data
 -   Framework complexity and coherence
 -   Stability and sensitivity
 -   Influential indicators
-
--   (Format and add image on the right)
 
 ::: notes
 
@@ -1269,7 +1262,11 @@ get_plotly(ind_inf_plots$social)
     
 :::
 
-## Discussion
+## Discussion {.v-center-container}
+
+Questions?
+
+Thoughts for discussion:
 
 -   How well do these data represent the system? What should be changed or added?
 -   How should we assign values to metrics and indicators?
@@ -1278,7 +1275,7 @@ get_plotly(ind_inf_plots$social)
 -   Where and how should we incorporate qualitative data?
 -   What does this mean for shaping the next RFP?
 
--   (Format and add image on the right)
+Thank you!
 
 ## To Add or Change
 

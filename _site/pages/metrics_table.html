@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/quarto-search/fuse.min.js"></script>
 <script src="../site_libs/quarto-search/quarto-search.js"></script>
 <meta name="quarto:offset" content="../">
-<link href="../pages/sm-explorer.html" rel="next">
+<link href="../pages/refined_framework.html" rel="next">
 <link href="../pages/metadata_table.html" rel="prev">
 <script src="../site_libs/quarto-html/quarto.js"></script>
 <script src="../site_libs/quarto-html/popper.min.js"></script>
@@ -74,7 +74,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <link href="../site_libs/quarto-html/quarto-syntax-highlighting-e26003cea8cd680ca0c55a263523d882.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../site_libs/bootstrap/bootstrap-913bc11c8dbd843f740ffa41caa7f6dd.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../site_libs/bootstrap/bootstrap-c13c16da28e0410aa238ee153deafd3b.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -242,12 +242,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">Metrics Data</span></a>
   </div>
 </li>
-          <li class="sidebar-item">
-  <div class="sidebar-item-container"> 
-  <a href="../pages/sm-explorer.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">SM-Explorer</span></a>
-  </div>
-</li>
       </ul>
   </li>
         <li class="sidebar-item sidebar-item-section">
@@ -351,7 +345,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>On this page you can download a bulk .csv file for all the secondary data metrics collected so far in the project (with the exception of ~1,000 NAICS metrics). The file is ~ 40MB. Use the <code>Download Bulk CSV</code> button below to download it. Note that the metadata table from the last page can be used to identify and define the the variable names. To download a key to match FIPS codes to state and county names, use the <code>Download FIPS Key</code> button.</p>
+<p>On this page you can download a bulk .csv file for all the secondary data metrics collected so far in the project, which is around 650 variables. The file is ~ 40MB. Use the <code>Download Bulk CSV</code> button below to download it. Note that the metadata table from the last page can be used to identify and define the the variable names. To download a key to match FIPS codes to state and county names, use the <code>Download FIPS Key</code> button.</p>
 <p>Soon to come on this page is an interactive table of metrics. The file size is large enough that manipulating it in the Quarto page is unwieldy, so it will have to link to a separate database. Coming soon.</p>
 <div class="cell">
 <details class="code-fold">
@@ -389,11 +383,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </details>
 <div class="cell-output-display">
 <div style="display: flex; gap: 100px; margin-bottom: 20px; justify-content: center;">
-<a class="btn btn-primary" style="display: flex; width: 200px; justify-content: center; align-items: center;" href="../data/bulk_metrics.csv" download="2025-03-02_bulk_metrics.csv">
+<a class="btn btn-primary" style="display: flex; width: 200px; justify-content: center; align-items: center;" href="../data/bulk_metrics.csv" download="2025-03-16_bulk_metrics.csv">
 <svg aria-hidden="true" role="img" viewbox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"></path></svg>
 Download Bulk .CSV
 </a>
-<a class="btn btn-primary" style="display: flex; width: 200px; justify-content: center; align-items: center;" href="../data/all_fips_key.csv" download="2025-03-02_fips_key.csv">
+<a class="btn btn-primary" style="display: flex; width: 200px; justify-content: center; align-items: center;" href="../data/all_fips_key.csv" download="2025-03-16_fips_key.csv">
 <svg aria-hidden="true" role="img" viewbox="0 0 512 512" style="height:1em;width:1em;vertical-align:-0.125em;margin-left:auto;margin-right:auto;font-size:inherit;fill:currentColor;overflow:visible;position:relative;"><path d="M288 32c0-17.7-14.3-32-32-32s-32 14.3-32 32V274.7l-73.4-73.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l128 128c12.5 12.5 32.8 12.5 45.3 0l128-128c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L288 274.7V32zM64 352c-35.3 0-64 28.7-64 64v32c0 35.3 28.7 64 64 64H448c35.3 0 64-28.7 64-64V416c0-35.3-28.7-64-64-64H346.5l-45.3 45.3c-25 25-65.5 25-90.5 0L165.5 352H64zm368 56a24 24 0 1 1 0 48 24 24 0 1 1 0-48z"></path></svg>
 Download FIPS Key
 </a>
@@ -833,8 +827,8 @@ window.document.addEventListener("DOMContentLoaded", function (event) {
       </a>          
   </div>
   <div class="nav-page nav-page-next">
-      <a href="../pages/sm-explorer.html" class="pagination-link" aria-label="SM-Explorer">
-        <span class="nav-page-text">SM-Explorer</span> <i class="bi bi-arrow-right-short"></i>
+      <a href="../pages/refined_framework.html" class="pagination-link" aria-label="Refined Framework">
+        <span class="nav-page-text">Refined Framework</span> <i class="bi bi-arrow-right-short"></i>
       </a>
   </div>
 </nav>

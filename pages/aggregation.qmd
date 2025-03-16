@@ -52,7 +52,8 @@ pacman::p_load(
   tibble,
   dplyr,
   forecast,
-  DescTools
+  DescTools,
+  stringr
 )
 source('dev/get_reactable.R')
 source('dev/get_setup.R')
@@ -71,7 +72,6 @@ First, check how much missing data there are. If it is within reason, use missFo
 ```{r}
 #| label: imputation
 #| output: false
-
 metrics_df <- readRDS('data/metrics_df.rds')
 get_str(metrics_df)
 
@@ -109,13 +109,67 @@ imp_dat <- mf_out$ximp
 
 We had `{r} mis_dat`% missing data, which is rather little, and gives us flexibility in handling it. The Out-of-Bag (OOB) error, quantified by the normalized residual mean squared error (NRMSE) the missForest imputation algorithm was `r round(oob, 3)`.
 
+# Transformations
+
+Transforming distributions and dealing with outliers. Three options. 
+
+**Raw Values**
+
+**Winsorization**
+
+**Box Cox** [@bickel1981]
+
+Box-Cox transformations are non-linear transformations that use an optimal value of lambda to make the distribution as normal as possible. This has some strengths in that the data are easier to work with in further analyses. It also effectively pulls outliers inward toward the center of the distribution. However, it also changes relationships between the variables, so it will distort any bivariate correlations.
+
+\begin{equation}
+{\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
+\end{equation}
+
+\begin{equation}
+{\rm For}\ \lambda = 0,\ f_0(x) = log(x)
+\end{equation}
+
+```{r}
+#| label: transformations
+#| output: false
+
+# List of results of transformations
+transformed <- list()
+get_str(imp_dat)
+
+# Raw - just leave it as is
+transformed$raw <- imp_dat
+
+# Box Cox. If there are negatives, shifting to remove them
+transformed$boxcox <- imp_dat %>% 
+  mutate(across(everything(), ~ {
+    if (any(.x <= 0)) {
+      shift <- abs(min(.x)) + 1
+      vals <- .x + shift
+    } else {
+      vals <- .x
+    }
+    optimal_lambda <- forecast::BoxCox.lambda(vals, method = 'loglik')
+    print(paste0('Optimal lambda: ', optimal_lambda))
+    out <- forecast::BoxCox(vals, lambda = optimal_lambda)
+    return(out)
+  }))
+get_str(transformed$boxcox)    
+
+# Winsorization
+transformed$winsor <- imp_dat %>% 
+  mutate(across(everything(), DescTools::Winsorize))
+get_str(transformed$winsor)
+
+# Check
+map(transformed, get_str)
+```
+
 # Rescaling
 
 We are rescaling our data using five methods: rank order, winsorizing, Min-Max, Box-Cox, and Z-scores. Results will be saved to a list of five rescaled datasets so we can compare outcomes of each one and see what the consequences are.
 
 **Rank Order** 
-
-**Winsorization**
 
 **Min Max** [@oecdHandbookConstructingComposite2008]
 
@@ -137,62 +191,56 @@ I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 
 Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
 
-**Box Cox** [@bickel1981]
-
-Box-Cox transformations are non-linear transformations that use an optimal value of lambda to make the distribution as normal as possible. This has some strengths in that the data are easier to work with in further analyses. It also effectively pulls outliers inward toward the center of the distribution. However, it also changes relationships between the variables, so it will distort any bivariate correlations.
-
-\begin{equation}
-{\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
-\end{equation}
-
-\begin{equation}
-{\rm For}\ \lambda = 0,\ f_0(x) = log(x)
-\end{equation}
-
 ```{r}
-#| label: normalization
+#| label: rescaling
 #| output: false
-# List of results
-normed <- list()
 get_str(imp_dat)
 
-# Z scores
-normed$zscore <- imp_dat %>% 
-  mutate(across(everything(), ~ as.numeric(scale(.x, scale = TRUE, center = TRUE))))
+# List of results
+scaled <- list()
+
+# Z-scores, one for each transformation
+scaled$zscore <- map(transformed, \(trans) {
+  trans %>% 
+    mutate(across(
+      everything(),
+      ~ as.numeric(scale(.x, scale = TRUE, center = TRUE))
+    ))
+})
+get_str(scaled$zscore)
 
 # Min Max
 min_max <- function(x) {
   (x - min(x)) / (max(x) - min(x))
 }
-normed$minmax <- imp_dat %>% 
-  mutate(across(everything(), min_max))
-
-# Box Cox. Adding 1 as constant to remove zeroes
-normed$boxcox <- imp_dat %>% 
-  mutate(across(everything(), ~ forecast::BoxCox(.x + 1, lambda = 'auto')))
+scaled$minmax <- map(transformed, \(trans) {
+  trans %>% 
+    mutate(across(everything(), min_max))
+})
+get_str(scaled$minmax)  
 
 # Rank order from lowest to highest value for each var. We are coding this such
 # that higher ranks are better. So 51 should have the highest/best value and
 # rank 1 should have the worst.
-normed$rank <- map(names(imp_dat), \(col_name) {
-  imp_dat %>% 
-    rownames_to_column('fips') %>% 
-    select(fips, col_name) %>% 
-    mutate(!!sym(col_name) := dense_rank(.data[[col_name]]))
-}) %>% 
-  reduce(full_join) %>% 
-  column_to_rownames('fips')
-get_str(normed$rank)
-# get_str(normed$rank[[1]])
-# normed$rank[[1]] %>% arrange(unemploymentRate)
-
-# Winsorization
-normed$winsor <- imp_dat %>% 
-  mutate(across(everything(), DescTools::Winsorize))
+scaled$rank <- map(transformed, \(trans) {
+  map(names(trans), \(col_name) {
+    trans %>% 
+      rownames_to_column('fips') %>% 
+      dplyr::select(fips, col_name) %>% 
+      mutate(!!sym(col_name) := dense_rank(.data[[col_name]]))
+  }) %>% 
+    reduce(full_join) %>% 
+    column_to_rownames('fips')
+})
+get_str(scaled$rank)
 
 # Check
-map(normed, get_str)
+map(scaled, get_str)
 
+# Unlist these so instead of 3x3 it is 1x9
+scaled <- purrr::list_flatten(scaled, name_spec = "{inner}_{outer}")
+names(scaled)
+get_str(scaled)
 ```
 
 # Directional Values
@@ -205,7 +253,7 @@ Alas, for now we will invert variables in each of the transformed datasets as ne
 #| label: directional_values
 #| output: false
 # Check variable names
-vars <- names(normed[[1]])
+(vars <- names(scaled[[1]]))
 
 # Higher numbers should be better. Reverse metrics that are the opposite, 
 # where lower numbers are better. Only listing reverse here - metrics are 
@@ -286,33 +334,29 @@ remove <- c(
 # boxcox and winsor: trickier. want to just reverse the distribution. 
 #   max(x) - x + min(x)
 # Could we have just done this in the beginning, before normalization? Maybe
-valued_data <- imap(normed, \(df, method) {
+valued <- imap(scaled, \(df, method) {
   df %>% 
     select(-all_of(remove)) %>% 
     mutate(
       across(all_of(reverse), ~ case_when(
-        method == 'zscore' ~ .x * -1,
-        method == 'minmax' ~ 1 - .x,
-        method %in% c('boxcox', 'winsor') ~ max(.x) - .x + min(.x),
-        method == 'rank' ~ max(.x) - .x + 1
+        str_detect(method, 'rank') ~ max(.x) - .x + 1,
+        str_detect(method, 'zscore') ~ .x * -1,
+        str_detect(method, 'minmax') ~ 1 - .x,
+        .default = NA
       )),
       across(everything(), as.numeric)
     )
 })
-map(valued_data, get_str)
+map(valued, get_str)
 
 # Compare
-checklist <- list(normed, valued_data)
-map(checklist, ~ .x$rank[[2]])
-
-# Check one that should get flipped
-valued_data$minmax$unemploymentRate
-normed$minmax$unemploymentRate
-# Looks good
+checklist <- list(scaled, valued)
+map(checklist, ~ .x$raw_rank[[1]])
+map(checklist, ~ .x$winsor_zscore[[1]])
+map(checklist, ~ .x$raw_minmax[[1]])
 
 # Save this as our 'normalized data' that we use for building scores
-saveRDS(valued_data, 'data/valued_rescaled_metrics.rds')
-
+saveRDS(valued, 'data/valued_rescaled_metrics.rds')
 ```
 
 ```{r}
@@ -344,9 +388,6 @@ get_str(table)
 
 # Save this desirable direction table for preso
 saveRDS(table, 'preso/data/desirable_directions_table.rds')
-
-# CHECK
-# check <- readRDS('preso/data/meta_for_table.rds')
 ```
 
 
@@ -386,78 +427,21 @@ Indicator aggregation:
 # We are also removing the 'remove' metrics without clear directional values
 frame <- readRDS('data/frame.rds')
 filtered_frame <- frame %>% 
-  dplyr::filter(variable_name %in% names(valued_data[[1]])) %>% 
+  dplyr::filter(variable_name %in% names(valued[[1]])) %>% 
   dplyr::select(variable_name, indicator, index, dimension)
 get_str(filtered_frame)
 
 # Save this for later - use in regression and variable selection 
 saveRDS(filtered_frame, 'data/filtered_frame.rds')
 
-# Make a list where we hold scores for indicators, indices, and dimensions
-scores <- list()
-
-# Function for geometric mean
-geometric_mean <- function(x, na.rm = TRUE){
-  if (all(x > 0)) {
-    exp(mean(log(x), na.rm = na.rm))
-  } else if (any(x <= 0)) {
-    horizontal_shift <- abs(min(x)) + 1
-    exp(mean(log(x + horizontal_shift), na.rm = na.rm)) - horizontal_shift
-  } 
-}
-# Get indicator scores across all three normalization methods
-indicator_scores <- map(valued_data, \(df) {
-  
-  # For each df, calculate indicator means
-  indicators_out <- map(unique(filtered_frame$indicator), \(ind) {
-  
-    # Column name based on indicator
-    ind_snake <- ind
-    
-    # Split into groups by indicator, with one or more metrics each
-    variables <- filtered_frame %>% 
-      dplyr::filter(indicator == ind) %>% 
-      pull(variable_name) %>% 
-      unique()
-    indicator_metrics <- df %>% 
-      dplyr::select(any_of(variables))
-    
-    # Get arithmetic and geo means for each indicator
-    dfs <- list()
-    dfs$arithmetic <- indicator_metrics %>%
-      rowwise() %>%
-      mutate(
-        !!sym(ind_snake) := mean(c_across(everything())),
-      ) %>%
-      dplyr::select(!!sym(ind_snake))
-    dfs$geometric <- indicator_metrics %>% 
-      rowwise() %>% 
-      mutate(
-        !!sym(ind_snake) := geometric_mean(c_across(everything())),
-      ) %>%
-      select(!!sym(ind_snake))
-    return(dfs) 
-  })
-  
-  # Rearrange so we put each aggregation method (arith, geo) together
-  norm_out <- list()
-  norm_out$arithmetic <- map(indicators_out, ~ {
-    .x[grep("arithmetic", names(.x))]
-  }) %>% 
-    bind_cols()
-  norm_out$geometric <- map(indicators_out, ~ {
-    .x[grep("geometric", names(.x))]
-  }) %>% 
-    bind_cols()
-  return(norm_out) 
-})
-  
-get_str(indicator_scores, 3)
-get_str(indicator_scores, 4)
-
-# Test function
-# test <- get_agg_indicators(normed, filtered_frame)
-# identical(indicator_scores, test)
+# Using modular functions here to do each step. 
+# See dev/get_aggregations.R for details
+indicator_scores <- get_agg_indicators(
+  valued, 
+  filtered_frame, 
+  aggregation = 'both'
+)
+get_str(indicator_scores)
 ```
 
 Index aggregation:
@@ -466,44 +450,10 @@ Index aggregation:
 #| label: index_aggregation
 #| output: false
 # For each set of indicator scores, calculate index scores
-# get_str(indicator_scores, 4)
-indices <- unique(filtered_frame$index)
 
-# Choose aggregation function based on agg_type
-agg_function <- function(x, agg_type) {
-   if (agg_type == 'geometric') {
-    geometric_mean(x)
-  } else if (agg_type == 'arithmetic') {
-    mean(x)
-  }
-}
-
-index_scores <- map(indicator_scores, \(norm_type) {
-  imap(norm_type, \(agg_df, agg_type) {
-    map(indices, \(index_) {
-      # Get names of indicators for this index
-      index_indicators <- filtered_frame %>% 
-        filter(index == index_) %>% 
-        pull(indicator) %>% 
-        unique()
-      # Get DF of indicators for this index
-      index_indicator_df <- agg_df %>% 
-        select(all_of(index_indicators))
-      # Get arithmetic or geometric mean, based on agg_type
-      index_indicator_df %>% 
-        rowwise() %>% 
-        # mutate(mean = across(everything(), agg_function(agg_type)))
-        mutate(!!sym(index_) := agg_function(c_across(everything()), agg_type)) %>% 
-        select(!!sym(index_))
-    }) %>% 
-      bind_cols()
-  })
-})
-get_str(index_scores, 4)
-
-# Test function
-# test_indices <- get_agg_indices(indicator_scores, frame)
-# identical(index_scores, test_indices)
+# Using custom modular function
+index_scores <- get_agg_indices(indicator_scores, filtered_frame)
+get_str(index_scores)
 ```
 
 Dimension aggregation:
@@ -511,39 +461,11 @@ Dimension aggregation:
 ```{r}
 #| label: dimension_aggregation
 #| output: false
-get_str(index_scores, 4)
+# Custom function
+dimension_scores <- get_agg_dimensions(index_scores, filtered_frame)
+names(dimension_scores)
+get_str(dimension_scores)
 
-# Same process for dimensions
-dimensions <- unique(filtered_frame$dimension)
-
-dimension_scores <- map(index_scores, \(norm_type) {
-  imap(norm_type, \(agg_df, agg_type) {
-    map(dimensions, \(dimension_) {
-      # Get names of indices for this dimension
-      dimension_indices <- filtered_frame %>% 
-        filter(dimension == dimension_) %>% 
-        pull(index) %>% 
-        unique()
-      # Get DF of indice for this dimension
-      dimension_index_df <- agg_df %>% 
-        select(all_of(dimension_indices))
-      # Get arithmetic or geometric mean, based on agg_type
-      dimension_index_df %>% 
-        rowwise() %>% 
-        mutate(!!sym(dimension_) := agg_function(
-          c_across(everything()), 
-          agg_type
-        )) %>% 
-        select(!!sym(dimension_))
-    }) %>% 
-      bind_cols()
-  })
-})
-get_str(dimension_scores, 4)
-
-# Test function
-# test_dimensions <- get_agg_dimensions(index_scores, filtered_frame)
-# identical(dimension_scores, test_dimensions)
 ```
 
 # Wrangle
@@ -553,120 +475,31 @@ Here, we organize arithmetic and geometric means for each level of the framework
 ```{r}
 #| label: wrangle
 #| output: false
+state_key <- readRDS('data/state_key.rds')
+
 get_str(indicator_scores, 4)
 get_str(index_scores, 4)
 get_str(dimension_scores, 4)
 
-# Want to end up with 6 lists: 3 norm types * 2 mean types
+# Want to end up with 18 versions: 3 transforms, 3 rescalings, 2 aggregations
 # Put them all together in one list to work with
-all_scores <- mget(c(
-  'indicator_scores',
-  'index_scores',
-  'dimension_scores'
-))
-get_str(all_scores, 3)
 
-# Function to pull out the pieces we want
-# Also put state names back in as a column and with real names, not codes
-get_output <- function(norm_type, agg_type) {
-  # Get list of each df (dimension, index, indicator) for combo
-  dfs <- all_scores %>% 
-    map(\(level) level[[norm_type]]) %>% 
-    map(\(norm) norm[[agg_type]])
-  # Get state back into a proper column for each df
-  out <- map(dfs, ~ {
-    .x %>% 
-      # Note that we are binding fips back in - this is hinky, note to fix
-      bind_cols(
-        metrics_df %>% 
-          rownames_to_column('fips') %>% 
-          dplyr::select(fips)
-      ) %>% 
-      left_join(
-        dplyr::select(sm_data$state_key, state, state_code),
-        by = join_by(fips == state_code) 
-      ) %>% 
-      dplyr::select(-fips)
-  })
-  return(out)
-}
-
-# All combinations, also a name
-combos <- expand.grid(
-  names(all_scores[[1]]),
-  c('arithmetic', 'geometric')
-) %>% 
-  mutate(name = paste0(Var1, '_', Var2))
-
-# Map to pull them all out
-scores <- map2(combos[[1]], combos[[2]], ~ {
-  get_output(.x, .y)
-}) %>% 
-  setNames(c(combos$name))
-get_str(scores, 4)
-get_str(scores, 3)
-
-# Test function
-# test_organized <- get_organized_scores(all_scores, sm_data$state_key, metrics_df)
-# identical(scores, test_organized)
-
-
-## Add medians for New England states and US
-final_scores <- map(scores, \(method) {
-  map(method, \(level) {
-    
-    # Mean of every US state and DC
-    us_means <- level %>%
-      dplyr::select(-state) %>% 
-      colMeans() %>% 
-      as.list()
-    us_means$state <- 'US_mean'
-    
-    # Median of every US state and DC
-    us_medians <- level %>% 
-      dplyr::select(-state) %>% 
-      map_dbl(median) %>% 
-      as.list()
-    us_medians$state <- 'US_median'
-    
-    # Mean of just New England states
-    ne_means <- level %>% 
-      dplyr::filter(state %in% c('VT', 'NH', 'ME', 'MA', 'CT', 'RI')) %>% 
-      dplyr::select(-state) %>% 
-      colMeans() %>% 
-      as.list()
-    ne_means$state <- 'NE_mean'
-     
-    # Median of just New England states
-    ne_medians <- level %>% 
-      dplyr::filter(state %in% c('VT', 'NH', 'ME', 'MA', 'CT', 'RI')) %>% 
-      dplyr::select(-state) %>% 
-      map_dbl(median) %>% 
-      as.list()
-    ne_medians$state <- 'NE_median'
-    
-    # Return the level + US + NewEng means
-    level %>% 
-      bind_rows(us_means) %>% 
-      bind_rows(us_medians) %>% 
-      bind_rows(ne_means) %>% 
-      bind_rows(ne_medians)
-  })
-})
-get_str(final_scores, 3)
-get_str(final_scores, 4)
-
-# Test function
-# test_final_scores <- get_groupings(scores)
-# get_str(test_final_scores)
-# get_str(test_final_scores, 4)
-# identical(final_scores, test_final_scores)
-# Not same because we added NE medians. That's okay.
+# Actually switching to modular function here too:
+# Run whole process with function
+final_scores <- get_all_aggregations(
+  normed_data = valued,
+  framework = filtered_frame,
+  state_key = state_key,
+  aggregation = 'both'
+)
+names(final_scores)
+get_str(final_scores)
+# Now we have a list of 18 iterations
 
 # Save this for use elsewhere
 saveRDS(final_scores, 'data/state_score_iterations.rds')
 ```
 
-This gives us a list of 10 elements, one for each combination of normalization method and aggregation method. Each element has three data frames, one for indicator, index, and dimension. Now we can compare these 6 outputs to see how the methodological differences affect scores and ranks.
+This gives us a list of 18 elements, one for each combination of transformation method, rescaling method, and aggregation method. Each element has three data frames, one for indicator, index, and dimension. Now we can compare these 6 outputs to see how the methodological differences affect scores and ranks.
 
 # References

@@ -52,13 +52,17 @@ First we will combine our indicator, index, and dimension values into one data f
 #| output: false
 
 # Load data
-minmax_dat <- readRDS('data/state_score_iterations.rds')[['minmax_geometric']]
-get_str(minmax_dat, 3)
+scores <- readRDS('data/state_score_iterations.rds')
+names(scores)
+
+# Pull from raw minmax geometric
+raw_minmax_geo <- scores$raw_minmax_geometric
+get_str(raw_minmax_geo, 3)
 
 # Rename columns to specify what level of framework they are
 # then combine them into a single DF
 # and remove the aggregate US or NewEng rows
-dat <- imap(minmax_dat, ~ {
+dat <- imap(raw_minmax_geo, ~ {
   new_names <- c(
     paste0(
       str_sub(.y, end = 5),
@@ -76,7 +80,7 @@ dat <- imap(minmax_dat, ~ {
 get_str(dat)
 
 # Save this for later use elsewhere
-saveRDS(dat, 'data/minmax_geo_all_levels.rds')
+saveRDS(dat, 'data/raw_minmax_geo.rds')
 
 # Get filtered frame, which shows which indicators belong to which dimensions
 framework <- readRDS('data/filtered_frame.rds')

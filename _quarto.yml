@@ -52,8 +52,8 @@ website:
             href: pages/metadata_table.qmd
           - text: Metrics Data
             href: pages/metrics_table.qmd
-          - text: SM-Explorer
-            href: pages/sm-explorer.qmd
+          # - text: SM-Explorer
+            # href: pages/sm-explorer.qmd
       - section: Analysis
         contents:
           - text: Refined Framework

@@ -27,7 +27,7 @@ all_fips_key <- bind_rows(slim_state_key, slim_fips_key)
 write_csv(all_fips_key, 'data/all_fips_key.csv')
 ```
 
-On this page you can download a bulk .csv file for all the secondary data metrics collected so far in the project (with the exception of ~1,000 NAICS metrics). The file is ~ 40MB. Use the `Download Bulk CSV` button below to download it. Note that the metadata table from the last page can be used to identify and define the the variable names. To download a key to match FIPS codes to state and county names, use the `Download FIPS Key` button.
+On this page you can download a bulk .csv file for all the secondary data metrics collected so far in the project, which is around 650 variables. The file is ~ 40MB. Use the `Download Bulk CSV` button below to download it. Note that the metadata table from the last page can be used to identify and define the the variable names. To download a key to match FIPS codes to state and county names, use the `Download FIPS Key` button.
 
 Soon to come on this page is an interactive table of metrics. The file size is large enough that manipulating it in the Quarto page is unwieldy, so it will have to link to a separate database. Coming soon.
 
