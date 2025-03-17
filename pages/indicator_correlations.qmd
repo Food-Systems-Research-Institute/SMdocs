@@ -124,6 +124,10 @@ saveRDS(mat, 'preso/data/correlation_data.rds')
 ```{r}
 #| label: correlation_plot
 #| fig-cap: Interactive Correlation Plot
+# Set options for font and size
+font_family = 'Arial'
+font_size = 11
+
 # Convert to interactive plotly figure with text tooltip
 plot <- ggplotly(
   plot_out, 
@@ -150,7 +154,11 @@ plot <- plot %>%
     xaxis = list(
       range = list(0.5, 38.5),
       tickvals = list(1, 2, 3, 4, 5),
-      tickfont = list(color = 'royalblue')
+      tickfont = list(
+        color = '#104E8B',
+        family = font_family,
+        size = font_size
+      )
     ),
     xaxis2 = list(
       range = list(0.5, 38.5),
@@ -169,9 +177,9 @@ plot <- plot %>%
       ),
       tickvals = list(6, 7, 8, 9, 10, 11, 12, 13, 14),
       tickfont = list(
-        color = 'red',
-        family = 'Arial',
-        size = 12
+        color = 'darkgreen',
+        family = font_family,
+        size = font_size
       )
     ),
     xaxis3 = list(
@@ -191,9 +199,9 @@ plot <- plot %>%
       ),
       tickvals = list(15, 16, 17, 18, 19, 20, 21, 22, 23),
       tickfont = list(
-        color = 'darkgreen',
-        family = 'Arial',
-        size = 12
+        color = 'darkred',
+        family = font_family,
+        size = font_size
       )
     ),
     xaxis4 = list(
@@ -213,8 +221,8 @@ plot <- plot %>%
       tickvals = list(24, 25, 26, 27, 28, 29, 30, 31),
       tickfont = list(
         color = 'darkorange',
-        family = 'Arial',
-        size = 12
+        family = font_family,
+        size = font_size
       )
     ),
     xaxis5 = list(
@@ -233,8 +241,8 @@ plot <- plot %>%
       tickvals = list(32, 33, 34, 35, 36, 37, 38),
       tickfont = list(
         color = 'black',
-        family = 'Arial',
-        size = 12
+        family = font_family,
+        size = font_size
       )
     )
   )
@@ -249,7 +257,11 @@ plot <- plot %>%
     yaxis = list(
       range = list(0.5, 38.5),
       tickvals = list(1, 2, 3, 4, 5),
-      tickfont = list(color = 'royalblue')
+      tickfont = list(
+        color = '#104E8B',
+        family = font_family,
+        size = font_size
+      )
     ),
     yaxis2 = list(
       range = list(0.5, 38.5),
@@ -268,9 +280,9 @@ plot <- plot %>%
       ),
       tickvals = list(6, 7, 8, 9, 10, 11, 12, 13, 14),
       tickfont = list(
-        color = 'red',
-        family = 'Arial',
-        size = 12
+        color = 'darkgreen',
+        family = font_family,
+        size = font_size
       )
     ),
     yaxis3 = list(
@@ -290,9 +302,9 @@ plot <- plot %>%
       ),
       tickvals = list(15, 16, 17, 18, 19, 20, 21, 22, 23),
       tickfont = list(
-        color = 'darkgreen',
-        family = 'Arial',
-        size = 12
+        color = 'darkred',
+        family = font_family,
+        size = font_size
       )
     ),
     yaxis4 = list(
@@ -312,8 +324,8 @@ plot <- plot %>%
       tickvals = list(24, 25, 26, 27, 28, 29, 30, 31),
       tickfont = list(
         color = 'darkorange',
-        family = 'Arial',
-        size = 12
+        family = font_family,
+        size = font_size
       )
     ),
     yaxis5 = list(
@@ -332,8 +344,8 @@ plot <- plot %>%
       tickvals = list(32, 33, 34, 35, 36, 37, 38),
       tickfont = list(
         color = 'black',
-        family = 'Arial',
-        size = 12
+        family = font_family,
+        size = font_size
       )
     )
   )
@@ -341,6 +353,7 @@ plot <- plot %>%
 # Save this for preso
 htmlwidgets::saveWidget(plot, 'preso/plots/correlation_plotly.html')
 
+# Show it 
 plot
 ```
 

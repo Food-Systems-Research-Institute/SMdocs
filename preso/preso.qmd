@@ -6,12 +6,12 @@ date: '2025-03-19'
 date-format: long
 format:
   revealjs:
-    embed-resources: false
+    embed-resources: true
     incremental: false
     theme: [serif, preso.scss]
     transition: fade
     scrollable: true
-    chalkboard: true
+    chalkboard: false
     revealjs-plugins:
       - revealjs-text-resizer
 editor: 
@@ -96,9 +96,7 @@ conflicted::conflicts_prefer(
 
 ::: {.column width = '60%'}
 
-![Intervale Farm, Sally McCay, UVM
-Photo](../images/intervale_small.png){fig-align="center" width="90%"
-fig-alt="A picture of a field at Intervale Farm."}
+![Intervale Farm, Sally McCay, UVM Photo](../images/intervale_small.png){fig-align="center" width="90%" fig-alt="A picture of a field at Intervale Farm."}
 
 :::
 
@@ -115,7 +113,7 @@ fig-alt="A picture of a field at Intervale Farm."}
 
 ## Framework {.smaller}
 
-::: panel-tabset
+::: {.panel-tabset}
 ### Economics
 
 ```{r}
@@ -367,8 +365,13 @@ desirable_table %>%
 
 ## Methods: Transformations {.smaller}
 
-:::: {.panel-tabset}
-### Raw? {.v-center-container}
+::: {.panel-tabset}
+
+### Raw
+
+:::: {.columns}
+
+::: {.column width = '30%'}
 
 **Raw Values**
 
@@ -379,6 +382,16 @@ desirable_table %>%
 -   Weaknesses:
     -   Vulnerable to outliers
     -   Harder to distinguish between similar systems
+
+:::
+
+::: {.column width = '70%' .r-stretch}
+ 
+![Hammond et al. (2017)](plots/hammond_raw.png){fig-align="center" width="100%"}
+
+:::
+
+::::
 
 ### Winsor
 
@@ -400,11 +413,9 @@ desirable_table %>%
 
 -   Finds an optimal value of $\lambda$ to normalize distribution
 
-\begin{equation}
-{\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda
-\end{equation} \begin{equation}
-{\rm For}\ \lambda = 0,\ f_0(x) = log(x)
-\end{equation}
+${\rm For}\ \lambda\neq0,\ f\lambda(x) = (sign(x)|x|^\lambda-1)/\lambda$
+
+${\rm For}\ \lambda = 0,\ f_0(x) = log(x)$
 
 -   Strengths:
     -   More tractable distributions for analysis
@@ -418,8 +429,13 @@ desirable_table %>%
 
 ## Methods: Rescaling {.smaller}
 
-:::: panel-tabset
+::: {.panel-tabset}
+
 ### Rank Order
+
+:::: {.columns}
+
+::: {.column width = '40%'}
 
 **Rank Order**
 
@@ -431,19 +447,29 @@ desirable_table %>%
     -   Loss of information
 -   Used by @schneider2025 for lack of robust data
 
+:::
+
+::: {.column width = '60%'}
+
+![Schneider et al. (2023)](plots/schneider_rank.png){fig-align="center" width="95%" fig-alt="A picture of a field at Intervale Farm."}
+
+:::
+
+::::
+
 ### Min Max
+
+:::: {.columns}
+
+::: {.column width = '50%'}
 
 **Min Max** [@oecdHandbookConstructingComposite2008]
 
 -   Scales all data from 0 (worst) to 1 (best)
 
-\begin{equation}
-I^t_qc = \frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}
-\end{equation}
+$I^t_qc = \frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}$
 
-::: center
 Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
-:::
 
 -   Strengths:
     -   Intitive, approachable
@@ -453,15 +479,23 @@ Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
 -   Widely used in sustainability composite indices
     [@schneider2025,@schneider2023StateFoodSystems,@bene2019GlobalMapIndicators]
 
+:::
+
+::: {.column width = '50%'}
+
+![Jacobi et al. (2020)](plots/jacobi_minmax.png){fig-align="center" width="90%"}
+
+:::
+
+::::
+
 ### Z-Scores
 
 **Z-Scores** [@oecdHandbookConstructingComposite2008]
 
 -   Scales data to mean of 0 and standard deviation of 1
 
-\begin{equation}
-I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
-\end{equation}
+$I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}$
 
 -   Larger numbers are better, but no limits
 -   Linear transformation
@@ -474,19 +508,19 @@ I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}
 -   Dimensionless ratio of the indicator to a reference system or
     reference value
 
-\begin{equation}
-I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
-\end{equation}
+$I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}$
 
 -   Used with official benchmarks like minimum wage
     [@jacobi2020NewUnderstandingEvaluation]
 -   Flexible and intuitive premise
 -   Challenging to set targets in many applications
-::::
+
+:::
 
 ## Methods: Aggregation and Weighting {.smaller}
 
-::: panel-tabset
+::: {.panel-tabset}
+
 ### Arithmetic
 
 **Arithmetic Means**
@@ -494,10 +528,11 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 -   Plain old average
 -   Strengths:
     -   Simple, interpretable
+    -   Know how it's wrong
 -   Weaknesses:
     -   Compensatory method - make up for underperformance in one area
         with overperformance in another
-    -   Equal weighting
+    -   Implicit equal weighting
 -   Commonly used in composite index literature
     [@jacobi2020NewUnderstandingEvaluation]
 
@@ -507,9 +542,7 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 
 -   $n$th root of the product of values
 
-\begin{equation}
-\sqrt[n]{x_1 * x_2 * ... * x_n}
-\end{equation}
+$\Large \sqrt[n]{x_1 * x_2 * ... * x_n}$
 
 -   Strengths:
     -   Partially compensable
@@ -576,6 +609,7 @@ I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}
 
 -   Use an efficiency frontier to define relative performance of
     countries
+    
 :::
 
 ## Methods: Comparisons {.smaller}
@@ -692,6 +726,7 @@ map_dat <- left_join(
   mutate(across(where(is.numeric), ~ round(.x, 2))) %>% 
   st_as_sf()
 
+# Function to make each dimension map individually
 get_leaflet <- function(map_dat, dimension) {
   
   # Two palettes, one reversed, so we can swap legend order
@@ -716,11 +751,7 @@ get_leaflet <- function(map_dat, dimension) {
       fillOpacity = 0.8,
       popup = ~paste0(
         "<strong>State:</strong> ", map_dat$name, "<br>",
-        "<strong>Economics:</strong> ", map_dat$economics, "<br>",
-        "<strong>Environment:</strong> ", map_dat$environment, "<br>",
-        "<strong>Health:</strong> ", map_dat$health, "<br>",
-        "<strong>Production:</strong> ", map_dat$production, "<br>",
-        "<strong>Social:</strong> ", map_dat$social
+        "<strong>", str_to_title(dimension), ":</strong> ", map_dat[[dimension]]
       )
     ) %>%
     addLegend(
@@ -917,9 +948,10 @@ get_stargazer(
 ```
 
 ::: flex-container
-<iframe src="data/val1_food_insecurity.html" width="100%" height="600" style="border: none;">
 
+<iframe src="data/val1_food_insecurity.html" width="100%" height="100%" style="border: none;">
 </iframe>
+
 :::
 
 ### Life Expectancy
@@ -945,8 +977,7 @@ get_stargazer(
 ```
 
 ::: flex-container
-<iframe src="data/val2.html" width="100%" height="600" style="border: none;">
-
+<iframe src="data/val2.html" width="100%" height="100%" style="border: none;">
 </iframe>
 :::
 
@@ -954,38 +985,54 @@ get_stargazer(
 
 Food Environment Index (UW Population Health Institute 2024)
 
-GLMnet variable importance:
+:::: {.columns}
+
+::: {.column width = '40%'}
 
 ```{r}
-#| fig-height: 4
-#| fig-width: 6
-#| fig-align: center
-importance <- readRDS('preso/plots/val3_food_env_glmnet_importance.rds')
-plot(importance)
+ml_out <- readRDS('preso/data/ml_out.rds')
 ```
 
-Random forest variable importance:
+**Random Forest Regression**
+
+Tuning Parameters:
+
+* Mtry = `r ml_out$rf_best_tune[1]`
+* Split Rule = `r ml_out$rf_best_tune[2]`
+* Min Node Size = `r ml_out$rf_best_tune[3]`
+
+Performance:
+
+* RMSE = `r ml_out$rf_performance[1]`
+* R^2 = `r ml_out$rf_performance[2]`
+* MAE = `r ml_out$rf_performance[3]`
+
+:::
+
+::: {.column width = '60%'}
+
 
 ```{r}
-#| fig-height: 4
-#| fig-width: 6
 #| fig-align: center
-importance <- readRDS('preso/plots/val3_rf_importance.rds')
-plot(importance)
+plotly::ggplotly(
+ ml_out$rf_imp_plot,
+ width = 600,
+ height = 400,
+ tooltip = 'text'
+)
 ```
+
+:::
+
+::::
+
 :::::
 
 ::: notes
 
 -   Food Environment Index: 0 (worst) 10 (best). Distance to grocery,
     cost of health diet.
--   Happiness (WalletHub):
-    -   emotional and physical wellbeing (health index, depression,
-        alcohol use disorder, adequate sleep rate...)
-    -   Work environment (work hours, commute time, income,
-        unemployment...)
-    -   Community and environment (ideal weather, leisure time, safety,
-        volunteer rate)
+-   RF Importance: difference (MSE) between accuracy with and without feature, averaged across all trees, normalized by standard error
 
 :::
 
@@ -1064,10 +1111,11 @@ get_pca_table(pca_tables$Promax)
 
 -   Sample from uncertain inputs
     [@oecdHandbookConstructingComposite2008]
-    -   Rescaling methods (5)
+    -   Transformations (3)
+    -   Rescaling methods (3)
     -   Aggregation methods (2)
     -   Leave out one indicator (39)
-    -   = 390 iterations
+    -   = 702 combinations
 -   Higher ranks are desirable
 -   Some dimensions are quite unstable (Economics)
 -   Some are quite stable (Health)
@@ -1140,7 +1188,8 @@ dim_sens_plots$social
 
 ## Sensitivity: Indicators {.smaller}
 
-::: columns
+:::: {.columns}
+
 ::: {.column width = '30%'}
 
 -   Steps:
@@ -1222,10 +1271,38 @@ get_plotly(ind_inf_plots$social)
 
 ## Conclusions {.smaller}
 
--   Gaps in secondary data
--   Framework complexity and coherence
--   Stability and sensitivity
--   Influential indicators
+:::: {.columns}
+
+::: {.column width = '60%'}
+
+-   Findings:
+    -   Gaps in secondary data
+        -   Soil health, carbon stocks, water quantity 
+        -   Food distribution, loss, and waste
+        -   Diversity of farm types, production diversity
+        -   Social dimension
+    -   Framework complexity and coherence
+    -   Stability and sensitivity
+    -   Influential indicators
+        -   Carbon fluxes
+        -   Various health indicators
+        -   Social connectedness
+-   Looking ahead:
+    -   Find more info on metrics and analysis at the [Sustainability Metrics methods website](https://fsrc.w3.uvm.edu/sustainability_metrics/pages/home.html)
+    -   Sustainability Metrics repository
+    -   Reach me at [christopher.donovan@uvm.edu](christopher.donovan@uvm.edu)
+
+Thank you!
+
+:::
+
+::: {.column width = '40%' .center}
+![](plots/spiders_1.png){width=80%}
+![](plots/spiders_2.png){width=80%}
+
+:::
+
+::::
 
 ::: notes
 
@@ -1238,7 +1315,7 @@ get_plotly(ind_inf_plots$social)
     -   Carbon stocks
     -   forest complexity
     -   water quality
-    -   Water quantity
+    -   water quantity
     -   precarity, market health indices
     -   diversity of Farm Types (this one tricky for VT)
     -   nutrition\*
@@ -1259,29 +1336,17 @@ get_plotly(ind_inf_plots$social)
     -   More about GDP? Need to deal with this
     -   Social connectedness (5)
     -   From indicator sensitivity: social connectedness and production diversity
-    
+
 :::
 
-## Discussion {.v-center-container}
-
-Questions?
+## Discussion
 
 Thoughts for discussion:
 
 -   How well do these data represent the system? What should be changed or added?
 -   How should we assign values to metrics and indicators?
--   What are fair and interpretable methods of transformations and
-    aggregation?
+-   What are fair and interpretable methods of transformations and aggregation?
 -   Where and how should we incorporate qualitative data?
 -   What does this mean for shaping the next RFP?
-
-Thank you!
-
-## To Add or Change
-
--   Scenario Analysis with random forest for predictions?
--   Indicator sensitivity across all states, not just Vermont?
--   Should I remove the part where I ditch 5 metrics that I can't put a direction on?
--   Should I remove or change the production species diversity metric?
 
 ## References

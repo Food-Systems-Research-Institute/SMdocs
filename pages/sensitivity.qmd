@@ -181,7 +181,8 @@ plots <- map2(str_subset(names(dimension_df), '_'), dimension_ranks, ~ {
     ggplot(aes(x = !!sym(.x))) + 
     geom_density(
       fill = 'lightblue',
-      color = 'royalblue'
+      color = 'royalblue',
+      adjust = 3
     ) +
     theme_classic() +
     labs(
@@ -189,7 +190,8 @@ plots <- map2(str_subset(names(dimension_df), '_'), dimension_ranks, ~ {
       y = 'Density',
       title = .y
     ) +
-    xlim(0, 50)
+    xlim(0, 50) +
+    ylim(0, 0.75)
 }) %>% 
   setNames(c(stringr::str_to_lower(dimension_ranks)))
 

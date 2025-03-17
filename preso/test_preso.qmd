@@ -6,12 +6,12 @@ date: '2025-03-19'
 date-format: long
 format:
   revealjs:
-    embed-resources: false
+    embed-resources: true
     incremental: false
     theme: [serif, preso.scss]
     transition: fade
     scrollable: true
-    chalkboard: true
+    chalkboard: false
     revealjs-plugins:
       - revealjs-text-resizer
 editor: 
@@ -113,53 +113,71 @@ fig-alt="A picture of a field at Intervale Farm."}
 
 # 1. Framework and Methods {.centered-section}
 
-## Case Study: Validation by Cronbach {.smaller}
+## Conclusions {.smaller}
 
-Raw + min max scaling + geometric aggregation
-
-<!-- :::: {.columns style='display: flex !important; height: 80%;'} -->
-
-<!-- ::: {.column width = "40%" style = 'display: flex; align-items: center;'} -->
-
-:::: {.columns .v-center-container}
+:::: {.columns}
 
 ::: {.column width = '50%'}
 
--   Cronbach's Alpha is a measure of internal reliability or consistency
-    [@cronbach1951CoefficientAlphaInternal]
--   Arbitrary guideline of 0.7 to validate a measurement tool
-    [@taber2018UseCronbachAlpha]
-\begin{equation}
-\alpha=\frac{n}{n-1}\left( 1-\frac{\sum_{i}^{V_i}}{V_t} \right)
-\end{equation}
-Where $n$ is the number of items, $V_t$ is the variance of item $i$, and
-$V_t$ is the variance of all items
--   It is not supposed to be negative.
+-   Findings:
+    -   Gaps in secondary data
+        -   Soil health, carbon stocks, water quantity 
+        -   Food distribution, loss, and waste
+        -   Diversity of farm types, production diversity
+        -   Social dimension
+    -   Framework complexity and coherence
+    -   Stability and sensitivity
+    -   Influential indicators
+        -   Carbon fluxes
+        -   Various health indicators
+        -   Social connectedness
+-   Looking ahead:
+    -   Find more info on metrics and analysis at the [Sustainability Metrics methods website](https://fsrc.w3.uvm.edu/sustainability_metrics/pages/home.html)
+    -   Sustainability Metrics repository
 
 :::
 
-::: {.column width = '50%'}
-
-```{r}
-#| class: centered-vertical
-cronbachs <- readRDS('preso/data/cronbach_dimensions.rds')
-get_reactable(
-  cronbachs,
-  fullWidth = FALSE,
-  searchable = FALSE,
-  filterable = FALSE
-)
-```
+::: {.column width = '50%' .center}
+![](plots/spiders_1.png){width=60%}
+![](plots/spiders_2.png){width=60%}
 
 :::
 
 ::::
 
-::: {.notes}
+::: notes
 
--   Context for Cronbach: not necessarily what we want, just one way to show consistency within dimension. 
--   Might be okay if dimension is scattered
-
+-   Gaps:
+    -   NASS stats lean toward commodity crops
+    -   Soil health
+    -   Food distribution capacity (have some of this)
+    -   Food loss and waste
+    -   Embodied Carbon
+    -   Carbon stocks
+    -   forest complexity
+    -   water quality
+    -   water quantity
+    -   precarity, market health indices
+    -   diversity of Farm Types (this one tricky for VT)
+    -   nutrition\*
+    -   all of social dimension\*
+-   Complexity and coherence:
+    -   Cronbach: Some are coherent (health, and lesser extent economics and environment)
+    -   Is this important to us? What does this mean for social dimension?
+-   Sensitivity:
+    -   Some dimensions stable (health)
+    -   Others ambiguous (economics)
+    -   Metric counts: fewer means risk of poor fit
+    -   Diagnostic for indicator influence (production species diversity)
+-   Metric counts: fewer increases risks?
+-   Influential indicators:
+    -   Carbon fluxes (10 interactions)
+    -   Access to care, value added market (6)
+    -   Operations diversification, phyiscal health, production quantities (5)
+    -   More about GDP? Need to deal with this
+    -   Social connectedness (5)
+    -   From indicator sensitivity: social connectedness and production diversity
+    
 :::
 
 # References

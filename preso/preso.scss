@@ -10,7 +10,6 @@ $link-color: #154734;
 
 /*-- scss:rules --*/
 
-
 .flex-container {
   display: flex;
   justify-content: center;
@@ -18,12 +17,18 @@ $link-color: #154734;
   width: 100%;
 }
 
+.flex-container iframe {
+  width: 80%;
+  height: 90vh;
+  border: none;
+}
+
 .centered {
   display: flex;
   justify-content: center;
 }
 
-/* Does not work */
+/* Does not work? */
 .centered-vertical {
   display: flex;
   justify-content: center;
@@ -41,4 +46,9 @@ $link-color: #154734;
   justify-content: center;
   align-items: center;
   height: 80%;
+}
+
+.left-align-math {
+  text-align: left;
+  width: 100%;
 }

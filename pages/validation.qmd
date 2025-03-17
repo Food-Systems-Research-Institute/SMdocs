@@ -266,13 +266,23 @@ Let's try this one again with a random forest instead of linear model:
 ```{r}
 #| label: food_env_split
 #| output: false
-
+# Get a version of dat without irrelevant variables
+dat_ml <- dat %>% 
+  select(
+    economics, 
+    environment, 
+    health, 
+    production, 
+    social, 
+    foodEnvironmentIndex,
+    gdp_per_cap
+  )
 
 # Split data 60/40
 set.seed(42)
-indices <- createDataPartition(dat$foodEnvironmentIndex, p = 0.60, list = FALSE)
-training_data <- dat[indices, ]
-testing_data <- dat[-indices,]
+indices <- createDataPartition(dat_ml$foodEnvironmentIndex, p = 0.60, list = FALSE)
+training_data <- dat_ml[indices, ]
+testing_data <- dat_ml[-indices,]
 
 my_folds <- createFolds(training_data$foodEnvironmentIndex, k = 5, list = TRUE)
 
@@ -287,6 +297,10 @@ my_control <- trainControl(
 # Check for zero variance or near zero variance indicators
 nearZeroVar(dat, names = TRUE, saveMetrics = TRUE)
 # All clear
+
+# Also let's start a list with other results for preso
+# hyperparameters, etc
+ml_out <- list()
 ```
 
 ### GLMnet
@@ -306,6 +320,10 @@ food_env_glmnet <- train(
   trControl = my_control,
   preProcess = c('zv', 'center', 'scale')
 )
+get_str(food_env_glmnet)
+
+# Pull out best tune
+ml_out$glmnet_best_tune <- food_env_glmnet$bestTune
 ```
 
 
@@ -315,11 +333,29 @@ food_env_glmnet <- train(
 #| out-width: 75%
 #| fig-height: 3
 importance <- varImp(food_env_glmnet, scale = TRUE)
+
+# Save for preso 
 saveRDS(importance, 'preso/plots/val3_food_env_glmnet_importance.rds')
+
+#
+pred <- predict(food_env_glmnet, testing_data)
+ml_out$glmnet_performance <- postResample(
+  pred = pred, 
+  obs = testing_data$foodEnvironmentIndex
+) %>% 
+  round(3)
+# ml_out$glmnet_performance
+
+ml_out$glmnet_imp_plot <- importance %>% 
+  ggplot(aes(x = Overall, y = rownames(.))) +
+  geom_col(
+    color = 'royalblue',
+    fill = 'lightblue'
+  ) +
+  theme_classic() 
+
 plot(importance)
 ```
-
-It looks like GDP is a better predictor of the Food Environment Index than anything else, but the health dimension is far more influential than any other.
 
 ### Random Forest
 
@@ -335,6 +371,11 @@ food_env_rf <- train(
   trControl = my_control,
   importance = 'impurity'
 )
+
+get_str(food_env_rf)
+
+# Pull out best tune
+ml_out$rf_best_tune <- food_env_rf$bestTune
 ```
 
 OOB prediction error (MSE): `r food_env_rf$finalModel$prediction.error`
@@ -345,7 +386,56 @@ OOB prediction error (MSE): `r food_env_rf$finalModel$prediction.error`
 #| fig-height: 3
 #| fig-align: center
 importance <- varImp(food_env_rf, scale = TRUE)
+
+# Save for preso
 saveRDS(importance, 'preso/plots/val3_rf_importance.rds')
+
+# Get RMSEA and stuff
+pred <- predict(food_env_rf, testing_data)
+ml_out$rf_performance <- postResample(
+  pred = pred, 
+  obs = testing_data$foodEnvironmentIndex
+) %>% 
+  round(3)
+# ml_out$rf_performance
+
+imp <- importance$importance %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column() %>% 
+  setNames(c('Feature', 'Importance')) %>% 
+  mutate(Importance = round(Importance, 2)) %>% 
+  arrange(desc(Importance)) %>% 
+  mutate(
+    Feature = Feature %>% 
+      str_to_title() %>% 
+      str_replace('Gdp_per_cap', 'GDP per capita')
+  )
+  
+
+ml_out$rf_imp_plot <- imp %>% 
+  ggplot(aes(
+    x = Importance, 
+    y = reorder(Feature, Importance) +
+    text = paste0(
+      '<b>Variable:</b> ', Feature, '\n',
+      '<b>Importance:</b> ', Importance
+    )
+  )) +
+  geom_col(
+    color = 'royalblue',
+    fill = 'lightblue',
+  ) +
+  theme_classic() +
+  labs(
+    x = 'Importance',
+    y = 'Feature'
+  )
+ml_out$rf_imp_plot
+
+# Save all results for preso
+saveRDS(ml_out, 'preso/data/ml_out.rds')
+
+# Show plot
 plot(importance)
 ```
 
