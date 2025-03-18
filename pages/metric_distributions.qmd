@@ -8,7 +8,7 @@ editor_options:
 warnings: false
 ---
 
-Explore metric distributions before normalization. Use this to inform how we might want to deal with outliers or normalize data at the metric level. For now, we are leaving the metrics as is, taking arithmetic means, and saving all normalization and weighting for the indicator level.
+This page explores metric distributions before any transformations. Use this to inform how we might want to deal with outliers or normalize data at the metric level. 
 
 ```{r}
 #| label: prep
@@ -17,11 +17,9 @@ source('dev/get_setup.R')
 get_setup()
 ```
 
-Transforming our data from long format to wide and making sure everything came through alright.
-
 # Distributions
 
-Here we explore univariate distributions of each of our metrics. Highly skewed distributions might be good candidates for Box-Cox transformations or Winsorization. The figure below shows metrics with a skew \> 2 in red, while those with a skew \< 2 are in blue.
+Highly skewed distributions might be good candidates for Box-Cox transformations or Winsorization. The figure below shows metrics with a skew \> 2 in red, while those with a skew \< 2 are in blue.
 
 ```{r}
 #| label: metric_distributions
@@ -79,8 +77,6 @@ ggarrange(
 
 ```
 
-It seems most of our metrics fall along respectable somewhat-normal distributions. `{r} length(skewed)` metrics are skewed out of `{r} ncol(metrics_df) - 1` total. They include several variables related to local farm economies (agrotourism sales as a percentage of total sales, direct to consumer sales as a percentage of total sales, and value added sales as a percentage of total sales), as well as a couple of the TreeMap 2016 variables (dead standing carbon and live trees) and GHG emissions from agriculture (CH4 and CO2, with an honorable mention for N2O). Just about the whole collection of ERS metrics are skewed, including importts and exports, indemnities, and real estate expenses. 
+It seems most of our metrics fall along respectable somewhat-normal distributions. `{r} length(skewed)` metrics are skewed out of `{r} ncol(metrics_df) - 1` total. They include several variables related to local farm economies (agrotourism sales as a percentage of total sales, direct to consumer sales as a percentage of total sales, and value added sales as a percentage of total sales), as well as a couple of the TreeMap 2016 variables (dead standing carbon and live trees) and GHG emissions from agriculture (CH4 and CO2, with an honorable mention for N2O). Just about the whole collection of ERS metrics are skewed, including imports and exports, indemnities, and real estate expenses. 
 
 There might be a case for transformations here, or it might make more sense to do it at the indicator level. Another option is to weight our metrics to take into account population, number of farms, acres of farmland, GDP, or some other appropriate variable for each metric. @bene2019GlobalMapIndicators used Box Cox transformations for highly skewed indicators before normalizing all indicators with Min Max transformations. 
-
-Putting a pin in this to consider trying it with raw metrics and transformed metrics and then to compare the two. 

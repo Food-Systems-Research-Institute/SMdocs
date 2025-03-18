@@ -50,7 +50,6 @@ First we will combine our indicator, index, and dimension values into one data f
 ```{r}
 #| label: wrangle
 #| output: false
-
 # Load data
 scores <- readRDS('data/state_score_iterations.rds')
 names(scores)
@@ -87,8 +86,6 @@ framework <- readRDS('data/filtered_frame.rds')
 ```
 
 # PCA
-
-Similar procedure to what we have been doing, but now we will just use our indicators, which have been aggregating with geometric means.
 
 ## Component Extraction
 

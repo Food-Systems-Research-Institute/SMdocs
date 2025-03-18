@@ -6,12 +6,12 @@ date: '2025-03-19'
 date-format: long
 format:
   revealjs:
-    embed-resources: true
+    embed-resources: false
     incremental: false
     theme: [serif, preso.scss]
     transition: fade
     scrollable: true
-    chalkboard: false
+    chalkboard: true
     revealjs-plugins:
       - revealjs-text-resizer
 editor: 
@@ -76,8 +76,7 @@ conflicted::conflicts_prefer(
 
 ## Introduction {.smaller}
 
-:::: {.columns .v-center-container}
-
+::: {.columns .v-center-container}
 ::: {.column width = '40%'}
 
 -   Goals for secondary data:
@@ -91,29 +90,29 @@ conflicted::conflicts_prefer(
     -   How well do the data represesent the system?
     -   Valuation, scaling, weighting, aggregation
     -   Where and how do we incorporate qualitative data?
-    
 :::
 
 ::: {.column width = '60%'}
 
-![Intervale Farm, Sally McCay, UVM Photo](../images/intervale_small.png){fig-align="center" width="90%" fig-alt="A picture of a field at Intervale Farm."}
+![Intervale Farm, Sally McCay, UVM
+Photo](../images/intervale_small.png){fig-align="center" width="90%"
+fig-alt="A picture of a field at Intervale Farm."}
 
 :::
 
 ::::
 
 ::: notes
-
--   The point is to take stock of existing data, swap out and fill in with primary research where necessary. 
+-   The point is to take stock of existing data, swap out and fill in
+    with primary research where necessary.
 -   Skeleton of a framework.
-
 :::
 
 # 1. Framework and Methods {.centered-section}
 
 ## Framework {.smaller}
 
-::: {.panel-tabset}
+::: panel-tabset
 ### Economics
 
 ```{r}
@@ -324,8 +323,7 @@ Sources
 
 ## Methods: Desirable Directions {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '30%'}
 
 -   How do we decide if values for an indicator are good or bad?
@@ -365,12 +363,10 @@ desirable_table %>%
 
 ## Methods: Transformations {.smaller}
 
-::: {.panel-tabset}
-
+:::: panel-tabset
 ### Raw
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '30%'}
 
 **Raw Values**
@@ -382,14 +378,15 @@ desirable_table %>%
 -   Weaknesses:
     -   Vulnerable to outliers
     -   Harder to distinguish between similar systems
-
+-   @hammond2017RuralHouseholdMultiIndicator use raw values in RHoMIS
+    survey to compare sustainability across food systems
 :::
 
 ::: {.column width = '70%' .r-stretch}
- 
-![Hammond et al. (2017)](plots/hammond_raw.png){fig-align="center" width="100%"}
 
-:::
+![Hammond et al. (2017)](plots/hammond_raw.png){fig-align="center"
+width="100%"}
+::::
 
 ::::
 
@@ -400,7 +397,8 @@ desirable_table %>%
 -   Reduce extreme values to a percentile (95th and 5th)
 -   Strengths:
     -   Doesn't reward overperformance
-    -   Allows for more robust analyses without outliers [@mayerStrengthsWeaknessesCommon2008]
+    -   Allows for more robust analyses without outliers
+        [@mayerStrengthsWeaknessesCommon2008]
 -   Weaknesses
     -   Loss of information
     -   Non-linear transformation of data
@@ -424,17 +422,15 @@ ${\rm For}\ \lambda = 0,\ f_0(x) = log(x)$
     -   Changes relationships between variables
 -   @bene2019GlobalMapIndicators used Box Cox transformations on skewed
     indicators (\>2) before using min-max scaling.
-    
+
 ::::
 
 ## Methods: Rescaling {.smaller}
 
-::: {.panel-tabset}
-
+:::: panel-tabset
 ### Rank Order
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '40%'}
 
 **Rank Order**
@@ -446,28 +442,26 @@ ${\rm For}\ \lambda = 0,\ f_0(x) = log(x)$
 -   Weaknesses:
     -   Loss of information
 -   Used by @schneider2025 for lack of robust data
-
 :::
 
 ::: {.column width = '60%'}
 
-![Schneider et al. (2023)](plots/schneider_rank.png){fig-align="center" width="95%" fig-alt="A picture of a field at Intervale Farm."}
-
-:::
+![Schneider et al. (2023)](plots/schneider_rank.png){fig-align="center"
+width="95%" fig-alt="A picture of a field at Intervale Farm."}
+::::
 
 ::::
 
 ### Min Max
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '50%'}
 
 **Min Max** [@oecdHandbookConstructingComposite2008]
 
 -   Scales all data from 0 (worst) to 1 (best)
 
-$I^t_qc = \frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}$
+$\Large I^t_qc = \frac{x^t_qc - min_c(x^{t_0}_q)}{max_c(x^{t_0}_q)-min_c(x^{t_0}_q)}$
 
 Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
 
@@ -478,12 +472,12 @@ Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
     -   Susceptible to outliers
 -   Widely used in sustainability composite indices
     [@schneider2025,@schneider2023StateFoodSystems,@bene2019GlobalMapIndicators]
-
 :::
 
 ::: {.column width = '50%'}
 
-![Jacobi et al. (2020)](plots/jacobi_minmax.png){fig-align="center" width="90%"}
+![Jacobi et al. (2020)](plots/jacobi_minmax.png){fig-align="center"
+width="90%"}
 
 :::
 
@@ -498,8 +492,12 @@ Where $x^t_qc$ is the metric $q$ for state $c$ at time $t$.
 $I^t_{qc} = \frac{x^t_{qc}-x^t_{qc=\overline{c}}}{\sigma^t_{qc=\overline{c}}}$
 
 -   Larger numbers are better, but no limits
--   Linear transformation
--   Harder to interpret
+-   Strengths:
+    -   Linear transformation
+    -   Makes empirical sense
+-   Weaknesses:
+    -   Harder to interpret and communicate
+    -   Sometimes incompatible with other methods
 
 ### Distance\*
 
@@ -512,15 +510,24 @@ $I^t_qc = \frac{x^t_qc}{x^t_{qc=\overline{c}}}$
 
 -   Used with official benchmarks like minimum wage
     [@jacobi2020NewUnderstandingEvaluation]
--   Flexible and intuitive premise
--   Challenging to set targets in many applications
+-   Strengths:
+    -   Flexible and intuitive
+    -   More nuanced and holistic
+-   Weaknesses:
+    -   Challenging to set targets
+    -   Stakeholder involvement
 
+:::
+
+::: notes
+-   Schneider: average country rankings per theme, by grouped. Min max
+    distance from group to global mean.
+-   Jacobi: minmax - three food systems in Kenya (56 indicators)
 :::
 
 ## Methods: Aggregation and Weighting {.smaller}
 
-::: {.panel-tabset}
-
+::: panel-tabset
 ### Arithmetic
 
 **Arithmetic Means**
@@ -609,7 +616,6 @@ $\Large \sqrt[n]{x_1 * x_2 * ... * x_n}$
 
 -   Use an efficiency frontier to define relative performance of
     countries
-    
 :::
 
 ## Methods: Comparisons {.smaller}
@@ -690,9 +696,12 @@ get_vt_spiders(dat, 'boxcox_zscore')
 :::
 
 ::: notes
--   We now have 10 combinations of scaling and aggregation.
--   No one way is objectively better than any other - just exploring options
--   Note that Z-score geometric transformation is hinky
+-   We now have 18 combinations of transformation, scaling, aggregation
+-   No one way is objectively better than any other - just exploring
+    options
+-   Note about spider graph/radar chart: misleading, do not interpret
+    area or order.
+-   US state median in red
 -   TRANSITION INTO CASE STUDY OF MIN MAX GEO
 :::
 
@@ -798,9 +807,13 @@ get_leaflet(map_dat, 'social')
 :::
 
 ::: notes
--   Note: Why state level? So that we have some benchmarks to compare VT to. Allows us to use empirical methods. 
--   Note: cannot compare across dimensions
+-   Note: Why state level? So that we have some benchmarks to compare VT
+    to. Allows us to use empirical methods.
 -   **This is where I want qualitative data**
+-   Environment: NV is low because of TreeMap data - scaled to 0.
+-   Health: Mississippi is low - life expectancy, infant mortality,
+    access to grocery
+-   Arkansas: ?
 :::
 
 ## Case Study: Indicator Correlations {.smaller}
@@ -809,43 +822,6 @@ Raw + min max scaling + geometric aggregation
 
 ::: panel-tabset
 ### Correlation Matrix
-
-```{r}
-# mat <- readRDS('preso/data/correlation_data.rds')
-# cor <- rcorr(mat, type = 'pearson')
-# cor_r <- melt(cor$r) %>% 
-#   setNames(c('var_1', 'var_2', 'value'))
-# cor_p <- melt(cor$P)
-# p.value <- cor_p$value
-# 
-# plot <- cor_r %>% 
-#   ggplot(aes(var_1, var_2, fill = value, text = paste0(
-#     'Var 1: ', var_1, '\n',
-#     'Var 2: ', var_2, '\n',
-#     'Correlation: ', format(round(value, 3), nsmall = 3), '\n',
-#     'P-Value: ', format(round(p.value, 3), nsmall = 3)
-#   ))) + 
-#   geom_tile() + 
-#   scale_fill_gradient2(
-#     low = "#762a83", 
-#     mid = "white", 
-#     high = "#1b7837", 
-#     midpoint = 0
-#   ) +
-#   theme(axis.text.x = element_text(hjust = 1, angle = 45)) +
-#   labs(
-#     x = NULL,
-#     y = NULL,
-#     fill = 'Correlation'
-#   )
-#   
-# ggplotly(
-#   plot, 
-#   tooltip = 'text',
-#   width = 850,
-#   height = 650
-# )
-```
 
 <iframe src="plots/correlation_plotly.html" width="100%" height="650">
 
@@ -870,8 +846,12 @@ cor_table %>%
 ::: notes
 -   Highly correlating indicators from different dimensions are a
     problem (double counting)
+-   Negative correlations within same dimension means measuring
+    different things
 -   Note: social dimension has strong positive AND negative correlations
--   Note: social connectedness is pretty high (social associations, disconnected youth, single parent households)
+-   Influential indicators: Most track with GDP and pop, social
+    connectedness is pretty high (social associations, disconnected
+    youth, single parent households)
 -   TRANSITION TO VALIDATION
 :::
 
@@ -879,21 +859,19 @@ cor_table %>%
 
 Raw + min max scaling + geometric aggregation
 
-:::: {.columns .v-center-container}
-
+::: {.columns .v-center-container}
 ::: {.column width = '40%'}
 
 -   Cronbach's Alpha is a measure of internal reliability or consistency
     [@cronbach1951CoefficientAlphaInternal]
 -   Arbitrary guideline of 0.7 to validate a measurement tool
     [@taber2018UseCronbachAlpha]
-\begin{equation}
-\alpha=\frac{n}{n-1}\left( 1-\frac{\sum_{i}^{V_i}}{V_t} \right)
-\end{equation}
-Where $n$ is the number of items, $V_t$ is the variance of item $i$, and
-$V_t$ is the variance of all items
--   It is not supposed to be negative.
+    
+$$\alpha=\frac{n}{n-1}\left( 1-\frac{\sum_{i}^{V_i}}{V_t} \right)$$
 
+Where $n$ is the number of items, $V_t$ is the variance of item $i$, and $V_t$ is the variance of all items
+
+-   It is not supposed to be negative.
 :::
 
 ::: {.column width = '60%'}
@@ -913,18 +891,22 @@ get_reactable(
 
 ::::
 
-::: {.notes}
-
--   Context for Cronbach: not necessarily what we want, just one way to show consistency within dimension. 
+::: notes
+-   Warning: Unconventional use of Cronbach, and it is fraught at best
+-   Context for Cronbach: not necessarily what we want, just one way to
+    show consistency within dimension.
 -   Might be okay if dimension is scattered
-
+-   Tau equivalence - assume equal loadings, but can have unequal
+    variance
+-   Split half reliability - average of correlations between subscales,
+    all combinations
 :::
 
 ## Case Study: Validation by Regression {.smaller}
 
 Raw + min max scaling + geometric aggregation
 
-::::: panel-tabset
+:::::: panel-tabset
 ### Food Insecurity
 
 Food Insecurity Index (UW Population Health Institute 2024)
@@ -948,10 +930,9 @@ get_stargazer(
 ```
 
 ::: flex-container
-
 <iframe src="data/val1_food_insecurity.html" width="100%" height="100%" style="border: none;">
-</iframe>
 
+</iframe>
 :::
 
 ### Life Expectancy
@@ -978,6 +959,7 @@ get_stargazer(
 
 ::: flex-container
 <iframe src="data/val2.html" width="100%" height="100%" style="border: none;">
+
 </iframe>
 :::
 
@@ -985,9 +967,8 @@ get_stargazer(
 
 Food Environment Index (UW Population Health Institute 2024)
 
-:::: {.columns}
-
-::: {.column width = '40%'}
+::: columns
+::: {.column width = '30%'}
 
 ```{r}
 ml_out <- readRDS('preso/data/ml_out.rds')
@@ -997,20 +978,18 @@ ml_out <- readRDS('preso/data/ml_out.rds')
 
 Tuning Parameters:
 
-* Mtry = `r ml_out$rf_best_tune[1]`
-* Split Rule = `r ml_out$rf_best_tune[2]`
-* Min Node Size = `r ml_out$rf_best_tune[3]`
+-   Mtry = `r ml_out$rf_best_tune[1]`
+-   Split Rule = `r ml_out$rf_best_tune[2]`
+-   Min Node Size = `r ml_out$rf_best_tune[3]`
 
 Performance:
 
-* RMSE = `r ml_out$rf_performance[1]`
-* R^2 = `r ml_out$rf_performance[2]`
-* MAE = `r ml_out$rf_performance[3]`
-
+-   RMSE = `r ml_out$rf_performance[1]`
+-   R\^2 = `r ml_out$rf_performance[2]`
+-   MAE = `r ml_out$rf_performance[3]`
 :::
 
-::: {.column width = '60%'}
-
+::: {.column width = '70%'}
 
 ```{r}
 #| fig-align: center
@@ -1021,35 +1000,34 @@ plotly::ggplotly(
  tooltip = 'text'
 )
 ```
-
-:::
+::::::
 
 ::::
 
 :::::
 
 ::: notes
-
 -   Food Environment Index: 0 (worst) 10 (best). Distance to grocery,
     cost of health diet.
--   RF Importance: difference (MSE) between accuracy with and without feature, averaged across all trees, normalized by standard error
-
+-   RF Importance: difference (MSE) between accuracy with and without
+    feature, averaged across all trees, normalized by standard error
 :::
 
 ## Case Study: Validation by PCA {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '30%'}
 
 -   Principal Components Analysis is a dimension reduction method
--   Characterize variance of many variables using smaller set of components
+-   Characterize variance of many variables using smaller set of
+    components
 -   Guideline: loadings \> 0.32 are meaningful [@tabachnick2019]
 -   Key to loadings:
     -   x \< 0.2 \~ ' '
     -   x \< 0.32 \~ '.'
     -   x \>= 0.32 \~ x
-    
+-   @jacobi2020NewUnderstandingEvaluation use PCA to validate dimensions, but still have indicators cross-loading or loading onto no components
+
 :::
 
 ::: {.column width = '70%'}
@@ -1084,14 +1062,13 @@ get_pca_table(pca_tables$Promax)
 ::::
 
 ::: notes
-
 -   PA: randomize rows, do PCA. Keep PCs that explain significantly more
     variance than expected by chance
 -   MAP: get average squared partial correlations for each PC. Keep PCs
     that lead to lowest average squared partial correlation
 -   VSS: compare fit of simplified model to original correlations. VSS =
-    1-sumsquares(r\*)/sumsquares(r). Peaks at optimal (most interpretable)
-    number of factors.
+    1-sumsquares(r\*)/sumsquares(r). Peaks at optimal (most
+    interpretable) number of factors.
 -   Promax is best interpretation, but not great
 -   Loadings: correlation coefficients between variables and components
 -   Eigenvalue (ss loadings): varaince explained by component
@@ -1099,7 +1076,6 @@ get_pca_table(pca_tables$Promax)
 -   Uniqueness (u2): unique variable for each var (1-h2)
 -   Complexity (com): how well it reflects a construct (1 for 1, loading
     evenly on 2 is 2)
-    
 :::
 
 # 3. Uncertainty and Sensitivity {.centered-section}
@@ -1188,14 +1164,13 @@ dim_sens_plots$social
 
 ## Sensitivity: Indicators {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '30%'}
 
 -   Steps:
-    1. Run all 18 methods without the indicator
-    2. Run all 18 methods with the indicator
-    3. Calculate average change in VT dimension rank
+    1.  Run all 18 methods without the indicator
+    2.  Run all 18 methods with the indicator
+    3.  Calculate average change in VT dimension rank
 -   Shows how influential an indicator is on Vermont dimension scores
 
 :::
@@ -1262,43 +1237,35 @@ get_plotly(ind_inf_plots$social)
 
 ::::
 
-::: {.notes}
-
--   This is VT centric. 
+::: notes
+-   This is VT centric.
 -   Could also see how each indicator changes all states on average
-
 :::
 
 ## Conclusions {.smaller}
 
-:::: {.columns}
-
+::: columns
 ::: {.column width = '60%'}
 
 -   Findings:
     -   Gaps in secondary data
-        -   Soil health, carbon stocks, water quantity 
-        -   Food distribution, loss, and waste
-        -   Diversity of farm types, production diversity
-        -   Social dimension
     -   Framework complexity and coherence
     -   Stability and sensitivity
     -   Influential indicators
-        -   Carbon fluxes
-        -   Various health indicators
-        -   Social connectedness
 -   Looking ahead:
     -   Find more info on metrics and analysis at the [Sustainability Metrics methods website](https://fsrc.w3.uvm.edu/sustainability_metrics/pages/home.html)
-    -   Sustainability Metrics repository
-    -   Reach me at [christopher.donovan@uvm.edu](christopher.donovan@uvm.edu)
+    -   Share your thoughts on:
+        -   Quality and relevance of secondary data sources
+        -   Other secondary sources to fill in gaps
+        -   Framework methodology and how to represent your findings
+    -   Sustainability Metrics repository is approved!
 
 Thank you!
-
 :::
 
 ::: {.column width = '40%' .center}
-![](plots/spiders_1.png){width=80%}
-![](plots/spiders_2.png){width=80%}
+![](plots/spiders_1.png){width="80%"}
+![](plots/spiders_2.png){width="80%"}
 
 :::
 
@@ -1307,45 +1274,43 @@ Thank you!
 ::: notes
 
 -   Gaps:
-    -   NASS stats lean toward commodity crops
-    -   Soil health
-    -   Food distribution capacity (have some of this)
-    -   Food loss and waste
-    -   Embodied Carbon
-    -   Carbon stocks
-    -   forest complexity
-    -   water quality
-    -   water quantity
-    -   precarity, market health indices
-    -   diversity of Farm Types (this one tricky for VT)
-    -   nutrition\*
-    -   all of social dimension\*
+    -   Soil health, carbon stocks, water quality and quantity
+    -   Food distribution, loss, and waste
+    -   Diversity of farm types, production diversity
+    -   Dietary quality and nutrition
+    -   Social dimension
+    -   Others: NASS representativeness, updates (TreeMap)
 -   Complexity and coherence:
-    -   Cronbach: Some are coherent (health, and lesser extent economics and environment)
-    -   Is this important to us? What does this mean for social dimension?
+    -   Cronbach: Some are coherent (health, and lesser extent economics
+        and environment)
+    -   Is this important to us? What does this mean for social
+        dimension?
 -   Sensitivity:
     -   Some dimensions stable (health)
     -   Others ambiguous (economics)
     -   Metric counts: fewer means risk of poor fit
-    -   Diagnostic for indicator influence (production species diversity)
+    -   Diagnostic for indicator influence (production species
+        diversity)
 -   Metric counts: fewer increases risks?
 -   Influential indicators:
     -   Carbon fluxes (10 interactions)
     -   Access to care, value added market (6)
-    -   Operations diversification, phyiscal health, production quantities (5)
+    -   Operations diversification, phyiscal health, production
+        quantities (5)
     -   More about GDP? Need to deal with this
     -   Social connectedness (5)
-    -   From indicator sensitivity: social connectedness and production diversity
-
+    -   From indicator sensitivity: social connectedness and production
+        diversity
+        
 :::
 
-## Discussion
+## Directions for Discussion
 
-Thoughts for discussion:
-
--   How well do these data represent the system? What should be changed or added?
+-   How well do these data represent the system? What should be changed
+    or added?
 -   How should we assign values to metrics and indicators?
--   What are fair and interpretable methods of transformations and aggregation?
+-   What are fair and interpretable methods of transformations and
+    aggregation?
 -   Where and how should we incorporate qualitative data?
 -   What does this mean for shaping the next RFP?
 

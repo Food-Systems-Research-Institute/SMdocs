@@ -124,6 +124,8 @@ saveRDS(mat, 'preso/data/correlation_data.rds')
 ```{r}
 #| label: correlation_plot
 #| fig-cap: Interactive Correlation Plot
+# Fair warning - this is some pretty jenky code. Plotly apparently doesn't want us to know what happens when we make our x and y axes different colors.
+
 # Set options for font and size
 font_family = 'Arial'
 font_size = 11
@@ -132,17 +134,9 @@ font_size = 11
 plot <- ggplotly(
   plot_out, 
   tooltip = 'text',
-  # width = 1000,
-  # height = 800
   width = 850,
   height = 650
 )
-
-# plot$x$data[[2]]$hoverinfo <- 'none'
-# plot$x$data[[2]]$hoveron <- NULL
-# get_str(plot$x$data)
-# plot
-
 
 plot <- plot %>% add_trace(xaxis = 'x2', showscale = FALSE)
 plot <- plot %>% add_trace(xaxis = 'x3', showscale = FALSE)
@@ -407,6 +401,7 @@ get_str(cor_counts)
 # Clean it up for preso
 framework <- readRDS('data/filtered_frame.rds') %>% 
   select(indicator, index, dimension)
+
 cor_table <- cor_counts %>% 
   left_join(framework) %>% 
   select(indicator, index, dimension, correlations) %>% 

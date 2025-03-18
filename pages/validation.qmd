@@ -23,12 +23,16 @@ pacman::p_load(
   htmltools,
   caret,
   ranger,
-  glmnet
+  glmnet,
+  psych,
+  tibble,
+  reactable
 )
 source('dev/data_pipeline_functions.R')
 source('dev/get_res_plots.R')
 source('dev/get_setup.R')
 source('dev/get_stargazer.R')
+source('dev/get_reactable.R')
 
 conflicted::conflicts_prefer(
   dplyr::select(),
@@ -41,19 +45,15 @@ conflicted::conflicts_prefer(
 
 # Introduction
 
-The goal here is to use our five tentative dimension scores as predictors to compare against other established metrics:
+Here we will use the raw + min max + geometric aggregation scores and see how they hold up to validation by external variables and by PCA.
 
-- Food security index, overall and/or child (Feeding America, Map the Meal Gap)
-- Health outcomes (UW county health rankings)
-- Life expectancy, or premature age-adjusted mortality (UW rankings)
-- Other ideas: a food affordability index, happiness index, happy planet index?
+External variables:
 
-To Add:
+- Food Security Index (Feeding America, Map the Meal Gap)
+- Life expectancy, or premature age-adjusted mortality (UW County Health Rankings)
+- Food Environment Index (UW County Health Rankings)
+- Happiness Score (WalletHub - if anyone knows of a better metric for this, I'm all ears)
 
-- cite Schneider 2023 [@schneider2023StateFoodSystems]
-  - WLS regression to get deviations of region and income group weighted means from global weighted mean
-  
-  
 ```{r}
 #| label: wrangle
 #| output: false
@@ -172,15 +172,10 @@ get_stargazer(lm1, dep_var = 'Food Insecurity Index')
 check_model(lm1)
 ```
 
-Not the worst residuals plots, but there are signs of heteroskedasticity and a scoche of non-linearity. Let's explore heteroskedasticity:
-
 ```{r}
 #| label: food_insecurity_bptest
 lmtest::bptest(lm1)
 ```
-
-Heteroskedasticity looks not to be a problem. We could try a non-linear analysis here though (note to add GLMnet and RF).
-
 
 ## Life Expectancy
 
@@ -209,10 +204,6 @@ get_stargazer(lm2, dep_var = 'Life Expectancy')
 check_model(lm2)
 ```
 
-The influential observations plot shows that record 48 (West Virginia) is poorly predicted, and has outsized influence on the model. 
-
-It also looks like heteroskedasticity is a bigger issue here. Let's check it and use robust SEs again if it is:
-
 ```{r}
 #| label: life_exp_bptest
 lmtest::bptest(lm2)
@@ -227,8 +218,6 @@ life_exp_vcov <- vcovHC(lm2, type = 'HC3')
 #| results: asis
 get_stargazer(lm2, dep_var = 'Life Expectancy', robust = TRUE)
 ```
-
-When using robust errors, the health dimension falls off and we are left with only GDP per capita as a significant predictor of life expectancy. That being said, the model without GDP is already explaining `r round(summary(lm2)$adj.r.squared * 100)`% of the variance in life expectancy, which is surprisingly strong.
 
 ## Food Environment Index
 
@@ -415,7 +404,7 @@ imp <- importance$importance %>%
 ml_out$rf_imp_plot <- imp %>% 
   ggplot(aes(
     x = Importance, 
-    y = reorder(Feature, Importance) +
+    y = reorder(Feature, Importance),
     text = paste0(
       '<b>Variable:</b> ', Feature, '\n',
       '<b>Importance:</b> ', Importance
@@ -430,13 +419,12 @@ ml_out$rf_imp_plot <- imp %>%
     x = 'Importance',
     y = 'Feature'
   )
-ml_out$rf_imp_plot
 
 # Save all results for preso
 saveRDS(ml_out, 'preso/data/ml_out.rds')
 
 # Show plot
-plot(importance)
+ml_out$rf_imp_plot
 ```
 
 ## Happiness Score
@@ -466,4 +454,108 @@ get_stargazer(lm4, dep_var = 'Happiness Index')
 check_model(lm4)
 ```
 
-The model looks pretty reasonable here. The model does not explain a significant amount of variance on the whole, but economics still shows up as the only significant predictor of the validation variable.
+# PCA
+
+## Component Extraction
+
+```{r}
+#| label: extraction
+#| warning: false
+raw_minmax_geo <- readRDS('data/raw_minmax_geo.rds')
+framework <- readRDS('data/filtered_frame.rds')
+
+# Filter down to just indicators for PCA
+pca_dat <- raw_minmax_geo %>% 
+  select(starts_with('indic')) %>% 
+  setNames(c(str_remove(names(.), 'indic_'))) %>% 
+  as.data.frame()
+# get_str(pca_dat)
+
+# Explore how many factors to extract
+VSS(pca_dat, n = 8, fm = 'pc', rotate = 'Promax')
+set.seed(42)
+fa.parallel(pca_dat, fm = 'ml')
+```
+
+MAP suggests 6, VSS 2 or 3, PA suggests 5. Not half bad. I think we are justified to go with 5.
+
+```{r}
+#| label: scree
+# Oblique rotations: promax, oblimin, simplimax, cluster
+rotations <- c(
+  'Promax',
+  'oblimin',
+  'simplimax',
+  'cluster'
+)
+pca_outs <- map(rotations, ~ {
+  pca_dat %>% 
+    # scale() %>% 
+    pca(nfactors = 5, rotate = .x)
+}) %>% 
+  setNames(c(rotations))
+
+# Save a version of promax for preso?
+png(
+  filename = 'preso/plots/scree.png',
+  width = 800,
+  height = 600,
+  units = 'px',
+  res = 150
+)
+plot(
+  pca_outs$simplimax$values,
+  xlab = 'Number of Components',
+  ylab = 'Eigen Values'
+)
+abline(h = 1)
+dev.off()
+
+# Now actually show it 
+plot(
+  pca_outs$simplimax$values,
+  xlab = 'Number of Components',
+  ylab = 'Eigen Values'
+)
+abline(h = 1)
+```
+
+The scree plot makes a reasonably convincing case for 6 components, as the slope falls off substantially after the fifth.
+
+## Run PCA
+
+```{r}
+#| label: pca_table_wrangle
+#| output: false
+pca_tables <- map(pca_outs, ~ {
+  .x$loadings %>% 
+    unclass() %>% 
+    as.data.frame() %>% 
+    select(order(colnames(.))) %>%
+    mutate(
+      across(everything(), ~ round(.x, 3)),
+      across(everything(), ~ case_when(
+        .x < 0.20 ~ '',
+        .x >= 0.20 & .x < 0.32 ~ '.',
+        .x >= 0.32 ~ as.character(.x),
+        .default = NA
+      ))
+    ) %>% 
+    rownames_to_column() %>% 
+    rename(indicator = 1) %>% 
+    mutate(
+      dimension = framework$dimension[match(indicator, framework$indicator)]
+    ) %>% 
+    select(indicator, dimension, everything())
+})
+get_str(pca_tables)
+
+# Save it for preso
+saveRDS(pca_tables, 'preso/data/pca_tables.rds')
+```
+
+```{r}
+#| label: pca_reactable
+#| class: centered
+get_reactable(pca_tables$simplimax)
+```

@@ -3,15 +3,13 @@ conflicted
 projecter
 purrr
 stringr
-rlang
-stargazer
-zoo
-lmtest
-sandwich
 tidyr
 performance
 carData
 car
+zoo
+lmtest
+sandwich
 survival
 AER
 sjPlot
@@ -22,3 +20,7 @@ caret
 ranger
 Matrix
 glmnet
+psych
+tibble
+reactable
+stargazer

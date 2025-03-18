@@ -33,13 +33,11 @@ website:
     style: "docked"
     contents:
       - text: Home
-        href: pages/home.qmd
+        href: pages/index.qmd
       - text: Overview
         href: pages/overview.qmd
       - section: Indicator Refinement
         contents: 
-          - text: Process
-            href: pages/refinement_process.qmd
           - text: Economics
             href: pages/refine_economics.qmd
           - text: Environment
@@ -52,8 +50,6 @@ website:
             href: pages/metadata_table.qmd
           - text: Metrics Data
             href: pages/metrics_table.qmd
-          # - text: SM-Explorer
-            # href: pages/sm-explorer.qmd
       - section: Analysis
         contents:
           - text: Refined Framework
@@ -68,12 +64,8 @@ website:
             href: pages/comparison.qmd
           - text: Indicator Correlations
             href: pages/indicator_correlations.qmd
-          - text: Selection and Regression
-            href: pages/selection.qmd
           - text: Validation
             href: pages/validation.qmd
-          - text: Metric Counts
-            href: pages/metric_counts.qmd
           - text: Sensitivity and Uncertainty 
             href: pages/sensitivity.qmd
 
