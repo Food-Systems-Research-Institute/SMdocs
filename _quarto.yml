@@ -54,6 +54,8 @@ website:
         contents:
           - text: Refined Framework
             href: pages/refined_framework.qmd
+          - text: Refined Metadata
+            href: pages/refined_metadata.qmd
           - text: Metric Distributions
             href: pages/metric_distributions.qmd
           - text: Aggregation

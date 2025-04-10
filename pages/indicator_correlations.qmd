@@ -30,10 +30,13 @@ conflicts_prefer(
   dplyr::summarize(),
   .quiet = TRUE
 )
-
 ```
 
-This page will explore correlations between variables at the indicator level.
+This page will explore the Pearson correlations between variables at the indicator level. Note that indicators have already been recoded as necessary such that they all point in the desirable direction. For example, the negative correlation between carbon fluxes (CO2 emissions from agriculture) and total quantity food products (animal and crop sales) means that as food production increases (good), carbon fluxes increase (bad). 
+
+These negative correlations between indicators in different dimensions are to be expected. More problematic are the positive correlations between indicators in different dimensions, like operations diversification and value-added markets. This might suggest there are omitted variables, or that certain facets of the food system are being double-counte
+
+We are using only the latest time point for each metric available. Dimensions are represented by colors, and divided by black lines in the matrix. Hovering over the diagram will show a tooltip with the correlation coefficient and p-value. 
 
 # Correlation Matrix
 
@@ -124,7 +127,8 @@ saveRDS(mat, 'preso/data/correlation_data.rds')
 ```{r}
 #| label: correlation_plot
 #| fig-cap: Interactive Correlation Plot
-# Fair warning - this is some pretty jenky code. Plotly apparently doesn't want us to know what happens when we make our x and y axes different colors.
+# Fair warning - this is some pretty jenky code. Plotly apparently doesn't want
+# us to know what happens when we make our x and y axes different colors.
 
 # Set options for font and size
 font_family = 'Arial'
@@ -134,8 +138,8 @@ font_size = 11
 plot <- ggplotly(
   plot_out, 
   tooltip = 'text',
-  width = 850,
-  height = 650
+  width = 1000,
+  height = 800
 )
 
 plot <- plot %>% add_trace(xaxis = 'x2', showscale = FALSE)
@@ -429,10 +433,8 @@ Forest health and carbon stocks are currently quite highly correlated, but this 
 
 Value-added markets and operations diversification are all using a very similar set of metrics as well. They mostly come from NASS, and it would be worth digging into the NASS docs to see how whether value-added sales might overlap with agritourism, direct to consumer sales, or local marketing channel sales.
 
-Food affordability and food security also unsurprisingly correlate strongly. The current framework here is a work in progress and a bit haphazard. It will need some reworking. Curiously, these indicators also strongly correlate with participatory governance. That's quite an interesting finding. 
-
 As for what to do about highly correlating indicators in general:
 
-- They could be reworked to use metrics that don't lead to indicator correlations. This sounds rather difficult to me, and maybe impossible. It seems likely to be the reality that aspects of the economics and health dimensions are indeed related, for example.
+- They could be reworked to use metrics that don't lead to indicator correlations. This might be hard to do because the reality may be that these dimensions are highly correlated. 
 - They could be weighted in their respective dimensions to account for the correlations. This might be done with PCA loadings or by expert opinion.
 - We could also leave them as is. This would mean potentially double-counting certain aspects, but may be a reasonable approximation of reality.

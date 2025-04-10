@@ -18,7 +18,7 @@ conflicts_prefer(
 )
 ```
 
-This page contains a metadata table for exploring the sources of secondary data used throughout this project.
+This page contains a metadata table for exploring the sources of secondary data used throughout this project. Note that not all of these metrics are used for analyses with the refined framework. For that, go to the [Refined Metadata](..pages/refined_metadata.qmd) page. This is just a collection of the ~650 metrics compiled in the course of the work.
 
 Using the table: 
 

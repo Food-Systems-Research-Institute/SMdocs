@@ -160,7 +160,7 @@ lm1 <- lm(
 #| results: asis
 #| echo: false
 #| class: stargazer-table
-get_stargazer(lm1, dep_var = 'Food Insecurity Index')
+get_stargazer(lm1, type = 'html', dep_var = 'Food Insecurity Index')
 ```
 
 ```{r}
@@ -192,7 +192,7 @@ lm2 <- lm(
 #| class: stargazer-table
 #| echo: FALSE
 #| results: asis
-get_stargazer(lm2, dep_var = 'Life Expectancy')
+get_stargazer(lm2, type = 'html', dep_var = 'Life Expectancy')
 ```
 
 ```{r}
@@ -234,7 +234,7 @@ lm3 <- lm(
 #| class: stargazer-table
 #| echo: FALSE
 #| results: asis
-get_stargazer(lm3, dep_var = 'Food Environment Index')
+get_stargazer(lm3, type = 'html', dep_var = 'Food Environment Index')
 ```
 
 
@@ -442,7 +442,7 @@ lm4 <- lm(
 #| class: stargazer-table
 #| echo: FALSE
 #| results: asis
-get_stargazer(lm4, dep_var = 'Happiness Index')
+get_stargazer(lm4, type = 'html', dep_var = 'Happiness Index')
 ```
 
 ```{r}
@@ -456,7 +456,11 @@ check_model(lm4)
 
 # PCA
 
+Let's use PCA to see how our indicators are associated with a set of orthogonal components. Ideally, we might like to see that each indicator is associated strongly with a single component (simple structure) that corresponds to the dimension.
+
 ## Component Extraction
+
+First we determine how many components to extract. This is a bit subjective, so we will use a few methods.
 
 ```{r}
 #| label: extraction
@@ -557,5 +561,11 @@ saveRDS(pca_tables, 'preso/data/pca_tables.rds')
 ```{r}
 #| label: pca_reactable
 #| class: centered
-get_reactable(pca_tables$simplimax)
+get_reactable(
+  pca_tables$Promax
+)
 ```
+
+Note that we are using the promax rotation here as it seemed most interpretable, but we have created and saved all the other available oblique rotations as well. 
+
+It looks like our economics indicators are quite scattered, but the environment indicators mostly stick to components 3 and 4. Health is quite well centered on component 3, although the "physical health tbd" indicator has meaningful loadings on three components. Production and social are rather scattered, and it is also noteworthy that participatory governance is associated with three components as well.

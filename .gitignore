@@ -2,6 +2,8 @@
 .Rproj.user
 data/sm_data.rds
 .Renviron
+.venv_smdo
+_site/
 
 # Data production page has a weirdly large cache
 pages/data_production_cache/html

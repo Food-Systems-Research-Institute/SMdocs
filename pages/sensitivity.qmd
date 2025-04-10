@@ -42,15 +42,13 @@ conflicts_prefer(
 )
 ```
 
-Steps
-
-- Set up grid of uncertain inputs (normalization, aggregation, indicators)
-- Sample from input factors
-- Explore distributions of each dimension rank
+The plan here is to explore uncertainty and sensitivity in dimensions and indicators. Given our 3 transformation methods, 3 rescaling methods, and 2 aggregation methods, we have 18 ways to build the framework. We also have 38 indicators, and if we include iterations where we omit each indicator one time, that adds another 39 options (1 where all are included). In total, this gives us 702 options in our uncertain inputs. We will map through them all and get a distribution of dimension scores for Vermont that shows how confident we are in our uncertain inputs.
 
 # Dimensions
 
 ## Sensitivity
+
+First we set up our input grid of 702 iterations.
 
 ```{r}
 #| label: input_grid
@@ -84,11 +82,15 @@ grid <- expand.grid(
 get_str(grid)
 ```
 
+Now we run all 702 iterations and save dimension score results
 
 ```{r}
 #| label: 702_iterations
 #| eval: false
 #| output: false
+# We are commenting out this cell chunk so that we don't actually run it. 
+# This is where we run 702 iterations to get distributions of scores for VT.
+
 # For each set of input factors, get dimension scores for VT
 # tic()
 # plan(multisession, workers = parallelly::availableCores(omit = 1))
@@ -128,6 +130,7 @@ get_str(grid)
 # saveRDS(out, 'data/objects/sensitivity_out.RDS')
 ```
 
+Finally, put them back together in a sensible way
 
 ```{r}
 #| label: wrangle_output
@@ -171,10 +174,11 @@ dimension_ranks <- str_subset(names(dimension_df),  '_') %>%
   snakecase::to_title_case()
 ```
 
+And now plot our results.
 
 ```{r}
 #| label: distribution_plots
-#| fig-width: 8
+#| fig-width: 10
 #| fig-height: 16
 #| fig-align: center
 #| out-width: 80%
@@ -219,7 +223,7 @@ annotate_figure(
 
 ## Cronbach
 
-Take valued scaled (but not aggregated) data and see what Cronbach looks like at index level, and possibly dimension level.
+Take valued scaled (but not aggregated) data and see what Cronbach looks like at the dimension level. Note that Cronbach's Alpha is a fraught metric at best, and this is certainly an unconventional use of it here. It might still be an interesting tool to measure internal reliability as we explore how cohesive and sensible our dimensions are.
 
 ```{r}
 #| label: cronbach
@@ -273,16 +277,9 @@ get_reactable(
 )
 ```
 
-# Indicators
+# Indicator Sensitivity
 
-Steps
-
-- Use same output from 702 iterations
-- For each indicator, get mean of values where it is included and mean of values where it is not. Record the difference
-- Plot with flipped axes, indicators on y axis, difference in x-axis
-- Do one of these plots for each dimension
-
-Note that we want to end up with 5 DFs - One for each dimension
+For indicator sensitivity, we are using the same iterations we used in the dimension analysis. However, here we just take the 18 iterations without a given indicator and compare them to the 18 iterations with that indicator to see how much the dimension score for Vermont changes.
 
 ```{r}
 #| label: wrangle_indicators
@@ -457,3 +454,5 @@ get_plotly(ind_plots[[4]])
 #| class: centered
 get_plotly(ind_plots[[5]])
 ```
+
+We can see that most dimensions are quite tight, health in particular. The economics dimension is less certain, as each indicator makes a big difference. We can also see that the production species diversity indicator is particularly impactful on Vermont's production dimension score. This might mean Vermont is an outlier, but it might also mean this indicator or the metric that represents it is not doing it justice. Turns out this indicator is represented by a single metric, a diversity index based on the USDA Cropland Data Layer. This is tailored toward commodity crops, and gives Vermont a particularly low score. This might be a sign of a bad indicator/metric.
