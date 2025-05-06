@@ -9,3 +9,10 @@ body {
 .callout-note {
   border-left: 4px solid #154734 !important;
 }
+
+.download-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+}

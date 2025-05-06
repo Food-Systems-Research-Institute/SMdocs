@@ -2,8 +2,13 @@
 title: "Refined Secondary Data Framework"
 format:
   html:
+    # css: styles.css
     fig-dpi: 200
 warnings: false
+editor_options: 
+  chunk_output_type: inline
+execute:
+  cache: false
 ---
 
 ```{r}
@@ -24,7 +29,8 @@ pacman::p_load(
   tibble, 
   tidyr,
   htmltools,
-  reactable
+  reactable,
+  downloadthis
 )
 pacman::p_load_gh('ChrisDonovan307/projecter')
 conflicts_prefer(
@@ -37,7 +43,7 @@ conflicts_prefer(
 )
 ```
 
-This page shows the partially refined framework as it stands after three dimension meetings: economics, environment, and production. It also includes a selection of preliminary secondary data metrics to match those indicators. Effectively, we have around 650 meaningful metrics. Here, we are using a selection of 130 of them to make a skeleton framework for preliminary analyses.
+This page shows the partially refined framework as it stands after three dimension meetings: economics, environment, and production. It also includes a selection of preliminary secondary data metrics to match those indicators. Effectively, we have around 650 meaningful metrics. Here, we are using a selection of 124 of them to make a skeleton framework for preliminary analyses.
 
 Note that where I have no metrics to represent an indicator, the metric column is blank. This does not mean that secondary data do not exist, just that I either haven't found it or haven't cleaned and wrangled it yet. If you know of any secondary data to fill in the gaps or improve on data we already have, please do reach out to let Chris know about it.
 
@@ -50,21 +56,36 @@ Here is the framework with a selection of secondary metrics, split into each dim
 ```{r}
 #| label: wrangle_framework
 #| output: false
-pacman::p_load(
-  conflicted,
-  dplyr,
-  purrr,
-  stringr,
-  readr
-)
 source('dev/get_dimension_ggraph.R')
 
-# Load refined framework
+# Load refined framework. We are leaving this here during rework so other pages work. It is now old though
 sm_data <- readRDS('data/sm_data.rds')
-raw_frame <- sm_data[['refined_tree']]
+old_frame <- sm_data[['refined_tree']]
 
 # Clean up the framework df 
-frame <- raw_frame %>% 
+old_frame <- old_frame %>% 
+  select(dimension:variable_name, use) %>% 
+  filter(use == 'x') %>% 
+  select(-use) %>% 
+  mutate(
+    metric = ifelse(
+      str_length(metric) > 45,
+      paste0(str_sub(metric, end = 45), '...'),
+      metric
+    )
+  )
+get_str(old_frame)
+
+# Save frame to rds for use in subsequent scripts
+saveRDS(old_frame, 'data/frame.rds')
+saveRDS(old_frame, 'data/frameworks/frame.rds')
+
+
+## Bringing in new tree for RFPP example
+new_tree <- sm_data[['new_tree']]
+
+# Clean up the framework df 
+frame <- new_tree %>% 
   select(dimension:variable_name, use) %>% 
   filter(use == 'x') %>% 
   select(-use) %>% 
@@ -78,7 +99,7 @@ frame <- raw_frame %>%
 get_str(frame)
 
 # Save frame to rds for use in subsequent scripts
-saveRDS(frame, 'data/frame.rds')
+saveRDS(frame, 'data/frameworks/new_frame.rds')
 
 # Start a list to save outputs for preso
 plots <- list()
@@ -92,11 +113,11 @@ One gap I've noticed since this dimension was reworked in the dimension meeting 
 
 ```{r}
 #| label: environment
-#| code-fold: true
 #| warning: false
+#| code-fold: true
+#| fig-align: center
 #| fig-height: 8
 #| fig-width: 10
-#| fig-align: center
 source('dev/get_dimension_ggraph.R')
 plots$environment <- get_dimension_ggraph(
   framework_df = frame,
@@ -195,4 +216,86 @@ plots$social <- get_dimension_ggraph(
 saveRDS(plots, 'preso/plots/frameworks.rds')
 
 plots$social
+```
+## Table
+
+Here is a table with just the dimensions, indices, and indicators from the framework. The button on the left will download all dimensions, or a subset if you have filtered the table below. The button on the right will download a static file containing the 23 indicators referenced in the RFPP.
+
+```{r}
+#| label: table
+#| warning: false
+# Not including any metadata here, just dimensions, indices, and indicators
+small_frame <- frame %>% 
+  select(dimension, index, indicator) %>% 
+  unique() %>% 
+  mutate(across(everything(), ~ str_to_sentence(.x))) %>% 
+  setNames(c(str_to_title(names(.))))
+# get_str(small_frame)
+
+# Another even smaller frame for rfpp variables only, save it to csv
+rfpp_frame <- small_frame %>% 
+  filter(Dimension %in% c('Economics', 'Environment') | Indicator == 'Yield')
+# get_str(rfpp_frame)
+write.csv(rfpp_frame, 'data/frameworks/rfpp_frame.csv')
+
+###
+htmltools::browsable(
+  tagList(
+    tags$div(
+      style =
+        "display: flex;
+        gap: 16px;
+        margin-bottom: 20px;
+        justify-content: center;",
+      tags$button(
+        class = "btn btn-primary",
+        style =
+          "display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 8px 12px;",
+        htmltools::tagList(
+          fontawesome::fa("download"), 
+          "Download Filtered Table Below"
+        ),
+        onclick = "Reactable.downloadDataCSV('frame_table', 'sm_framework.csv')"
+      ),
+      download_file(
+        path = "data/frameworks/rfpp_frame.csv", 
+        output_name = "sm_framework.csv",
+        button_label = "Download 23 RFPP Indicators Only",
+        button_type = "success",
+        has_icon = TRUE,
+        icon = "fa fa-download",
+        self_contained = FALSE
+        # class = 'download-button'
+      )
+    ),
+    
+    reactable(
+      small_frame,
+      sortable = TRUE,
+      resizable = TRUE,
+      filterable = TRUE,
+      searchable = TRUE,
+      pagination = TRUE,
+      bordered = TRUE,
+      wrap = TRUE,
+      rownames = FALSE,
+      onClick = 'select',
+      striped = TRUE,
+      pageSizeOptions = c(5, 10, 25, 50, 100),
+      defaultPageSize = 10,
+      showPageSizeOptions = TRUE,
+      highlight = TRUE,
+      style = list(fontSize = "14px"),
+      compact = TRUE,
+      elementId = "frame_table",
+      fullWidth = TRUE
+      # defaultColDef = colDef(minWidth = 100),
+    )
+    
+  )
+)
+
 ```

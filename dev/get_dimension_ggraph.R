@@ -20,6 +20,7 @@ conflicts_prefer(
   dplyr::select(),
   dplyr::summarize(),
   dplyr::arrange(),
+  dplyr::mutate(),
   .quiet = TRUE
 )
 
@@ -111,7 +112,7 @@ get_dimension_ggraph <- function(csv_path = NULL,
     unique_groups
   )
   edges <- edges %>%
-    mutate(group = factor(group, levels = names(group_colors)))
+    dplyr::mutate(group = factor(group, levels = names(group_colors)))
   
   # If including metrics, save names of indicators, used later for labeling
   if (include_metrics == TRUE) {

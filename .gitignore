@@ -3,6 +3,8 @@
 data/sm_data.rds
 .Renviron
 .venv_smdo
+
+# Don't need to track the html pages after render
 _site/
 
 # Data production page has a weirdly large cache
