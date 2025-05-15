@@ -29,6 +29,7 @@ conflicts_prefer(
   dplyr::as_data_frame(),
   .quiet = TRUE
 )
+source('dev/data_pipeline_functions.R')
 ```
 
 # Introduction
@@ -38,9 +39,6 @@ This page holds a table of the 130 metrics that are used in the refined framewor
 ```{r}
 #| label: wrangle_metrics
 #| output: false
-# Get latest year function
-source('dev/data_pipeline_functions.R')
-
 # Load metrics data
 sm_data <- readRDS('data/sm_data.rds')
 metrics <- sm_data$metrics

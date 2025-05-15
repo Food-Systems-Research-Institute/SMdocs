@@ -4,3 +4,8 @@ dev/*
 # Any site files should not matter here
 _site/*
 
+# Other things
+temp/
+_*
+graveyard/
+data/

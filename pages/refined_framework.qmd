@@ -105,6 +105,7 @@ saveRDS(frame, 'data/frameworks/new_frame.rds')
 plots <- list()
 ```
 
+
 ### Environment
 
 We have reasonable representation of the environment dimension, although some metrics are proxies that are stretched a bit too far. Some weak points are the carbon stocks indicator - so far, this is all from the TreeMap 2016 dataset, which has only been updated once since 2008. I would love to include other stocks of carbon if anyone has leads on datasets. The metrics for embodied carbon are also pretty big stretches.
