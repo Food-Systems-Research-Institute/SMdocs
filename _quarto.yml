@@ -12,7 +12,7 @@ website:
   back-to-top-navigation: true
   repo-url: https://github.com/Food-Systems-Research-Center/sm-docs
   navbar:
-    logo: images/uvm_logo.png
+    logo: images/FSRI-SpiritMarks_FSRI-mark-white.png
     logo-href: https://www.uvm.edu/cals/food-systems-research
     search: true
     tools:
