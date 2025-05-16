@@ -6,12 +6,12 @@ date: '2025-03-19'
 date-format: long
 format:
   revealjs:
-    embed-resources: false
+    embed-resources: true
     incremental: false
     theme: [serif, preso.scss]
     transition: fade
     scrollable: true
-    chalkboard: true
+    chalkboard: false
     revealjs-plugins:
       - revealjs-text-resizer
 editor: 
@@ -60,7 +60,8 @@ pacman::p_load(
   RColorBrewer,
   paletteer,
   fmsb,
-  purrr
+  purrr,
+  rmapshaper
 )
 
 source('dev/get_reactable.R')
@@ -714,6 +715,7 @@ Raw + min max scaling + geometric aggregation
 ::: panel-tabset
 ```{r}
 #| label: map
+#| include: false
 dim_scores <- readRDS('data/raw_minmax_geo.rds')
 state_key <- readRDS('data/state_key.rds')
 dim_scores <- dim_scores %>% 
@@ -724,6 +726,7 @@ dim_scores <- dim_scores %>%
 
 # Polygons for states
 states <- readRDS('preso/data/state_polygons.rds')
+states <- ms_simplify(states)
 
 # Combine dim scores with state key to get fips
 map_dat <- left_join(
@@ -778,32 +781,77 @@ get_leaflet <- function(map_dat, dimension) {
 ### Economics
 
 ```{r}
-get_leaflet(map_dat, 'economics')
+map_economics <- get_leaflet(map_dat, 'economics')
+htmlwidgets::saveWidget(map_economics, file = "preso/maps/map_economics.html", selfcontained = TRUE)
 ```
+
+<iframe 
+  data-src="maps/map_economics.html" 
+  width="100%" 
+  height="600px" 
+  frameborder="0">
+</iframe>
 
 ### Environment
 
 ```{r}
-get_leaflet(map_dat, 'environment')
+#| include: false
+map_environment <- get_leaflet(map_dat, 'environment')
+htmlwidgets::saveWidget(map_environment, file = "preso/maps/map_environment.html", selfcontained = TRUE)
 ```
+
+<iframe 
+  data-src="maps/map_environment.html" 
+  width="100%" 
+  height="600px" 
+  frameborder="0">
+</iframe>
 
 ### Health
 
 ```{r}
-get_leaflet(map_dat, 'health')
+#| include: false
+map_health <- get_leaflet(map_dat, 'health')
+htmlwidgets::saveWidget(map_health, file = "preso/maps/map_health.html", selfcontained = TRUE)
 ```
+
+<iframe 
+  data-src="maps/map_health.html" 
+  width="100%" 
+  height="600px" 
+  frameborder="0">
+</iframe>
 
 ### Production
 
 ```{r}
-get_leaflet(map_dat, 'production')
+#| include: false
+map_production <- get_leaflet(map_dat, 'production')
+htmlwidgets::saveWidget(map_production, file = "preso/maps/map_production.html", selfcontained = TRUE)
 ```
+
+<iframe 
+  data-src="maps/map_production.html" 
+  width="100%" 
+  height="600px" 
+  frameborder="0">
+</iframe>
 
 ### Social
 
 ```{r}
-get_leaflet(map_dat, 'social')
+#| include: false
+map_social <- get_leaflet(map_dat, 'social')
+htmlwidgets::saveWidget(map_social, file = "preso/maps/map_social.html", selfcontained = TRUE)
 ```
+
+<iframe 
+  data-src="maps/map_social.html" 
+  width="100%" 
+  height="600px" 
+  frameborder="0">
+</iframe>
+
 :::
 
 ::: notes
