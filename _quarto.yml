@@ -3,9 +3,31 @@ project:
   execute-dir: project
   preview: 
     browser: true
+  render:
+    # Same order as pages show on website. Make sure they run in right order
+    - pages/index.qmd
+    - pages/overview.qmd
+    - pages/refine_economics.qmd
+    - pages/refine_environment.qmd
+    - pages/refine_production.qmd
+    - pages/metadata_table.qmd
+    - pages/metrics_table.qmd
+    - pages/refined_framework.qmd
+    - pages/refined_metadata.qmd
+    - pages/metric_distributions.qmd
+    - pages/aggregation.qmd
+    - pages/indicator_distributions.qmd
+    - pages/comparison.qmd
+    - pages/indicator_correlations.qmd
+    - pages/validation.qmd
+    - pages/sensitivity.qmd
+    - temp/test_notebook.ipynb
+    - temp/test_python.qmd
+    - temp/test_python_and_r.qmd
+    - temp/bambi.ipynb
 
 website:
-  title: "Food Systems Research Center"
+  title: "Food Systems Research Institute"
   reader-mode: false
   page-navigation: true
   bread-crumbs: false
@@ -70,6 +92,16 @@ website:
             href: pages/validation.qmd
           - text: Sensitivity and Uncertainty 
             href: pages/sensitivity.qmd
+      - section: Testing
+        contents:
+          - text: Python .ipynb
+            href: temp/test_notebook.ipynb
+          - text: Python .qmd
+            href: temp/test_python.qmd
+          - text: Python and R .qmd
+            href: temp/test_python_and_r.qmd
+          - text: bambi.qmd
+            href: temp/bambi.ipynb
 
 format:
   html:
@@ -91,6 +123,7 @@ format:
     mainfont: Roboto
     smooth-scroll: true
     link-external-newwindow: true
+    link-external-icon: true
     title-block-style: default
 
 bibliography: fsrc.bib
@@ -98,6 +131,7 @@ bibliography: fsrc.bib
 execute:
   warning: false
   cache: true
+  freeze: auto
 
 editor_options:
   chunk_output_type: console

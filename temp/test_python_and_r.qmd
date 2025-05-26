@@ -1,0 +1,49 @@
+---
+title: "Mix Python and R"
+format:
+  html:
+    code-fold: true
+---
+
+To mix both R and python in same document, do not specify engine in yaml header. This will use knitr by default, and run reticulate for the python cells.
+
+Potential problem is that the version of R that reticulate uses may not be the same as the one in the `.venv`. 
+
+Also note a problem trying to run a python cell in a mixed doc interactively. Something hinky with matplotlib here it doesn't have access to a proper GUI to show plots. Works fine if previewed or rendered though.
+
+## R Cell
+
+```{r}
+#| label: r_test
+plot(iris)
+```
+
+Check directory:
+
+```{r}
+getwd()
+```
+
+Looks like all `.qmd` files default to project directory. In contrast `.ipynb` files default to the directory where it is located.
+
+## Python Cell
+
+Test a citation [@adriaanse1993].
+
+```{python}
+#| label: fig-polar
+#| fig-cap: "A line plot on a polar axis"
+
+import numpy as np
+import matplotlib.pyplot as plt
+
+r = np.arange(0, 2, 0.01)
+theta = 2 * np.pi * r
+fig, ax = plt.subplots(
+  subplot_kw = {'projection': 'polar'} 
+)
+ax.plot(theta, r)
+ax.set_rticks([0.5, 1, 1.5, 2])
+ax.grid(True)
+plt.show()
+```

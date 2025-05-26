@@ -2,7 +2,7 @@
 .Rproj.user
 data/sm_data.rds
 .Renviron
-.venv_smdo
+.venv
 
 # Don't need to track the html pages after render
 _site/
@@ -11,4 +11,4 @@ _site/
 pages/data_production_cache/html
 
 # Temp things that don't matter
-temp/
+# temp/

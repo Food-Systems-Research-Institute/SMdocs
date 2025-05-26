@@ -1,0 +1,15 @@
+{
+  "hash": "d544c7761b791e9fb19eda006e074a1f",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Indicator Refinement Process\"\n---\n\n::: {.cell}\n\n:::\n\n\n\n\n## Introduction\n\nTo Add:\n\n- Describe dimension meetings\n- link Wiltshire [@wiltshire2024RegionalFoodSystema]\n- Link Bene et al 2024 [@beneWhyBuildingParticipatory2024], describe their process\n- What is more settled, what is not (social and human)\n\n<div style=\"float: center; margin-left: auto; margin-right: auto; margin-bottom: 1em; width: 100%;\">\n  <img src=\"../images/whiteboard.jpg\" alt=\"Whiteboard from economics dimension refinement meeting, November 15th, 2024.\" style=\"width: 100%;\">\n  <div style=\"text-align: left; margin-top: 0.5em; font-size: smaller;\">Whiteboard from economics dimension refinement meeting, November 15th, 2024</div>\n</div>\n\n## References\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

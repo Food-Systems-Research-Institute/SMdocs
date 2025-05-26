@@ -1,0 +1,52 @@
+,dimension,index,indicator,metric,variable_name,time_series,doable_at_county
+1,economics,access to capital/credit,access to land,"Capital expenditures, buildings and land, exc...",totalCapExpBldgsLandNoDwellings,yes,no
+2,economics,access to capital/credit,access to land,"Capital consumption, all, excl. operator dwel...",totalCapConsNoDwellings,yes,no
+3,economics,access to capital/credit,access to land,"Interest expenses, real estate, excl. operato...",totalIntExpRealEstateNoDwellings,yes,no
+4,economics,food business resilience,income stability,Net return to operators,netReturnOperators,yes,no
+5,economics,food business resilience,use of ag/farm/crop insurance,Proportion of area (by county) affected by FS...,propAreaFsaSecDisasters,yes,no
+6,environment,"carbon, ghg, nutrients",carbon fluxes,Total CH4 emissions from agriculture (Tg),CH4FromAg,"yes, 1990",maybe? Would have to make tons of assumptions in disaggregating to county
+7,environment,"carbon, ghg, nutrients",carbon fluxes,Total CO2 emissions from agriculture (Tg),CO2FromAg,"yes, 1990",maybe? Would have to make tons of assumptions in disaggregating to county
+8,environment,"carbon, ghg, nutrients",carbon fluxes,Total N2O emissions from agriculture (Tg),N2OFromAg,"yes, 1990",maybe? Would have to make tons of assumptions in disaggregating to county
+9,environment,"carbon, ghg, nutrients",embodied carbon,Operations using geoexchange,geoexchangeNOps,"yes, 5 years",need new dataset anyway
+10,environment,"carbon, ghg, nutrients",embodied carbon,Operations with methane digesters,methaneNOps,"yes, 5 years",need new dataset anyway
+11,environment,"carbon, ghg, nutrients",embodied carbon,Operations with solar power,solarNOps,"yes, 5 years",need new dataset anyway
+12,environment,"carbon, ghg, nutrients",embodied carbon,Operations with wind power,windTurbinesNOps,"yes, 5 years",need new dataset anyway
+13,environment,species and habitat,biodiversity,Percentage of animal species at risk,pctAtRiskAnimalSpp,no,tough
+14,environment,species and habitat,biodiversity,Percentage of bee species at risk,pctAtRiskBeeSpp,no,tough
+15,environment,species and habitat,biodiversity,Percentage of orchid species at risk,pctAtRiskOrchidSpp,no,tough
+16,environment,species and habitat,biodiversity,Percentage of plant species at risk,pctAtRiskPlantSpp,no,tough
+17,environment,species and habitat,biodiversity,Total number of animal species,sppAnimals,no,tough
+18,environment,species and habitat,biodiversity,Total number of bee species,sppBees,no,tough
+19,environment,species and habitat,biodiversity,Total number of orchid species,sppOrchids,no,tough
+20,environment,species and habitat,biodiversity,Total number of plant species,sppPlants,no,tough
+21,environment,species and habitat,sensitive or rare habitats,Percentage of ecosystems at risk,pctAtRiskEcosystems,no,tough
+22,environment,species and habitat,sensitive or rare habitats,Total number of ecosystems,nEcosystems,no,tough
+23,environment,water,water quality,Lake habitat complexity condition class,lakesLitripcvrCond,"yes, 5 years",unclear
+24,environment,water,water quality,Riparian vegetation condition class,lakesRvegCond,"yes, 5 years",unclear
+25,environment,water,water quality,"Riparian vegetation condition, based on L_XCM...",riversRipvegCond,"yes, 5 years",unclear
+26,environment,water,water quality,Site condition class based on conductivity,riversSalCond,"yes, 5 years",unclear
+27,environment,water,water quality,Site condition class based on total nitrogen ...,riversNtlCond,"yes, 5 years",unclear
+28,environment,water,water quality,Site condition class based on total phosphoru...,riversPtlCond,"yes, 5 years",unclear
+29,environment,water,water quantity,Expenses from water for irrigation sourced of...,waterIrrSrcOffFarmExpPerAcreFt,"yes, 5 years",unclear
+30,environment,water,water quantity,Total expenses from water for irrigation sour...,waterIrrSrcOffFarmExp,"yes, 5 years",unclear
+31,environment,water,water quantity,Mean percent area in drought,droughtMeanPercArea,"yes, 5 years",unclear
+32,health,food security,access to culturally appropriate food,SFAs serving culturally relevant food,sfaCulturallyRelevant,4 years,only zip
+33,health,food security,dietary quality,SFAs percentage of spending on local food,sfaLocalFoodCosts,4 years,only zip
+34,health,food security,dietary quality,SFAs serving local food,sfaServeLocal,4 years,only zip
+35,health,food security,dietary quality,SFAs with Farm to School program,sfaFarmToSchool,4 years,only zip
+36,health,food security,food affordability,"SNAP participation rates, all eligible people",snapPercPart,4 years,only zip
+37,health,food security,food affordability,WIC coverage rate,wicPercPart,yes,yes
+38,health,food security,food affordability,WIC eligibility rate,wicPercEligible,yes,yes
+39,production,imports vs exports,total quantity exported,Value of total agricultural exports,exportsTotalAgricultural,"yes, annual",no
+40,production,imports vs exports,total quantity imported,value of top five imports,importsTopFive,"yes, annual",no
+41,production,production margins,production inputs,Mean chemical expenses per operation,expChemicalPct,"yes, 5 years",prob
+42,production,production margins,total quantity non-food ag products,"Cash receipts value, forest products , all",totalReceiptsAllForestProducts,"yes, annual",no
+43,production,production margins,total quantity non-food ag products,"Value of production, services and forestry, a...",totalValueServicesAndForestry,"yes, annual",no
+44,production,waste and losses,crop failure,"Other farm income, insurance indemnities",totalIncomeInsuranceIndemnities,"yes, annual",no
+45,production,waste and losses,crop failure,"Other farm income, insurance indemnities, fed...",totalIncomeInsuranceIndemnitiesFederal,"yes, annual",no
+46,production,waste and losses,crop failure,Value of ad hoc and emergency program payment...,totalValueEmergPayments,"yes, annual",no
+47,production,waste and losses,crop failure,"Value of agricultural risk coverage payments,...",totalValueAgRiskCoveragePayments,"yes, annual",no
+48,production,waste and losses,crop failure,Value of all other ad hoc and emergency progr...,totalValueOtherAdHocEmergPayments,"yes, annual",no
+49,production,waste and losses,crop failure,Value of dairy margin protection program paym...,totalValueDairyMarginProtPayments,"yes, annual",no
+50,production,waste and losses,crop failure,"Value of price loss coverage payments, all",totalValueAllLossCoveragePayments,"yes, annual",no
+51,social,food and farmworker diversity,racial diversity,Racial diversity of producers,producerRacialDiversity,"yes, 5 years",prob

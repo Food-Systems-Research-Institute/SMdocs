@@ -6,6 +6,8 @@ format:
 editor_options: 
   chunk_output_type: console
 warnings: false
+execute:
+  freeze: true
 ---
 
 In the last page we created 18 sets of scores by state based on combinations of three transformatino methods (raw, winsor, box cox), three rescaling methods (z-scores, min max, rank) and two aggregation methods (arithmetic, geometric). Here, we will explore differences between them in terms of state distributions and rankings.

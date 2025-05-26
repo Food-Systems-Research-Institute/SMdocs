@@ -1,0 +1,15 @@
+{
+  "hash": "613641f26fb7d01267479eb1bb7507a2",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"SM-Explorer\"\n---\n\n\n\n::: {.callout-note collapse='false' title='Caution'}\nThe SM-Explorer is a work in progress. There are a small heap of bugs I'm already aware of, and about a hundred things I'd still like to add. If/when you find things that aren't working properly, please feel free to let Chris know!\n:::\n\nThis is a Shiny app that allows for interactive exploration of metrics, mostly at the county level. It includes a map page, a bivariate plot explorer, and a metadata table much like what is included in this Quarto doc. It tends to work best if you open it in its own page using the button below:\n\n\n\n::: {.cell}\n::: {.cell-output-display}\n\n```{=html}\n<div style=\"display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;\">\n<a href=\"https://chris-donovan.shinyapps.io/SMexplorer/\">\n<button class=\"btn btn-primary\">Go To SM-Explorer</button>\n</a>\n</div>\n```\n\n:::\n:::\n\n\n\nYou can also just use it here in the window. Note that some functions (like the full screen button) won't work here. \n\n<iframe height=\"800\" width=\"100%\" frameborder=\"no\" src=\"https://chris-donovan.shinyapps.io/SMexplorer/\"> </iframe>",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {},
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}
