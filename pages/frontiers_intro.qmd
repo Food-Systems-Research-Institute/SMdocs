@@ -1,0 +1,16 @@
+---
+title: "Frontiers Submission"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+::: {.callout-note collapse='false' title='Caution'}
+Metrics and analyses for the Frontiers special issue are works in progress. 
+:::
+
+This group of pages will show analyses for the submission to Frontiers in Sustainable Food Systems special issue: [Measuring Sustainability in Food Systems](https://www.frontiersin.org/research-topics/68197/measuring-sustainability-in-food-systems-advancing-scientific-indicator-and-metric-systems-for-monitoring-progress-towards-the-un-sustainable-development-goals). I am branching it off from the main "Analyses" pages because they work with state-level data, while this will focus on counties. I am going to leave all that work there for now, though. 
+

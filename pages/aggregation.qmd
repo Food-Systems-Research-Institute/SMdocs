@@ -322,6 +322,9 @@ reverse <- c(
 # indemnities and emergency payments - in bad column for now, but more access
 # coud be good?
 
+# Save these for posterity
+saveRDS(reverse, 'data/helpers/metrics_value_reversed.rds')
+
 # Some are unclear - without clear direction, better to remove:
 remove <- c(
   'vacancyRate',

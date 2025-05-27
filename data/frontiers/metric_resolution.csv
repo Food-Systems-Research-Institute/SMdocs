@@ -1,0 +1,125 @@
+"","dimension","index","indicator","metric","variable_name","has_county"
+"1","economics","access to capital/credit","access to land","Mean acres per farm","acresPF",TRUE
+"2","economics","access to capital/credit","access to land","Median acres per farm","medianAcresPF",TRUE
+"3","economics","access to capital/credit","access to land","Land and building value per acre","landValPerAcre",TRUE
+"4","economics","access to capital/credit","access to land","Land and building value per farm","landValPF",TRUE
+"5","economics","access to capital/credit","access to land","Capital expenditures, buildings and land, exc...","totalCapExpBldgsLandNoDwellings",FALSE
+"6","economics","access to capital/credit","access to land","Capital consumption, all, excl. operator dwel...","totalCapConsNoDwellings",FALSE
+"7","economics","access to capital/credit","access to land","Interest expenses, real estate, excl. operato...","totalIntExpRealEstateNoDwellings",FALSE
+"8","economics","community economy","wealth/income distribution","Median earnings (dollars) for female, farming...","medianFemaleEarningsFFF",TRUE
+"9","economics","community economy","wealth/income distribution","Median earnings (dollars) for female, food pr...","medianFemaleEarningsFPS",TRUE
+"10","economics","community economy","wealth/income distribution","Median earnings (dollars) for male, farming, ...","medianMaleEarningsFFF",TRUE
+"11","economics","community economy","wealth/income distribution","Median earnings (dollars) for male, food prep...","medianMaleEarningsFPS",TRUE
+"12","economics","community economy","wealth/income distribution","Women's earnings as a percentage of men's ear...","womenEarnPercMenFFF",TRUE
+"13","economics","community economy","wealth/income distribution","Women's earnings as a percentage of men's ear...","womenEarnPercMenFPS",TRUE
+"14","economics","community economy","wealth/income distribution","Gender pay gap","genderPayGap",TRUE
+"15","economics","community economy","wealth/income distribution","Income inequality","incomeInequality",TRUE
+"16","economics","community economy","wealth/income distribution","Gini Index","gini",TRUE
+"17","economics","community economy","wealth/income distribution","Unemployment Rate","unemploymentRate",TRUE
+"18","economics","food business resilience","income stability","Net return to operators","netReturnOperators",FALSE
+"19","economics","food business resilience","income stability","Labor expenses as percentage of expenses","expHiredLaborPercOpExp",TRUE
+"20","economics","food business resilience","income stability","mean farm related income per operation","farmIncomePF",TRUE
+"21","economics","food business resilience","labor costs","Number of migrant workers","nMigrantWorkers",TRUE
+"22","economics","food business resilience","labor costs","Number of short-term workers","nWorkersLE150",TRUE
+"23","economics","food business resilience","labor costs","Number of unpaid workers","nUnpaidWorkers",TRUE
+"24","economics","food business resilience","operations diversification","Farms, direct-to-consumer sales as a percent ...","d2cSalesPerc",TRUE
+"25","economics","food business resilience","operations diversification","Agritourism, sales as a percent of all farm s...","agTourSalesPerc",TRUE
+"26","economics","food business resilience","operations diversification","Farms, local marketing channel sales as a per...","localSalesPerc",TRUE
+"27","economics","food business resilience","use of ag/farm/crop insurance","Proportion of area (by county) affected by FS...","propAreaFsaSecDisasters",FALSE
+"28","environment","carbon, ghg, nutrients","carbon fluxes","Total CH4 emissions from agriculture (Tg)","CH4FromAg",FALSE
+"29","environment","carbon, ghg, nutrients","carbon fluxes","Total CO2 emissions from agriculture (Tg)","CO2FromAg",FALSE
+"30","environment","carbon, ghg, nutrients","carbon fluxes","Total N2O emissions from agriculture (Tg)","N2OFromAg",FALSE
+"31","environment","carbon, ghg, nutrients","carbon fluxes","Air pollution - particulate matter","airPollutionParticulateMatter",TRUE
+"32","environment","carbon, ghg, nutrients","carbon stocks","Forest carbon - dead and down","forestCarbonDeadDown",TRUE
+"33","environment","carbon, ghg, nutrients","carbon stocks","Forest carbon - live standing","forestCarbonLive",TRUE
+"34","environment","carbon, ghg, nutrients","carbon stocks","Forest carbon - standing dead","forestCarbonDeadStanding",TRUE
+"35","environment","carbon, ghg, nutrients","embodied carbon","Operations using geoexchange","geoexchangeNOps",FALSE
+"36","environment","carbon, ghg, nutrients","embodied carbon","Operations with methane digesters","methaneNOps",FALSE
+"37","environment","carbon, ghg, nutrients","embodied carbon","Operations with solar power","solarNOps",FALSE
+"38","environment","carbon, ghg, nutrients","embodied carbon","Operations with wind power","windTurbinesNOps",FALSE
+"39","environment","forest","forest health","Dead trees per forested acre","forestDeadTrees",TRUE
+"40","environment","forest","forest health","Forest canopy cover","forestCanopyCover",TRUE
+"41","environment","forest","forest health","Forest live tree volume per acre","forestLiveTreeVolume",TRUE
+"42","environment","forest","forest health","Forest stand height","forestStandHeight",TRUE
+"43","environment","forest","forest health","Live trees per forested acre","forestLiveTrees",TRUE
+"44","environment","species and habitat","biodiversity","Percentage of animal species at risk","pctAtRiskAnimalSpp",FALSE
+"45","environment","species and habitat","biodiversity","Percentage of bee species at risk","pctAtRiskBeeSpp",FALSE
+"46","environment","species and habitat","biodiversity","Percentage of orchid species at risk","pctAtRiskOrchidSpp",FALSE
+"47","environment","species and habitat","biodiversity","Percentage of plant species at risk","pctAtRiskPlantSpp",FALSE
+"48","environment","species and habitat","biodiversity","Total number of animal species","sppAnimals",FALSE
+"49","environment","species and habitat","biodiversity","Total number of bee species","sppBees",FALSE
+"50","environment","species and habitat","biodiversity","Total number of orchid species","sppOrchids",FALSE
+"51","environment","species and habitat","biodiversity","Total number of plant species","sppPlants",FALSE
+"52","environment","species and habitat","land use diversity","Land Use Diversity","lulcDiversity",TRUE
+"53","environment","species and habitat","sensitive or rare habitats","Percentage of ecosystems at risk","pctAtRiskEcosystems",FALSE
+"54","environment","species and habitat","sensitive or rare habitats","Total number of ecosystems","nEcosystems",FALSE
+"55","environment","water","water quality","Lake habitat complexity condition class","lakesLitripcvrCond",FALSE
+"56","environment","water","water quality","Riparian vegetation condition class","lakesRvegCond",FALSE
+"57","environment","water","water quality","Riparian vegetation condition, based on L_XCM...","riversRipvegCond",FALSE
+"58","environment","water","water quality","Site condition class based on conductivity","riversSalCond",FALSE
+"59","environment","water","water quality","Site condition class based on total nitrogen ...","riversNtlCond",FALSE
+"60","environment","water","water quality","Site condition class based on total phosphoru...","riversPtlCond",FALSE
+"61","environment","water","water quantity","Expenses from water for irrigation sourced of...","waterIrrSrcOffFarmExpPerAcreFt",FALSE
+"62","environment","water","water quantity","Total expenses from water for irrigation sour...","waterIrrSrcOffFarmExp",FALSE
+"63","environment","water","water quantity","Mean percent area in drought","droughtMeanPercArea",FALSE
+"64","health","food security","access to culturally appropriate food","SFAs serving culturally relevant food","sfaCulturallyRelevant",FALSE
+"65","health","food security","dietary quality","SFAs percentage of spending on local food","sfaLocalFoodCosts",FALSE
+"66","health","food security","dietary quality","SFAs serving local food","sfaServeLocal",FALSE
+"67","health","food security","dietary quality","SFAs with Farm to School program","sfaFarmToSchool",FALSE
+"68","health","food security","food access","Community Supported Agriculture (CSA), number...","nCSA",TRUE
+"69","health","food security","food access","Farmers markets, number of businesses","nFarmersMarket",TRUE
+"70","health","food security","food access","Grocery stores/1,000 pop","nGrocPTH",TRUE
+"71","health","food security","food access","Limited access to healthy foods","limitedAccessToHealthyFoods",TRUE
+"72","health","food security","food affordability","SNAP participation rates, all eligible people","snapPercPart",FALSE
+"73","health","food security","food affordability","SNAP-authorized stores/1,000 pop","nSnapGrocPTH",TRUE
+"74","health","food security","food affordability","Specialized food stores/1,000 pop","nSpecGrocPTH",TRUE
+"75","health","food security","food affordability","WIC coverage rate","wicPercPart",FALSE
+"76","health","food security","food affordability","WIC eligibility rate","wicPercEligible",FALSE
+"77","health","food security","food affordability","WIC-authorized stores/1,000 pop","nWicsGrocPTH",TRUE
+"78","health","physical health","access to care","Child care centers","childCareCenters",TRUE
+"79","health","physical health","access to care","Child care cost burden","childCareCostBurden",TRUE
+"80","health","physical health","access to care","Uninsured","uninsured",TRUE
+"81","health","physical health","housing supply and quality","Homeownership","homeownership",TRUE
+"82","health","physical health","housing supply and quality","Severe housing cost burden","severeHousingCostBurden",TRUE
+"83","health","physical health","housing supply and quality","Severe housing problems","severeHousingProblems",TRUE
+"84","health","physical health","housing supply and quality","Median rent as a percentage of income","rentMedianPercHH",TRUE
+"85","health","physical health","housing supply and quality","Rental vacancy rate","vacancyRate",TRUE
+"86","health","physical health","physical health tbd","Drinking water violations","drinkingWaterViolations",TRUE
+"87","health","physical health","physical health tbd","Adult obesity","adultObesity",TRUE
+"88","health","physical health","physical health tbd","Adult smoking","adultSmoking",TRUE
+"89","health","physical health","physical health tbd","Diabetes prevalence","diabetesPrevalence",TRUE
+"90","health","physical health","physical health tbd","Drug overdose deaths","drugOverdoseDeaths",TRUE
+"91","health","physical health","physical health tbd","Excessive drinking","excessiveDrinking",TRUE
+"92","health","physical health","physical health tbd","Infant mortality","infantMortality",TRUE
+"93","health","physical health","physical health tbd","Life expectancy","lifeExpectancy",TRUE
+"94","health","physical health","physical health tbd","Low birthweight","lowBirthweight",TRUE
+"95","health","physical health","physical health tbd","Motor vehicle crash deaths","motorVehicleCrashDeaths",TRUE
+"96","health","physical health","physical health tbd","Premature age-adjusted mortality","prematureAgeAdjustedMortality",TRUE
+"97","production","imports vs exports","total quantity exported","Value of total agricultural exports","exportsTotalAgricultural",FALSE
+"98","production","imports vs exports","total quantity imported","value of top five imports","importsTopFive",FALSE
+"99","production","production diversity","production species diversity","Crop diversity","cropDiversity",TRUE
+"100","production","production margins","production inputs","Mean chemical expenses per operation","expChemicalPct",FALSE
+"101","production","production margins","total quantity food products","Total animal sales","salesAnimal",TRUE
+"102","production","production margins","total quantity food products","Total crop sales","salesCrop",TRUE
+"103","production","production margins","total quantity forest products","Total forest product income","incForestProducts",TRUE
+"104","production","production margins","total quantity non-food ag products","Cash receipts value, forest products , all","totalReceiptsAllForestProducts",FALSE
+"105","production","production margins","total quantity non-food ag products","Value of production, services and forestry, a...","totalValueServicesAndForestry",FALSE
+"106","production","production margins","value added market","Farms, percent of all farms with value-added ...","valueAddedFarmsPerc",TRUE
+"107","production","production margins","value added market","Farms, value-added sales as a percent of all ...","valueAddedSalesPerc",TRUE
+"108","production","waste and losses","crop failure","Other farm income, insurance indemnities","totalIncomeInsuranceIndemnities",FALSE
+"109","production","waste and losses","crop failure","Other farm income, insurance indemnities, fed...","totalIncomeInsuranceIndemnitiesFederal",FALSE
+"110","production","waste and losses","crop failure","Value of ad hoc and emergency program payment...","totalValueEmergPayments",FALSE
+"111","production","waste and losses","crop failure","Value of agricultural risk coverage payments,...","totalValueAgRiskCoveragePayments",FALSE
+"112","production","waste and losses","crop failure","Value of all other ad hoc and emergency progr...","totalValueOtherAdHocEmergPayments",FALSE
+"113","production","waste and losses","crop failure","Value of dairy margin protection program paym...","totalValueDairyMarginProtPayments",FALSE
+"114","production","waste and losses","crop failure","Value of price loss coverage payments, all","totalValueAllLossCoveragePayments",FALSE
+"115","social","community embeddedness","social connectedness","Children in single-parent households","childrenInSingleParentHouseholds",TRUE
+"116","social","community embeddedness","social connectedness","Disconnected youth","disconnectedYouth",TRUE
+"117","social","community embeddedness","social connectedness","Social associations","socialAssociations",TRUE
+"118","social","community livability","community safety","Alcohol-impaired driving deaths","alcoholImpairedDrivingDeaths",TRUE
+"119","social","community livability","diverse representation","Residential segregation - black/white","residentialSegregationBlackWhite",TRUE
+"120","social","community livability","diverse representation","School segregation","schoolSegregation",TRUE
+"121","social","food and farmworker diversity","age diversity","Mean producer age","ageProducers",TRUE
+"122","social","food and farmworker diversity","gender diversity","Ratio of female to male producers","ftmProdRatio",TRUE
+"123","social","food and farmworker diversity","racial diversity","Racial diversity of producers","producerRacialDiversity",FALSE
+"124","social","food system governance","participatory governance","Voter turnout","voterTurnout",TRUE

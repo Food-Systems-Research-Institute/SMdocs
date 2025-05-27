@@ -25,6 +25,8 @@ project:
     - temp/test_python.qmd
     - temp/test_python_and_r.qmd
     - temp/bambi.ipynb
+    - pages/frontiers_intro.qmd
+    - pages/frontiers_trends.qmd
 
 website:
   title: "Food Systems Research Institute"
@@ -92,6 +94,12 @@ website:
             href: pages/validation.qmd
           - text: Sensitivity and Uncertainty 
             href: pages/sensitivity.qmd
+      - section: Frontiers
+        contents:
+          - text: Intro
+            href: pages/frontiers_intro.qmd
+          - text: Trends
+            href: pages/frontiers_trends.qmd
       - section: Testing
         contents:
           - text: Python .ipynb

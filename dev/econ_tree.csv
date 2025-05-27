@@ -1,0 +1,46 @@
+,Dimension,Index,Indicator,Source
+1,Economics,Food business profitability,Total sales / revenue,both
+2,Economics,Food business profitability,Total costs,both
+3,Economics,Food business profitability,Labor costs,us_only
+4,Economics,Food business profitability,Price,us_only
+5,Economics,Food business profitability,Exchange rate,us_only
+6,Economics,Food business profitability,Acreage in production,us_only
+7,Economics,Value from rural landscape,Diversity of farm types,wilt_only
+8,Economics,Value from rural landscape,Open acres,wilt_only
+9,Economics,Value from rural landscape,Forest cover,both
+10,Economics,Value from rural landscape,VT terrior / VT brand,both
+11,Economics,Food business resilience,Use of Ag / farm / crop insurance,us_only
+12,Economics,Food business resilience,Balance sheet (assets and liabilities),both
+13,Economics,Food business resilience,Operations diversification,wilt_only
+14,Economics,Food business resilience,Business growth / fixed mindset,wilt_only
+15,Economics,Food business resilience,Enterprise agility / flexibility,wilt_only
+16,Economics,Food business resilience,Income stability,both
+17,Economics,Food business resilience,Perceived viability,us_only
+18,Economics,Food business resilience,Confidence in future,us_only
+19,Economics,Food business resilience,Marketplace,us_only
+20,Economics,Food business resilience,Market mix,us_only
+21,Economics,Distribution chain localness,% local sales,both
+22,Economics,Distribution chain localness,% of farm/business inputs bought locally,both
+23,Economics,Distribution chain localness,% direct-to-consumer sales,both
+24,Economics,Distribution chain localness,Consumer awareness of VT products,wilt_only
+25,Economics,Distribution chain localness,Distribution chain capacity,us_only
+26,Economics,Community economy,Wealth / income distribution,both
+27,Economics,Community economy,Availability of good-paying jobs in food systems,both
+28,Economics,Community economy,Business failure rate of food business,both
+29,Economics,Community economy,In vs. out of state ownership,wilt_only
+30,Economics,Community economy,Employee numbers,us_only
+31,Economics,Community economy,Employee Retention,us_only
+32,Economics,Community economy,Wage rate,us_only
+33,Economics,Externalities from businesses,Ecosystem services,wilt_only
+34,Economics,Externalities from businesses,Ecosystem disservices,wilt_only
+35,Economics,Exogenous factors for business,Commodity price fluctuation,both
+36,Economics,Exogenous factors for business,Impacts of climate change / variability,both
+37,Economics,Access to capital/credit,Access to credit,both
+38,Economics,Access to capital/credit,Access to land,both
+39,Economics,Access to capital/credit,Capital markets,both
+40,Economics,Farmer personal finance,Operator salary / wage,us_only
+41,Economics,Farmer personal finance,Operator labor (time and tasks),us_only
+42,Economics,Farmer personal finance,Satisfaction and/or success scale,us_only
+43,Economics,Farmer personal finance,Dependence on off-farm income,us_only
+44,Economics,Farmer personal finance,Commercial intent,us_only
+45,Economics,Consumer preferences,Preferences of plant based proteins,us_only

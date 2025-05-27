@@ -24,6 +24,9 @@ options(
   pilar.print_min = 950
 )
 
+# Wrapper function for vim setup
+vim <- function() rstudiovim::rsvim_exec_file()
+
 cat("\n.Rprofile loaded")
 
 source("renv/activate.R")

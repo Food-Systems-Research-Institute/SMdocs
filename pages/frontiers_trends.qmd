@@ -1,0 +1,322 @@
+---
+title: "Frontiers Submission"
+format:
+  html:
+    fig-dpi: 200
+    code-fold: true
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+::: {.callout-note collapse='false' title='Caution'}
+Metrics and analyses for the Frontiers special issue are works in progress. 
+:::
+
+```{r}
+#| label: prep
+#| cache: false
+options(scipen = 999)
+
+pacman::p_load(
+  dplyr,
+  stringr,
+  tidyr,
+  reactable,
+  glmnet,
+  missRanger,
+  purrr,
+  broom,
+  caret
+)
+
+# Functions
+source('dev/data_pipeline_functions.R')
+source('dev/get_reactable.R')
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::pull(),
+  .quiet = TRUE
+)
+```
+
+```{r}
+#| label: load
+# Load metrics
+sm_data <- readRDS('data/sm_data.rds')
+metrics <- sm_data$metrics
+meta <- sm_data$metadata
+
+# Load frame
+frame <- readRDS('data/frameworks/new_frame.rds')
+```
+
+This page 
+This page explores what data we have available at the county level specifically.
+
+
+It is branching off of the main "Analysis" pages because they are state-level analyses and I want to leave it there for posterity.
+
+
+## Explore Metrics and Resolution
+
+Check how many metrics we have:
+
+```{r}
+vars <- frame %>% 
+  filter(variable_name != 'NONE') %>% 
+  pull(variable_name)
+count <- length(vars)
+```
+
+We have `{r} count` metrics overall
+
+Check which metrics are available at state vs county levels.
+
+```{r}
+#| label: check_resolution
+#| output: false
+get_str(metrics)
+
+# Filter to vars, remove state fips codes
+var_metrics <- metrics %>%
+  filter(
+    variable_name %in% vars
+  )
+get_str(var_metrics)
+length(unique(var_metrics$variable_name))
+
+# Check how many are left
+out <- var_metrics %>% 
+  filter(str_length(fips) == 5) %>% 
+  pull(variable_name) %>% 
+  unique() %>% 
+  length()
+out
+perc_county <- out / length(unique(var_metrics$variable_name))
+# 73 (58%) are at the county level. Better
+```
+
+`{r} out` (`{r} round((perc_county * 100), 1)`%) are available at county level.
+
+Make a table to explore what we have at each level:
+
+```{r}
+#| label: prep_table
+#| output: false
+## What do we ONLY have at the state level?
+county_metrics <- var_metrics %>% 
+  filter(str_length(fips) == 5) %>% 
+  pull(variable_name) %>%
+  unique()
+state_metrics <- var_metrics %>% 
+  filter(str_length(fips) == 2) %>% 
+  pull(variable_name) %>%
+  unique()
+(state_only <- setdiff(state_metrics, county_metrics))
+length(state_only)
+
+# Back to frame for context
+state_only_frame <- frame %>% 
+  filter(variable_name %in% state_only)
+state_only_frame
+
+
+## Get the ones that are available at county level
+get_str(frame)
+county_df <- frame %>% 
+  filter(
+    !variable_name %in% state_only_frame$variable_name,
+    variable_name != 'NONE'
+  )
+get_str(county_df)
+
+# Save just the county level variables here for analyses
+county_vars <- county_df$variable_name
+
+# We actually want a DF with a column that specifies the difference
+df <- frame %>% 
+  filter(variable_name != 'NONE') %>% 
+  mutate(has_county = case_when(
+    variable_name %in% county_df$variable_name ~ TRUE,
+    .default = FALSE
+  ))
+get_str(df)
+
+# Save this somewhere for some reason
+write.csv(df, 'data/frontiers/metric_resolution.csv')
+```
+
+```{r}
+#| label: reactable
+get_reactable(df, defaultPageSize = 5)
+```
+
+
+## Explore Trends
+
+Take the county variables we currently have, take the ones that have > 1 year represented, and get a preliminary on if they are changing over time, and if so, in which direction.
+
+First get out county level data frame in long format:
+
+```{r}
+#| label: prep_df
+outcome_vars <- c(
+  'foodInsecurity',
+  'communityEnvRank',
+  'happinessScore',
+  'wellbeingRank',
+  'workEnvRank',
+  'foodEnvironmentIndex',
+  'lifeExpectancy',
+  'population',
+  'gdpCurrent'
+)
+
+# Get actual metrics data that at county level only
+county_metrics <- metrics %>% 
+  filter(
+    variable_name %in% c(county_vars, outcome_vars),
+    str_length(fips) == 5,
+    variable_name != 'unemploymentRate'
+  )
+
+get_str(county_metrics)
+```
+
+This is our county level metric dataset in long format.
+
+Now prep time series by filter to metrics with > 1 data point. While we're at it, get a sense of what periodicity looks like. 
+
+```{r}
+#| label: prep_time_series
+#| output: false
+# Using county metrics data but with all years
+get_str(county_metrics)
+unique(county_metrics$variable_name)
+length(unique(county_metrics$variable_name))
+
+# Get names of vars that have > 1 time point
+series_vars <- county_metrics %>% 
+  group_by(variable_name) %>% 
+  summarize(n_year = length(unique(year))) %>% 
+  filter(n_year > 1) %>% 
+  pull(variable_name)
+series_vars
+len <- length(series_vars)
+# 64 have more than 1 time point. That's actually not bad
+
+# Filter to just those variables so we can do regressions
+series_metrics <- filter(metrics, variable_name %in% series_vars)
+get_str(series_metrics)
+
+# Side note - what is frequency of years
+tab <- series_metrics %>% 
+  group_by(variable_name) %>% 
+  mutate(year = as.numeric(year)) %>% 
+  summarize(years = list(unique(year))) %>% 
+  mutate(diffs = map_dbl(as.vector(years), ~ {
+    unique(diff(sort(.x)))
+  })) %>% 
+  pull(diffs) %>% 
+  get_table()
+tab
+prop_tab <- prop.table(tab)
+```
+
+`{r len}` metrics have > 1 data point at county level. `{r prop_tab[1]}`% are annual and `{r prop_tab[2]}`% are every 5 years.
+
+Let's do some linear regressions to what trends look like. Note that I think we should do spatial and/or bayesian regressions for the real thing, but this is what the FSCI did in their 2025 update so it should be enough I suppose.
+
+```{r}
+#| label: trend_analysis
+#| output: false
+res <- map(series_vars, ~ {
+  tryCatch(
+    {
+      df <- series_metrics %>% 
+        filter(variable_name == .x) %>% 
+        mutate(
+          value = as.numeric(value),
+          year = as.numeric(year)
+        )
+      model <- lm(value ~ year, data = df)
+    },
+    error = function(e) {
+      message(paste('Error with var', .x))
+    }
+  )
+}) %>% 
+  setNames(c(series_vars)) %>% 
+  discard(\(x) is.null(x))
+```
+
+Now that we have regression outputs, let's put them in a table to see which ones were signficant, and in which direction. We also need to pull in our 'directional values' that say which direction is 'good' for each metric. These were defined in the [Aggregation](../pages/aggregation.qmd) from the main analysis branch.
+
+```{r}
+#| label: make_table
+# Put together one table of results from all models, add stars
+res_df <- imap(res, ~ {
+  .x %>% 
+    tidy() %>% 
+    filter(term == 'year') %>% 
+    mutate(term = .y)
+}) %>% 
+  bind_rows() %>% 
+  mutate(sig = ifelse(p.value < 0.05, '*', ''))
+res_df
+
+# How many metrics
+nrow(res_df)
+# 63
+
+# How many are significant
+mean(res_df$sig == '*')
+# 38% (24 of them)
+```
+
+
+```{r}
+#| label: make_sense_of_trends
+#| output: false
+# Bring in directional values. If not reverse, then positive is good
+reverse <- readRDS('data/helpers/metrics_value_reversed.rds')
+
+# Of those that are significant, what are trends
+sig_models <- res_df %>% 
+  filter(sig == '*') %>% 
+  mutate(trend = case_when(
+    estimate > 0 ~ 'increasing',
+    .default = 'decreasing'
+  ))
+sig_models
+mean(sig_models$trend == 'increasing')
+
+# But is this good or bad - bring in directional values
+sig_models <- sig_models %>% 
+  mutate(
+    direction = ifelse(term %in% reverse, 'reverse', 'asis'),
+    outcome = case_when(
+      direction == 'asis' & trend == 'increasing' ~ 'better',
+      direction == 'asis' & trend == 'decreasing' ~ 'worse',
+      direction == 'reverse' & trend == 'increasing' ~ 'worse',
+      direction == 'reverse' & trend == 'decreasing' ~ 'better',
+      .default = NA
+    ),
+    across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))
+  )
+sig_models
+
+# proportion getting better or worse
+(tab <- get_table(sig_models$direction))
+prop.table(tab)
+# Half getting better, half getting worse
+```
+
+```{r}
+#| label: model_table
+get_reactable(sig_models, defaultPageSize = 5)
+```
+
