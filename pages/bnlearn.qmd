@@ -1,0 +1,35 @@
+---
+title: "bnlearn"
+format:
+  html:
+    fig-dpi: 200
+    code-fold: true
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+::: {.callout-note collapse='false' title='Caution'}
+Metrics and analyses for the Frontiers special issue are works in progress. 
+:::
+
+Testing out a Bayesian Network with structural learning to identify drivers in our food systems data.
+
+## Housekeeping
+
+```{r}
+#| label: prep
+#| cache: false
+pacman::p_load(
+  dplyr,
+  bnlearn
+)
+
+BiocManager::install(c("graph", "Rgraphviz"))
+
+
+```
+
+## Wrangling
+
+## bnlearn

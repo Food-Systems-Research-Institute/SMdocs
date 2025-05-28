@@ -130,4 +130,11 @@ cfit
 ## Hybrid ------------------------------------------------------------------
 
 
-# Both discrete and continuous
+
+
+# SM Data -----------------------------------------------------------------
+
+
+# Try it on our data I guess
+# Latest years only I suppose. Or maybe not?
+getcwd()

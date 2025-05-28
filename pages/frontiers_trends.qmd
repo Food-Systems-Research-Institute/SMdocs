@@ -1,5 +1,5 @@
 ---
-title: "Frontiers Submission"
+title: "Metric Trends"
 format:
   html:
     fig-dpi: 200
@@ -27,7 +27,11 @@ pacman::p_load(
   missRanger,
   purrr,
   broom,
-  caret
+  caret,
+  knitr,
+  tictoc,
+  furrr,
+  parallelly
 )
 
 # Functions
@@ -163,6 +167,7 @@ First get out county level data frame in long format:
 
 ```{r}
 #| label: prep_df
+#| output: false
 outcome_vars <- c(
   'foodInsecurity',
   'communityEnvRank',
@@ -183,7 +188,8 @@ county_metrics <- metrics %>%
     variable_name != 'unemploymentRate'
   )
 
-get_str(county_metrics)
+# get_str(county_metrics)
+kable(head(county_metrics))
 ```
 
 This is our county level metric dataset in long format.
@@ -204,7 +210,6 @@ series_vars <- county_metrics %>%
   summarize(n_year = length(unique(year))) %>% 
   filter(n_year > 1) %>% 
   pull(variable_name)
-series_vars
 len <- length(series_vars)
 # 64 have more than 1 time point. That's actually not bad
 
@@ -226,9 +231,9 @@ tab
 prop_tab <- prop.table(tab)
 ```
 
-`{r len}` metrics have > 1 data point at county level. `{r prop_tab[1]}`% are annual and `{r prop_tab[2]}`% are every 5 years.
+`{r} len` metrics have > 1 data point at county level. `{r} prop_tab[1]`% are annual and `{r} prop_tab[2]`% are every 5 years.
 
-Let's do some linear regressions to what trends look like. Note that I think we should do spatial and/or bayesian regressions for the real thing, but this is what the FSCI did in their 2025 update so it should be enough I suppose.
+Let's do some linear regressions to what trends look like. Note that I think we should do spatial regressions for the real thing (and ideally also Bayesian if we can work out Gaussian processes), but this is what the FSCI did in their 2025 update so it should be enough I suppose.
 
 ```{r}
 #| label: trend_analysis
@@ -253,10 +258,12 @@ res <- map(series_vars, ~ {
   discard(\(x) is.null(x))
 ```
 
-Now that we have regression outputs, let's put them in a table to see which ones were signficant, and in which direction. We also need to pull in our 'directional values' that say which direction is 'good' for each metric. These were defined in the [Aggregation](../pages/aggregation.qmd) from the main analysis branch.
+Now that we have regression outputs, let's put them in a table to see which ones were significant. 
+
 
 ```{r}
 #| label: make_table
+#| output: false
 # Put together one table of results from all models, add stars
 res_df <- imap(res, ~ {
   .x %>% 
@@ -269,54 +276,333 @@ res_df <- imap(res, ~ {
 res_df
 
 # How many metrics
-nrow(res_df)
-# 63
+n_metrics <- nrow(res_df)
 
 # How many are significant
-mean(res_df$sig == '*')
-# 38% (24 of them)
+perc_sig <- mean(res_df$sig == '*') * 100
 ```
 
+We have `{r} n_metrics` metrics, `{r} round(perc_sig, 1)` of which vary significantly over time.
+
+Still have to make sense of the directional values of our metrics. These were defined in the [Aggregation](../pages/aggregation.qmd) from the main analysis branch.
 
 ```{r}
 #| label: make_sense_of_trends
 #| output: false
+
+# Of those that are significant, what are trends
+# leaving in all of them, even if not significant though
+model_outputs <- res_df %>% 
+  # filter(sig == '*') %>%
+  mutate(trend = case_when(
+    estimate > 0 & sig == '*' ~ 'increasing',
+    sig == '' ~ NA_character_,
+    .default = 'decreasing'
+  ))
+
 # Bring in directional values. If not reverse, then positive is good
 reverse <- readRDS('data/helpers/metrics_value_reversed.rds')
 
-# Of those that are significant, what are trends
-sig_models <- res_df %>% 
-  filter(sig == '*') %>% 
-  mutate(trend = case_when(
-    estimate > 0 ~ 'increasing',
-    .default = 'decreasing'
-  ))
-sig_models
-mean(sig_models$trend == 'increasing')
+# Some of our reversed vars were missing from that analysis. Add them in here
+reverse <- c(
+  reverse, 
+  'adultObesity',
+  'adultSmoking',
+  'excessiveDrinking',
+  'foodInsecurity',
+  'genderPayGap',
+  'rentMedianPerc'
+)
 
-# But is this good or bad - bring in directional values
-sig_models <- sig_models %>% 
+# And some new ones to remove
+remove <- c(
+  'nMigrantWorkers',
+  'nUnpaidWorkers',
+  'population',
+  'vacancyRate'
+)
+
+# Filter out the removes (should really do this earlier in script though)
+get_str(model_outputs)
+model_outputs <- model_outputs %>% 
+  filter(!term %in% remove)
+get_str(model_outputs)
+
+# save an object for refined outputs to use alter
+refined_vars <- model_outputs$term
+
+# Add them to outputs
+model_outputs <- model_outputs %>% 
   mutate(
-    direction = ifelse(term %in% reverse, 'reverse', 'asis'),
+    reverse = ifelse(term %in% reverse, TRUE, FALSE),
     outcome = case_when(
-      direction == 'asis' & trend == 'increasing' ~ 'better',
-      direction == 'asis' & trend == 'decreasing' ~ 'worse',
-      direction == 'reverse' & trend == 'increasing' ~ 'worse',
-      direction == 'reverse' & trend == 'decreasing' ~ 'better',
+      reverse == FALSE & trend == 'increasing' ~ 'better',
+      reverse == FALSE & trend == 'decreasing' ~ 'worse',
+      reverse == TRUE & trend == 'increasing' ~ 'worse',
+      reverse == TRUE & trend == 'decreasing' ~ 'better',
       .default = NA
     ),
     across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))
   )
-sig_models
+model_outputs
 
 # proportion getting better or worse
-(tab <- get_table(sig_models$direction))
-prop.table(tab)
-# Half getting better, half getting worse
+(tab <- table(model_outputs$outcome))
+percs <- prop.table(tab) * 100
 ```
+
+`{r} percs[['better']]`% are getting better and `{r} percs[['worse']]`% are getting worse.
+
+Check out table with outputs for each regression. Filter by significance and outcome. Trend is just whether it is going up or down, outcome is whether that is good or bad.
 
 ```{r}
 #| label: model_table
-get_reactable(sig_models, defaultPageSize = 5)
+get_reactable(
+  model_outputs, 
+  defaultPageSize = 10,
+  columns = list(
+   term = colDef(minWidth = 200),
+   sig = colDef(minWidth = 50),
+   reverse = colDef(minWidth = 75),
+   statistic = colDef(minWidth = 75),
+   outcome = colDef(minWidth = 75)
+  )
+)
+  
 ```
 
+
+## Spatial Regression
+
+Instead of doing straight linear regressions, try spatial lag models. Note that there will be an issue with Connecticut - polygons change in 2022. 
+
+First try this with a single year...
+
+```{r}
+#| label: test_moran_test
+#| output: false
+pacman::p_load(
+  spatialreg,
+  spdep,
+  sf,
+  mapview
+)
+
+get_str(series_metrics)
+get_str(refined_vars)
+
+# get single metric
+dat <- series_metrics %>% 
+  filter(
+    str_length(fips) == 5,
+    variable_name == 'gini'
+  ) %>% 
+  pivot_wider(
+    id_cols = fips:year,
+    names_from = variable_name,
+    values_from = value
+  ) %>% 
+  mutate(across(c(year, gini), as.numeric))
+get_str(dat)
+
+## Check how many counties are in each year
+dat %>% 
+  group_by(year) %>% 
+  summarize(count = n())
+# they switch in 2022. Let's just take up through 2021 to make this work for now 
+# OLS model
+
+# Pull county polygons 2024
+counties <- readRDS('data/sm_spatial.rds')[['ne_counties_2021']]
+counties
+mapview(counties)
+
+# Combine data with polygons in one file
+dat_sf <- dat %>% 
+  filter(year < 2022) %>% 
+  left_join(counties, by = 'fips')
+get_str(dat_sf)
+
+# Get neighbor list from counties
+nb <- poly2nb(counties)
+nb
+class(nb)
+summary(nb)
+
+
+## Check Moran's stat for each year?
+lw <- nb2listw(nb)
+
+# Moran test for each year
+years <- sort(unique(dat_sf$year))
+results <- map(years, ~ {
+  dat_sf %>% 
+    filter(year == .x) %>% 
+    pull(gini) %>% 
+    moran.test(lw)
+})
+get_str(results[[1]])
+any(map_dbl(results, ~ .x$p.value) < 0.05)
+# No spatial autocorrelation here I guess?
+```
+
+Try running Moran test for each variable in each year systematically:
+
+```{r}
+#| label: moran_tests
+#| eval: false
+#| output: false
+county_metrics <- series_metrics %>% 
+  filter(
+    str_length(fips) == 5,
+    !variable_name %in% c('population')
+  )
+get_str(county_metrics)
+
+# Get wide(r) df of all metrics
+dat <- county_metrics %>% 
+  pivot_wider(
+    id_cols = fips:year,
+    names_from = variable_name,
+    values_from = value
+  ) %>% 
+  mutate(across(!fips, as.numeric))
+get_str(dat)
+
+# Check how many counties are in each year
+dat %>% 
+  group_by(year) %>% 
+  summarize(count = n())
+# 2022 has some old and some new CT counties! Sheesh
+
+# Let's pull 2021 counties, filter to only those in the data
+counties <- readRDS('data/sm_spatial.rds')[['ne_counties_2021']]
+counties
+
+# Combine county spatial files with data, which will also filter to old counties
+dat <- left_join(dat, counties) %>% 
+  select(-aland, -awater)
+get_str(dat)
+
+
+## For each variable, for each year: run moran test
+(vars <- names(dat)[!names(dat) %in% c(
+  'fips', 
+  'year', 
+  'geometry', 
+  'womenEarnPercMenFPS',
+  'expHiredLaborPercOpExp'
+)])
+
+get_time()
+plan(multisession, workers = availableCores(omit = 2))
+out <- future_map(vars, \(var) {
+  
+  # Get unique years and fips for that var
+  pars <- dat %>% 
+    select(fips, year, !!sym(var), geometry) %>% 
+    na.omit() %>% 
+    select(year, fips)
+  
+  # Single out unique years, we use fips later
+  years <- sort(unique(pars[['year']]))
+    
+  # For each year, get counties, lw, and moran test
+  year_results <- map(years, \(yr) {
+    # Get fips in that year
+    fips_subset <- pars %>% 
+      filter(year == yr) %>% 
+      pull(fips)
+    
+    # Use fips to get county subset for that year
+    county_subset <- dat %>% 
+      filter(
+        year == yr,
+        fips %in% fips_subset
+      ) %>% 
+      st_as_sf() %>% 
+      st_make_valid() %>% 
+      filter(!st_is_empty(geometry))
+    
+    # Now we can get lw from counties that year
+    tryCatch({
+      lw <- nb2listw(poly2nb(county_subset))
+    }, error = function(e) {
+      print(e)
+      return(paste('Error in poly2nb:', e$message))
+    })
+    
+    # FINALLY get Moran test for that var in that year
+    # Catch errors because of missing values...
+    tryCatch({
+      test <- county_subset %>% 
+        filter(year == yr) %>% 
+        pull(!!sym(var)) %>% 
+        moran.test(lw)
+    }, error = function(e) {
+      print(paste0('Error in ', var, ', year ', yr, e))
+      return(paste('Error in Moran:', e$message))
+    })
+  }) %>% 
+    setNames(c(paste0('y', years)))
+}, .progress = TRUE) %>% 
+  setNames(c(vars))
+plan(sequential)
+
+get_str(out)
+saveRDS(out, 'data/objects/moran_outs.rds')
+```
+
+Yeesh, that was hairy. Let's explore those results now:
+
+```{r}
+#| label: moran_table
+#| output: false
+out <- readRDS('data/objects/moran_outs.rds')
+get_str(out)
+get_str(out[[1]])
+
+# Pull out stat and p value for each set of results
+df_list <- map(out, \(var) {
+  imap(var, \(year, yr_string) {
+    if (class(year) == 'htest') {
+      data.frame(
+        'year' = yr_string,
+        'moran' = year$statistic,
+        'p' = year$p.value
+      )
+    } 
+  }) %>% 
+    bind_rows()
+}) %>% 
+  imap_dfr(~ mutate(.x, var = .y))
+rownames(df_list) <- NULL
+get_str(df_list)
+
+# Make a nicer table, rounding off, remove the ys, remove rownames
+tab <- df_list %>% 
+  mutate(
+    year = str_remove(year, 'y')
+  )
+tab  
+
+# Summary stats for each var
+sum <- tab %>% 
+  group_by(var) %>% 
+  summarize(prop_sig = mean(p < 0.05)) %>% 
+  arrange(desc(prop_sig)) %>% 
+  mutate(prop_sig = format(round(prop_sig, 3), nsmall = 3))
+```
+
+```{r}
+#| label: moran_reactable
+get_reactable(sum)
+```
+
+prop_sig is the proportion of years within that variable that are significantly spatially correlated. Looks like many variables are spatially autocorrelated, but not all. Wonder whether it's worth running spatial regressions on all of them, or only the variables (and years) that are significantly spatially correlated.
+
+Problems with Moran's test (and spatial regressions generally) right now:
+
+- County arrangements change between years. Newer variables might be on Connecticut's governance regions, giving us 68 counties in New England rather than 67. The switch happened in 2022, but not every metric reflects this shift at the same time! Isn't that fun
+- Still some issues with different object lengths between spatial list weights and datasets in the moran tests
+- Would probably be better off running Moran Monte Carlos instead of Moran tests, but that is going to up the run time substantially and I don't think it matters all that much here.

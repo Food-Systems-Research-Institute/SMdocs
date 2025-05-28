@@ -7,7 +7,7 @@ format:
 
 To mix both R and python in same document, do not specify engine in yaml header. This will use knitr by default, and run reticulate for the python cells.
 
-Potential problem is that the version of R that reticulate uses may not be the same as the one in the `.venv`. 
+Potential problem is that the version of R that reticulate uses may not be the same as the one in the `.venv`. README has instructions on how to make sure reticulate uses the `.venv`. 
 
 Also note a problem trying to run a python cell in a mixed doc interactively. Something hinky with matplotlib here it doesn't have access to a proper GUI to show plots. Works fine if previewed or rendered though.
 
