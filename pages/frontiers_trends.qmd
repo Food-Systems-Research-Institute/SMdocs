@@ -7,6 +7,8 @@ format:
 editor_options: 
   chunk_output_type: console
 warnings: false
+execute:
+  cache: false
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
@@ -16,6 +18,7 @@ Metrics and analyses for the Frontiers special issue are works in progress.
 ```{r}
 #| label: prep
 #| cache: false
+#| output: false
 options(scipen = 999)
 
 pacman::p_load(
@@ -31,17 +34,24 @@ pacman::p_load(
   knitr,
   tictoc,
   furrr,
-  parallelly
+  parallelly,
+  splm,
+  spatialreg,
+  spdep,
+  sf
 )
+
 
 # Functions
 source('dev/data_pipeline_functions.R')
 source('dev/get_reactable.R')
+source('dev/filter_fips.R')
 
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
   dplyr::pull(),
+  stats::lag(),
   .quiet = TRUE
 )
 ```
@@ -372,22 +382,17 @@ get_reactable(
 ```
 
 
-## Spatial Regression
+## Moran's Tests
 
-Instead of doing straight linear regressions, try spatial lag models. Note that there will be an issue with Connecticut - polygons change in 2022. 
+::: {.callout-note collapse='false' title='Caution'}
+Turns out this whole section is moot. Moran test and spatialreg packages can only do cross-sections. So just skip down to the Spatial Regressions section where we do it with spml instead.
+:::
 
-First try this with a single year...
+Moran's test for spatial autocorrelation, determines whether we need to run spatial regressions. Turns out this is a bit hinky with spotty data. Starting with a single run on a single year to see how it works:
 
 ```{r}
 #| label: test_moran_test
 #| output: false
-pacman::p_load(
-  spatialreg,
-  spdep,
-  sf,
-  mapview
-)
-
 get_str(series_metrics)
 get_str(refined_vars)
 
@@ -415,7 +420,6 @@ dat %>%
 # Pull county polygons 2024
 counties <- readRDS('data/sm_spatial.rds')[['ne_counties_2021']]
 counties
-mapview(counties)
 
 # Combine data with polygons in one file
 dat_sf <- dat %>% 
@@ -445,6 +449,8 @@ get_str(results[[1]])
 any(map_dbl(results, ~ .x$p.value) < 0.05)
 # No spatial autocorrelation here I guess?
 ```
+
+Looks like it works, also looks like there is no spatial correlation within this variable in this year.
 
 Try running Moran test for each variable in each year systematically:
 
@@ -550,7 +556,7 @@ out <- future_map(vars, \(var) {
 plan(sequential)
 
 get_str(out)
-saveRDS(out, 'data/objects/moran_outs.rds')
+# saveRDS(out, 'data/objects/moran_outs.rds')
 ```
 
 Yeesh, that was hairy. Let's explore those results now:
@@ -606,3 +612,250 @@ Problems with Moran's test (and spatial regressions generally) right now:
 - County arrangements change between years. Newer variables might be on Connecticut's governance regions, giving us 68 counties in New England rather than 67. The switch happened in 2022, but not every metric reflects this shift at the same time! Isn't that fun
 - Still some issues with different object lengths between spatial list weights and datasets in the moran tests
 - Would probably be better off running Moran Monte Carlos instead of Moran tests, but that is going to up the run time substantially and I don't think it matters all that much here.
+
+## Spatial Regressions
+
+Run spatial regression for all vars. Might be worth looking into whether there is a version of Moral test that can be run across years. Until then, just running each one with spatiall error model. 
+
+### Try it once
+
+Try splm on just one variable first:
+
+```{r}
+#| label: splm
+#| output: false
+get_str(series_metrics)
+
+dat <- series_metrics %>% 
+  filter(
+    variable_name != 'population',
+    str_length(fips) == 5
+  ) %>% 
+  pivot_wider(
+    id_cols = fips:year,
+    names_from = variable_name,
+    values_from = value
+  )
+
+# Get rid of geometry, make our df a plm object
+df <- dat %>% 
+  select(fips, year, rentMedianPercHH) %>% 
+  filter(str_detect(fips, '^09', negate = TRUE)) %>%
+  na.omit() %>% 
+  mutate(rentMedianPercHH = as.numeric(rentMedianPercHH)) %>% 
+  plm::pdata.frame()
+get_str(df)
+
+# Get our listw based on counties kept (not CT)
+lw <- counties %>% 
+  filter(fips %in% df$fips) %>% 
+  poly2nb() %>% 
+  nb2listw(zero.policy = TRUE)
+
+# Try FE error model with rentMedianPercHH
+fe_err <- spml(
+  rentMedianPercHH ~ as.numeric(year), 
+  data = df, 
+  listw = lw,
+  model = 'within'
+)
+summary(fe_err)
+
+# RE error model
+re_err <- spml(
+  rentMedianPercHH ~ as.numeric(year), 
+  data = df, 
+  listw = lw,
+  model = 'random'
+)
+summary(re_err)
+
+# Check to use RE or FE, see whether x_it related to a_i (idiosyncratic error)
+test <- sphtest(fe_err, re_err)
+test
+# Not sig: use RE, more efficient
+
+# Check RE output
+summary(re_err)
+```
+
+### Do it for all vars
+
+So the workflow for each variable is:
+
+1. Make sure panel is balanced, i.e. see if Connecticut will be a problem. Adjust accordingly.
+2. Create list weight object based on the counties that are represented by in the variable. I think we have to do this for each variable individually... should double check though.
+3. Run FE and RE model with year as numeric.
+4. Hausman test with FE and RE model. If sig, report FE, if not, report RE
+
+Try it:
+
+```{r}
+#| label: spregs_over_vars
+#| output: false
+#| eval: false
+get_str(dat)
+
+# Make variables numeric
+dat <- dat %>% 
+  mutate(across(3:last_col(), as.numeric))
+get_str(dat)
+
+# Get vector of vars
+vars <- names(dat)[!names(dat) %in% c('fips', 'year')]
+
+# Map over each var and do steps 1 through 5
+plan(multisession, cores = availableCores(omit = 2))
+out <- future_map(vars, \(var) {
+  
+  cat('\n\nStarting', var)
+  
+  tryCatch({
+    # Reduce to relevant variable, remove NAs
+    df <- dat %>% 
+      select(fips, year, !!sym(var)) %>% 
+      drop_na()
+    
+    balanced_fips <- df %>% 
+      group_by(fips) %>% 
+      filter(n() == length(unique(df$year))) %>% 
+      pull(fips) %>% 
+      unique()
+    
+    df <- df %>% 
+      filter(fips %in% balanced_fips)
+    
+    # # 1. Check for different lengths. Remove CT if so
+    # check <- df %>% 
+    #   group_by(fips) %>% 
+    #   summarize(count = n()) %>% 
+    #   pull(count) %>% 
+    #   unique()
+    # 
+    # if (length(check) != 1) {
+    #   df <- filter(df, str_detect(fips, '^09', negate = TRUE))
+    #   ct_note <- 'removed'
+    #   cat('\nRemoved Connecticut')
+    # } else {
+    #   ct_note <- 'included'
+    #   cat('\nKept Connecticut')
+    # }
+    # 
+    
+    # 2. Create lw object
+    lw <- counties %>% 
+      filter(fips %in% balanced_fips) %>% 
+      # filter(fips %in% df$fips) %>% 
+      poly2nb() %>% 
+      nb2listw(zero.policy = TRUE)
+    cat('\nCreated lw')
+    
+    # Make df a plm object
+    df <- plm::pdata.frame(df)
+    
+    # 3. Run FE and RE
+    formula <- as.formula(paste(var, "~ as.numeric(year)"))
+    fe <- spml(
+      formula,
+      data = df, 
+      listw = lw,
+      model = 'within'
+    )
+    re <- spml(
+      formula,
+      data = df, 
+      listw = lw,
+      model = 'random'
+    )
+    cat('\nRan models')
+    
+    # 4. Hausman test. If sig, use FE
+    test <- sphtest(fe, re)
+    if (test$p.value < 0.05) {
+      model <- fe
+    } else {
+      model <- re
+    }
+    cat('\nRan Hausman')
+    
+    return(list('model' = model, 'fips' = balanced_fips))
+      
+    },
+    error = function(e) {
+      return(paste0('Error with ', var, ': ', e))
+    }
+  )
+  
+}, .progress = FALSE) %>% 
+ setNames(c(vars))
+plan(sequential)
+
+# Save for posterity
+saveRDS(out, 'data/objects/spatial_regression_outs.rds')
+```
+
+
+```{r}
+#| output: false
+out <- readRDS('data/objects/spatial_regression_outs.rds')
+
+# How many were successful
+perc_success <- mean(map(out, class) == 'list') * 100
+
+get_str(out[[1]])
+get_str(out)
+out
+
+# Check out errors only
+errors <- out %>% 
+  keep(is.character)
+errors
+error_vars <- names(errors)
+
+```
+
+
+`{r} round(perc_success, 1)`% of regressions were successful. The last few were some fucked up metrics for one reason or another. They include: `{r} paste0(error_vars, collapse = ', ')`.
+
+Check out the successful models:
+
+```{r}
+#| cache: false
+models <- out %>% 
+  keep(is.list) %>% 
+  map(~ .x[[1]])
+# get_str(models)
+
+# Make a table
+spatial_table <- imap(models, ~ {
+  tryCatch({
+    sum <- summary(.x)
+    coefs <- sum$CoefTable[2, ]
+    df <- data.frame(
+      var = .y,
+      phi = sum$errcomp[1],
+      rho = sum$errcomp[2],
+      est = coefs[1],
+      se = coefs[2],
+      t = coefs[3],
+      p = coefs[4]
+    ) 
+    return(df)
+  },
+    error = function(e) {
+      return(paste('Error:', e))
+    }
+  )
+}) %>% 
+  bind_rows()
+
+# Round off and make table
+spatial_table %>% 
+  mutate(
+    sig = ifelse(p < 0.05, TRUE, FALSE),
+    across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))
+  ) %>% 
+  get_reactable()
+```
+
+Still have to do the thing to figure out whether these are getting better or worse. This just shows which ones are changing over time.

@@ -3,6 +3,7 @@ conflicted
 projecter
 stringr
 tidyr
+reactable
 Matrix
 glmnet
 missRanger
@@ -11,14 +12,14 @@ broom
 ggplot2
 lattice
 caret
-reactable
 knitr
 tictoc
 future
 furrr
 parallelly
+splm
 spData
 sf
 spatialreg
 spdep
-mapview
+rlang
