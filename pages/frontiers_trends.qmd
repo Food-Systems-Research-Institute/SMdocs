@@ -12,7 +12,7 @@ execute:
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
-Metrics and analyses for the Frontiers special issue are works in progress. 
+This is a mildly slapdash page working out spatial regressions for time series metrics from the reifned framework variables. There are some cleaning issues to address with some variables, and the scripts are wildly disorganized. 
 :::
 
 ```{r}
@@ -23,11 +23,12 @@ options(scipen = 999)
 
 pacman::p_load(
   dplyr,
+  htmltools,
   stringr,
   tidyr,
   reactable,
-  glmnet,
-  missRanger,
+  # glmnet,
+  # missRanger,
   purrr,
   broom,
   caret,
@@ -36,7 +37,6 @@ pacman::p_load(
   furrr,
   parallelly,
   splm,
-  spatialreg,
   spdep,
   sf
 )
@@ -67,12 +67,9 @@ meta <- sm_data$metadata
 frame <- readRDS('data/frameworks/new_frame.rds')
 ```
 
-This page 
-This page explores what data we have available at the county level specifically.
+This page explores what data we have available at the county level specifically. It is branching off of the main "Analysis" pages because they are state-level analyses and I want to leave it there for posterity.
 
-
-It is branching off of the main "Analysis" pages because they are state-level analyses and I want to leave it there for posterity.
-
+Note that there are some cleaning issues with this dataset, and the scripts are wildly disorganized. The important thing is that we figured out how to iterate through a few dozen variables and run spatial error models at the county level to see if they are getting better or worse over time.
 
 ## Explore Metrics and Resolution
 
@@ -329,14 +326,24 @@ remove <- c(
   'nMigrantWorkers',
   'nUnpaidWorkers',
   'population',
-  'vacancyRate'
+  'vacancyRate',
+  'expHiredLaborPercOpExp'
 )
+
 
 # Filter out the removes (should really do this earlier in script though)
 get_str(model_outputs)
 model_outputs <- model_outputs %>% 
   filter(!term %in% remove)
 get_str(model_outputs)
+
+
+# Check what we have, see what we are covering
+check_vars <- data.frame(var = series_vars) %>% 
+  mutate(reverse = ifelse(var %in% reverse, TRUE, FALSE)) %>% 
+  filter(!var %in% remove)
+check_vars  
+
 
 # save an object for refined outputs to use alter
 refined_vars <- model_outputs$term
@@ -613,9 +620,9 @@ Problems with Moran's test (and spatial regressions generally) right now:
 - Still some issues with different object lengths between spatial list weights and datasets in the moran tests
 - Would probably be better off running Moran Monte Carlos instead of Moran tests, but that is going to up the run time substantially and I don't think it matters all that much here.
 
-## Spatial Regressions
+## Spatial Panel Regressions
 
-Run spatial regression for all vars. Might be worth looking into whether there is a version of Moral test that can be run across years. Until then, just running each one with spatiall error model. 
+Run spatial regression for all vars. Might be worth looking into whether there is a version of Moral test that can be run across years. Until then, just running each one with spatial error model. 
 
 ### Try it once
 
@@ -716,6 +723,7 @@ out <- future_map(vars, \(var) {
       select(fips, year, !!sym(var)) %>% 
       drop_na()
     
+    # 1. Only use fips that produce balanced panel
     balanced_fips <- df %>% 
       group_by(fips) %>% 
       filter(n() == length(unique(df$year))) %>% 
@@ -724,23 +732,6 @@ out <- future_map(vars, \(var) {
     
     df <- df %>% 
       filter(fips %in% balanced_fips)
-    
-    # # 1. Check for different lengths. Remove CT if so
-    # check <- df %>% 
-    #   group_by(fips) %>% 
-    #   summarize(count = n()) %>% 
-    #   pull(count) %>% 
-    #   unique()
-    # 
-    # if (length(check) != 1) {
-    #   df <- filter(df, str_detect(fips, '^09', negate = TRUE))
-    #   ct_note <- 'removed'
-    #   cat('\nRemoved Connecticut')
-    # } else {
-    #   ct_note <- 'included'
-    #   cat('\nKept Connecticut')
-    # }
-    # 
     
     # 2. Create lw object
     lw <- counties %>% 
@@ -820,18 +811,33 @@ error_vars <- names(errors)
 Check out the successful models:
 
 ```{r}
-#| cache: false
-models <- out %>% 
-  keep(is.list) %>% 
-  map(~ .x[[1]])
-# get_str(models)
+model_outs <- out %>% 
+  keep(is.list)
+# get_str(model_outs)
+# get_str(model_outs[[1]])
+# get_str(model_outs[[1]][[1]])
+
+# Check model type
+# model_outs[[1]][[1]]$type
+# table(map_chr(model_outs, ~ .x[[1]]$type))
+# They are all RE models - no FE
+
+
+## Test out outcomes
+# sum <- summary(model_outs[[1]][[1]])
+# coefs <- sum$CoefTable[2, ]
 
 # Make a table
-spatial_table <- imap(models, ~ {
+spatial_table <- imap(model_outs, ~ {
   tryCatch({
-    sum <- summary(.x)
+    
+    # Pull model output results and coefficients
+    sum <- summary(.x[[1]])
     coefs <- sum$CoefTable[2, ]
+    
     df <- data.frame(
+      n = length(.x$fips),
+      type = .x[[1]]$type,
       var = .y,
       phi = sum$errcomp[1],
       rho = sum$errcomp[2],
@@ -840,6 +846,34 @@ spatial_table <- imap(models, ~ {
       t = coefs[3],
       p = coefs[4]
     ) 
+    
+    # Figure out good or bad outcome
+    # If sig, then check reverse. else blank
+    # If reverse, reverse it, else same
+    # If up, good, else bad
+    df <- df %>% 
+      mutate(
+        sig = ifelse(p < 0.05, TRUE, FALSE),
+        posneg = case_when(
+          est > 0 ~ 'pos',
+          est < 0 ~ 'neg',
+          .default = ''
+        ),
+        reverse = ifelse(.y %in% reverse, TRUE, FALSE),
+        direction = case_when(
+          sig == TRUE & reverse == TRUE & posneg == 'pos' ~ 'neg',
+          sig == TRUE & reverse == TRUE & posneg == 'neg' ~ 'pos',
+          sig == TRUE & reverse == FALSE ~ as.character(posneg),
+          .default = ''
+        ),
+        outcome = case_when(
+          sig == FALSE ~ '',
+          sig == TRUE & direction == 'pos' ~ 'better',
+          sig == TRUE & direction == 'neg' ~ 'worse',
+          .default = '-'
+        )
+      ) %>% 
+      select(-c(posneg, direction))
     return(df)
   },
     error = function(e) {
@@ -848,14 +882,48 @@ spatial_table <- imap(models, ~ {
   )
 }) %>% 
   bind_rows()
+# get_str(spatial_table)
 
 # Round off and make table
 spatial_table %>% 
   mutate(
-    sig = ifelse(p < 0.05, TRUE, FALSE),
-    across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))
+    across(c(phi:p), ~ format(round(.x, 3), nsmall = 3)),
+    type = case_when(
+      str_detect(type, 'random') ~ 'RE',
+      .default = NA
+    )
   ) %>% 
-  get_reactable()
+  get_reactable(
+    defaultColDef = colDef(minWidth = 50),
+    columns = list(
+      n = colDef(minWidth = 25),
+      var = colDef(minWidth = 200),
+      est = colDef(
+        minWidth = 100,
+        name = 'β'
+      ),
+      outcome = colDef(minWidth = 75),
+      rho = colDef(name = 'ρ'),
+      phi = colDef(name = 'φ'),
+      p = colDef(name = 'p-value'),
+      'p-value' = colDef(minWidth = 100)
+    )
+  )
 ```
 
-Still have to do the thing to figure out whether these are getting better or worse. This just shows which ones are changing over time.
+- n: Number of counties included in regression
+- type: FE = fixed effects (every county has $\beta$), RE = random effects (counties have different $\beta$s)
+- var: Metric
+- $\phi$: Spatial autocorrelation in idiosyncratic attributes (counties)
+- $\rho$: Spatial autocorrelation in residual errors (omitted variables)
+- $\beta$: Regression coefficient of year on the variable
+- se: standard error of $\beta$
+- t: test statistic
+- p-value: p-value
+- sig: whether p is < 0.05
+- reverse: whether the metric has been reversed so that lower numbers are better and higher numbers are worse (like food insecurity)
+- outcome: if the regression is significant, is it getting better or worse? Accounts for the 'reverse' variable
+
+
+
+
