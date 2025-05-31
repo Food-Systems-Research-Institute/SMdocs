@@ -1,0 +1,14 @@
+dplyr
+conflicted
+projecter
+generics
+BiocGenerics
+graph
+Rgraphviz
+bnlearn
+stringr
+purrr
+tidyr
+skimr
+knitr
+reactable

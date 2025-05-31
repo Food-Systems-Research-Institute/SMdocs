@@ -27,6 +27,7 @@ project:
     - temp/bambi.ipynb
     - pages/frontiers_intro.qmd
     - pages/frontiers_trends.qmd
+    - pages/bnlearn.qmd
 
 website:
   title: "Food Systems Research Institute"
@@ -110,6 +111,9 @@ website:
             href: temp/test_python_and_r.qmd
           - text: bambi.qmd
             href: temp/bambi.ipynb
+          - text: bnlearn
+            href: pages/bnlearn.qmd
+          
 
 format:
   html:

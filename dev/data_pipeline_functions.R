@@ -12,7 +12,11 @@
 
 
 # Convenience function to filter so that each variable_name only has latest year
-get_latest_year <- function(df, var_col = 'variable_name', year_col = 'year'){
+get_latest_year <- function(df, 
+                            var_col = 'variable_name', 
+                            year_col = 'year',
+                            add_suffix = TRUE
+                            ){
 
   # Make sure that year is numeric
   df <- mutate(df, {{ year_col }} := as.numeric(.data[[year_col]]))
@@ -30,8 +34,12 @@ get_latest_year <- function(df, var_col = 'variable_name', year_col = 'year'){
       dplyr::filter(
         .data[[var_col]] == var, 
         .data[[year_col]] == max(unique_years)
-      ) %>% 
-      mutate({{ var_col }} := paste0(.data[[var_col]], '_', .data[[year_col]])) %>% 
+      )
+    if (add_suffix == TRUE) {
+      out <- out %>% 
+        mutate({{ var_col }} := paste0(.data[[var_col]], '_', .data[[year_col]]))
+    }
+    out <- out %>% 
       dplyr::select(-{{ year_col }})
     return(out)
   }) %>% 

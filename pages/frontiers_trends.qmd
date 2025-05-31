@@ -27,8 +27,6 @@ pacman::p_load(
   stringr,
   tidyr,
   reactable,
-  # glmnet,
-  # missRanger,
   purrr,
   broom,
   caret,
@@ -52,6 +50,7 @@ conflicts_prefer(
   dplyr::filter(),
   dplyr::pull(),
   stats::lag(),
+  base::setdiff(),
   .quiet = TRUE
 )
 ```
@@ -347,6 +346,7 @@ check_vars
 
 # save an object for refined outputs to use alter
 refined_vars <- model_outputs$term
+saveRDS(refined_vars, 'data/frontiers/county_time_series_vars.rds')
 
 # Add them to outputs
 model_outputs <- model_outputs %>% 

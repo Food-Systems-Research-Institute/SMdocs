@@ -3,33 +3,397 @@ title: "bnlearn"
 format:
   html:
     fig-dpi: 200
-    code-fold: true
+    code-fold: false
 editor_options: 
   chunk_output_type: console
 warnings: false
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
-Metrics and analyses for the Frontiers special issue are works in progress. 
+Metrics and analyses for the Frontiers special issue are works in progress. There are some metric cleanliness issues here that I'm putting off for now until we work back through the county metrics.
 :::
 
-Testing out a Bayesian Network with structural learning to identify drivers in our food systems data.
+Testing out a Bayesian Network with structural learning to identify drivers in our food systems data. Playing around with county level metrics. Note that when we do this for real it should probably be aggregated at indicator level.
 
 ## Housekeeping
 
 ```{r}
 #| label: prep
 #| cache: false
+
+# if (!require('graph')) BiocManager::install('graph')
+# if (!require('Rgraphviz')) BiocManager::install('Rgraphviz')
+
 pacman::p_load(
   dplyr,
-  bnlearn
+  bnlearn,
+  # conflicted,
+  stringr,
+  purrr,
+  tidyr,
+  skimr,
+  knitr,
+  reactable,
+  graph,
+  Rgraphviz
 )
 
-BiocManager::install(c("graph", "Rgraphviz"))
+source('dev/data_pipeline_functions.R')
+source('dev/get_reactable.R')
 
-
+conflicted::conflicts_prefer(
+  dplyr::filter(),
+  dplyr::select(),
+  base::setdiff(),
+  base::intersect(),
+  base::union(),
+  .quiet = TRUE
+)
 ```
 
 ## Wrangling
 
-## bnlearn
+```{r}
+#| label: wrangle
+#| output: false
+# Pull county time series variables
+vars <- readRDS('data/frontiers/county_time_series_vars.rds')
+sm_data <- readRDS('data/sm_data.rds')[['metrics']]
+
+# Get county variables only, and lose CT
+dat <- sm_data %>% 
+  filter(
+    str_length(fips) == 5,
+    variable_name %in% vars,
+    value != -666666666,
+    str_detect(fips, '^09', negate = TRUE)
+  ) %>% 
+  mutate(across(c(year, value), ~ as.numeric(.x)))
+get_str(dat)
+
+# Get latest year only, then pivot wider for analysis
+dat <- dat %>% 
+  get_latest_year(add_suffix = FALSE) %>% 
+  pivot_wider(
+    id_cols = fips,
+    values_from = value,
+    names_from = variable_name
+  )
+get_str(dat)
+
+# Check missing
+(skim_out <- skim(dat))
+
+# Ditch vars that are > 50% missing
+mis <- skim_out %>% 
+  filter(complete_rate < 0.5) %>% 
+  pull(skim_variable)
+dat <- select(dat, -any_of(mis))
+get_str(dat)
+# Noice
+```
+
+## Toy Example
+
+Make a mini version of data to play with, just go through the motions
+
+```{r}
+mini <- dat %>% 
+  select(
+    gini, 
+    ftmProdRatio, 
+    cropDiversity,
+    farmIncomePF,
+    medianAcresPF
+  )
+```
+
+Note that we have a few missing values to deal with.
+
+### Preprocessing
+
+```{r}
+#| output: false
+# Discretize continuous variables. Not sure why we'd really want this though
+discretize(mini) 
+
+# Remove highly correlated variables
+dedup(mini) 
+# Not removing anything for our small set apparently
+```
+
+### Imputation
+
+Impute missing values based on specified DAG.
+
+```{r}
+dag <- model2network("[gini][ftmProdRatio|medianAcresPF][cropDiversity|gini:medianAcresPF][farmIncomePF|gini][medianAcresPF|gini:farmIncomePF]")
+dfitted = bn.fit(dag, mini)
+imp <- impute(dfitted, data = mini, method = 'bayes-lw') # or parents
+```
+
+### Structural Learning
+
+Use imputed dataset for structural learning
+
+#### Constraint Based
+
+```{r}
+dag_pc <- pc.stable(imp) # PC
+dag_gs <- gs(imp) # Grow-Shrink
+dag_iamb <- iamb(imp) # Incremental Association
+dag_inter_iamb <- inter.iamb(imp) # Interleaved Incremental Association
+# and others
+
+# Plot one
+plot(dag_pc)
+```
+
+Compare outputs:
+
+```{r}
+dags <- mget(c('dag_pc', 'dag_gs', 'dag_iamb', 'dag_inter_iamb'))
+scores <- map_dbl(dags, ~ score(.x, imp)) %>%  
+  bind_cols() %>% 
+  mutate(names(dags), .before = everything()) %>% 
+  setNames(c('model', 'bic'))
+knitr::kable(scores)
+```
+
+
+#### Score Based
+
+With hill climbing algorithm:
+
+```{r}
+dag <- hc(imp)
+print(dag)
+```
+
+In output, each node is shown in brackets with its parents after the pipe, separated by colons.
+
+Plot it:
+
+```{r}
+plot(dag)
+```
+
+##### Whitelists and Blacklists
+
+Using prior knowledge to set some constraints in structural learning. Let's say that $ftmProdRatio \rightarrow cropDiversity$ and $gini \rightarrow medianAcresPF$. Score-based algorithms have no undirected arcs, only directed.
+
+```{r}
+# Whitelist
+wl = data.frame(
+  from = c('ftmProdRatio', 'gini'),
+  to = c('cropDiversity', 'medianAcresPF')
+)
+
+dag_cons <- hc(imp, whitelist = wl)
+plot(
+  dag_cons,
+  highlight = c('gini'),
+  color = 'royalblue'
+)
+```
+
+### Plotting
+
+Highlight Markov Blanket for gini
+
+```{r}
+plot(
+  dag_cons,
+  highlight = c('gini', mb(dag_cons, 'gini')),
+  color = 'royalblue'
+)
+```
+
+More plotting options with graphviz:
+
+```{r}
+graphviz.plot(
+  dag_cons,
+  shape = 'ellipse',
+  fontsize = 10,
+  main = 'Wicked DAG',
+  sub = 'Subtitle for Wicked DAG',
+  layout = 'neato'
+)
+```
+
+
+### Parameter Learning
+
+AKA fitting the model. We can use `method = 'bayes'` for discrete data only. Otherwise it is using maximum likelihood. 
+
+```{r}
+(fitted <- bn.fit(dag, imp))
+```
+
+Coefficients are $\beta$s. 
+
+### Extract
+
+Pull various outputs
+
+```{r}
+#| output: false
+# Methods
+# AIC, BIC, plot, as.igrpah, as.lm, as.graphAM, as.grpahNEL
+# coef, degree, fitted, logLik, nodes, print, residuals, score
+
+# Coefficients (LM coefs for continuous data)
+coef(fitted)
+
+# Residuals, fitted values
+residuals(fitted)
+fitted.values(fitted)
+
+# log likelihood
+logLik(dag, imp)
+
+# sigma - standard deviations of residuals
+sigma(fitted)
+```
+
+
+### Evaluate Model
+
+Residual plots:
+
+```{r}
+bn.fit.qqplot(fitted)
+```
+
+Looks like we need to log transform income per farm.
+
+```{r}
+bn.fit.xyplot(fitted)
+```
+
+```{r}
+bn.fit.histogram(fitted)
+```
+
+And various stats:
+
+```{r}
+# Shannon entropy
+H(fitted)
+
+# Kullback-Leibler divergence to copmare two fitted networks
+# KL(fitted)
+
+# Scores. Default is BIC
+score(dag, imp)
+
+# -g for gaussian (continuous) networks, -cg for hybrid
+score(dag, imp, type = 'loglik-g')
+score(dag, imp, type = 'aic-g')
+score(dag, imp, type = 'bic-g')
+score(dag, imp, type = 'ebic-g') # additional penalty for dense networks
+score(dag, imp, type = 'bge') # Gaussian posterior density
+# and others...
+```
+
+
+## State Data 
+
+Let's try this with our aggregated indicators from the state data. Counties are a bit of a mess right now. 
+
+### Preprocessing
+
+```{r}
+scores <- readRDS('data/raw_minmax_geo.rds')
+get_str(scores)
+df <- scores %>% 
+  select(matches('^indic')) %>% 
+  setNames(c(str_remove(names(.), 'indic_') %>% str_replace_all(' ', '_')))
+get_str(df)
+
+# Get rid of county, also FFF variables
+# get_str(dat)
+# df <- dat %>% 
+#   select(-any_of(c('fips', matches('FFF$'))))
+# get_str(df)
+
+# Remove highly correlated variables
+threshold <- 0.5
+df <- dedup(df, threshold = threshold)
+```
+
+Threshold of correlations at `{r} threshold` brings us down from `{r} ncol(dat)` variables to `{r} ncol(df)` variables.
+
+```{r}
+# Imputation
+# dag <- hc(df)
+# dfitted = bn.fit(dag, df)
+# imp <- impute(dfitted, data = df, method = 'bayes-lw')
+```
+
+### Structural Learning
+
+```{r}
+#| output: false
+models <- list(
+  dag_pc = pc.stable(df),
+  dag_gs = gs(df),
+  dag_iamb = iamb(df),
+  dag_inter_iamb = inter.iamb(df),
+  dag_hc = hc(df),
+  dag_mmhc = mmhc(df)
+)
+# map(models, ~ try(score(.x, df)))
+```
+
+
+```{r}
+graphviz.plot(
+  models$dag_pc,
+  layout = 'fdp',
+  shape = 'ellipse',
+  fontsize = 18,
+  main = 'Force Directed Indicator Network',
+  sub = 'Max-Min Hill Climbing Algorithm'
+)
+```
+
+### Explore Influence
+
+#### Markov Blankets
+
+One way we can assess influential indicators is with Markov blankets.
+
+```{r}
+# Get Markov blankets
+blankets <- map(names(df), \(var) {
+  mb(models$dag_mmhc, var)
+})
+
+# Get number of nodes in each blanket
+blanket_sizes <- map_dbl(blankets, ~ length(.x)) %>% 
+  as.data.frame() %>% 
+  mutate(names(df), .before = everything()) %>% 
+  setNames(c('var', 'size')) %>% 
+  arrange(desc(size))
+
+# Show node count
+get_reactable(blanket_sizes)
+```
+
+
+#### Arc Strengths
+
+```{r}
+# Check arc strengths
+# arc.strength(dag_hc, data = df)
+```
+
+
+### Other Things
+
+- Bootstrapped arc stability
+- Hybrid structural learning algorithms (MMHC)
+- Whitelisting and blacklisting
+- Add covariates (no omitted variables)
