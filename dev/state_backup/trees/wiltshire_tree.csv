@@ -1,0 +1,93 @@
+Dimension,Index,Indicator
+Environment,Soil health,Soil organic matter
+Environment,Soil health,CO2 flux to and from soil
+Environment,Soil health,Soil active carbon
+Environment,Soil health,Soil aggregate stability
+Environment,Soil health,Months of living roots
+Environment,Water quality,Agrochemical runoff
+Environment,Water quality,Nutrient runoff
+Environment,Water quality,Soil loss / sedimentation
+Environment,Air quality,Dust / particulates
+Environment,Air quality,Odors
+Environment,Air quality,GHG emissions
+Environment,Biodiversity,"Insect, plant, and animal diversity"
+Environment,Biodiversity,Acres in conservation practices
+Environment,Biodiversity,Land use diversity
+Environment,Resource use efficiency,External nutrient use efficiency
+Environment,Resource use efficiency,Energy efficiency
+Environment,Resource use efficiency,Water use / irrigation efficiency
+Economics,Food business profitability,Total sales / revenue
+Economics,Food business profitability,Total costs
+Economics,Value from rural landscape,Acreage in production
+Economics,Value from rural landscape,Diversity of farm types
+Economics,Value from rural landscape,Open acres
+Economics,Value from rural landscape,Forest cover
+Economics,Value from rural landscape,VT terroir / VT brand
+Economics,Food business resilience,Balance sheet (assets and liabilities)
+Economics,Food business resilience,Operational diversification
+Economics,Food business resilience,Business growth / fixed mindset
+Economics,Food business resilience,Enterprise agility / flexibility
+Economics,Food business resilience,Income stability
+Economics,Food business resilience,Climate adaptation
+Economics,Distribution chain localness,Percent local sales
+Economics,Distribution chain localness,Percent of farm / business inputs bought locally
+Economics,Distribution chain localness,Percent direct to consumer sales
+Economics,Distribution chain localness,Consumer awareness of VT products
+Economics,Community Economy,Wealth / income distribution
+Economics,Community Economy,Availability of good-paying jobs in food systems
+Economics,Community Economy,Bubsines failure rate of food businesses
+Economics,Community Economy,In vs out of state ownership
+Economics,Externalities from businesses,Ecosystem services
+Economics,Externalities from businesses,Ecosystem disservices
+Economics,Exogenous factors for businesses,Commodity price fluctuation
+Economics,Exogenous factors for businesses,Impacts of climate change / variability
+Economics,Access to capital / credit,Access to credit
+Economics,Access to capital / credit,Access to land
+Economics,Access to capital / credit,Capital markets
+Production,Production quantity,Total quantity food products
+Production,Production quantity,Total quantity forest products
+Production,Production quantity,Total quantity non-food agricultural products
+Production,Waste / losses,Food wasted
+Production,Waste / losses,Food losses
+Production,Waste / losses,Crop failure
+Production,Waste / losses,Waste converted to usable biproduct
+Production,Product quality,Marketability
+Production,Product quality,Livestock product safety
+Production,Product quality,Agrochemical residue on crops
+Production,Product quality,Recalls in each industry
+Production,Product quality,Certificates of assurance
+Production,Product quality,Food safety
+Production,Production diversity,Richness
+Production,Production diversity,Nutritional staples
+Production,Imports vs exports,Total quantity imported
+Production,Imports vs exports,Total quantity exported
+Human,Physical health,Nutritious diets
+Human,Physical health,Presence of obesity
+Human,Physical health,Presence of metabolic disease
+Human,Mental health,Stress and anxiety
+Human,Mental health,Access to social support
+Human,Mental health,Uncertainty
+Human,Mental health,Risk aversion (e.g. social stigma)
+Human,Food security,Food access
+Human,Food security,Food affordability
+Human,Food appropriateness,Access to culturally appropriate food
+Human,Happiness,Happiness index
+Human,Happiness,Finding meaning in life
+Human,Education,Educational attainment
+Social,Food worker diversity,Gender diversity
+Social,Food worker diversity,Race / ethnicity diversity
+Social,Food worker diversity,Age diversity
+Social,Community embeddedness,Trust
+Social,Community embeddedness,Reciprocity
+Social,Community embeddedness,Social connectedness
+Social,Community embeddedness,Feeling of belonging to community
+Social,Community embeddedness,Collective action
+Social,Community embeddedness,Tradition / heritage
+Social,Community embeddedness,Common goals
+Social,Rural community livability,NIMBYism
+Social,Rural community livability,Community safety
+Social,Rural community livability,Population drain (outmigration)
+Social,Rural community livability,Open space and natural beauty
+Social,Food system governance,Participatory governance
+Social,Food system governance,Government responsiveness
+Social,Food system governance,Fair regulations and incentives

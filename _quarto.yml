@@ -35,7 +35,7 @@ website:
   page-navigation: true
   bread-crumbs: false
   back-to-top-navigation: true
-  repo-url: https://github.com/Food-Systems-Research-Center/sm-docs
+  repo-url: https://github.com/Food-Systems-Research-Institute/sm-docs
   navbar:
     logo: images/FSRI-SpiritMarks_FSRI-mark-white.png
     logo-href: https://www.uvm.edu/cals/food-systems-research
@@ -43,16 +43,16 @@ website:
     tools:
       - icon: tree
         menu:
-          - text: FSRC
+          - text: FSRI
             href: https://www.uvm.edu/cals/food-systems-research
           - text: UVM
             href: https://www.uvm.edu
       - icon: github
         menu:
           - text: Source Code
-            href: https://github.com/Food-Systems-Research-Center/sm-docs
-          - text: FSRC GitHub
-            href: https://github.com/Food-Systems-Research-Center
+            href: https://github.com/Food-Systems-Research-Institute/sm-docs
+          - text: FSRI GitHub
+            href: https://github.com/Food-Systems-Research-Institute
   sidebar:
     title: "Table of Contents"
     style: "docked"

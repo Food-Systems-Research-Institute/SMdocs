@@ -66,7 +66,7 @@ get_vt_spiders <- function(df_list,
           
           # titles
           # title = paste0('Vermont Dimension Scores\n', .y),
-          title = .y,
+          title = str_to_title(.y), #
           
           # scaling
           calcex = 0.6,
@@ -88,4 +88,65 @@ get_vt_spiders <- function(df_list,
       )
     })
   par(mfrow = c(1, 1))
+}
+
+
+get_single_spider <- function(df, title) {
+
+  names(df)[1:5] <- str_to_title(names(df)[1:5])
+  
+  # Get min and max for each dimension
+  dim_min <- map_dbl(df[1:5], min)
+  dim_max <- map_dbl(df[1:5], max)
+   
+  # National median
+  nat_median <- df %>% 
+    dplyr::filter(state == 'US_median') %>% 
+    dplyr::select(-state)
+  
+  # Vermont scores
+  vt_dims <- df %>% 
+    dplyr::filter(state == 'VT') %>% 
+    dplyr::select(-state)
+  
+  rbind(
+    dim_max,
+    dim_min,
+    nat_median,
+    vt_dims
+  ) %>% 
+    radarchart(
+      axistype = 0,
+      
+      # Polygon
+      pcol = c('#b16286', '#427b58'),
+      pfcol = c('#FFFFFF00', '#689d6a80'),
+      plwd = c(2, 3),
+      plty = c(2, 1),
+      
+      # grid
+      cglcol = 'darkgrey',
+      cglty = 1,
+      axislabcol = 'darkgrey',
+      
+      # titles
+      title = title,
+      
+      # scaling
+      calcex = .6,
+      palcex = .9,
+      vlcex =  1
+    )
+  
+  legend(
+    x = 1, 
+    y = 1.25,
+    legend = c('US', 'VT'),
+    bty = "n",
+    pch = 20,
+    col = c('#b16286', '#427b58'),
+    text.col = "black",
+    cex = 1,
+    pt.cex = 2
+  )
 }

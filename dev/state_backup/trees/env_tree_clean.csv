@@ -1,0 +1,30 @@
+Dimension,Index,Indicator,Use
+Environment,Forest health,Aboveground biomass,current_only
+Environment,Biodiversity,Acres in conservation practices,both
+Environment,Best management,Adoption of management practices,current_only
+Environment,Soil biology,Alpha and beta microbial diversity,current_only
+Environment,Soil biology,Baterial and fungal biomass,current_only
+Environment,Water quality,Climate change,current_only
+Environment,Air quality,Dust / particulates,wiltshire_only
+Environment,Resource use efficiency,Energy efficiency,both
+Environment,Biodiversity,Enrollment in certification program,current_only
+Environment,Water quality,Environmental impacts of land use,both
+Environment,Resource use efficiency,External nutient use efficiency,wiltshire_only
+Environment,Forest health,Forest pest populations,current_only
+Environment,Air quality,Greenhouse gas emissions,both
+Environment,Biodiversity,"Insect, plant, and animal diversity",both
+Environment,Biodiversity,Land use diversity,both
+Environment,Soil biology,Microinvertebrate composition,current_only
+Environment,Air quality,Odors,wiltshire_only
+Environment,Biodiversity,Pollinators,current_only
+Environment,Water quality,Protected waterways,current_only
+Environment,Water quality,Quantity / quality of surface and shallow subsurface water,current_only
+Environment,Biodiversity,Rare habitats,current_only
+Environment,Forest health,Regeneration of Maple,current_only
+Environment,Soil health,Soil aggregate stability,both
+Environment,Soil health,Soil carbon pools and flows,both
+Environment,Soil health,"Soil cover, soil loss / sedimentation",both
+Environment,Forest health,Tree vigor,current_only
+Environment,Soild Waste,"Waste generated / disposed of; contaminated (PFAS, PFOS)",current_only
+Environment,Water quality,"Water quality of runoff (argochemical, nutrient)",both
+Environment,Resource use efficiency,Water use / irrigation efficiency,wiltshire_only

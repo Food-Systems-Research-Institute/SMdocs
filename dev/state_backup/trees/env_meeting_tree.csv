@@ -1,0 +1,14 @@
+Dimension,Index,Indicator
+Environment,Forest,Health (vigor)
+Environment,Forest,Complexity (age/species)
+Environment,Water,Quality
+Environment,Water,Quantity (and trends)
+Environment,Soils,Biology
+Environment,Soils,Chemistry (incl. organic matter)
+Environment,Soils,Structure 
+Environment,Carbon (and GHGs/nutrients),Fluxes
+Environment,Carbon (and GHGs/nutrients),Stocks
+Environment,Carbon (and GHGs/nutrients),Embodied/footprint (energy efficiency)
+Environment,Species & Habitat,Land-use diversity
+Environment,Species & Habitat,Sensitive or rare habitats
+Environment,Species & Habitat,Bio-/species diversity

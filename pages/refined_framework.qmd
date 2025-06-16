@@ -7,13 +7,12 @@ format:
 warnings: false
 editor_options: 
   chunk_output_type: inline
-execute:
-  cache: false
 ---
 
 ```{r}
 #| label: setup
 #| echo: false
+#| cache: false
 pacman::p_load(
   dplyr,
   conflicted,

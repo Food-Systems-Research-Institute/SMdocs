@@ -27,7 +27,7 @@ Testing out a Bayesian Network with structural learning to identify drivers in o
 pacman::p_load(
   dplyr,
   bnlearn,
-  # conflicted,
+  conflicted,
   stringr,
   purrr,
   tidyr,
@@ -35,7 +35,9 @@ pacman::p_load(
   knitr,
   reactable,
   graph,
-  Rgraphviz
+  Rgraphviz,
+  snakecase,
+  graph
 )
 
 source('dev/data_pipeline_functions.R')
@@ -47,6 +49,9 @@ conflicted::conflicts_prefer(
   base::setdiff(),
   base::intersect(),
   base::union(),
+  igraph::degree(),
+  bnlearn::score(),
+  graph::nodes(),
   .quiet = TRUE
 )
 ```
@@ -321,16 +326,10 @@ get_str(df)
 # Remove highly correlated variables
 threshold <- 0.5
 df <- dedup(df, threshold = threshold)
+names(df) <- snakecase::to_title_case(names(df))
 ```
 
 Threshold of correlations at `{r} threshold` brings us down from `{r} ncol(dat)` variables to `{r} ncol(df)` variables.
-
-```{r}
-# Imputation
-# dag <- hc(df)
-# dfitted = bn.fit(dag, df)
-# imp <- impute(dfitted, data = df, method = 'bayes-lw')
-```
 
 ### Structural Learning
 
@@ -347,16 +346,174 @@ models <- list(
 # map(models, ~ try(score(.x, df)))
 ```
 
+First try:
 
 ```{r}
-graphviz.plot(
-  models$dag_pc,
-  layout = 'fdp',
-  shape = 'ellipse',
-  fontsize = 18,
-  main = 'Force Directed Indicator Network',
-  sub = 'Max-Min Hill Climbing Algorithm'
+png(
+  'temp/conferences/bnlearn.png',
+  width = 8,
+  height = 4,
+  units = 'in',
+  res = 400
 )
+set.seed(42)
+graphviz.plot(
+  models$dag_hc,
+  layout = 'fdp',
+  shape = 'rectangle',
+  fontsize = 24,
+  # main = 'Bayesian Network Learning',
+  # sub = 'Hill-Climbing Algorithm, Force-Directed Layout',
+  highlight = list(
+    nodes = rbind('Food Affordability', mb(models$dag_hc, 'Food Affordability')),
+    arcs = outgoing.arcs(models$dag_hc, "Food Affordability"),
+    fill = 'lightblue',
+    col = "darkblue",
+    lwd = 2.5,
+    lty = 'dashed'
+  )
+)
+dev.off()
+```
+
+Second round, no colors
+
+```{r}
+dag <- models$dag_hc
+
+# Convert to graphNEL
+gNEL <- as.graphNEL(dag)
+
+# Set node attributes
+padded_labels <- setNames(
+  paste0("              ", graph::nodes(gNEL), "               "),
+  graph::nodes(gNEL)
+)
+nAttrs <- list(label = padded_labels)
+
+nAttrs$width <- rep("2.75", length(graph::nodes(gNEL)))
+names(nAttrs$width) <- graph::nodes(gNEL)
+# # 
+nAttrs$height <- rep("1.25", length(graph::nodes(gNEL)))
+names(nAttrs$height) <- graph::nodes(gNEL)
+
+# Font size
+graphAttrs <- list(
+  node = list(
+    fontsize = "24", 
+    shape = "rectangle", 
+    fixedsize = 'false'
+  )
+)
+
+# Layout and render
+layout <- layoutGraph(gNEL,
+                      layoutType = "fdp",
+                      nodeAttrs = nAttrs,
+                      attrs = graphAttrs)
+
+# Plot and save it
+png(
+  'temp/conferences/bnlearn.png',
+  width = 8,
+  height = 4,
+  units = 'in',
+  res = 500
+)
+renderGraph(layout)
+dev.off()
+```
+
+Version with highlighted markov blanket for food access. This one for conference:
+
+```{r}
+dag <- models$dag_hc 
+
+# Convert to graphNEL
+gNEL <- as.graphNEL(dag)
+
+# Pick a target node
+target <- "Food Access"
+
+# Get Markov blanket of the node
+mb_nodes <- mb(dag, target)
+
+# Do target too
+highlight_nodes <- c(target, mb_nodes)
+
+# Edges
+# all_edges <- edgeNames(gNEL)
+# eColors <- setNames(rep("black", length(all_edges)), all_edges)
+# 
+# eAttrs <- list(color = eColors)
+
+# Set up labels and dimensions
+all_nodes <- graph::nodes(gNEL)
+
+nAttrs <- list(
+  label = setNames(paste0("              ", all_nodes, "               "), all_nodes),
+  width = setNames(rep("2.75", length(all_nodes)), all_nodes),
+  height = setNames(rep("1.25", length(all_nodes)), all_nodes),
+  fillcolor = setNames(rep("white", length(all_nodes)), all_nodes)
+)
+
+# Highlight Markov blanket nodes
+nAttrs$fillcolor[highlight_nodes] <- "skyblue3"
+nAttrs$fillcolor["Food Access"] <- "lightblue"
+
+# Set graph attributes
+graphAttrs <- list(
+  node = list(
+    fontsize = "24",
+    shape = "rectangle",
+    fixedsize = "false",
+    style = "filled"
+  )
+)
+
+# Layout and plot
+layout <- layoutGraph(gNEL,
+                      layoutType = "fdp",
+                      nodeAttrs = nAttrs,
+                      edgeAttrs = eAttrs,
+                      attrs = graphAttrs)
+
+png('temp/conferences/bnlearn_markov_blanket.png',
+width = 8, height = 4, units = 'in', res = 500)
+renderGraph(layout)
+dev.off()
+```
+
+### Parameter Learning
+
+```{r}
+(fitted <- bn.fit(models$dag_hc, df))
+```
+
+Bootstrap how many arcs we get:
+
+```{r}
+unlist(bn.boot(df, statistic = narcs, algorithm = "hc", R = 10))
+```
+
+Dummy models:
+
+```{r}
+bn.boot(df, statistic = function(x) x, algorithm = "hc", R = 2)
+```
+
+Arc strength: confidence in a particular graphical feature of network. Bootstraps network, then estimates relative frequency of parameter of interest. Gets strength of every possible arc. Strength shows probability of the arc existing, Direction shows probability of it being the direction shown.
+
+```{r}
+arc_str <- boot.strength(df, algorithm = "hc")
+arc_str
+```
+
+Check the arc strengths for food access:
+
+```{r}
+arc_str %>% 
+  filter(from == 'Food Access')
 ```
 
 ### Explore Influence
@@ -368,7 +525,7 @@ One way we can assess influential indicators is with Markov blankets.
 ```{r}
 # Get Markov blankets
 blankets <- map(names(df), \(var) {
-  mb(models$dag_mmhc, var)
+  mb(models$dag_hc, var)
 })
 
 # Get number of nodes in each blanket
