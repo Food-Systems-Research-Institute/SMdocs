@@ -75,7 +75,7 @@ website:
             href: pages/metadata_table.qmd
           - text: Metrics Data
             href: pages/metrics_table.qmd
-      - section: Analysis
+      - section: National/State Analyses
         contents:
           - text: Refined Framework
             href: pages/refined_framework.qmd
@@ -95,24 +95,24 @@ website:
             href: pages/validation.qmd
           - text: Sensitivity and Uncertainty 
             href: pages/sensitivity.qmd
-      - section: Frontiers
+      - section: Regional/County Analyses
         contents:
           - text: Intro
             href: pages/frontiers_intro.qmd
           - text: Trends
             href: pages/frontiers_trends.qmd
-      - section: Testing
-        contents:
-          - text: Python .ipynb
-            href: temp/test_notebook.ipynb
-          - text: Python .qmd
-            href: temp/test_python.qmd
-          - text: Python and R .qmd
-            href: temp/test_python_and_r.qmd
-          - text: bambi.qmd
-            href: temp/bambi.ipynb
-          - text: bnlearn
-            href: pages/bnlearn.qmd
+      # - section: Testing
+      #   contents:
+      #     - text: Python .ipynb
+      #       href: temp/test_notebook.ipynb
+      #     - text: Python .qmd
+      #       href: temp/test_python.qmd
+      #     - text: Python and R .qmd
+      #       href: temp/test_python_and_r.qmd
+      #     - text: bambi.qmd
+      #       href: temp/bambi.ipynb
+      #     - text: bnlearn
+      #       href: pages/bnlearn.qmd
           
 
 format:

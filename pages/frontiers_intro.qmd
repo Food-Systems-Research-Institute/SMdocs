@@ -1,5 +1,5 @@
 ---
-title: "Frontiers Submission"
+title: "Regional Analyses"
 format:
   html:
     fig-dpi: 200
@@ -9,8 +9,10 @@ warnings: false
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
-Metrics and analyses for the Frontiers special issue are works in progress. 
+The Sustainability Metrics project, as well as this site itself, are works in progress. All data and analyses shown here are preliminary. 
 :::
 
-This group of pages will show analyses for the submission to Frontiers in Sustainable Food Systems special issue: [Measuring Sustainability in Food Systems](https://www.frontiersin.org/research-topics/68197/measuring-sustainability-in-food-systems-advancing-scientific-indicator-and-metric-systems-for-monitoring-progress-towards-the-un-sustainable-development-goals). I am branching it off from the main "Analyses" pages because they work with state-level data, while this will focus on counties. I am going to leave all that work there for now, though. 
+## Introduction {#sec-intro}
+This group of pages will present a survey of secondary data at the regional/county level in New England. Data are sparser here than at the state level, and analyses of trends will thus be limited. 
+
 

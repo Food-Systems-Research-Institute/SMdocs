@@ -28,7 +28,7 @@ options(
 try(vim <- function() rstudiovim::rsvim_exec_file())
 
 # Convenience function to load SMdata package
-load_sm <- function() devtools::load_all('../SMdata')
+sm_load <- function() devtools::load_all('../SMdata')
   
 cat("\n.Rprofile loaded")
 source("renv/activate.R")

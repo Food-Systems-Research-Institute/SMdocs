@@ -12,7 +12,7 @@ execute:
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
-This is a mildly slapdash page working out spatial regressions for time series metrics from the reifned framework variables. There are some cleaning issues to address with some variables, and the scripts are wildly disorganized. 
+This is a mildly slapdash page working out spatial regressions for time series metrics from the refined framework variables. There are some cleaning issues to address with some variables, and the scripts are wildly disorganized. 
 :::
 
 ```{r}
@@ -631,6 +631,7 @@ Try splm on just one variable first:
 ```{r}
 #| label: splm
 #| output: false
+#| eval: false
 get_str(series_metrics)
 
 dat <- series_metrics %>% 

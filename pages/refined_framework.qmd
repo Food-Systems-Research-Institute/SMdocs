@@ -25,13 +25,13 @@ pacman::p_load(
   RColorBrewer,
   paletteer,
   snakecase,
-  tibble, 
   tidyr,
   htmltools,
   reactable,
   downloadthis
 )
 pacman::p_load_gh('ChrisDonovan307/projecter')
+source('dev/get_dimension_ggraph.R')
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
@@ -48,6 +48,9 @@ Note that where I have no metrics to represent an indicator, the metric column i
 
 At the bottom of this page is a metadata table with sources and definitions for all the metrics.
 
+The rest of this section will present preliminary analyses at the national/state level as a trial run for regional analyses. State level data are easier to find and state boundaries don't change very often (unlike counties, which actually did change in Connecticut in 2022 and throw a wrench into any kind of trend analysis). 
+
+
 ## Partially Refined Framework
 
 Here is the framework with a selection of secondary metrics, split into each dimension for ease of reading.
@@ -55,8 +58,6 @@ Here is the framework with a selection of secondary metrics, split into each dim
 ```{r}
 #| label: wrangle_framework
 #| output: false
-source('dev/get_dimension_ggraph.R')
-
 # Load refined framework. We are leaving this here during rework so other pages work. It is now old though
 sm_data <- readRDS('data/sm_data.rds')
 old_frame <- sm_data[['refined_tree']]
@@ -80,20 +81,24 @@ saveRDS(old_frame, 'data/frame.rds')
 saveRDS(old_frame, 'data/frameworks/frame.rds')
 
 
-## Bringing in new tree for RFPP example
-new_tree <- sm_data[['new_tree']]
+## Bringing in new tree for RFPP example (fixed tree actually)
+# new_tree <- sm_data[['new_tree']]
+new_tree <- sm_data[['fixed_tree']]
 
 # Clean up the framework df 
 frame <- new_tree %>% 
-  select(dimension:variable_name, use) %>% 
-  filter(use == 'x') %>% 
-  select(-use) %>% 
+  filter(index != 'intention to consume pbp') %>%  # remove duplicate
+  # select(dimension:variable_name, use) %>% 
+  # filter(use == 'x') %>% 
+  # select(-use) %>% 
   mutate(
-    metric = ifelse(
-      str_length(metric) > 45,
-      paste0(str_sub(metric, end = 45), '...'),
-      metric
-    )
+    across(
+      c(metric, indicator),
+    ~ ifelse(
+      str_length(.x) > 45,
+      paste0(str_sub(.x, end = 45), '...'),
+      .x
+    ))
   )
 get_str(frame)
 
@@ -124,10 +129,11 @@ plots$environment <- get_dimension_ggraph(
   dimension_in = 'environment',
   include_metrics = TRUE,
   y_limits = c(-2, 3.25),
-  palette = "ggthemes::stata_s2color"
+  palette = "scico::batlowW"
 )
 plots$environment
 ```
+
 
 ### Economics
 
@@ -145,7 +151,7 @@ plots$economics <- get_dimension_ggraph(
   dimension_in = 'economics',
   include_metrics = TRUE,
   y_limits = c(-1.5, 3.1),
-  palette = "ggthemes::stata_s2color"
+  palette = "scico::batlowW"
 )
 plots$economics
 ```
@@ -168,10 +174,11 @@ plots$production <- get_dimension_ggraph(
   dimension_in = 'production',
   include_metrics = TRUE,
   y_limits = c(-1.75, 3),
-  palette = "ggthemes::stata_s2color"
+  palette = "scico::batlowW"
 )
 plots$production
 ```
+
 
 ### Health
 
@@ -180,7 +187,7 @@ The Food Environment Atlas has lots of data on access and nutrition, which accou
 ```{r}
 #| label: health
 #| code-fold: true
-#| fig-height: 11
+#| fig-height: 14
 #| fig-width: 10
 #| fig-align: center
 plots$health <- get_dimension_ggraph(
@@ -188,10 +195,11 @@ plots$health <- get_dimension_ggraph(
   dimension_in = 'health',
   include_metrics = TRUE,
   y_limits = c(-1.7, 3),
-  palette = "ggthemes::stata_s2color"
+  palette = "scico::batlowW"
 )
 plots$health
 ```
+
 
 ### Social
 
@@ -209,14 +217,16 @@ plots$social <- get_dimension_ggraph(
   dimension_in = 'social',
   include_metrics = TRUE,
   y_limits = c(-1.7, 3),
-  palette = "ggthemes::stata_s2color"
+  palette = "scico::batlowW"
 )
 
 # Save list of plots for preso
-saveRDS(plots, 'preso/plots/frameworks.rds')
+# saveRDS(plots, 'preso/plots/frameworks.rds')
 
 plots$social
 ```
+
+
 ## Table
 
 Here is a table with just the dimensions, indices, and indicators from the framework. The button on the left will download all dimensions, or a subset if you have filtered the table below. The button on the right will download a static file containing the 23 indicators referenced in the RFPP.

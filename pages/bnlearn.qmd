@@ -442,10 +442,10 @@ mb_nodes <- mb(dag, target)
 highlight_nodes <- c(target, mb_nodes)
 
 # Edges
-# all_edges <- edgeNames(gNEL)
-# eColors <- setNames(rep("black", length(all_edges)), all_edges)
-# 
-# eAttrs <- list(color = eColors)
+all_edges <- edgeNames(gNEL)
+eColors <- setNames(rep("black", length(all_edges)), all_edges)
+
+eAttrs <- list(color = eColors)
 
 # Set up labels and dimensions
 all_nodes <- graph::nodes(gNEL)

@@ -5,24 +5,24 @@
 # Requires data with Dimension, Index, and Indicator, alphabetical by index
 # and indicator
 
-pacman::p_load(
-  ggraph,
-  igraph,
-  dplyr,
-  readr,
-  RColorBrewer,
-  paletteer,
-  snakecase
-)
+# pacman::p_load(
+#   ggraph,
+#   igraph,
+#   dplyr,
+#   readr,
+#   RColorBrewer,
+#   paletteer,
+#   snakecase
+# )
 
-conflicts_prefer(
-  dplyr::filter(),
-  dplyr::select(),
-  dplyr::summarize(),
-  dplyr::arrange(),
-  dplyr::mutate(),
-  .quiet = TRUE
-)
+# conflicts_prefer(
+#   dplyr::filter(),
+#   dplyr::select(),
+#   dplyr::summarize(),
+#   dplyr::arrange(),
+#   dplyr::mutate(),
+#   .quiet = TRUE
+# )
 
 get_dimension_ggraph <- function(csv_path = NULL,
                                  framework_df = NULL,

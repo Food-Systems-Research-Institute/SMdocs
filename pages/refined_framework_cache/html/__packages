@@ -10,7 +10,6 @@ readr
 RColorBrewer
 paletteer
 snakecase
-tibble
 tidyr
 htmltools
 reactable
