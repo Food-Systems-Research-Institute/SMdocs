@@ -1,0 +1,224 @@
+---
+title: "Bayesian Networks"
+format:
+  html:
+    fig-dpi: 200
+    # code-fold: false
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+::: {.callout-note collapse='false' title='Caution'}
+Metrics and analyses for the regional secondary data project are works in progress. There are some metric cleanliness issues here that I'm putting off for now until we work back through the county metrics.
+:::
+
+Testing out a Bayesian Network with structural learning to identify drivers in our food systems data. 
+
+Strengths:
+
+- Causal inference from observational data, with assumptions:
+  - Causal Markov assumption
+  - Faithfulness
+  - Causal sufficiency
+- Structural and parameter learning
+- Forward and backward inference
+- Whitelisting and blacklisting allows for hybrid model that combines priors with observed data, making it quite effective in low-data scenarios
+
+Drawbacks:
+
+- Cannot model feedback loops or thresholds (i.e., no complex systems)
+- No particularly convincing way to approach dynamic models, although some options exist
+
+
+## Housekeeping
+
+```{r}
+#| label: setup
+#| cache: false
+
+# if (!require('graph')) BiocManager::install('graph')
+# if (!require('Rgraphviz')) BiocManager::install('Rgraphviz')
+
+pacman::p_load(
+  dplyr,
+  bnlearn,
+  conflicted,
+  stringr,
+  purrr,
+  tidyr,
+  skimr,
+  knitr,
+  reactable,
+  graph,
+  Rgraphviz,
+  snakecase,
+  graph
+)
+
+source('dev/data_pipeline_functions.R')
+source('dev/get_reactable.R')
+
+conflicted::conflicts_prefer(
+  dplyr::filter(),
+  dplyr::select(),
+  base::setdiff(),
+  base::intersect(),
+  base::union(),
+  igraph::degree(),
+  bnlearn::score(),
+  graph::nodes(),
+  .quiet = TRUE
+)
+```
+
+## Wrangling
+
+```{r}
+#| label: wrangle
+#| output: false
+# Pull county time series variables
+vars <- readRDS('data/frontiers/county_time_series_vars.rds')
+sm_data <- readRDS('data/sm_data.rds')[['metrics']]
+
+# Get county variables only, and lose CT
+dat <- sm_data %>% 
+  filter(
+    str_length(fips) == 5,
+    variable_name %in% vars,
+    value != -666666666,
+    str_detect(fips, '^09', negate = TRUE)
+  ) %>% 
+  mutate(across(c(year, value), ~ as.numeric(.x)))
+get_str(dat)
+
+# Get latest year only, then pivot wider for analysis
+dat <- dat %>% 
+  get_latest_year(add_suffix = FALSE) %>% 
+  pivot_wider(
+    id_cols = fips,
+    values_from = value,
+    names_from = variable_name
+  )
+get_str(dat)
+
+# Check missing
+(skim_out <- skim(dat))
+
+# Ditch vars that are > 50% missing
+mis <- skim_out %>% 
+  filter(complete_rate < 0.5) %>% 
+  pull(skim_variable)
+dat <- select(dat, -any_of(mis))
+get_str(dat)
+# Noice
+```
+
+## State Data 
+
+Let's try this with our aggregated indicators from national data at state level. County data for regional level are still in progress. We are also mostly poking around with the hill-climbing algorithm at this point, which is greedy and tends to draw more paths than other methods. This should be refined as we move along the process.
+
+### Preprocessing
+
+```{r}
+#| label: preprocessing
+#| output: false
+scores <- readRDS('data/raw_minmax_geo.rds')
+get_str(scores)
+df <- scores %>% 
+  select(matches('^indic')) %>% 
+  setNames(c(str_remove(names(.), 'indic_') %>% str_replace_all(' ', '_')))
+get_str(df)
+
+# Get rid of county, also FFF variables
+# get_str(dat)
+# df <- dat %>% 
+#   select(-any_of(c('fips', matches('FFF$'))))
+# get_str(df)
+
+# Remove highly correlated variables
+threshold <- 0.5
+df <- dedup(df, threshold = threshold)
+names(df) <- snakecase::to_title_case(names(df))
+```
+
+Threshold of correlations at `{r} threshold` brings us down from `{r} ncol(dat)` variables to `{r} ncol(df)` variables.
+
+### Structural Learning
+
+Run a series of different models to compare
+
+```{r}
+#| output: false
+models <- list(
+  dag_pc = pc.stable(df),
+  dag_gs = gs(df),
+  dag_iamb = iamb(df),
+  dag_inter_iamb = inter.iamb(df),
+  dag_hc = hc(df),
+  dag_mmhc = mmhc(df)
+)
+# map(models, ~ try(score(.x, df)))
+```
+
+Plot one, highlighting the Markov blanket for food affordability. 
+
+```{r}
+graphviz.plot(
+  models$dag_hc,
+  layout = 'fdp',
+  shape = 'rectangle',
+  fontsize = 24,
+  main = 'Bayesian Network Learning',
+  sub = 'Hill-Climbing Algorithm, Force-Directed Layout',
+  highlight = list(
+    nodes = rbind('Food Affordability', mb(models$dag_hc, 'Food Affordability')),
+    arcs = outgoing.arcs(models$dag_hc, "Food Affordability"),
+    fill = 'lightblue',
+    col = "darkblue",
+    lwd = 2.5,
+    lty = 'dashed'
+  )
+)
+```
+
+### Parameter Learning
+
+```{r}
+#| output: false
+(fitted <- bn.fit(models$dag_hc, df))
+```
+
+Bootstrap how many arcs we get:
+
+```{r}
+unlist(bn.boot(df, statistic = narcs, algorithm = "hc", R = 10))
+```
+
+Dummy models:
+
+```{r}
+bn.boot(df, statistic = function(x) x, algorithm = "hc", R = 2)
+```
+
+Arc strength: confidence in a particular graphical feature of network. Bootstraps network, then estimates relative frequency of parameter of interest. Gets strength of every possible arc. Strength shows probability of the arc existing, Direction shows probability of it being the direction shown.
+
+```{r}
+arc_str <- boot.strength(df, algorithm = "hc")
+get_reactable(arc_str)
+```
+
+Check the arc strengths for food affordability:
+
+```{r}
+arc_str %>% 
+  filter(from == 'Food Affordability') %>% 
+  get_reactable()
+```
+
+## Things to Add
+
+- Hybrid structural learning algorithms (MMHC)
+- Whitelisting and blacklisting
+- Add covariates (no omitted variables)
+- Pair with fuzzy cognitive mapping

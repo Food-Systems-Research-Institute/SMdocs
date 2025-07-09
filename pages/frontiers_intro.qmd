@@ -13,6 +13,6 @@ The Sustainability Metrics project, as well as this site itself, are works in pr
 :::
 
 ## Introduction {#sec-intro}
-This group of pages will present a survey of secondary data at the regional/county level in New England. Data are sparser here than at the state level, and analyses of trends will thus be limited. 
+This group of pages will present a survey of secondary data at the regional/county level in New England. Data are sparser here than at the state level, and analyses of trends will thus be somewhat limited. 
 
 

@@ -1,3 +1,1 @@
-2025-06-02
-Pulling these data aside just to back up the state analyses that are already on the smdo site
-In case we break everything when we rework with county data for Frontiers paper
+This is here to preserve the state analysis on the methods website in case we lose those datasets or the variables change when we rework for regional analyses for data paper. Lots of things will likely get reworked...

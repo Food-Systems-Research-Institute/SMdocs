@@ -12,3 +12,6 @@ pages/data_production_cache/html
 
 # Temp things that don't matter
 # temp/
+
+# julia things
+*.toml

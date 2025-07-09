@@ -1,0 +1,12 @@
+{
+  "hash": "56cf0ce56674394477d5d51aa803c519",
+  "result": {
+    "engine": "julia",
+    "markdown": "---\ntitle: \"Test Julia\"\nformat:\n  html:\n    code-fold: false\n    code-block:\n        show-lang: true\nengine: julia\njulia:\n    exeflags: [\"--project=@.\"]\n---\n\n## Intro\n\nCheck pwd\n\n::: {#2 .cell execution_count=1}\n``` {.julia .cell-code}\nprintln(\"Working directory:\", pwd())\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nWorking directory:C:\\Users\\cdonov12\\local\\repos\\SMdocs\\temp\n```\n:::\n:::\n\n\n\nCheck Julia version\n\n::: {#4 .cell execution_count=1}\n``` {.julia .cell-code}\nversioninfo()\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nJulia Version 1.11.5\nCommit 760b2e5b73 (2025-04-14 06:53 UTC)\nBuild Info:\n  Official https://julialang.org/ release\nPlatform Info:\n  OS: Windows (x86_64-w64-mingw32)\n  CPU: 16 × 13th Gen Intel(R) Core(TM) i7-13620H\n  WORD_SIZE: 64\n  LLVM: libLLVM-16.0.6 (ORCJIT, goldmont)\nThreads: 1 default, 0 interactive, 1 GC (on 16 virtual cores)\nEnvironment:\n  JULIA_LOAD_PATH = @;@stdlib\n```\n:::\n:::\n\n\n\nActivate project\n\n::: {#6 .cell execution_count=1}\n``` {.julia .cell-code}\nusing Pkg\n# cd(\"../\")\n# Pkg.activate(\".\")\n```\n:::\n\n\n\n## Load Call Packages\n\nFor Quarto, just import them and we can apparently run them in separate code blocks\n\n::: {#8 .cell execution_count=1}\n``` {.julia .cell-code}\n# import PythonCall\nimport RCall\n```\n:::\n\n\n\n## R\n\n::: {#10 .cell execution_count=1}\n``` {.julia .cell-code}\nprintln(\"Starting R stuff\")\n```\n\n::: {.cell-output .cell-output-stdout}\n```\nStarting R stuff\n```\n:::\n:::\n\n\n\n```{.r filename=\"R\"}\n1 + 3\n```\n\n```{.r filename=\"R\"}\nstr(iris)\n```\n\n\n",
+    "supporting": [
+      "test_julia_files\\figure-html"
+    ],
+    "filters": [],
+    "includes": {}
+  }
+}

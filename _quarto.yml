@@ -5,6 +5,7 @@ project:
     browser: true
   render:
     # Same order as pages show on website. Make sure they run in right order
+    # Also note that listing a qmd here changes the working directory to project
     - pages/index.qmd
     - pages/overview.qmd
     - pages/refine_economics.qmd
@@ -25,9 +26,12 @@ project:
     - temp/test_python.qmd
     - temp/test_python_and_r.qmd
     - temp/bambi.ipynb
+    - temp/test_lang_knitr.qmd # 
+    - temp/test_lang_julia.qmd # 
     - pages/frontiers_intro.qmd
     - pages/frontiers_trends.qmd
     - pages/bnlearn.qmd
+    - pages/regional_bn.qmd
 
 website:
   title: "Food Systems Research Institute"
@@ -101,20 +105,21 @@ website:
             href: pages/frontiers_intro.qmd
           - text: Trends
             href: pages/frontiers_trends.qmd
-      # - section: Testing
-      #   contents:
-      #     - text: Python .ipynb
-      #       href: temp/test_notebook.ipynb
-      #     - text: Python .qmd
-      #       href: temp/test_python.qmd
-      #     - text: Python and R .qmd
-      #       href: temp/test_python_and_r.qmd
-      #     - text: bambi.qmd
-      #       href: temp/bambi.ipynb
-      #     - text: bnlearn
-      #       href: pages/bnlearn.qmd
+          - text: Bayesian Network
+            href: pages/regional_bn.qmd
+      - section: Testing
+        contents:
+          - text: Python .ipynb
+            href: temp/test_notebook.ipynb
+          - text: Python .qmd
+            href: temp/test_python.qmd
+          - text: Python and R .qmd
+            href: temp/test_python_and_r.qmd
+          - text: bambi.qmd
+            href: temp/bambi.ipynb
+          # - text: julia
+          #   href: temp/test_julia.qmd
           
-
 format:
   html:
     page-layout: article 
