@@ -3,9 +3,9 @@
 "2",2,"economics","access to capital/credit","access to land","Median acres per farm","medianAcresPF",TRUE
 "3",3,"economics","access to capital/credit","access to land","Land and building value per acre","landValPerAcre",TRUE
 "4",4,"economics","access to capital/credit","access to land","Land and building value per farm","landValPF",TRUE
-"5",5,"economics","access to capital/credit","access to land","Capital expenditures, buildings and land, exc...","totalCapExpBldgsLandNoDwellings",FALSE
-"6",6,"economics","access to capital/credit","access to land","Capital consumption, all, excl. operator dwel...","totalCapConsNoDwellings",FALSE
-"7",7,"economics","access to capital/credit","access to land","Interest expenses, real estate, excl. operato...","totalIntExpRealEstateNoDwellings",FALSE
+"5",5,"economics","access to capital/credit","access to land","Capital expenditures, buildings and land, exc...","totalCapExpBldgsLandNoDwellings",TRUE
+"6",6,"economics","access to capital/credit","access to land","Capital consumption, all, excl. operator dwel...","totalCapConsNoDwellings",TRUE
+"7",7,"economics","access to capital/credit","access to land","Interest expenses, real estate, excl. operato...","totalIntExpRealEstateNoDwellings",TRUE
 "8",9,"economics","community economy","wealth/income distribution","Median earnings (dollars) for female, farming...","medianFemaleEarningsFFF",TRUE
 "9",10,"economics","community economy","wealth/income distribution","Median earnings (dollars) for female, food pr...","medianFemaleEarningsFPS",TRUE
 "10",11,"economics","community economy","wealth/income distribution","Median earnings (dollars) for male, farming, ...","medianMaleEarningsFFF",TRUE
@@ -16,13 +16,13 @@
 "15",16,"economics","community economy","wealth/income distribution","Income inequality","incomeInequality",TRUE
 "16",17,"economics","community economy","wealth/income distribution","Gini Index","gini",TRUE
 "17",18,"economics","community economy","wealth/income distribution","Unemployment Rate","unemploymentRate",TRUE
-"18",19,"economics","food business resilience","income stability","Net return to operators","netReturnOperators",FALSE
-"19",20,"economics","food business resilience","income stability","Labor expenses as percentage of expenses","expHiredLaborPercOpExp",TRUE
+"18",19,"economics","food business resilience","income stability","Net return to operators","netReturnOperators",TRUE
+"19",20,"economics","food business resilience","income stability","Labor expenses as percentage of expenses","expHiredLaborPercOpExp",FALSE
 "20",21,"economics","food business resilience","income stability","mean farm related income per operation","farmIncomePF",TRUE
 "21",24,"economics","food business resilience","operations diversification","Farms, direct-to-consumer sales as a percent ...","d2cSalesPerc",TRUE
 "22",25,"economics","food business resilience","operations diversification","Agritourism, sales as a percent of all farm s...","agTourSalesPerc",TRUE
 "23",26,"economics","food business resilience","operations diversification","Farms, local marketing channel sales as a per...","localSalesPerc",TRUE
-"24",27,"economics","food business resilience","use of ag/farm/crop insurance","Proportion of area (by county) affected by FS...","propAreaFsaSecDisasters",FALSE
+"24",27,"economics","food business resilience","use of ag/farm/crop insurance","Proportion of area (by county) affected by FS...","propAreaFsaSecDisasters",TRUE
 "25",31,"environment","carbon, ghg, nutrients","carbon fluxes","Total CH4 emissions from agriculture (Tg)","CH4FromAg",FALSE
 "26",32,"environment","carbon, ghg, nutrients","carbon fluxes","Total CO2 emissions from agriculture (Tg)","CO2FromAg",FALSE
 "27",33,"environment","carbon, ghg, nutrients","carbon fluxes","Total N2O emissions from agriculture (Tg)","N2OFromAg",FALSE
@@ -56,8 +56,8 @@
 "55",62,"environment","water","water quality","Site condition class based on conductivity","riversSalCond",FALSE
 "56",63,"environment","water","water quality","Site condition class based on total nitrogen ...","riversNtlCond",FALSE
 "57",64,"environment","water","water quality","Site condition class based on total phosphoru...","riversPtlCond",FALSE
-"58",65,"environment","water","water quantity","Expenses from water for irrigation sourced of...","waterIrrSrcOffFarmExpPerAcreFt",FALSE
-"59",66,"environment","water","water quantity","Total expenses from water for irrigation sour...","waterIrrSrcOffFarmExp",FALSE
+"58",65,"environment","water","water quantity","Expenses from water for irrigation sourced of...","waterIrrSrcOffFarmExpPerAcreFt",TRUE
+"59",66,"environment","water","water quantity","Total expenses from water for irrigation sour...","waterIrrSrcOffFarmExp",TRUE
 "60",67,"environment","water","water quantity","Mean percent area in drought","droughtMeanPercArea",FALSE
 "61",68,"health","education","educational attainment","Percentage with bachelor's degree","edPercBS",TRUE
 "62",69,"health","food security","access to culturally appropriate food","SFAs serving culturally relevant food","sfaCulturallyRelevant",FALSE
@@ -68,10 +68,10 @@
 "67",74,"health","food security","food access","Farmers markets, number of businesses","nFarmersMarket",TRUE
 "68",75,"health","food security","food access","Grocery stores/1,000 pop","nGrocPTH",TRUE
 "69",76,"health","food security","food access","Limited access to healthy foods","limitedAccessToHealthyFoods",TRUE
-"70",77,"health","food security","food affordability","SNAP participation rates, all eligible people","snapPercPart",FALSE
+"70",77,"health","food security","food affordability","SNAP participation rates, all eligible people","snapPercPart",TRUE
 "71",78,"health","food security","food affordability","SNAP-authorized stores/1,000 pop","nSnapGrocPTH",TRUE
-"72",79,"health","food security","food affordability","WIC coverage rate","wicPercPart",FALSE
-"73",80,"health","food security","food affordability","WIC eligibility rate","wicPercEligible",FALSE
+"72",79,"health","food security","food affordability","WIC coverage rate","wicPercPart",TRUE
+"73",80,"health","food security","food affordability","WIC eligibility rate","wicPercEligible",TRUE
 "74",81,"health","food security","food affordability","WIC-authorized stores/1,000 pop","nWicsGrocPTH",TRUE
 "75",85,"health","mental health","mental health tbd","Frequent mental distress","frequentMentalDistress",TRUE
 "76",86,"health","mental health","mental health tbd","Poor mental health days","poorMentalHealthDays",TRUE
@@ -108,17 +108,17 @@
 "107",124,"production","production margins","total quantity food products","Total animal sales","salesAnimal",TRUE
 "108",125,"production","production margins","total quantity food products","Total crop sales","salesCrop",TRUE
 "109",126,"production","production margins","total quantity forest products","Total forest product income","incForestProducts",TRUE
-"110",127,"production","production margins","total quantity non-food ag products","Cash receipts value, forest products , all","totalReceiptsAllForestProducts",FALSE
-"111",128,"production","production margins","total quantity non-food ag products","Value of production, services and forestry, a...","totalValueServicesAndForestry",FALSE
+"110",127,"production","production margins","total quantity non-food ag products","Cash receipts value, forest products , all","totalReceiptsAllForestProducts",TRUE
+"111",128,"production","production margins","total quantity non-food ag products","Value of production, services and forestry, a...","totalValueServicesAndForestry",TRUE
 "112",129,"production","production margins","value added market","Farms, percent of all farms with value-added ...","valueAddedFarmsPerc",TRUE
 "113",130,"production","production margins","value added market","Farms, value-added sales as a percent of all ...","valueAddedSalesPerc",TRUE
-"114",132,"production","waste and losses","crop failure","Other farm income, insurance indemnities","totalIncomeInsuranceIndemnities",FALSE
-"115",133,"production","waste and losses","crop failure","Other farm income, insurance indemnities, fed...","totalIncomeInsuranceIndemnitiesFederal",FALSE
-"116",134,"production","waste and losses","crop failure","Value of ad hoc and emergency program payment...","totalValueEmergPayments",FALSE
-"117",135,"production","waste and losses","crop failure","Value of agricultural risk coverage payments,...","totalValueAgRiskCoveragePayments",FALSE
-"118",136,"production","waste and losses","crop failure","Value of all other ad hoc and emergency progr...","totalValueOtherAdHocEmergPayments",FALSE
-"119",137,"production","waste and losses","crop failure","Value of dairy margin protection program paym...","totalValueDairyMarginProtPayments",FALSE
-"120",138,"production","waste and losses","crop failure","Value of price loss coverage payments, all","totalValueAllLossCoveragePayments",FALSE
+"114",132,"production","waste and losses","crop failure","Other farm income, insurance indemnities","totalIncomeInsuranceIndemnities",TRUE
+"115",133,"production","waste and losses","crop failure","Other farm income, insurance indemnities, fed...","totalIncomeInsuranceIndemnitiesFederal",TRUE
+"116",134,"production","waste and losses","crop failure","Value of ad hoc and emergency program payment...","totalValueEmergPayments",TRUE
+"117",135,"production","waste and losses","crop failure","Value of agricultural risk coverage payments,...","totalValueAgRiskCoveragePayments",TRUE
+"118",136,"production","waste and losses","crop failure","Value of all other ad hoc and emergency progr...","totalValueOtherAdHocEmergPayments",TRUE
+"119",137,"production","waste and losses","crop failure","Value of dairy margin protection program paym...","totalValueDairyMarginProtPayments",TRUE
+"120",138,"production","waste and losses","crop failure","Value of price loss coverage payments, all","totalValueAllLossCoveragePayments",TRUE
 "121",143,"social","community embeddedness","social connectedness","Children in single-parent households","childrenInSingleParentHouseholds",TRUE
 "122",144,"social","community embeddedness","social connectedness","Disconnected youth","disconnectedYouth",TRUE
 "123",145,"social","community embeddedness","social connectedness","Social associations","socialAssociations",TRUE
@@ -127,5 +127,5 @@
 "126",150,"social","community livability","diverse representation","School segregation","schoolSegregation",TRUE
 "127",154,"social","food and farmworker diversity","age diversity","Mean producer age","ageProducers",TRUE
 "128",155,"social","food and farmworker diversity","gender diversity","Ratio of female to male producers","ftmProdRatio",TRUE
-"129",156,"social","food and farmworker diversity","racial diversity","Racial diversity of producers","producerRacialDiversity",FALSE
+"129",156,"social","food and farmworker diversity","racial diversity","Racial diversity of producers","producerRacialDiversity",TRUE
 "130",161,"social","food system governance","participatory governance","Voter turnout","voterTurnout",TRUE

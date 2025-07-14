@@ -1,0 +1,175 @@
+---
+title: "Metric Trends"
+format:
+  html:
+    fig-dpi: 200
+    code-fold: true
+editor_options: 
+  chunk_output_type: console
+warnings: false
+execute:
+  cache: true
+---
+
+::: {.callout-note collapse='false' title='Caution'}
+This is a mildly slapdash page working out spatial regressions for time series metrics from the refined framework variables. There are some cleaning issues to address with some variables, and the scripts are wildly disorganized. 
+:::
+
+```{r}
+#| label: prep
+#| cache: false
+#| output: false
+options(scipen = 999)
+
+pacman::p_load(
+  dplyr,
+  htmltools,
+  stringr,
+  tidyr,
+  reactable,
+  purrr,
+  broom,
+  caret,
+  knitr,
+  tictoc,
+  furrr,
+  parallelly,
+  splm,
+  spdep,
+  sf,
+  skimr
+)
+
+
+# Functions
+source('dev/get_reactable.R')
+source('dev/get_missing.R')
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::pull(),
+  stats::lag(),
+  base::setdiff(),
+  .quiet = TRUE
+)
+
+# Load SMdata package from repos folder
+sm_load()
+```
+
+```{r}
+#| label: load
+# Load metrics
+sm_data <- readRDS('data/sm_data.rds')
+metrics <- sm_data$metrics
+meta <- sm_data$metadata
+
+# Load frame
+frame <- readRDS('data/frameworks/new_frame.rds')
+```
+
+This page explores what data we have available at the county level specifically. It is branching off of the main "Analysis" pages because they are state-level analyses and I want to leave it there for posterity.
+
+Note that there are some cleaning issues with this dataset, and the scripts are wildly disorganized. The important thing is that we figured out how to iterate through a few dozen variables and run spatial error models at the county level to see if they are getting better or worse over time.
+
+## Testing
+
+Load up new round of metrics from `SMdata` using the `sm_load()` function.
+
+```{r}
+#| output: false
+# Check out summary from OneDrive that has our variable names
+get_str(data_paper_meta)
+
+# Pull vars to reduce metrics down
+meta <- data_paper_meta %>% 
+  filter(
+    !is.na(variable_name),
+    !variable_name %in% c('tbd', '', 'NONE'),
+    resolution == 'county'
+  ) %>% 
+  select(
+    variable_name,
+    starts_with('n_'),
+    latest_year,
+    dimension:metric,
+    weighting:desirable,
+  )
+get_str(meta)
+
+# Also using weighting variables from summary table, exported in SMdata
+get_str(weighting)
+
+# Load metrics, reduce to neast counties, grab only relevant vars and weights
+get_str(metrics)
+dat <- metrics %>% 
+  filter_fips('new') %>% 
+  filter(variable_name %in% c(meta$variable_name, weighting$variable_name)) %>% 
+  mutate(across(c(year, value), as.numeric))
+get_str(dat)
+
+# Pivot wider for transformations, then alphabetize columns
+wide <- dat %>% 
+  pivot_wider(
+    id_cols = c(fips, year),
+    values_from = 'value',
+    names_from = 'variable_name'
+  ) %>% 
+  select(fips, year, sort(names(.)[2:length(names(.))]))
+get_str(wide)
+```
+
+### Missing Data
+
+```{r}
+#| label: missing_data
+#| output: false
+skimr::skim(wide)
+# Missing years are county areas, that's fine
+# Other missing values are because years don't match up, that's fine
+
+## Check a couple vars to make sure they are somewhat intact
+get_str(wide)
+
+# check expenses per farm expPF
+get_missing(wide, 'expPF')
+
+# check income from agritourism incomeAgTourismRecPropTotal
+out <- get_missing(wide, 'incomeAgTourismRecPropTotal', TRUE)
+get_str(out)
+```
+
+Make a table of missing data for each var
+
+```{r}
+#| label: check_miss
+vars <- names(wide)[!names(wide) %in% c(
+  'landAcres', 
+  'waterAcres', 
+  'fips', 
+  'year'
+)]
+miss_table <- map(vars, \(name) {
+  out <- wide %>% 
+    select(fips, year, !!sym(name)) %>% 
+    na.omit() %>% 
+    complete(fips, year)
+  data.frame(
+    var = name,
+    n_miss = sum(is.na(out[[name]])),
+    total = length(out[[name]])
+  ) %>% 
+    mutate(
+      prop_miss = round(n_miss/total, 2)
+    )
+}) %>% 
+  bind_rows() %>% 
+  arrange(desc(prop_miss))
+```
+
+```{r}
+#| label: miss_table
+get_reactable(miss_table)
+```
+

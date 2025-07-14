@@ -1,5 +1,5 @@
 ---
-title: "Language Test - knitr"
+title: "Engine Test: Julia"
 format:
   html:
     code-fold: false
@@ -12,7 +12,7 @@ julia:
     exeflags: ["--project=@."]
 filters:
     - show-lang.lua # show language in code block
-cache: false
+cache: true
 ---
 
 
@@ -82,4 +82,4 @@ print(sys.executable)
 # import seaborn as sns
 ```
 
-## Moving Objects
+Can't get CallPython to use same environment

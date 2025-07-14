@@ -18,4 +18,4 @@ This repository houses a Quarto project which describes the framework and contai
 - `pages`: Quarto `.qmd` files that make up the website, including graphs and analyses. Quarto also plays nicely with `.ipynb` files.
 - `images`: Figures and photos used in Quarto doc.
 - `dev`: Functions and scripts to support analyses. Bit of a mess and needs some pruning.
-- `temp`: Various temporary scripts for testing. Examples of how to run jupyter engine in `.qmd` or `.ipynb` files.
+- `temp`: Various temporary scripts for testing.     
