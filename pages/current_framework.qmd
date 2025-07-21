@@ -1,0 +1,154 @@
+---
+title: "Current Framework"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+warnings: false
+---
+
+```{r}
+#| label: setup
+#| echo: false
+#| cache: false
+pacman::p_load(
+  dplyr,
+  ggraph,
+  igraph,
+  reactable,
+  stringr,
+  htmltools,
+  snakecase,
+  readr,
+  RColorBrewer,
+  paletteer
+)
+source('dev/get_reactable.R')
+source('dev/get_dimension_ggraph.R')
+sm_load()
+plots <- list()
+```
+
+Here you can find the current set (as of 2025-07-21) of indicators along with their indices and dimensions. This reflects the indicator refinement meetings that consolidated the economics, environment, and production dimensions, but no such process has taken place with health and social yet.
+
+## Indicator Table
+
+The table below lets you search and filter through the indicators. Use the button to download the current set, including any filters you might have applied.
+
+```{r}
+#| label: indicator_table
+#| warning: false
+# Clean up tree
+tree <- fixed_tree %>% 
+  select(dimension, index, indicator) %>% 
+  unique() %>% 
+  arrange(dimension, index, indicator)
+
+table_tree <- tree %>% 
+  setNames(c(names(.) %>% snakecase::to_title_case()))
+
+# Make reactable table with download button
+htmltools::browsable(
+  tagList(
+    tags$div(
+      style = "display: flex; margin-bottom: 20px; justify-content: center;",
+      tags$button(
+          class = "btn btn-primary",
+          style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
+          tagList(fontawesome::fa("download"), "Download as CSV"),
+          onclick = "Reactable.downloadDataCSV('indicator_table', 'indicator_framework.csv')"
+      )
+    ),
+    get_reactable(
+      table_tree,
+      elementId = "indicator_table",
+      columns = list(
+        Dimension = colDef(minWidth = 75),
+        Index = colDef(minWidth = 100),
+        Indicator = colDef(minWidth = 200)
+      )
+    )
+  )
+)
+```
+
+## Dimension Graphs
+
+Below are graphs showing the same information as in the table. From left to right are the dimensions, indices, and indicators.
+
+### Economics
+
+```{r}
+#| fig-height: 5
+#| fig-width: 10
+plots$econ <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = FALSE,
+  dimension_in = 'economics',
+  y_limits = c(-3.75, 3.25),
+  palette = "scico::batlowW"
+)
+plots$econ
+```
+
+### Environment
+
+```{r}
+#| fig-height: 4
+#| fig-width: 9
+#| out-width: 100%
+plots$env <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = FALSE,
+  dimension_in = 'environment',
+  y_limits = c(-4.5, 3.25),
+  palette = "scico::batlowW"
+)
+plots$env
+```
+
+### Health
+
+```{r}
+#| fig-height: 7
+#| fig-width: 9
+plots$health <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = FALSE,
+  dimension_in = 'health',
+  y_limits = c(-4.5, 3.25),
+  palette = "scico::batlowW"
+)
+plots$health
+```
+
+### Production
+
+```{r}
+#| fig-height: 5
+#| fig-width: 9
+plots$prod <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = FALSE,
+  dimension_in = 'production',
+  y_limits = c(-4.5, 3.25),
+  palette = "scico::batlowW"
+)
+plots$prod
+```
+
+### Social
+
+```{r}
+#| fig-height: 6
+#| fig-width: 9
+plots$social <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = FALSE,
+  dimension_in = 'social',
+  y_limits = c(-3, 3.25),
+  palette = "scico::batlowW"
+)
+plots$social
+```

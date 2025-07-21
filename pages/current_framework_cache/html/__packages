@@ -1,0 +1,14 @@
+dplyr
+conflicted
+projecter
+reactable
+stringr
+htmltools
+snakecase
+SMdata
+ggplot2
+ggraph
+igraph
+readr
+RColorBrewer
+paletteer

@@ -1,5 +1,5 @@
 ---
-title: "Metric Trends"
+title: "County Trends"
 format:
   html:
     fig-dpi: 200
@@ -10,10 +10,6 @@ warnings: false
 execute:
   cache: true
 ---
-
-::: {.callout-note collapse='false' title='Caution'}
-This is a mildly slapdash page working out spatial regressions for time series metrics from the refined framework variables. There are some cleaning issues to address with some variables, and the scripts are wildly disorganized. 
-:::
 
 ```{r}
 #| label: prep
@@ -37,13 +33,17 @@ pacman::p_load(
   splm,
   spdep,
   sf,
-  skimr
+  skimr,
+  ggplot2,
+  ggpubr
 )
-
 
 # Functions
 source('dev/get_reactable.R')
 source('dev/get_missing.R')
+
+# Load SMdata package from repos folder
+sm_load()
 
 conflicts_prefer(
   dplyr::select(),
@@ -53,13 +53,14 @@ conflicts_prefer(
   base::setdiff(),
   .quiet = TRUE
 )
-
-# Load SMdata package from repos folder
-sm_load()
 ```
 
 ```{r}
 #| label: load
+#| include: false
+#| eval: false
+
+# THIS IS OLD
 # Load metrics
 sm_data <- readRDS('data/sm_data.rds')
 metrics <- sm_data$metrics
@@ -69,11 +70,7 @@ meta <- sm_data$metadata
 frame <- readRDS('data/frameworks/new_frame.rds')
 ```
 
-This page explores what data we have available at the county level specifically. It is branching off of the main "Analysis" pages because they are state-level analyses and I want to leave it there for posterity.
-
-Note that there are some cleaning issues with this dataset, and the scripts are wildly disorganized. The important thing is that we figured out how to iterate through a few dozen variables and run spatial error models at the county level to see if they are getting better or worse over time.
-
-## Testing
+## Wrangling
 
 Load up new round of metrics from `SMdata` using the `sm_load()` function.
 
@@ -120,7 +117,7 @@ wide <- dat %>%
 get_str(wide)
 ```
 
-### Missing Data
+## Missing Data
 
 ```{r}
 #| label: missing_data
@@ -173,3 +170,495 @@ miss_table <- map(vars, \(name) {
 get_reactable(miss_table)
 ```
 
+## Explore Trends
+
+```{r}
+#| label: prep_df
+#| output: false
+get_str(dat)
+
+# Remove weighting variables
+dat <- dat %>% 
+  filter(!variable_name %in% weighting$variable_name)
+get_str(dat)
+
+# Get names of vars that have > 1 time point
+series_vars <- dat %>% 
+  group_by(variable_name) %>% 
+  summarize(n_year = length(unique(year))) %>% 
+  filter(n_year > 1) %>% 
+  pull(variable_name)
+(len <- length(series_vars))
+# 44 have more than 1 time point
+
+# Filter to just those variables so we can do regressions
+series_metrics <- filter(dat, variable_name %in% series_vars)
+get_str(series_metrics)
+```
+
+`{r} len` metrics have > 1 data point at county level. 
+
+### Time Series
+
+Plot time series of average variable that has at least 2 data points
+
+```{r}
+#| label: graphs
+#| fig-height: 25
+#| fig-width: 12
+# get_str(series_metrics)
+# get_str(series_vars)
+
+plots <- map(series_vars, ~ {
+  df <- series_metrics %>% 
+    filter(variable_name == .x) %>% 
+    ggplot(aes(x = year, y = value)) + 
+    geom_line(
+      aes(group = fips),
+      alpha = 0.3
+    ) + 
+    geom_smooth(
+      method = 'loess',
+      lwd = 2
+    ) +
+    labs(
+      x = 'Year',
+      # y = .x,
+      title = .x
+    ) +
+    theme_classic()
+})
+# plots
+# plots[[1]]
+
+ggarrange(
+  plotlist = plots,
+  ncol = 4,
+  nrow = 11
+)
+```
+
+
+## Linear Models
+
+First trying linear models with time as independent variable.
+
+```{r}
+#| label: trend_analysis
+#| output: false
+res <- map(series_vars, ~ {
+  tryCatch(
+    {
+      df <- series_metrics %>% 
+        filter(variable_name == .x) %>% 
+        mutate(
+          value = as.numeric(value),
+          year = as.numeric(year)
+        )
+      model <- lm(value ~ year, data = df)
+    },
+    error = function(e) {
+      message(paste('Error with var', .x))
+    }
+  )
+}) %>% 
+  setNames(c(series_vars)) %>% 
+  discard(\(x) is.null(x))
+```
+
+Now that we have regression outputs, let's put them in a table to see which ones were significant. 
+
+```{r}
+#| label: make_table
+#| output: false
+# Put together one table of results from all models, add stars
+res_df <- imap(res, ~ {
+  .x %>% 
+    tidy() %>% 
+    filter(term == 'year') %>% 
+    mutate(term = .y)
+}) %>% 
+  bind_rows() %>% 
+  mutate(sig = ifelse(p.value < 0.05, '*', ''))
+res_df
+
+# How many metrics
+n_metrics <- nrow(res_df)
+
+# How many are significant
+perc_sig <- mean(res_df$sig == '*') * 100
+```
+
+We have `{r} n_metrics` metrics, `{r} round(perc_sig, 1)` of which vary significantly over time.
+
+Still have to make sense of the directional values of our metrics. These were defined in the [Aggregation](../pages/aggregation.qmd) from the main analysis branch.
+
+```{r}
+#| label: make_sense_of_trends
+#| output: false
+
+# Of those that are significant, what are trends
+# leaving in all of them, even if not significant though
+model_outputs <- res_df %>% 
+  # filter(sig == '*') %>%
+  mutate(trend = case_when(
+    estimate > 0 & sig == '*' ~ 'increasing',
+    sig == '' ~ NA_character_,
+    .default = 'decreasing'
+  ))
+
+# Bring in directional values. Keep only the ones without question marks, 
+# clearly higher or lower
+get_str(data_paper_meta)
+directions <- data_paper_meta %>% 
+  filter(desirable %in% c('higher', 'lower'), !is.na(variable_name)) %>% 
+  select(variable_name, desirable)
+reverse <- directions %>% 
+  filter(desirable == 'lower') %>% 
+  pull(variable_name)
+
+# Reduce to only vars that have a direction. Then, 
+model_outputs <- model_outputs %>% 
+  filter(term %in% directions$variable_name) %>% 
+  mutate(
+    reverse = ifelse(term %in% reverse, TRUE, FALSE),
+    outcome = case_when(
+      reverse == FALSE & trend == 'increasing' ~ 'better',
+      reverse == FALSE & trend == 'decreasing' ~ 'worse',
+      reverse == TRUE & trend == 'increasing' ~ 'worse',
+      reverse == TRUE & trend == 'decreasing' ~ 'better',
+      .default = NA
+    ),
+    across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))
+  )
+model_outputs
+
+# proportion getting better or worse
+(tab <- table(model_outputs$outcome))
+percs <- prop.table(tab) * 100
+```
+
+`{r} percs[['better']]`% are getting better and `{r} percs[['worse']]`% are getting worse.
+
+Check out table with outputs for each regression. Filter by significance and outcome. Trend is just whether it is going up or down, outcome is whether that is good or bad.
+
+```{r}
+#| label: model_table
+get_reactable(
+  model_outputs, 
+  defaultPageSize = 10,
+  columns = list(
+   term = colDef(minWidth = 200),
+   sig = colDef(minWidth = 50),
+   reverse = colDef(minWidth = 75),
+   statistic = colDef(minWidth = 75),
+   outcome = colDef(minWidth = 75)
+  )
+)
+  
+```
+
+## Spatial Panel Regressions
+
+Run spatial regression for all vars. Might be worth looking into whether there is a version of Moran test that can be run across years. Until then, just running each one with spatial error model. 
+
+### Setup
+
+```{r}
+#| label: splm
+#| output: false
+#| eval: false
+get_str(series_metrics)
+
+dat <- series_metrics %>% 
+  filter(
+    variable_name != 'population',
+    str_length(fips) == 5
+  ) %>% 
+  pivot_wider(
+    id_cols = fips:year,
+    names_from = variable_name,
+    values_from = value
+  )
+
+# Get rid of geometry, make our df a plm object
+df <- dat %>% 
+  select(fips, year, rentMedianPercHH) %>% 
+  filter(str_detect(fips, '^09', negate = TRUE)) %>%
+  na.omit() %>% 
+  mutate(rentMedianPercHH = as.numeric(rentMedianPercHH)) %>% 
+  plm::pdata.frame()
+get_str(df)
+
+# Get our listw based on counties
+lw <- neast_counties_2024 %>% 
+  filter(fips %in% df$fips) %>% 
+  poly2nb() %>% 
+  nb2listw(zero.policy = TRUE)
+
+# Try FE error model with rentMedianPercHH
+fe_err <- spml(
+  rentMedianPercHH ~ as.numeric(year), 
+  data = df, 
+  listw = lw,
+  model = 'within'
+)
+summary(fe_err)
+
+# RE error model
+re_err <- spml(
+  rentMedianPercHH ~ as.numeric(year), 
+  data = df, 
+  listw = lw,
+  model = 'random'
+)
+summary(re_err)
+
+# Check to use RE or FE, see whether x_it related to a_i (idiosyncratic error)
+test <- sphtest(fe_err, re_err)
+test
+# Not sig: use RE, more efficient
+
+# Check RE output
+summary(re_err)
+```
+
+### Run Models
+
+So the workflow for each variable is:
+
+1. Make sure panel is balanced, i.e. see if Connecticut will be a problem. Adjust accordingly.
+2. Create list weight object based on the counties that are represented by in the variable. I think we have to do this for each variable individually... should double check though.
+3. Run FE and RE model with year as numeric.
+4. Hausman test with FE and RE model. If sig, report FE, if not, report RE
+
+Try it:
+
+```{r}
+#| label: spregs_over_vars
+#| output: false
+#| eval: false
+get_str(dat)
+
+# Make variables numeric
+dat <- dat %>% 
+  mutate(across(3:last_col(), as.numeric))
+get_str(dat)
+
+# Get vector of vars
+vars <- names(dat)[!names(dat) %in% c('fips', 'year')]
+
+# Map over each var and do steps 1 through 5
+# plan(multisession, cores = availableCores(omit = 2))
+out <- map(vars, \(var) {
+  
+  cat('\n\nStarting', var)
+  
+  tryCatch({
+    # Reduce to relevant variable, remove NAs
+    df <- dat %>% 
+      select(fips, year, !!sym(var)) %>% 
+      drop_na()
+    
+    # 1. Only use fips that produce balanced panel
+    balanced_fips <- df %>% 
+      group_by(fips) %>% 
+      filter(n() == length(unique(df$year))) %>% 
+      pull(fips) %>% 
+      unique()
+    
+    df <- df %>% 
+      filter(fips %in% balanced_fips)
+    
+    # 2. Create lw object
+    lw <- neast_counties_2024 %>% 
+      filter(fips %in% balanced_fips) %>% 
+      # filter(fips %in% df$fips) %>% 
+      poly2nb() %>% 
+      nb2listw(zero.policy = TRUE)
+    cat('\nCreated lw')
+    
+    # Make df a plm object
+    df <- plm::pdata.frame(df)
+    
+    # 3. Run FE and RE
+    formula <- as.formula(paste(var, "~ as.numeric(year)"))
+    fe <- spml(
+      formula,
+      data = df, 
+      listw = lw,
+      model = 'within'
+    )
+    re <- spml(
+      formula,
+      data = df, 
+      listw = lw,
+      model = 'random'
+    )
+    cat('\nRan models')
+    
+    # 4. Hausman test. If sig, use FE
+    test <- sphtest(fe, re)
+    if (test$p.value < 0.05) {
+      model <- fe
+    } else {
+      model <- re
+    }
+    cat('\nRan Hausman')
+    
+    return(list('model' = model, 'fips' = balanced_fips))
+      
+    },
+    error = function(e) {
+      return(paste0('Error with ', var, ': ', e))
+    }
+  )
+  
+}, .progress = FALSE) %>% 
+ setNames(c(vars))
+# plan(sequential)
+
+# Save for posterity
+saveRDS(out, 'data/objects/spatial_regression_outs.rds')
+```
+
+Check how they turned out:
+
+```{r}
+#| output: false
+out <- readRDS('data/objects/spatial_regression_outs.rds')
+
+# How many were successful
+perc_success <- mean(map(out, class) == 'list') * 100
+
+get_str(out[[1]])
+get_str(out)
+out
+
+# Check out errors only
+errors <- out %>% 
+  keep(is.character)
+errors
+error_vars <- names(errors)
+```
+
+`{r} round(perc_success, 1)`% of regressions were successful. Lots of metrics messed up because of uneven panels. They include: `{r} paste0(error_vars, collapse = ', ')`.
+
+### Results
+
+Check out the successful models:
+
+```{r}
+#| label: spatial_panel_table
+model_outs <- out %>% 
+  keep(is.list)
+# get_str(model_outs)
+# get_str(model_outs[[1]])
+# get_str(model_outs[[1]][[1]])
+
+# Check model type
+# model_outs[[1]][[1]]$type
+# table(map_chr(model_outs, ~ .x[[1]]$type))
+# They are all RE models - no FE
+
+
+## Test out outcomes
+# sum <- summary(model_outs[[1]][[1]])
+# coefs <- sum$CoefTable[2, ]
+
+# Make a table
+spatial_table <- imap(model_outs, ~ {
+  tryCatch({
+    
+    # Pull model output results and coefficients
+    sum <- summary(.x[[1]])
+    coefs <- sum$CoefTable[2, ]
+    
+    df <- data.frame(
+      n = length(.x$fips),
+      type = .x[[1]]$type,
+      var = .y,
+      phi = sum$errcomp[1],
+      rho = sum$errcomp[2],
+      est = coefs[1],
+      se = coefs[2],
+      t = coefs[3],
+      p = coefs[4]
+    ) 
+    
+    # Figure out good or bad outcome
+    # If sig, then check reverse. else blank
+    # If reverse, reverse it, else same
+    # If up, good, else bad
+    df <- df %>% 
+      mutate(
+        sig = ifelse(p < 0.05, TRUE, FALSE),
+        posneg = case_when(
+          est > 0 ~ 'pos',
+          est < 0 ~ 'neg',
+          .default = ''
+        ),
+        reverse = ifelse(.y %in% reverse, TRUE, FALSE),
+        direction = case_when(
+          sig == TRUE & reverse == TRUE & posneg == 'pos' ~ 'neg',
+          sig == TRUE & reverse == TRUE & posneg == 'neg' ~ 'pos',
+          sig == TRUE & reverse == FALSE ~ as.character(posneg),
+          .default = ''
+        ),
+        outcome = case_when(
+          sig == FALSE ~ '',
+          sig == TRUE & direction == 'pos' ~ 'better',
+          sig == TRUE & direction == 'neg' ~ 'worse',
+          .default = '-'
+        )
+      ) %>% 
+      select(-c(posneg, direction))
+    return(df)
+  },
+    error = function(e) {
+      return(paste('Error:', e))
+    }
+  )
+}) %>% 
+  bind_rows()
+# get_str(spatial_table)
+
+# Round off and make table
+spatial_table %>% 
+  mutate(
+    across(c(phi:p), ~ format(round(.x, 3), nsmall = 3)),
+    type = case_when(
+      str_detect(type, 'random') ~ 'RE',
+      .default = NA
+    )
+  ) %>% 
+  get_reactable(
+    defaultColDef = colDef(minWidth = 50),
+    columns = list(
+      n = colDef(minWidth = 25),
+      var = colDef(minWidth = 200),
+      est = colDef(
+        minWidth = 100,
+        name = 'β'
+      ),
+      outcome = colDef(minWidth = 75),
+      rho = colDef(name = 'ρ'),
+      phi = colDef(name = 'φ'),
+      p = colDef(name = 'p-value'),
+      'p-value' = colDef(minWidth = 100)
+    )
+  )
+```
+
+- n: Number of counties included in regression
+- type: FE = fixed effects (every county has $\beta$), RE = random effects (counties have different $\beta$s)
+- var: Metric
+- $\phi$: Spatial autocorrelation in idiosyncratic attributes (counties)
+- $\rho$: Spatial autocorrelation in residual errors (omitted variables)
+- $\beta$: Regression coefficient of year on the variable
+- se: standard error of $\beta$
+- t: test statistic
+- p-value: p-value
+- sig: whether p is < 0.05
+- reverse: whether the metric has been reversed so that lower numbers are better and higher numbers are worse (like food insecurity)
+- outcome: if the regression is significant, is it getting better or worse? Accounts for the 'reverse' variable

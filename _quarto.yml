@@ -11,6 +11,7 @@ project:
     - pages/refine_economics.qmd
     - pages/refine_environment.qmd
     - pages/refine_production.qmd
+    - pages/current_framework.qmd
     - pages/metadata_table.qmd
     - pages/metrics_table.qmd
     - pages/refined_framework.qmd
@@ -28,9 +29,8 @@ project:
     - temp/bambi.ipynb
     - temp/test_lang_knitr.qmd #
     - temp/test_lang_julia.qmd #
-    - pages/frontiers_intro.qmd
+    - pages/county_intro.qmd
     - pages/county_trends.qmd
-    # - pages/frontiers_trends.qmd
     - pages/bnlearn.qmd
     - pages/regional_bn.qmd
 
@@ -74,6 +74,8 @@ website:
             href: pages/refine_environment.qmd
           - text: Production
             href: pages/refine_production.qmd
+      - text: Current Framework
+        href: pages/current_framework.qmd
       - section: Secondary Data
         contents:
           - text: Metadata
@@ -82,9 +84,9 @@ website:
             href: pages/metrics_table.qmd
       - section: National/State Analyses
         contents:
-          - text: Refined Framework
+          - text: State Secondary Data Framework
             href: pages/refined_framework.qmd
-          - text: Refined Metadata
+          - text: State Secondary Metadata
             href: pages/refined_metadata.qmd
           - text: Metric Distributions
             href: pages/metric_distributions.qmd
@@ -103,25 +105,25 @@ website:
       - section: Regional/County Analyses
         contents:
           - text: Intro
-            href: pages/frontiers_intro.qmd
-          - text: Trends
+            href: pages/county_intro.qmd
+          - text: Trends Over Time
             href: pages/county_trends.qmd
-      - section: Testing
-        contents:
-          - text: Bayesian Network
-            href: pages/regional_bn.qmd
-          - text: Regression with Bambi
-            href: temp/bambi.ipynb
-          - text: Knitr Engine
-            href: temp/test_lang_knitr.qmd
-          - text: Julia Engine
-            href: temp/test_lang_julia.qmd
-          - text: Python Notebook
-            href: temp/test_notebook.ipynb
-          - text: Python .qmd
-            href: temp/test_python.qmd
-          - text: Python and R.qmd
-            href: temp/test_python_and_r.qmd
+      # - section: Testing
+      #   contents:
+      #     - text: Bayesian Network
+      #       href: pages/regional_bn.qmd
+      #     - text: Regression with Bambi
+      #       href: temp/bambi.ipynb
+      #     - text: Knitr Engine
+      #       href: temp/test_lang_knitr.qmd
+      #     - text: Julia Engine
+      #       href: temp/test_lang_julia.qmd
+      #     - text: Python Notebook
+      #       href: temp/test_notebook.ipynb
+      #     - text: Python .qmd
+      #       href: temp/test_python.qmd
+      #     - text: Python and R.qmd
+      #       href: temp/test_python_and_r.qmd
 
 format:
   html:

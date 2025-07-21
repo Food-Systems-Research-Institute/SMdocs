@@ -1,0 +1,182 @@
+---
+title: "Regional Analyses"
+format:
+  html:
+    fig-dpi: 200
+editor_options: 
+  chunk_output_type: console
+warnings: false
+execute:
+  cache: false
+---
+
+::: {.callout-note collapse='false' title='Caution'}
+The Sustainability Metrics project, as well as this site itself, are works in progress. All data and analyses shown here are preliminary. 
+:::
+
+```{r}
+#| label: setup
+#| echo: false
+#| cache: false
+pacman::p_load(
+  dplyr,
+  conflicted,
+  purrr,
+  stringr,
+  ggraph,
+  igraph,
+  dplyr,
+  readr,
+  RColorBrewer,
+  paletteer,
+  snakecase,
+  tidyr,
+  htmltools,
+  reactable,
+  downloadthis
+)
+pacman::p_load_gh('ChrisDonovan307/projecter')
+source('dev/get_dimension_ggraph.R')
+sm_load()
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::arrange(),
+  dplyr::summarize(),
+  dplyr::as_data_frame(),
+  .quiet = TRUE
+)
+```
+
+
+## Introduction {#sec-intro}
+
+This group of pages will present a survey of secondary data at the regional/county level in the Northeast. Add more context here eventually.
+
+## Dimension Graphs
+
+```{r}
+#| label: prep_graphs
+#| include: false
+# Filter DF and check data
+source('dev/get_reactable.R')
+tree <- data_paper_tree %>% 
+  mutate(
+    indicator = case_when(
+        str_detect(indicator, 'inputs bought locally') ~ '% local inputs',
+        str_detect(indicator, 'production inputs') ~ 'production inputs',
+        str_detect(indicator, 'metabolic') ~ 'presence of disease',
+        .default = indicator
+      ) %>% 
+      str_remove(' of food business')
+  )
+get_reactable(tree)
+
+# Set up list of results
+plots <- list()
+```
+
+### Economics
+
+```{r}
+#| fig-height: 5
+#| fig-width: 15
+plots$econ <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = TRUE,
+  dimension_in = 'economics',
+  y_limits = c(-3.75, 3.25),
+  palette = "scico::batlowW"
+)
+plots$econ
+```
+
+### Environment
+
+```{r}
+#| fig-height: 7
+#| fig-width: 10
+plots$env <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = TRUE,
+  dimension_in = 'environment',
+  y_limits = c(-4.5, 3.25),
+  palette = "scico::batlowW"
+)
+plots$env
+```
+
+### Health
+
+```{r}
+#| fig-height: 8
+#| fig-width: 10
+plots$health <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = TRUE,
+  dimension_in = 'health',
+  y_limits = c(-4.5, 3.25),
+  palette = "scico::batlowW"
+)
+plots$health
+```
+
+### Production
+
+```{r}
+#| fig-height: 5
+#| fig-width: 12
+plots$prod <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = TRUE,
+  dimension_in = 'production',
+  y_limits = c(-4.5, 3.25),
+  palette = "scico::batlowW"
+)
+plots$prod
+```
+
+### Social
+
+```{r}
+#| fig-height: 6
+#| fig-width: 13
+plots$social <- get_dimension_ggraph(
+  framework_df = tree,
+  include_metrics = TRUE,
+  dimension_in = 'social',
+  y_limits = c(-3, 3.25),
+  palette = "scico::batlowW"
+)
+plots$social
+```
+
+```{r}
+#| label: save_pngs
+#| include: false
+# df of dimensions to use
+
+iwalk(plots, ~ {
+  ggsave(
+    paste0('temp/c3/', .y, '.png'),
+    plot = .x,
+    width = 11,
+    height = 8,
+    units = 'in',
+    bg = 'white'
+  )  
+})
+```
+
+## Dimension Table
+
+```{r}
+data_paper_tree %>% 
+  mutate(metric = case_when(
+    str_detect(metric, 'NONE') ~ NA,
+    .default = metric
+  )) %>% 
+  arrange(dimension, index, indicator, metric) %>% 
+  get_reactable()
+```
+

@@ -1,0 +1,19 @@
+{
+  "hash": "cf2c12031399434a6730229ee68e7a29",
+  "result": {
+    "engine": "knitr",
+    "markdown": "---\ntitle: \"Regional Analyses\"\nformat:\n  html:\n    fig-dpi: 200\neditor_options: \n  chunk_output_type: console\nwarnings: false\n---\n\n::: {.callout-note collapse='false' title='Caution'}\nThe Sustainability Metrics project, as well as this site itself, are works in progress. All data and analyses shown here are preliminary. \n:::\n\n\n::: {.cell}\n\n:::\n\n\n\n## Introduction {#sec-intro}\n\nThis group of pages will present a survey of secondary data at the regional/county level in the Northeast. Add more context here eventually.\n\n## Dimension Graphs\n\n\n\n### Economics\n\n\n::: {.cell}\n\n```{.r .cell-code}\nplots$econ <- get_dimension_ggraph(\n  framework_df = tree,\n  include_metrics = TRUE,\n  dimension_in = 'economics',\n  y_limits = c(-3.5, 3.25),\n  palette = \"scico::batlowW\"\n)\nplots$econ\n```\n\n::: {.cell-output-display}\n![](county_intro_files/figure-html/unnamed-chunk-1-1.png){width=2800}\n:::\n:::\n\n\n### Environment\n\n\n::: {.cell}\n\n```{.r .cell-code}\nplots$env <- get_dimension_ggraph(\n  framework_df = tree,\n  include_metrics = TRUE,\n  dimension_in = 'environment',\n  y_limits = c(-4.5, 3.25),\n  palette = \"scico::batlowW\"\n)\nplots$env\n```\n\n::: {.cell-output-display}\n![](county_intro_files/figure-html/unnamed-chunk-2-1.png){width=2000}\n:::\n:::\n\n\n### Health\n\n\n::: {.cell}\n\n```{.r .cell-code}\nplots$health <- get_dimension_ggraph(\n  framework_df = tree,\n  include_metrics = TRUE,\n  dimension_in = 'health',\n  y_limits = c(-4.5, 3.25),\n  palette = \"scico::batlowW\"\n)\nplots$health\n```\n\n::: {.cell-output-display}\n![](county_intro_files/figure-html/unnamed-chunk-3-1.png){width=2000}\n:::\n:::\n\n\n### Production\n\n\n::: {.cell}\n\n```{.r .cell-code}\nplots$prod <- get_dimension_ggraph(\n  framework_df = tree,\n  include_metrics = TRUE,\n  dimension_in = 'production',\n  y_limits = c(-4.5, 3.25),\n  palette = \"scico::batlowW\"\n)\nplots$prod\n```\n\n::: {.cell-output-display}\n![](county_intro_files/figure-html/unnamed-chunk-4-1.png){width=2400}\n:::\n:::\n\n\n\n### Social\n\n\n::: {.cell}\n\n```{.r .cell-code}\nplots$social <- get_dimension_ggraph(\n  framework_df = tree,\n  include_metrics = TRUE,\n  dimension_in = 'social',\n  y_limits = c(-3, 3.25),\n  palette = \"scico::batlowW\"\n)\nplots$social\n```\n\n::: {.cell-output-display}\n![](county_intro_files/figure-html/unnamed-chunk-5-1.png){width=2400}\n:::\n:::\n\n\n\n\n",
+    "supporting": [],
+    "filters": [
+      "rmarkdown/pagebreak.lua"
+    ],
+    "includes": {
+      "include-in-header": [
+        "<script src=\"../site_libs/core-js-2.5.3/shim.min.js\"></script>\n<script src=\"../site_libs/react-18.2.0/react.min.js\"></script>\n<script src=\"../site_libs/react-18.2.0/react-dom.min.js\"></script>\n<script src=\"../site_libs/reactwidget-2.0.0/react-tools.js\"></script>\n<link href=\"../site_libs/htmltools-fill-0.5.8.1/fill.css\" rel=\"stylesheet\" />\n<script src=\"../site_libs/htmlwidgets-1.6.4/htmlwidgets.js\"></script>\n<link href=\"../site_libs/reactable-0.4.4/reactable.css\" rel=\"stylesheet\" />\n<script src=\"../site_libs/reactable-binding-0.4.4/reactable.js\"></script>\n"
+      ]
+    },
+    "engineDependencies": {},
+    "preserve": {},
+    "postProcess": true
+  }
+}

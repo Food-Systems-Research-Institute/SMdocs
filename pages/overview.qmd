@@ -24,7 +24,7 @@ More information about this refinement process can be found in the [Indicator Re
 
 ## Framework Overview {#sec-framework_overview}
 
-Below is a diagram of all 135 indicators in the framework as of July, 2024. Colors represent dimensions, and splits occur at the dimension and index level. See the table in @sec-framework_table for a more detailed look at indicators.
+Below is a diagram of all 135 indicators in the framework as of July, 2024. Colors represent dimensions, and splits occur at the dimension and index level. Don't worry too much about not being able to read anything here though. In the next section, we walk through indicator refinement workshops that give us a far tidier framework.
 
 ```{r fig.dim=c(10, 10), fig.align='center'}
 #| label: radial_plot
@@ -32,6 +32,7 @@ Below is a diagram of all 135 indicators in the framework as of July, 2024. Colo
 #| fig-alt: Radial dendrogram of Sustainability Metrics framework showing sustainability in the middle, splitting into economic, environment, social, production, and health dimensions, each splitting into a set of indicators.
 #| code-fold: true
 #| warning: false
+#| cache: true
 
 ## Load packages
 pacman::p_load(
@@ -151,13 +152,13 @@ ggraph(graph, layout = 'dendrogram', circular = TRUE) +
   expand_limits(x = c(-2, 2), y = c(-2, 2))
 ```
 
-## Full Indicator Table {#sec-framework_table}
-
-Below is an interactive table with the full set of 135 indicators from July of 2024. You can search, filter, and page through the table, and download the filtered set of data as a .csv file using the download button.
+<!-- Below is an interactive table with the full set of 135 indicators from July of 2024. You can search, filter, and page through the table, and download the filtered set of data as a .csv file using the download button. Again, we're leaving this here for posterity to see how far we've come. But keep in mind that the more streamlined framework after the indicator refinement meetings can be found in the Current Framework section. -->
 
 ```{r}
-#| label: indicator_table
+#| label: old_indicator_table
 #| warning: false
+#| execute: false
+#| include: false
 pacman::p_load(
   dplyr,
   reactable,
@@ -199,4 +200,3 @@ htmltools::browsable(
   )
 )
 ```
-
