@@ -151,21 +151,126 @@ plots$social <- get_dimension_ggraph(
 plots$social
 ```
 
+## TEMP
+
 ```{r}
 #| label: save_pngs
 #| include: false
 # df of dimensions to use
-
-iwalk(plots, ~ {
+dims <- data.frame(
+  heights = c(5, 7, 8, 5, 6),
+  widths = c(15, 10, 10, 12, 13)
+)
+pwalk(list(plots, names(plots), 1:nrow(dims)), \(plot, name, i) {
   ggsave(
-    paste0('temp/c3/', .y, '.png'),
-    plot = .x,
-    width = 11,
-    height = 8,
+    paste0('temp/c3/', name, '.png'),
+    plot = plot,
+    height = dims[i, 1],
+    width = dims[i, 2],
     units = 'in',
-    bg = 'white'
+    bg = 'white',
+    dpi = 500
   )  
 })
+```
+
+```{r}
+#| label: correlations
+#| include: false
+#| eval: false
+pacman::p_load(
+  Hmisc,
+  tidyr,
+  reshape2
+)
+
+get_str(metrics)
+df <- metrics %>% 
+  filter(variable_name %in% data_paper_meta$variable_name) %>% 
+  get_latest_year() %>% 
+  filter_fips('new') %>% 
+  mutate(variable_name = str_split_i(variable_name, '_', 1)) %>%
+  pivot_wider(
+    id_cols = fips,
+    values_from = value,
+    names_from = variable_name
+  )
+get_str(df)
+skimr::skim(df)
+
+# Arrange metrics in order of dimensions
+get_str(data_paper_meta)
+order <- data_paper_meta %>% 
+  arrange(dimension, variable_name) %>% 
+  filter(variable_name %in% names(df)) %>% 
+  pull(variable_name)
+# check
+data_paper_meta %>% 
+  arrange(dimension, variable_name) %>% 
+  filter(variable_name %in% names(df)) %>% 
+  select(variable_name, dimension) %>% 
+  group_by(dimension) %>% 
+  summarize(count = n())
+
+df <- df %>% 
+  select(fips, any_of(order))
+get_str(df)
+
+mat <- df %>% 
+  na.omit() %>% 
+  select(-fips) %>% 
+  as.matrix()
+
+# Get correlations
+cor <- rcorr(mat, type = 'pearson')
+
+# Melt correlation values and rename columns
+cor_r <- reshape::melt(cor$r) %>% 
+  setNames(c('var_1', 'var_2', 'value'))
+
+# Save p values
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+# Make heatmap with custom text aesthetic for tooltip
+corplot <- cor_r %>% 
+  ggplot(aes(var_1, var_2, fill = value)) + 
+  geom_tile() + 
+  scale_fill_gradient2(
+    low = "#762a83", 
+    mid = "white", 
+    high = "#1b7837", 
+    midpoint = 0
+  ) +
+  geom_hline(yintercept = 14.5) +
+  geom_hline(yintercept = 31.5) +
+  geom_hline(yintercept = 45.5) +
+  geom_hline(yintercept = 49.5) +
+  geom_vline(xintercept = 14.5) +
+  geom_vline(xintercept = 31.5) +
+  geom_vline(xintercept = 45.5) +
+  geom_vline(xintercept = 49.5) +
+  theme(
+    axis.text.x = element_text(
+      hjust = 1, 
+      angle = 45
+    )
+    # axis.text.x = element_blank(),
+    # axis.ticks.x = element_blank()
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL
+  )
+corplot
+ggsave(
+  plot = corplot,
+  filename = 'temp/c3/corplot.png',
+  height = 10,
+  width = 12,
+  dpi = 300
+)
 ```
 
 ## Dimension Table

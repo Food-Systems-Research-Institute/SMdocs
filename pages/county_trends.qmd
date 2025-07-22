@@ -238,6 +238,57 @@ ggarrange(
 )
 ```
 
+```{r}
+#| label: for_c3
+#| include: false
+#| eval: false
+# Pulling out a couple of graphs for c3 preso
+get_str(dat)
+c3_vars <- c(
+  'poorMentalHealthDays',
+  'frequentPhysicalDistress',
+  'expPF',
+  'lifeExpectancy',
+  'acresPF',
+  'foodInsecurityRate'
+)
+
+# Make a plot for each one
+c3_plots <- map(c3_vars, ~ {
+  df <- series_metrics %>% 
+    filter(variable_name == .x) %>% 
+    ggplot(aes(x = year, y = value)) + 
+    geom_line(
+      aes(group = fips),
+      alpha = 0.3
+    ) + 
+    geom_smooth(
+      method = 'loess',
+      lwd = 2
+    ) +
+    labs(
+      x = 'Year',
+      y = ''
+      # title = .x
+    ) +
+    expand_limits(y = 0) +
+    theme_classic()
+}) %>% 
+  setNames(c(c3_vars))
+c3_plots
+c3_plots[[1]]
+
+iwalk(c3_plots, ~ {
+  ggsave(
+    plot = .x,
+    filename = paste0('temp/c3/c3_', .y, '.png'),
+    height = 4,
+    width = 6,
+    units = 'in',
+    dpi = 300
+  )
+})
+```
 
 ## Linear Models
 
