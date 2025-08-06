@@ -29,8 +29,10 @@ project:
     - temp/bambi.ipynb
     - temp/test_lang_knitr.qmd #
     - temp/test_lang_julia.qmd #
-    - pages/county_intro.qmd
-    - pages/county_trends.qmd
+    - pages/dp_intro.qmd
+    - pages/dp_eda.qmd
+    - pages/dp_analysis.qmd
+    # - pages/dp_aggregation.qmd
     - pages/bnlearn.qmd
     - pages/regional_bn.qmd
 
@@ -40,16 +42,16 @@ website:
   page-navigation: true
   bread-crumbs: false
   back-to-top-navigation: true
-  repo-url: https://github.com/Food-Systems-Research-Institute/sm-docs
+  repo-url: https://github.com/Food-Systems-Research-Institute/SMdocs
   navbar:
     logo: images/FSRI-SpiritMarks_FSRI-mark-white.png
-    logo-href: https://www.uvm.edu/cals/food-systems-research
+    logo-href: https://www.uvm.edu/ovpr/food-systems-research
     search: true
     tools:
       - icon: tree
         menu:
           - text: FSRI
-            href: https://www.uvm.edu/cals/food-systems-research
+            href: https://www.uvm.edu/ovpr/food-systems-research
           - text: UVM
             href: https://www.uvm.edu
       - icon: github
@@ -105,25 +107,29 @@ website:
       - section: Regional/County Analyses
         contents:
           - text: Intro
-            href: pages/county_intro.qmd
-          - text: Trends Over Time
-            href: pages/county_trends.qmd
-      # - section: Testing
-      #   contents:
-      #     - text: Bayesian Network
-      #       href: pages/regional_bn.qmd
-      #     - text: Regression with Bambi
-      #       href: temp/bambi.ipynb
-      #     - text: Knitr Engine
-      #       href: temp/test_lang_knitr.qmd
-      #     - text: Julia Engine
-      #       href: temp/test_lang_julia.qmd
-      #     - text: Python Notebook
-      #       href: temp/test_notebook.ipynb
-      #     - text: Python .qmd
-      #       href: temp/test_python.qmd
-      #     - text: Python and R.qmd
-      #       href: temp/test_python_and_r.qmd
+            href: pages/dp_intro.qmd
+          - text: Exploratory Data Analysis
+            href: pages/dp_eda.qmd
+          - text: Analysis
+            href: pages/dp_analysis.qmd
+          # - text: Aggregation
+          #   href: pages/dp_aggregation.qmd
+      - section: Testing
+        contents:
+          - text: Bayesian Network
+            href: pages/regional_bn.qmd
+          - text: Regression with Bambi
+            href: temp/bambi.ipynb
+          - text: Knitr Engine
+            href: temp/test_lang_knitr.qmd
+          - text: Julia Engine
+            href: temp/test_lang_julia.qmd
+          - text: Python Notebook
+            href: temp/test_notebook.ipynb
+          - text: Python.qmd
+            href: temp/test_python.qmd
+          - text: Python and R.qmd
+            href: temp/test_python_and_r.qmd
 
 format:
   html:

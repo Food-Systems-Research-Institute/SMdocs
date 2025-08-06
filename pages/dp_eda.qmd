@@ -1,0 +1,639 @@
+---
+title: "Exploratory Data Analysis"
+format:
+  html:
+    fig-dpi: 200
+    code-fold: true
+editor_options: 
+  chunk_output_type: console
+warnings: false
+execute:
+  cache: true
+---
+
+```{r}
+#| label: prep
+#| cache: false
+#| output: false
+options(scipen = 999)
+
+pacman::p_load(
+  dplyr,
+  htmltools,
+  stringr,
+  tidyr,
+  reactable,
+  purrr,
+  broom,
+  knitr,
+  skimr,
+  ggplot2,
+  ggpubr,
+  psych,
+  tibble,
+  tmap,
+  maptiles,
+  tmaptools,
+  sf,
+  Hmisc,
+  reshape2
+)
+
+# Functions
+source('dev/get_reactable.R')
+source('dev/get_missing.R')
+source('dev/data_pipeline_functions.R')
+
+# Load SMdata package from repos folder
+sm_load()
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::pull(),
+  dplyr::summarize(),
+  stats::lag(),
+  base::setdiff(),
+  .quiet = TRUE
+)
+```
+
+
+## Wrangling
+
+```{r}
+#| output: false
+# Create a list of the clean datasets we will use throughout analysis
+datasets <- list()
+
+# Check out summary from OneDrive that has our variable names
+get_str(data_paper_meta)
+
+# Pull vars to reduce metrics down
+meta <- data_paper_meta %>% 
+  filter(
+    !is.na(variable_name),
+    !variable_name %in% c('tbd', '', 'NONE')
+  ) %>% 
+  select(
+    variable_name,
+    resolution,
+    starts_with('n_'),
+    latest_year,
+    dimension:metric,
+    weighting:desirable,
+  )
+get_str(meta)
+
+# Load neast metrics for data paper, both county and state
+get_str(data_paper_metrics)
+all <- data_paper_metrics %>% 
+  filter_fips('neast') %>% 
+  inner_join(select(meta, variable_name, resolution)) %>% 
+  mutate(across(c(year, value), as.numeric))
+get_str(all)
+
+## Cleaning
+# "annualAvgWklyWageNAICS11" should have NAs instead of zeroes
+all$value[all$variable_name == "annualAvgWklyWageNAICS11" & all$value == 0] <- NA
+
+# Save to dataset list
+datasets$dp_metrics_all <- all
+
+# Pull out county and state separately, based on spec in metadata
+dp_county <- all %>% 
+  filter_fips('counties') %>% 
+  filter(resolution != 'state') %>% 
+  select(-resolution)
+get_str(dp_county)
+unique(dp_county$fips)
+datasets$dp_metrics_county <- dp_county
+
+dp_state <- all %>% 
+  filter_fips('states') %>% 
+  filter(resolution == 'state') %>% 
+  select(-resolution)
+get_str(dp_state)
+unique(dp_state$fips)
+datasets$dp_metrics_state <- dp_state
+
+# Get another DF of weighting variables
+weights <- metrics %>%
+  filter(variable_name %in% weighting$variable_name) %>%
+  filter_fips('neast')
+get_str(weights)
+ 
+# Save to dataset list
+datasets$dp_weights <- weights
+  
+# Pivot wider for transformations, then alphabetize columns
+dp_county_wide <- dp_county %>% 
+  # Remove one weird doubled up value
+  filter(!(
+    fips == '42' & year == 2022 & variable_name == 'hayYieldMeasuredInTonsAcre'
+  )) %>%
+  pivot_wider(
+    id_cols = c(fips, year),
+    values_from = 'value',
+    names_from = 'variable_name'
+  ) %>% 
+  select(fips, year, sort(names(.)[2:length(names(.))]))
+get_str(dp_county_wide)
+
+# Save to datasets
+datasets$dp_county_wide <- dp_county_wide
+```
+
+
+## Missing Data
+
+Explore missing data for each individual metric. Note that there is a baseline of missing for every one because of the issues with Connecticut counties. This is a bit awkward.
+
+```{r}
+#| label: missing_data
+#| output: false
+skimr::skim(dp_county_wide)
+# Missing years are county areas, that's fine
+# Other missing values are because years don't match up, that's fine
+get_str(dp_county_wide)
+vars <- names(dp_county_wide[, 3:ncol(dp_county_wide)])
+
+out <- map_dbl(vars, ~ {
+  years <- dp_county_wide %>% 
+    drop_na(.x) %>% 
+    distinct(year) %>% 
+    pull(year)
+  df <- dp_county_wide %>% 
+    select(year, fips, all_of(.x)) %>% 
+    filter(year %in% years) %>% 
+    complete(year, fips)
+  prop_mis <- sum(is.na(df[.x])) / nrow(df)
+  return(prop_mis)
+})
+
+# Graph this
+miss <- bind_cols(vars, out) %>% 
+  setNames(c('var', 'prop_miss'))
+miss_plot <- miss %>% 
+  ggplot(aes(y = reorder(var, prop_miss), x = prop_miss)) +
+  geom_col(
+    color = 'black',
+    fill = '#154734'
+  ) +
+  labs(
+    x = 'Proportion Missing',
+    y = 'Metric'
+  ) +
+  theme_bw()
+```
+
+```{r}
+#| label: plot_missing
+#| echo: false
+#| fig-height: 8
+#| fig-width: 6
+miss_plot
+```
+
+
+```{r}
+#| label: check_miss
+#| eval: false
+#| include: false
+
+# This is old missing table
+
+vars <- names(dp_county_wide)[!names(dp_county_wide) %in% c(
+  'fips', 
+  'year'
+)]
+miss_table <- map(vars, \(name) {
+  out <- wide %>% 
+    select(fips, year, !!sym(name)) %>% 
+    na.omit() %>% 
+    complete(fips, year)
+  data.frame(
+    var = name,
+    n_miss = sum(is.na(out[[name]])),
+    total = length(out[[name]])
+  ) %>% 
+    mutate(
+      prop_miss = round(n_miss/total, 2)
+    )
+}) %>% 
+  bind_rows() %>% 
+  arrange(desc(prop_miss))
+```
+
+
+## Distributions
+
+Exploring distributions using latest year available for each metric.
+
+### County Data
+
+```{r}
+#| label: metric_distributions_county
+#| fig-height: 25
+#| fig-width: 10
+
+# Get skews of variables
+dat <- dp_county %>% 
+  get_latest_year() %>% 
+  pivot_wider(
+    id_cols = fips,
+    values_from = 'value',
+    names_from = 'variable_name'
+  )
+# get_str(dat)
+
+skewed <- psych::describe(dat[, -1]) %>% 
+  as.data.frame() %>% 
+  rownames_to_column('variable_name') %>% 
+  dplyr::select(variable_name, skew) %>% 
+  dplyr::filter(abs(skew) > 2) %>% 
+  pull(variable_name)
+
+plots <- map(names(dat)[-1], \(var){
+  # color based on skewness
+  if (var %in% skewed) {
+    fill <- 'red'
+    color <- 'darkred'
+  } else {
+    fill <- '#154724'
+    color <- 'black'
+  }
+  
+  # Make plot for variable
+  dat %>% 
+    ggplot(aes(x = !!sym(var))) + 
+    geom_density(
+      fill = fill,
+      color = color,
+      alpha = 0.5
+    ) +
+    theme_classic() +
+    theme(plot.margin = unit(c(rep(0.5, 4)), 'cm'))
+}) 
+
+# Arrange them in 4 columns
+ggarrange(
+  plotlist = plots,
+  ncol = 4,
+  nrow = 11
+)
+```
+
+
+### State Data
+
+```{r}
+#| label: state_distributions
+#| fig-height: 10
+#| fig-width: 10
+source('dev/get_distributions.R')
+dat <- dp_state %>% 
+  filter(!(
+    fips == '42' & year == 2022 & variable_name == 'hayYieldMeasuredInTonsAcre'
+  )) %>% 
+  get_latest_year() %>% 
+  pivot_wider(
+    id_cols = fips,
+    values_from = 'value',
+    names_from = 'variable_name'
+  )
+get_distributions(
+  df = dat,
+  n_col = 4,
+  n_row = 4
+)
+```
+
+
+## Map of Coverage
+
+Turns out this map is not as interesting as I'd hoped it would be. Currently showing the unique count of metrics with any values in a county. Need a better way to represent the missing data here though. 
+
+```{r}
+#| output: false
+# Get DF of 
+bbox_new <- st_bbox(neast_counties_2024)
+# xrange <- bbox_new$xmax - bbox_new$xmin # range of x values
+# yrange <- bbox_new$ymax - bbox_new$ymin # range of y values
+# 
+# bbox_new[1] <- bbox_new[1] - (0.5 * xrange) # xmin - left
+# bbox_new[3] <- bbox_new[3] + (0.5 * xrange) # xmax - right
+# bbox_new[2] <- bbox_new[2] - (0.5 * yrange) # ymin - bottom
+# bbox_new[4] <- bbox_new[4] + (0.5 * yrange) # ymax - top
+
+tiles <- get_tiles(
+  bbox_new,
+  provider = "CartoDB.PositronNoLabels",
+  zoom = 7,
+  crop = TRUE
+)
+
+# Counts of unique metrics in each county
+var_counts <- datasets$dp_metrics_all %>% 
+  filter_fips('counties') %>% 
+  group_by(fips) %>% 
+  summarize(n_metrics = length(unique(variable_name)))
+ 
+# Join 
+df <- neast_counties_2024 %>% 
+  left_join(var_counts)
+# get_str(df)
+
+tmap_mode('plot')
+map <- tm_shape(tiles) +
+  tm_rgb() +
+  tm_shape(df) +
+  tm_polygons(
+    "n_metrics", 
+    palette = "brewer.greens",
+    title = "Metric\nRepresentation",
+    # breaks = 10,
+    # fill.legend = tm_legend(
+    #   reverse = TRUE
+    # )
+  ) +
+  tm_layout(
+    legend.position = c('left', 'top'),
+    legend.title.fontface = 'bold',
+    legend.width = 8,
+    legend.height = 10,
+    legend.title.size = 1.1,
+    inner.margins = rep(0, 4),
+    outer.margins = rep(0, 4),
+    legend.text.size = 1
+  )
+
+tmap_save(
+  tm = map,
+  filename = 'outputs/metric_coverage_map.png',
+  asp = 0,
+  dpi = 300
+)
+```
+
+```{r}
+#| echo: false
+map
+```
+
+
+## Time Series
+
+Plot time series of average variable that has at least 2 data points. These are raw, unweighted values.
+
+### County Data
+
+```{r}
+#| label: prep_series
+#| output: false
+# Prepare vector of county variables that are time series
+get_str(dp_county)
+vars <- unique(dp_county$variable_name)
+series_vars <- map(vars, ~ {
+  count <- dp_county %>% 
+    filter(variable_name == .x) %>% 
+    pull(year) %>% 
+    unique() %>% 
+    length()
+  if (count > 1) {
+    return(.x)
+  } else {
+    return(NULL)
+  }
+}) %>% 
+  keep(~ !is.null(.x)) %>%
+  unlist()
+datasets$series_vars <- series_vars
+```
+
+A few hinky things going on here - voter turnout is apparently flat across all counties. It looks like this is because it is only 2023 to 2025 and it is from a secondary source that pulled it from the 5-year census. So this needs to be fixed.
+
+Land value per acre also appears jenky, but it is because Richmond County, NY (Staten Island) has a land value of 2.5 million per acre while most other counties are below 100k. We should probably remove this as an outlier.
+
+```{r}
+#| label: county_time_series
+#| fig-height: 25
+#| fig-width: 12
+plots <- map(series_vars, ~ {
+  df <- dp_county %>%
+    filter(variable_name == .x) %>%
+    ggplot(aes(x = year, y = value)) +
+    geom_line(
+      aes(group = fips),
+      alpha = 0.3
+    ) +
+    geom_smooth(
+      method = 'loess',
+      lwd = 2
+      # col = '#154734'
+    ) +
+    labs(
+      x = 'Year',
+      title = .x
+    ) +
+    theme_classic()
+})
+
+ggarrange(
+  plotlist = plots,
+  ncol = 4,
+  nrow = 9
+)
+```
+
+```{r}
+#| label: checking
+#| eval: false
+#| include: false
+dp_county %>% 
+  filter(variable_name == 'landValPerAcre', year == 2022) %>% 
+  pull(value) %>% 
+  hist()
+
+dp_county %>% 
+  filter(variable_name == 'landValPerAcre', year == 2022) %>% 
+  arrange(value)
+# 36085 has 2.5 million. Everything else belo2 600k, mostly below 100k
+
+fips_key$county_name[fips_key$fips == 36085]
+# Richmond County, NY
+```
+
+
+### State Data
+
+```{r}
+#| label: state_time_series
+#| fig-height: 12
+#| fig-width: 12
+# get_str(dp_state)
+vars <- unique(dp_state$variable_name)
+state_series_vars <- map(vars, ~ {
+  count <- dp_state %>% 
+    filter(variable_name == .x) %>% 
+    pull(year) %>% 
+    unique() %>% 
+    length()
+  if (count > 1) {
+    return(.x)
+  } else {
+    return(NULL)
+  }
+}) %>% 
+  keep(~ !is.null(.x)) %>%
+  unlist()
+
+# Save vector of series vars for later
+datasets$state_series_vars <- state_series_vars
+
+plots <- map(state_series_vars, ~ {
+  df <- dp_state %>%
+    filter(variable_name == .x) %>%
+    ggplot(aes(x = year, y = value)) +
+    geom_line(
+      aes(group = fips),
+      alpha = 0.3
+    ) +
+    geom_smooth(
+      method = 'loess',
+      lwd = 2
+      # col = '#154734'
+    ) +
+    labs(
+      x = 'Year',
+      title = .x
+    ) +
+    theme_classic()
+})
+
+ggarrange(
+  plotlist = plots,
+  ncol = 3,
+  nrow = 4
+)
+```
+
+```{r}
+#| label: saveRDS
+#| echo: false
+# Save dataset list to use elsewhere
+saveRDS(datasets, 'data/data_paper/datasets.rds')
+```
+
+
+## Correlations
+
+```{r}
+#| label: correlations
+#| output: false
+
+# metric crosswalk
+crosswalk <- data_paper_meta %>% 
+  select(variable_name, metric)
+
+# Get df ready
+get_str(metrics)
+df <- metrics %>% 
+  filter(variable_name %in% data_paper_meta$variable_name) %>% 
+  get_latest_year() %>% 
+  filter_fips('new') %>% 
+  mutate(variable_name = str_split_i(variable_name, '_', 1)) %>% 
+  left_join(crosswalk) %>% 
+  select(-variable_name) %>% 
+  pivot_wider(
+    id_cols = fips,
+    values_from = value,
+    names_from = metric
+  )
+get_str(df)
+# skimr::skim(df)
+
+# Arrange metrics in order of dimensions
+get_str(data_paper_meta)
+order <- data_paper_meta %>% 
+  arrange(dimension, metric) %>% 
+  filter(metric %in% names(df)) %>% 
+  pull(metric)
+
+# check
+# data_paper_meta %>% 
+#   arrange(dimension, variable_name) %>% 
+#   filter(variable_name %in% names(df)) %>% 
+#   select(variable_name, dimension) %>% 
+#   group_by(dimension) %>% 
+#   summarize(count = n())
+
+df <- df %>% 
+  select(fips, any_of(order))
+get_str(df)
+
+mat <- df %>% 
+  na.omit() %>% 
+  select(-fips) %>% 
+  as.matrix()
+
+# Get correlations
+cor <- rcorr(mat, type = 'pearson')
+
+# Melt correlation values and rename columns
+cor_r <- reshape::melt(cor$r) %>% 
+  setNames(c('var_1', 'var_2', 'value'))
+
+# Save p values
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+# Make heatmap
+corplot <- cor_r %>% 
+  ggplot(aes(var_1, var_2, fill = value)) + 
+  geom_tile() + 
+  scale_fill_gradient2(
+    low = "#762a83", 
+    mid = "white", 
+    high = "#1b7837", 
+    midpoint = 0
+  ) +
+  geom_hline(yintercept = 9.5) +
+  geom_hline(yintercept = 19.5) +
+  geom_hline(yintercept = 31.5) +
+  geom_hline(yintercept = 36.5) +
+  geom_vline(xintercept = 9.5) +
+  geom_vline(xintercept = 19.5) +
+  geom_vline(xintercept = 31.5) +
+  geom_vline(xintercept = 36.5) +
+  theme(
+    axis.text.x = element_text(
+      hjust = 1, 
+      angle = 45
+    )
+    # axis.text.x = element_blank(),
+    # axis.ticks.x = element_blank()
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL
+  )
+ggsave(
+  plot = corplot,
+  filename = 'outputs/corr_plot.png',
+  height = 8,
+  width = 9.5,
+  dpi = 300
+)
+```
+
+
+```{r}
+#| echo: false
+#| fig-height: 12
+#| fig-width: 10
+corplot
+```
+
+

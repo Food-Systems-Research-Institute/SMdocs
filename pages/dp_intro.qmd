@@ -6,8 +6,11 @@ format:
 editor_options: 
   chunk_output_type: console
 warnings: false
+engine: knitr
 execute:
   cache: false
+filters:
+    - ../dev/show-lang.lua
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
@@ -33,10 +36,12 @@ pacman::p_load(
   tidyr,
   htmltools,
   reactable,
-  downloadthis
+  downloadthis,
+  reticulate
 )
 pacman::p_load_gh('ChrisDonovan307/projecter')
 source('dev/get_dimension_ggraph.R')
+source('dev/data_pipeline_functions.R')
 sm_load()
 conflicts_prefer(
   dplyr::select(),
@@ -51,7 +56,7 @@ conflicts_prefer(
 
 ## Introduction {#sec-intro}
 
-This group of pages will present a survey of secondary data at the regional/county level in the Northeast. Add more context here eventually.
+This group of pages will present a survey of secondary data at the regional/county level in the Northeast. Note that the graphs and CSV below have been updated to reflect some liberties and consolidation we have done with the framework to make it a bit more presentable. 
 
 ## Dimension Graphs
 
@@ -70,7 +75,7 @@ tree <- data_paper_tree %>%
       ) %>% 
       str_remove(' of food business')
   )
-get_reactable(tree)
+# get_reactable(tree)
 
 # Set up list of results
 plots <- list()
@@ -80,7 +85,7 @@ plots <- list()
 
 ```{r}
 #| fig-height: 5
-#| fig-width: 15
+#| fig-width: 12
 plots$econ <- get_dimension_ggraph(
   framework_df = tree,
   include_metrics = TRUE,
@@ -109,8 +114,8 @@ plots$env
 ### Health
 
 ```{r}
-#| fig-height: 8
-#| fig-width: 10
+#| fig-height: 7
+#| fig-width: 12
 plots$health <- get_dimension_ggraph(
   framework_df = tree,
   include_metrics = TRUE,
@@ -125,7 +130,7 @@ plots$health
 
 ```{r}
 #| fig-height: 5
-#| fig-width: 12
+#| fig-width: 14
 plots$prod <- get_dimension_ggraph(
   framework_df = tree,
   include_metrics = TRUE,
@@ -139,7 +144,7 @@ plots$prod
 ### Social
 
 ```{r}
-#| fig-height: 6
+#| fig-height: 8
 #| fig-width: 13
 plots$social <- get_dimension_ggraph(
   framework_df = tree,
@@ -151,19 +156,18 @@ plots$social <- get_dimension_ggraph(
 plots$social
 ```
 
-## TEMP
-
 ```{r}
 #| label: save_pngs
 #| include: false
+# NOT SHOWN - using this to save some PNGs of graphs
 # df of dimensions to use
 dims <- data.frame(
-  heights = c(5, 7, 8, 5, 6),
+  heights = c(5, 7, 6, 5, 6),
   widths = c(15, 10, 10, 12, 13)
 )
 pwalk(list(plots, names(plots), 1:nrow(dims)), \(plot, name, i) {
   ggsave(
-    paste0('temp/c3/', name, '.png'),
+    paste0('outputs/dimension_', name, 'graph.png'),
     plot = plot,
     height = dims[i, 1],
     width = dims[i, 2],
@@ -174,106 +178,33 @@ pwalk(list(plots, names(plots), 1:nrow(dims)), \(plot, name, i) {
 })
 ```
 
-```{r}
-#| label: correlations
-#| include: false
-#| eval: false
-pacman::p_load(
-  Hmisc,
-  tidyr,
-  reshape2
-)
 
-get_str(metrics)
-df <- metrics %>% 
-  filter(variable_name %in% data_paper_meta$variable_name) %>% 
-  get_latest_year() %>% 
-  filter_fips('new') %>% 
-  mutate(variable_name = str_split_i(variable_name, '_', 1)) %>%
-  pivot_wider(
-    id_cols = fips,
-    values_from = value,
-    names_from = variable_name
-  )
-get_str(df)
-skimr::skim(df)
+## Sunburst
 
-# Arrange metrics in order of dimensions
-get_str(data_paper_meta)
-order <- data_paper_meta %>% 
-  arrange(dimension, variable_name) %>% 
-  filter(variable_name %in% names(df)) %>% 
-  pull(variable_name)
-# check
-data_paper_meta %>% 
-  arrange(dimension, variable_name) %>% 
-  filter(variable_name %in% names(df)) %>% 
-  select(variable_name, dimension) %>% 
-  group_by(dimension) %>% 
-  summarize(count = n())
+Little bit messy but maybe fun. Need to fix labels.
 
-df <- df %>% 
-  select(fips, any_of(order))
-get_str(df)
+```{python}
+import plotly.io as pio
+import plotly.express as px
+import plotly.graph_objects as go
 
-mat <- df %>% 
-  na.omit() %>% 
-  select(-fips) %>% 
-  as.matrix()
+# Set renderer to notebook
+pio.renderers.default = "notebook_connected"
 
-# Get correlations
-cor <- rcorr(mat, type = 'pearson')
+# Pull data from R
+tree = r.tree
 
-# Melt correlation values and rename columns
-cor_r <- reshape::melt(cor$r) %>% 
-  setNames(c('var_1', 'var_2', 'value'))
-
-# Save p values
-cor_p <- melt(cor$P)
-p.value <- cor_p$value
-
-# Make heatmap with custom text aesthetic for tooltip
-corplot <- cor_r %>% 
-  ggplot(aes(var_1, var_2, fill = value)) + 
-  geom_tile() + 
-  scale_fill_gradient2(
-    low = "#762a83", 
-    mid = "white", 
-    high = "#1b7837", 
-    midpoint = 0
-  ) +
-  geom_hline(yintercept = 14.5) +
-  geom_hline(yintercept = 31.5) +
-  geom_hline(yintercept = 45.5) +
-  geom_hline(yintercept = 49.5) +
-  geom_vline(xintercept = 14.5) +
-  geom_vline(xintercept = 31.5) +
-  geom_vline(xintercept = 45.5) +
-  geom_vline(xintercept = 49.5) +
-  theme(
-    axis.text.x = element_text(
-      hjust = 1, 
-      angle = 45
-    )
-    # axis.text.x = element_blank(),
-    # axis.ticks.x = element_blank()
-  ) +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = NULL
-  )
-corplot
-ggsave(
-  plot = corplot,
-  filename = 'temp/c3/corplot.png',
-  height = 10,
-  width = 12,
-  dpi = 300
+# Create plot
+px.sunburst(
+  tree,
+  path=["dimension", "index", "indicator", "metric"]
 )
 ```
 
+
 ## Dimension Table
+
+Easier to interpret table with the framework.
 
 ```{r}
 data_paper_tree %>% 
