@@ -23,12 +23,12 @@ project:
     - pages/indicator_correlations.qmd
     - pages/validation.qmd
     - pages/sensitivity.qmd
-    - temp/test_notebook.ipynb
-    - temp/test_python.qmd
-    - temp/test_python_and_r.qmd
-    - temp/bambi.ipynb
-    - temp/test_lang_knitr.qmd #
-    - temp/test_lang_julia.qmd #
+    # - temp/test_notebook.ipynb
+    # - temp/test_python.qmd
+    # - temp/test_python_and_r.qmd
+    # - temp/bambi.ipynb
+    # - temp/test_lang_knitr.qmd #
+    # - temp/test_lang_julia.qmd #
     - pages/dp_intro.qmd
     - pages/dp_eda.qmd
     - pages/dp_analysis.qmd
@@ -114,22 +114,22 @@ website:
             href: pages/dp_analysis.qmd
           # - text: Aggregation
           #   href: pages/dp_aggregation.qmd
-      - section: Testing
-        contents:
-          - text: Bayesian Network
-            href: pages/regional_bn.qmd
-          - text: Regression with Bambi
-            href: temp/bambi.ipynb
-          - text: Knitr Engine
-            href: temp/test_lang_knitr.qmd
-          - text: Julia Engine
-            href: temp/test_lang_julia.qmd
-          - text: Python Notebook
-            href: temp/test_notebook.ipynb
-          - text: Python.qmd
-            href: temp/test_python.qmd
-          - text: Python and R.qmd
-            href: temp/test_python_and_r.qmd
+      # - section: Testing
+      #   contents:
+      #     - text: Bayesian Network
+      #       href: pages/regional_bn.qmd
+      #     - text: Regression with Bambi
+      #       href: temp/bambi.ipynb
+      #     - text: Knitr Engine
+      #       href: temp/test_lang_knitr.qmd
+      #     - text: Julia Engine
+      #       href: temp/test_lang_julia.qmd
+      #     - text: Python Notebook
+      #       href: temp/test_notebook.ipynb
+      #     - text: Python.qmd
+      #       href: temp/test_python.qmd
+      #     - text: Python and R.qmd
+      #       href: temp/test_python_and_r.qmd
 
 format:
   html:

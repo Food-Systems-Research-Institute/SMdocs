@@ -19,4 +19,6 @@ tmaptools
 sf
 Hmisc
 reshape2
+mapview
+viridisLite
 SMdata

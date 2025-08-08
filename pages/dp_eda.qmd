@@ -8,7 +8,7 @@ editor_options:
   chunk_output_type: console
 warnings: false
 execute:
-  cache: true
+  cache: false
 ---
 
 ```{r}
@@ -36,7 +36,9 @@ pacman::p_load(
   tmaptools,
   sf,
   Hmisc,
-  reshape2
+  reshape2,
+  mapview,
+  viridisLite
 )
 
 # Functions
@@ -63,6 +65,7 @@ conflicts_prefer(
 
 ```{r}
 #| output: false
+#| freeze: true
 # Create a list of the clean datasets we will use throughout analysis
 datasets <- list()
 
@@ -236,7 +239,7 @@ Exploring distributions using latest year available for each metric.
 #| label: metric_distributions_county
 #| fig-height: 25
 #| fig-width: 10
-
+#| freeze: true
 # Get skews of variables
 dat <- dp_county %>% 
   get_latest_year() %>% 
@@ -305,7 +308,7 @@ dat <- dp_state %>%
 get_distributions(
   df = dat,
   n_col = 4,
-  n_row = 4
+  n_row = 5
 )
 ```
 
@@ -316,22 +319,26 @@ Turns out this map is not as interesting as I'd hoped it would be. Currently sho
 
 ```{r}
 #| output: false
-# Get DF of 
-bbox_new <- st_bbox(neast_counties_2024)
+## Get bounding box - commenting out to avoid downloading this each time
+# bbox_new <- st_bbox(neast_counties_2024)
 # xrange <- bbox_new$xmax - bbox_new$xmin # range of x values
 # yrange <- bbox_new$ymax - bbox_new$ymin # range of y values
 # 
-# bbox_new[1] <- bbox_new[1] - (0.5 * xrange) # xmin - left
-# bbox_new[3] <- bbox_new[3] + (0.5 * xrange) # xmax - right
-# bbox_new[2] <- bbox_new[2] - (0.5 * yrange) # ymin - bottom
-# bbox_new[4] <- bbox_new[4] + (0.5 * yrange) # ymax - top
+# bbox_new[1] <- bbox_new[1] - (0.05 * xrange) # xmin - left
+# bbox_new[3] <- bbox_new[3] + (0.05 * xrange) # xmax - right
+# bbox_new[2] <- bbox_new[2] - (0.05 * yrange) # ymin - bottom
+# bbox_new[4] <- bbox_new[4] + (0.05 * yrange) # ymax - top
+# 
+# tiles <- get_tiles(
+#   bbox_new,
+#   provider = "CartoDB.PositronNoLabels",
+#   zoom = 7,
+#   crop = TRUE
+# )
+# terra::saveRDS(tiles, 'data/data_paper/neast_tiles.rds')
 
-tiles <- get_tiles(
-  bbox_new,
-  provider = "CartoDB.PositronNoLabels",
-  zoom = 7,
-  crop = TRUE
-)
+# Load tiles for background
+tiles <- terra::readRDS('data/data_paper/neast_tiles.rds')
 
 # Counts of unique metrics in each county
 var_counts <- datasets$dp_metrics_all %>% 
@@ -342,7 +349,6 @@ var_counts <- datasets$dp_metrics_all %>%
 # Join 
 df <- neast_counties_2024 %>% 
   left_join(var_counts)
-# get_str(df)
 
 tmap_mode('plot')
 map <- tm_shape(tiles) +
@@ -352,16 +358,18 @@ map <- tm_shape(tiles) +
     "n_metrics", 
     palette = "brewer.greens",
     title = "Metric\nRepresentation",
-    # breaks = 10,
-    # fill.legend = tm_legend(
-    #   reverse = TRUE
-    # )
+    breaks = seq(21, 45, 3),
+    # col = 'white',
+    fill.legend = tm_legend(
+      reverse = TRUE
+    )
   ) +
+  tm_borders(col = 'black', lwd = 1.25) +
   tm_layout(
     legend.position = c('left', 'top'),
     legend.title.fontface = 'bold',
     legend.width = 8,
-    legend.height = 10,
+    legend.height = 12,
     legend.title.size = 1.1,
     inner.margins = rep(0, 4),
     outer.margins = rep(0, 4),
@@ -378,13 +386,81 @@ tmap_save(
 
 ```{r}
 #| echo: false
+#| fig-height: 8
+#| fig-width: 8
 map
 ```
+
+Let's try an interactive map so we can explore each dimension
+
+```{r}
+#| label: var_counts
+#| output: false
+# How many total metrics at county level
+total_count <- datasets$dp_metrics_all %>% 
+  filter_fips('counties') %>% 
+  pull(variable_name) %>% 
+  unique %>% 
+  length
+total_count
+
+# Dimension crosswalk
+crosswalk <- data_paper_meta %>% 
+  select(dimension, variable_name)
+
+dimension_counts <- data_paper_meta %>% 
+  select(dimension, variable_name, resolution) %>% 
+  filter(!is.na(variable_name), resolution != 'state') %>% 
+  select(-resolution) %>% 
+  group_by(dimension) %>% 
+  summarize(count = n())
+dimension_counts
+  
+# Counts of unique metrics in each county by dimension
+var_counts <- datasets$dp_metrics_all %>% 
+  filter_fips('counties') %>% 
+  left_join(crosswalk) %>% 
+  group_by(dimension, fips) %>% 
+  summarize(
+    n_metrics = length(unique(variable_name))
+  ) %>% 
+  left_join(dimension_counts) %>% 
+  mutate(prop_metrics = n_metrics / count)
+var_counts
+ 
+# Join 
+df <- neast_counties_2024 %>% 
+  left_join(var_counts)
+get_str(df)
+
+maps <- df %>%
+  split(.$dimension) %>%
+  imap(~ {
+    to_hide <- ifelse(.y == 'economics', FALSE, TRUE)
+    mapview(
+      .x, 
+      layer.name = .y, 
+      zcol = "prop_metrics",
+      hide = to_hide,
+      # col.regions = brewer.pal(5, "Greens"),
+      col.regions = rev(viridis(5)),
+      alpha.regions = 0.7
+    )
+  }) 
+```
+
+```{r}
+#| echo: false
+Reduce(`+`, maps)
+```
+
+Hamilton, warren counties missing data in NY, and Cameron county in PA stick out in particular. And lots of economic data missing from much of Maine and New Hampshire.
 
 
 ## Time Series
 
 Plot time series of average variable that has at least 2 data points. These are raw, unweighted values.
+
 
 ### County Data
 
@@ -442,7 +518,7 @@ plots <- map(series_vars, ~ {
 ggarrange(
   plotlist = plots,
   ncol = 4,
-  nrow = 9
+  nrow = 11
 )
 ```
 
@@ -531,6 +607,8 @@ saveRDS(datasets, 'data/data_paper/datasets.rds')
 ```{r}
 #| label: correlations
 #| output: false
+#| fig-height: 10
+#| fig-width: 10
 
 # metric crosswalk
 crosswalk <- data_paper_meta %>% 
@@ -631,7 +709,7 @@ ggsave(
 
 ```{r}
 #| echo: false
-#| fig-height: 12
+#| fig-height: 8
 #| fig-width: 10
 corplot
 ```

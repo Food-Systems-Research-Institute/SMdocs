@@ -32,11 +32,13 @@ pacman::p_load(
   parallelly,
   splm,
   spdep,
+  spatialreg,
   sf,
   skimr,
   ggplot2,
   ggpubr,
-  readr
+  readr,
+  flextable
 )
 
 # Functions
@@ -60,7 +62,7 @@ results <- list()
 
 ## Linear Models
 
-First trying linear models with time as independent variable. Not really using these for anything but comparison though. Normalizing dataset before we do anything else.
+First trying linear models with time as independent variable. Normalizing dataset before we do anything else.
 
 ```{r}
 #| label: normalize
@@ -68,7 +70,7 @@ First trying linear models with time as independent variable. Not really using t
 datasets <- readRDS('data/data_paper/datasets.rds')
 get_str(datasets$dp_metrics_county)
 
-# Function to min max 0 to 1
+# Function to min max then scale to 0 to 100 for percent change
 min_max <- function(x) {
   normed <- (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
   normed * 100
@@ -87,20 +89,7 @@ datasets$dp_metrics_county <- map(vars, ~ {
 get_str(datasets$dp_metrics_county)  
 ```
 
-```{r}
-#| eval: false
-#| echo: false
-# Adding weight variables eventually
-get_str(datasets$dp_weights)
-datasets$dp_weights$variable_name %>% 
-  unique()
-get_str(data_paper_meta)
-data_paper_meta %>% 
-  select(variable_name, weighting) %>% 
-  filter(variable_name %in% datasets$dp_metrics_county$variable_name)
-```
-
-Run regressions:
+### Regressions
 
 ```{r}
 #| label: trend_analysis
@@ -228,9 +217,17 @@ framed_outputs <- data_paper_meta %>%
   select(dimension, index, indicator, metric, variable_name) %>% 
   right_join(model_outputs, by = join_by(variable_name == term))
 
+# Save some outputs to OneDrive
 write_csv(
   framed_outputs,
   'outputs/lm_reg_outputs.csv'
+)
+flex <- framed_outputs %>% 
+  select(-variable_name) %>% 
+  as_flextable(show_coltype = FALSE)
+flextable::save_as_docx(
+  flex,
+  path = 'outputs/lm_reg_outputs.docx'
 )
 
 get_reactable(
@@ -249,8 +246,11 @@ get_reactable(
 
 ### Figure
 
+Figure below shows 95% confidence intervals for the coefficients of each metric, including state as a covariate.
+
 ```{r}
-get_str(framed_outputs)
+#| label: regression_figure
+# get_str(framed_outputs)
 
 out <- framed_outputs %>% 
   mutate(
@@ -281,9 +281,173 @@ out
 ```
 
 
+```{r}
+#| label: get_weights
+#| eval: false
+#| include: false
+
+### Weights section
+# Adding weight variables eventually
+get_str(datasets$dp_weights)
+datasets$dp_weights$variable_name %>% 
+  unique()
+get_str(data_paper_meta)
+data_paper_meta %>% 
+  select(variable_name, weighting) %>% 
+  filter(variable_name %in% datasets$dp_metrics_county$variable_name)
+
+# Define weights crosswalk from metrics to variable names here
+# TODO: Work this into data export from SMdata package
+weights_crosswalk <- data.frame(
+  metric = c(
+    'GDP',
+    'GDP from agriculture',
+    'Total number of producers',
+    'Total number of operations',
+    'Population (annual)',
+    'Population (5 year)',
+    'Acres of land',
+    'Acres of water',
+    'Area under agriculture (CDL)',
+    'Number employed in agriculture',
+    'Acres operated',
+    'Acres of cropland ag land',
+    'Acres of woodland ag land',
+    'Acres of pasture ag land',
+    'Total farm income',
+    'Total sales from commodities'
+  ),
+  variable_name = c(
+    'gdp',
+    'gdpFromAg',
+    'nProducers',
+    'nOperations',
+    'populationAnnual',
+    'population5year',
+    'landAcres',
+    'waterAcres',
+    'cdlAgAcres',
+    'annualAvgEmplvlNAICS11',
+    'acresOperated',
+    'agLandCropAcres',
+    'agLandWoodAcres',
+    'agLandPastureAcres',
+    'totalFarmIncome',
+    'totalSalesCommodities'
+  )
+)
+weights_crosswalk
+
+# Take our county data and join weight variable names to it
+weights_crosswalk <- data_paper_meta %>% 
+  select(variable_name, weighting) %>% 
+  filter(variable_name %in% datasets$dp_metrics_county$variable_name) %>% 
+  left_join(weights_crosswalk, by = join_by(weighting == metric)) %>% 
+  setNames(c('variable_name', 'weight_metric', 'weight_variable')) %>% 
+  select(-weight_metric)
+  # mutate(weight_variable = ifelse(is.na(weight_variable, 'none',)))
+get_str(weights_crosswalk)
+weights_crosswalk
+
+# Get weight for each var, given fips and year. This is what we use to join to
+# our county metrics
+get_str(datasets$dp_weights)
+weights_by_year_fips <- datasets$dp_weights %>% 
+  rename(
+    weight_variable = variable_name,
+    weight_value = value
+  ) %>% 
+  left_join(weights_crosswalk) %>% 
+  drop_na(year) %>% 
+  mutate(across(c(year, weight_value), ~ as.numeric(.x)))
+weights_by_year_fips
+get_str(weights_by_year_fips)
+head(weights_by_year_fips, 100)
+tail(weights_by_year_fips, 100)
+# Unweighted vars have NAs, that's good. We will just drop them in join
+
+# Now join to county metrics
+get_str(weights_by_year_fips)
+get_str(datasets$dp_metrics_county)
+dat <- datasets$dp_metrics_county %>% 
+  mutate(year = as.numeric(year)) %>% 
+  group_by(fips, year, variable_name) %>% 
+  left_join(weights_by_year_fips) %>% 
+  arrange(variable_name, fips, year) %>% 
+  ungroup()
+head(dat, 100)
+tail(dat, 100)
+print(dat[25000:26000, ])
+
+# Issue is that weighting variables are not necessary lined up with our metrics.
+# Annual population from census is not included for all counties - only the ones
+# with large enough population. For these, we will have to use 5-year population
+
+# If we want to weight them, we either have to use 5-year values or assume
+# population doesn't change over 5 years, or spread them out evenly between each
+# 5-year known value
+dat %>% 
+  filter(str_detect(fips, '^50'), ) %>% 
+```
+
+
 ## Spatial Panel Regressions
 
-### Setup
+### Spatialreg
+
+`spatialreg` for spatially weighted regressions, but not panels. First trying a single example with gini. Note that because Census data spans the change in administrative boundaries in CT, we can't use CT at all here.
+
+```{r}
+#| label: spatialreg_test
+#| output: false
+#| eval: false
+get_str(datasets$dp_metrics_county)
+
+dat <- datasets$dp_metrics_county %>% 
+  pivot_wider(
+    id_cols = fips:year,
+    names_from = variable_name,
+    values_from = value
+  )
+get_str(dat)
+
+# Remove CT. Drop na ginis, but, get complete cases for relevant fips and years
+dat <- dat %>% 
+  select(fips, year, gini) %>% 
+  filter(str_detect(fips, '^09', negate = TRUE)) %>%
+  drop_na(gini) %>% 
+  complete(fips, year)
+get_str(dat)
+
+# Get our listw based on counties
+lw <- neast_counties_2024 %>% 
+  # filter(fips %in% dat$fips) %>% 
+  poly2nb() %>% 
+  nb2listw(zero.policy = TRUE)
+
+# Get better one for long-format
+lw <- neast_counties_2024 %>% 
+  right_join(dat) %>% 
+  select(fips, year, gini) %>% 
+  # filter(fips %in% dat$fips) %>% 
+  poly2nb() %>% 
+  nb2listw(zero.policy = TRUE)
+
+# Run regression
+m1e <- errorsarlm(
+  gini ~ year,
+  data = dat,
+  listw = lw
+)
+summary(m1e)
+```
+
+
+### Panels
+
+#### Test Run
+
+Trying splm package for spatially weighted panel models. This is not going well though - too much missing data means it is very difficult to get a balanced panel.
 
 ```{r}
 #| label: splm
@@ -301,22 +465,21 @@ get_str(dat)
 
 # Get rid of geometry, make our df a plm object
 df <- dat %>% 
-  # select(fips, year, gini) %>% 
-  select(fips, year, otyAnnualAvgEstabsCountPctChgNAICS11) %>% 
+  select(fips, year, gini) %>%
   filter(str_detect(fips, '^09', negate = TRUE)) %>%
   na.omit() %>%
   plm::pdata.frame()
 get_str(df)
 
 # Get balanced fips
-all_years <- sort(unique(df$year))
-balanced_fips <- df %>%
-  group_by(fips) %>%
-  filter(setequal(sort(year), all_years)) %>%
-  pull(fips) %>%
-  unique()
-df <- df %>%
-  filter(fips %in% balanced_fips)
+# all_years <- sort(unique(df$year))
+# balanced_fips <- df %>%
+#   group_by(fips) %>%
+#   filter(setequal(sort(year), all_years)) %>%
+#   pull(fips) %>%
+#   unique()
+# df <- df %>%
+#   filter(fips %in% balanced_fips)
 
 # Get our listw based on counties
 lw <- neast_counties_2024 %>% 
@@ -324,10 +487,18 @@ lw <- neast_counties_2024 %>%
   poly2nb() %>% 
   nb2listw(zero.policy = TRUE)
 
+# Pooling model
+pool <- spml(
+  gini ~ as.numeric(year),
+  data = df, 
+  listw = lw,
+  model = 'pooling'
+)
+summary(pool)
+
 # Try FE error model with rentMedianPercHH
 fe_err <- spml(
-  # gini ~ as.numeric(year), 
-  otyAnnualAvgEstabsCountPctChgNAICS11 ~ as.numeric(year), 
+  gini ~ as.numeric(year),
   data = df, 
   listw = lw,
   model = 'within'
@@ -353,28 +524,27 @@ summary(re_err)
 ```
 
 
-### Run Models
+#### All Models
 
 So the workflow for each variable is:
 
 1. Make sure panel is balanced, i.e. see if Connecticut will be a problem. Adjust accordingly.
-2. Create list weight object based on the counties that are represented by in the variable. I think we have to do this for each variable individually... should double check though.
-3. Run FE and RE model with year as numeric.
-4. Hausman test with FE and RE model. If sig, report FE, if not, report RE
-
-Try it:
+2. Create list weight object based on the counties that are represented by in the variable.
+3. No longer bothing with FE and RE models, just doing pooling.
 
 ```{r}
 #| label: spregs_over_vars
 #| eval: false
+get_str(datasets$dp_county_wide)
+dat <- datasets$dp_county_wide %>% 
+  select(fips, year, any_of(datasets$series_vars))
 get_str(dat)
 
 # Get vector of vars
 vars <- names(dat)[!names(dat) %in% c('fips', 'year')]
 
 # Map over each var and do steps 1 through 5
-# plan(multisession, cores = availableCores(omit = 2))
-out <- map(vars[2], \(var) {
+out <- map(vars, \(var) {
   
   cat('\n\nStarting', var)
   
@@ -382,77 +552,45 @@ out <- map(vars[2], \(var) {
     # Reduce to relevant variable, remove NAs
     df <- dat %>% 
       select(fips, year, !!sym(var)) %>% 
+      filter(str_detect(fips, '^09', negate = TRUE)) %>% 
       na.omit()
+      # complete(fips, year)
+      # mutate(!!sym(var) := ifelse(is.na(!!sym(var)), 0, !!sym(var)))
     
     # 1. Only use fips that produce balanced panel
-    balanced_fips <- df %>% 
-      group_by(fips) %>% 
-      filter(n() == length(unique(df$year))) %>% 
-      pull(fips) %>% 
+    balanced_fips <- df %>%
+      group_by(fips) %>%
+      filter(n() == length(unique(df$year))) %>%
+      pull(fips) %>%
       unique()
-    
-    df <- df %>% 
-      filter(fips %in% balanced_fips)
-    
-    # 2. Create lw object
-    # lw <- neast_counties_2024 %>% 
-    #   filter(fips %in% balanced_fips) %>% 
-    #   filter(fips %in% df$fips) %>%
-    #   poly2nb() %>% 
-    #   nb2listw(zero.policy = TRUE)
-    
-    # Keep only relevant counties
-    county_sf <- neast_counties_2024 %>%
-      filter(fips %in% balanced_fips)
-    
-    # Ensure same order as df
-    county_sf <- county_sf %>%
-      arrange(match(fips, unique(df$fips)))
-    
-    # Neighbor list
-    nb <- poly2nb(county_sf)
-    if (any(card(nb) == 0)) {
-      stop("One or more counties have no neighbors!")
-    }
-    
-    # Create listw with correct region.id
-    lw <- nb2listw(nb, style = "W", zero.policy = TRUE)
-    # attr(lw, "region.id") <- as.character(county_sf$fips)
-    stopifnot(length(attr(lw, "region.id")) == length(unique(df$fips)))
-    stopifnot(all(attr(lw, "region.id") %in% rownames(df)))
-    ##
-    cat('\nCreated lw')
 
+    df <- df %>%
+      filter(fips %in% balanced_fips)
+
+    # 2. Create lw object
+    lw <- neast_counties_2024 %>%
+      filter(fips %in% balanced_fips) %>%
+      # filter(fips %in% df$fips) %>%
+      poly2nb() %>%
+      nb2listw(zero.policy = TRUE)
     
-    
+    cat('\nCreated lw')
     
     # Make df a plm object
     df <- plm::pdata.frame(df)
     
-    # 3. Run FE and RE
+    # 3. Run pooled panel model
     formula <- as.formula(paste(var, "~ as.numeric(year)"))
-    fe <- spml(
+    model <- spml(
       formula,
-      data = df, 
+      data = df,
       listw = lw,
-      model = 'within'
+      index = c('fips', 'year'),
+      model = 'pooling'
     )
-    re <- spml(
-      formula,
-      data = df, 
-      listw = lw,
-      model = 'random'
-    )
-    cat('\nRan models')
-    
-    # 4. Hausman test. If sig, use FE
-    test <- sphtest(fe, re)
-    if (test$p.value < 0.05) {
-      model <- fe
-    } else {
-      model <- re
-    }
-    cat('\nRan Hausman')
+   
+    cat('\nRan model')
+   
     return(list('model' = model, 'fips' = balanced_fips))
     },
     error = function(e) {
@@ -461,27 +599,25 @@ out <- map(vars[2], \(var) {
   )
   
 }, .progress = FALSE) %>% 
- setNames(c(vars[2]))
-# plan(sequential)
+ setNames(c(vars))
 out
 get_str(out)
+get_str(out[[1]])
+summary(out$gini$model)
+map(out, ~ .x['fips'])
 
 # Save for posterity
 saveRDS(out, 'data/objects/spatial_regression_outs.rds')
 ```
 
-<!-- Check how they turned out: -->
+Check how they turned out:
 
 ```{r}
-#| eval: false
+#| output: false
 out <- readRDS('data/objects/spatial_regression_outs.rds')
 
 # How many were successful
 perc_success <- mean(map(out, class) == 'list') * 100
-
-get_str(out[[1]])
-get_str(out)
-out
 
 # Check out errors only
 errors <- out %>% 
@@ -490,13 +626,15 @@ errors
 error_vars <- names(errors)
 ```
 
+`{r} length(error_vars)` models failed: `{r} paste(error_vars, collapse = ', ')`. This includes all the Forest Inventory Analysis vars. Note to check this and see if they are missing data for lots of counties.
+
+
 ### Results
 
 Check out the successful models:
 
 ```{r}
 #| label: spatial_panel_table
-#| eval: false
 model_outs <- out %>% 
   keep(is.list)
 # get_str(model_outs)
@@ -523,10 +661,10 @@ spatial_table <- imap(model_outs, ~ {
     
     df <- data.frame(
       n = length(.x$fips),
-      type = .x[[1]]$type,
+      # type = .x[[1]]$type,
       var = .y,
-      phi = sum$errcomp[1],
-      rho = sum$errcomp[2],
+      # phi = sum$errcomp[1],
+      rho = sum$ErrCompTable[[1]],
       est = coefs[1],
       se = coefs[2],
       t = coefs[3],
@@ -568,16 +706,16 @@ spatial_table <- imap(model_outs, ~ {
   )
 }) %>% 
   bind_rows()
-# get_str(spatial_table)
+get_str(spatial_table)
 
 # Round off and make table
 spatial_table %>% 
   mutate(
-    across(c(phi:p), ~ format(round(.x, 3), nsmall = 3)),
-    type = case_when(
-      str_detect(type, 'random') ~ 'RE',
-      .default = NA
-    )
+    across(c(rho:p), ~ format(round(.x, 3), nsmall = 3))
+    # type = case_when(
+    #   str_detect(type, 'random') ~ 'RE',
+    #   .default = NA
+    # )
   ) %>% 
   get_reactable(
     defaultColDef = colDef(minWidth = 50),
@@ -589,23 +727,23 @@ spatial_table %>%
         name = 'β'
       ),
       outcome = colDef(minWidth = 75),
-      rho = colDef(name = 'ρ'),
-      phi = colDef(name = 'φ'),
+      # rho = colDef(name = 'ρ'),
+      # phi = colDef(name = 'φ'),
       p = colDef(name = 'p-value'),
       'p-value' = colDef(minWidth = 100)
     )
   )
 ```
 
-<!-- - n: Number of counties included in regression -->
+- n: Number of counties included in regression
 <!-- - type: FE = fixed effects (every county has $\beta$), RE = random effects (counties have different $\beta$s) -->
-<!-- - var: Metric -->
+- var: Metric
 <!-- - $\phi$: Spatial autocorrelation in idiosyncratic attributes (counties) -->
-<!-- - $\rho$: Spatial autocorrelation in residual errors (omitted variables) -->
-<!-- - $\beta$: Regression coefficient of year on the variable -->
-<!-- - se: standard error of $\beta$ -->
-<!-- - t: test statistic -->
-<!-- - p-value: p-value -->
-<!-- - sig: whether p is < 0.05 -->
-<!-- - reverse: whether the metric has been reversed so that lower numbers are better and higher numbers are worse (like food insecurity) -->
-<!-- - outcome: if the regression is significant, is it getting better or worse? Accounts for the 'reverse' variable -->
+- $\rho$: Spatial autocorrelation in residual errors (omitted variables)
+- $\beta$: Regression coefficient of year on the variable
+- se: standard error of $\beta$
+- t: test statistic
+- p-value: p-value
+- sig: whether p is < 0.05
+- reverse: whether the metric has been reversed so that lower numbers are better and higher numbers are worse (like food insecurity)
+- outcome: if the regression is significant, is it getting better or worse? Accounts for the 'reverse' variable
