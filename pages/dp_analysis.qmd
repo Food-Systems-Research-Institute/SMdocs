@@ -110,7 +110,44 @@ res <- map(datasets$series_vars, ~ {
           state_fips = str_sub(fips, end = 2)
         ) %>% 
         left_join(state_link, by = join_by(state_fips == fips))
-      model <- lm(normed_value ~ year + state_code, data = df)
+      # get_str(df)
+      
+      # Add weighting variable
+      weight_var <- weights_crosswalk$weight_variable[weights_crosswalk$variable_name == .x]
+      weight_df <- datasets$dp_weights
+      if (!is.na(weight_var) && length(weight_var) > 0) {
+        weight_df <- weight_df %>% 
+          filter(variable_name == weight_var)
+      }
+      weight_df <- weight_df %>% 
+        mutate(
+          value = as.numeric(value), 
+          year = as.numeric(year)
+        ) %>% 
+        rename(
+          weight_value = value, 
+          weight_name = variable_name,
+          weight_year = year
+        )
+      # get_str(weight_df)
+      
+      # Depending on whether weight has a year, do appropriate join
+      # Note that we might be losing some years here if weighting var doesn't
+      # cover the variable enough
+      if (all(is.na(weight_df$weight_year))) {
+        df <- df %>% 
+          inner_join(weight_df, by = join_by(fips))
+      } else {
+        df <- df %>% 
+          inner_join(weight_df, by = join_by(fips, year == weight_year))
+      }
+      
+      # Weighted OLS 
+      model <- lm(
+        normed_value ~ year + state_code, 
+        data = df,
+        weights = weight_value
+      )
       return(model)
     },
     error = function(e) {
@@ -120,6 +157,7 @@ res <- map(datasets$series_vars, ~ {
 }) %>% 
   setNames(c(datasets$series_vars)) %>%
   discard(\(x) is.null(x))
+get_str(res)
 ```
 
 Now that we have regression outputs, let's put them in a table to see which ones were significant. 
@@ -306,6 +344,7 @@ weights_crosswalk <- data.frame(
     'Total number of operations',
     'Population (annual)',
     'Population (5 year)',
+    'Population (5 year, smooth)',
     'Acres of land',
     'Acres of water',
     'Area under agriculture (CDL)',
@@ -323,7 +362,8 @@ weights_crosswalk <- data.frame(
     'nProducers',
     'nOperations',
     'populationAnnual',
-    'population5year',
+    'population5Year',
+    'population5YearSmooth',
     'landAcres',
     'waterAcres',
     'cdlAgAcres',
@@ -344,27 +384,28 @@ weights_crosswalk <- data_paper_meta %>%
   filter(variable_name %in% datasets$dp_metrics_county$variable_name) %>% 
   left_join(weights_crosswalk, by = join_by(weighting == metric)) %>% 
   setNames(c('variable_name', 'weight_metric', 'weight_variable')) %>% 
-  select(-weight_metric)
-  # mutate(weight_variable = ifelse(is.na(weight_variable, 'none',)))
+  select(-weight_metric) %>% 
+  na.omit()
 get_str(weights_crosswalk)
 weights_crosswalk
 
 # Get weight for each var, given fips and year. This is what we use to join to
 # our county metrics
 get_str(datasets$dp_weights)
+get_str(weights_crosswalk)
 weights_by_year_fips <- datasets$dp_weights %>% 
   rename(
     weight_variable = variable_name,
     weight_value = value
   ) %>% 
-  left_join(weights_crosswalk) %>% 
-  drop_na(year) %>% 
+  left_join(weights_crosswalk, by = join_by(weight_variable)) %>% 
+  # drop_na(year) %>% 
   mutate(across(c(year, weight_value), ~ as.numeric(.x)))
 weights_by_year_fips
 get_str(weights_by_year_fips)
 head(weights_by_year_fips, 100)
 tail(weights_by_year_fips, 100)
-# Unweighted vars have NAs, that's good. We will just drop them in join
+
 
 # Now join to county metrics
 get_str(weights_by_year_fips)
@@ -375,19 +416,10 @@ dat <- datasets$dp_metrics_county %>%
   left_join(weights_by_year_fips) %>% 
   arrange(variable_name, fips, year) %>% 
   ungroup()
+get_str(dat)
 head(dat, 100)
 tail(dat, 100)
 print(dat[25000:26000, ])
-
-# Issue is that weighting variables are not necessary lined up with our metrics.
-# Annual population from census is not included for all counties - only the ones
-# with large enough population. For these, we will have to use 5-year population
-
-# If we want to weight them, we either have to use 5-year values or assume
-# population doesn't change over 5 years, or spread them out evenly between each
-# 5-year known value
-dat %>% 
-  filter(str_detect(fips, '^50'), ) %>% 
 ```
 
 
