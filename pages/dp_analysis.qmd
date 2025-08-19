@@ -38,7 +38,8 @@ pacman::p_load(
   ggplot2,
   ggpubr,
   readr,
-  flextable
+  flextable,
+  officer
 )
 
 # Functions
@@ -91,8 +92,71 @@ get_str(datasets$dp_metrics_county)
 
 ### Regressions
 
+First create a weights crosswalk that links `variable_name`s to weighting variables.
+
 ```{r}
-#| label: trend_analysis
+#| label: weights_crosswalk
+#| output: false
+weights_crosswalk <- data.frame(
+  metric = c(
+    'GDP',
+    'GDP from agriculture',
+    'Total number of producers',
+    'Total number of operations',
+    'Population (annual)',
+    'Population (5 year)',
+    'Population (5 year, smooth)',
+    'Acres of land',
+    'Acres of water',
+    'Area under agriculture (CDL)',
+    'Number employed in agriculture',
+    'Acres operated',
+    'Acres operated, smooth',
+    'Acres of cropland ag land',
+    'Acres of woodland ag land',
+    'Acres of pasture ag land',
+    'Total farm income',
+    'Total sales from commodities'
+  ),
+  variable_name = c(
+    'gdp',
+    'gdpFromAg',
+    'nProducers',
+    'nOperations',
+    'populationAnnual',
+    'population5Year',
+    'population5YearSmooth',
+    'landAcres',
+    'waterAcres',
+    'cdlAgAcres',
+    'annualAvgEmplvlNAICS11',
+    'acresOperated',
+    'acresOperatedSmooth',
+    'agLandCropAcres',
+    'agLandWoodAcres',
+    'agLandPastureAcres',
+    'totalFarmIncome',
+    'totalSalesCommodities'
+  )
+)
+weights_crosswalk
+
+# Link weight vars to the appropriate variables
+weights_crosswalk <- data_paper_meta %>% 
+  select(variable_name, weighting) %>% 
+  filter(variable_name %in% datasets$dp_metrics_county$variable_name) %>% 
+  left_join(weights_crosswalk, by = join_by(weighting == metric)) %>% 
+  setNames(c('variable_name', 'weight_metric', 'weight_variable')) %>% 
+  select(-weight_metric) %>% 
+  na.omit()
+get_str(weights_crosswalk)
+weights_crosswalk
+```
+
+Run regressions for all time series variables where time points > 1.
+
+```{r}
+#| label: regressions
 #| output: false
 # Get a crosswalk to add state as a fixed effect
 state_link <- fips_key %>% 
@@ -157,13 +221,14 @@ res <- map(datasets$series_vars, ~ {
 }) %>% 
   setNames(c(datasets$series_vars)) %>%
   discard(\(x) is.null(x))
+get_str(res, 1)
 get_str(res)
 ```
 
 Now that we have regression outputs, let's put them in a table to see which ones were significant. 
 
 ```{r}
-#| label: make_table
+#| label: make_reg_table
 #| output: false
 # Put together one table of results from all models, add stars
 res_df <- imap(res, ~ {
@@ -185,7 +250,7 @@ res_df
 n_metrics <- nrow(res_df)
 
 # How many are significant
-perc_sig <- mean(res_df$sig == '*') * 100
+(perc_sig <- mean(res_df$sig == '*', na.rm = TRUE) * 100)
 ```
 
 We have `{r} n_metrics` metrics, `{r} round(perc_sig, 1)` of which vary significantly over time.
@@ -216,7 +281,7 @@ reverse <- directions %>%
   pull(variable_name)
 
 # Reduce to only vars that have a direction.
-# Here we lose 4 metrics
+# Here we lose a few metrics
 model_outputs <- raw_outputs %>% 
   filter(term %in% directions$variable_name) %>% 
   mutate(
@@ -238,7 +303,7 @@ lost <- setdiff(raw_outputs$term, model_outputs$term) %>%
 
 # proportion getting better or worse
 (tab <- table(model_outputs$outcome))
-(percs <- prop.table(tab) * 100)
+(percs <- round(prop.table(tab), 3) * 100)
 ```
 
 `{r} percs[['better']]`% are getting better and `{r} percs[['worse']]`% are getting worse. We drop `{r} length(lost)` metrics here that don't have proper directions (`{r} lost`).
@@ -249,25 +314,40 @@ Check out table with outputs for each regression. Filter by significance and out
 ### Table
 
 ```{r}
-#| label: model_table
-# Add framework info
+#| label: reg_table
+## Add framework info
 framed_outputs <- data_paper_meta %>% 
   select(dimension, index, indicator, metric, variable_name) %>% 
   right_join(model_outputs, by = join_by(variable_name == term))
 
-# Save some outputs to OneDrive
+
+## Save some outputs for paper
+# Raw csv for reference
 write_csv(
   framed_outputs,
   'outputs/lm_reg_outputs.csv'
 )
-flex <- framed_outputs %>% 
-  select(-variable_name) %>% 
-  as_flextable(show_coltype = FALSE)
-flextable::save_as_docx(
-  flex,
-  path = 'outputs/lm_reg_outputs.docx'
-)
 
+# Make table for Word
+framed_outputs %>% 
+  select(-c(
+    dimension,
+    index, 
+    indicator,
+    variable_name,
+    trend,
+    reverse,
+    sig,
+    starts_with('ci')
+  )) %>% 
+  flextable() %>% 
+  flextable::font(part = "all", fontname = "Times New Roman") %>% 
+  save_as_docx(
+    path = 'outputs/lm_reg_outputs.docx'
+  )
+
+
+## Create interactive table for Quarto
 get_reactable(
   framed_outputs, 
   defaultPageSize = 10,
@@ -289,13 +369,13 @@ Figure below shows 95% confidence intervals for the coefficients of each metric,
 ```{r}
 #| label: regression_figure
 # get_str(framed_outputs)
-
-out <- framed_outputs %>% 
+lm_figure <- framed_outputs %>% 
   mutate(
     across(c(estimate, starts_with('ci')), as.numeric),
     outcome = ifelse(is.na(outcome), 'no change', outcome) %>% 
       snakecase::to_title_case()
   ) %>% 
+  filter(!variable_name %in% c('voterTurnout', 'mobilityDisability')) %>% 
   ggplot(aes(x = estimate, y = reorder(metric, estimate))) +
   geom_point(aes(color = outcome)) +
   geom_errorbarh(aes(xmin = ci_low, xmax = ci_high, color = outcome)) +
@@ -309,15 +389,14 @@ out <- framed_outputs %>%
   )
 ggsave(
   'outputs/lm_conf_ints.png',
-  plot = out,
+  plot = lm_figure,
   width = 8,
   height = 5,
   units = 'in',
   bg = 'white'
 )
-out
+lm_figure
 ```
-
 
 ```{r}
 #| label: get_weights
@@ -325,6 +404,10 @@ out
 #| include: false
 
 ### Weights section
+# This did not work out well. We use the crosswalk above but we are ditching 
+# the idea of trying to join them all at once. Instead, we make joins with
+# weights for each specific variable in the regression process.
+
 # Adding weight variables eventually
 get_str(datasets$dp_weights)
 datasets$dp_weights$variable_name %>% 
@@ -391,35 +474,35 @@ weights_crosswalk
 
 # Get weight for each var, given fips and year. This is what we use to join to
 # our county metrics
-get_str(datasets$dp_weights)
-get_str(weights_crosswalk)
-weights_by_year_fips <- datasets$dp_weights %>% 
-  rename(
-    weight_variable = variable_name,
-    weight_value = value
-  ) %>% 
-  left_join(weights_crosswalk, by = join_by(weight_variable)) %>% 
-  # drop_na(year) %>% 
-  mutate(across(c(year, weight_value), ~ as.numeric(.x)))
-weights_by_year_fips
-get_str(weights_by_year_fips)
-head(weights_by_year_fips, 100)
-tail(weights_by_year_fips, 100)
-
-
-# Now join to county metrics
-get_str(weights_by_year_fips)
-get_str(datasets$dp_metrics_county)
-dat <- datasets$dp_metrics_county %>% 
-  mutate(year = as.numeric(year)) %>% 
-  group_by(fips, year, variable_name) %>% 
-  left_join(weights_by_year_fips) %>% 
-  arrange(variable_name, fips, year) %>% 
-  ungroup()
-get_str(dat)
-head(dat, 100)
-tail(dat, 100)
-print(dat[25000:26000, ])
+# get_str(datasets$dp_weights)
+# get_str(weights_crosswalk)
+# weights_by_year_fips <- datasets$dp_weights %>% 
+#   rename(
+#     weight_variable = variable_name,
+#     weight_value = value
+#   ) %>% 
+#   left_join(weights_crosswalk, by = join_by(weight_variable)) %>% 
+#   # drop_na(year) %>% 
+#   mutate(across(c(year, weight_value), ~ as.numeric(.x)))
+# weights_by_year_fips
+# get_str(weights_by_year_fips)
+# head(weights_by_year_fips, 100)
+# tail(weights_by_year_fips, 100)
+# 
+# 
+# # Now join to county metrics
+# get_str(weights_by_year_fips)
+# get_str(datasets$dp_metrics_county)
+# dat <- datasets$dp_metrics_county %>% 
+#   mutate(year = as.numeric(year)) %>% 
+#   group_by(fips, year, variable_name) %>% 
+#   left_join(weights_by_year_fips) %>% 
+#   arrange(variable_name, fips, year) %>% 
+#   ungroup()
+# get_str(dat)
+# head(dat, 100)
+# tail(dat, 100)
+# print(dat[25000:26000, ])
 ```
 
 
@@ -461,7 +544,6 @@ lw <- neast_counties_2024 %>%
 lw <- neast_counties_2024 %>% 
   right_join(dat) %>% 
   select(fips, year, gini) %>% 
-  # filter(fips %in% dat$fips) %>% 
   poly2nb() %>% 
   nb2listw(zero.policy = TRUE)
 
@@ -482,7 +564,7 @@ summary(m1e)
 Trying splm package for spatially weighted panel models. This is not going well though - too much missing data means it is very difficult to get a balanced panel.
 
 ```{r}
-#| label: splm
+#| label: splm_test_run
 #| output: false
 #| eval: false
 get_str(datasets$dp_metrics_county)
@@ -497,21 +579,28 @@ get_str(dat)
 
 # Get rid of geometry, make our df a plm object
 df <- dat %>% 
-  select(fips, year, gini) %>%
+  # select(fips, year, gini) %>%
+  select(fips, year, otyAnnualAvgEstabsCountPctChgNAICS11) %>%
   filter(str_detect(fips, '^09', negate = TRUE)) %>%
   na.omit() %>%
   plm::pdata.frame()
 get_str(df)
 
+df %>% 
+  group_by(year, fips) %>% 
+  summarize(n()) %>% 
+  arrange(year, fips) %>% 
+  print(n = 500)
+
 # Get balanced fips
-# all_years <- sort(unique(df$year))
-# balanced_fips <- df %>%
-#   group_by(fips) %>%
-#   filter(setequal(sort(year), all_years)) %>%
-#   pull(fips) %>%
-#   unique()
-# df <- df %>%
-#   filter(fips %in% balanced_fips)
+all_years <- sort(unique(df$year))
+balanced_fips <- df %>%
+  group_by(fips) %>%
+  filter(setequal(sort(year), all_years)) %>%
+  pull(fips) %>%
+  unique()
+df <- df %>%
+  filter(fips %in% balanced_fips)
 
 # Get our listw based on counties
 lw <- neast_counties_2024 %>% 
@@ -528,7 +617,7 @@ pool <- spml(
 )
 summary(pool)
 
-# Try FE error model with rentMedianPercHH
+# Try FE error model
 fe_err <- spml(
   gini ~ as.numeric(year),
   data = df, 
@@ -546,26 +635,29 @@ re_err <- spml(
 )
 summary(re_err)
 
-# Check to use RE or FE, see whether x_it related to a_i (idiosyncratic error)
-test <- sphtest(fe_err, re_err)
-test
-# Not sig: use RE, more efficient
+# Try lagsarlm
+lagsar <- lagsarlm(
+  otyAnnualAvgEstabsCountPctChgNAICS11 ~ as.numeric(year),
+  # gini ~ as.numeric(year),
+  data = df,
+  listw = lw
+)
+summary(lagsar)
 
-# Check RE output
-summary(re_err)
+# # Check to use RE or FE, see whether x_it related to a_i (idiosyncratic error)
+# test <- sphtest(fe_err, re_err)
+# test
+# # Not sig: use RE, more efficient
+# 
+# # Check RE output
+# summary(re_err)
 ```
 
 
 #### All Models
 
-So the workflow for each variable is:
-
-1. Make sure panel is balanced, i.e. see if Connecticut will be a problem. Adjust accordingly.
-2. Create list weight object based on the counties that are represented by in the variable.
-3. No longer bothing with FE and RE models, just doing pooling.
-
 ```{r}
-#| label: spregs_over_vars
+#| label: spml_models
 #| eval: false
 get_str(datasets$dp_county_wide)
 dat <- datasets$dp_county_wide %>% 
@@ -637,19 +729,140 @@ get_str(out)
 get_str(out[[1]])
 summary(out$gini$model)
 map(out, ~ .x['fips'])
+map(out, ~ summary(.x[[1]]))
 
 # Save for posterity
 saveRDS(out, 'data/objects/spatial_regression_outs.rds')
+```
+
+
+#### All Models Weighted
+
+```{r}
+#| label: spml_models_weighted
+#| eval: false
+get_str(datasets$dp_county_wide)
+dat <- datasets$dp_county_wide %>% 
+  select(fips, year, any_of(datasets$series_vars))
+get_str(dat)
+
+# Get vector of vars
+vars <- names(dat)[!names(dat) %in% c('fips', 'year')]
+
+
+## Normalization
+get_str(dat)
+dat <- dat %>% 
+  mutate(across(all_of(vars), ~ min_max(.x)))
+get_str(dat)  
+map(dat, ~ range(.x, na.rm = TRUE))
+
+ 
+## Regressions
+out <- map(vars, \(var) {
+# out <- map('treeDiversity', \(var) {
+  cat('\n\nStarting', var)
+  
+  tryCatch({
+    # Reduce to relevant variable, remove NAs
+    df <- dat %>% 
+      select(fips, year, !!sym(var)) %>% 
+      filter(str_detect(fips, '^09', negate = TRUE)) %>% 
+      na.omit()
+    
+    ## Add weights
+    weight_var <- weights_crosswalk$weight_variable[weights_crosswalk$variable_name == var]
+    weight_df <- datasets$dp_weights
+    if (!is.na(weight_var) && length(weight_var) > 0) {
+      weight_df <- weight_df %>%
+        filter(variable_name == weight_var)
+    }
+    weight_df <- weight_df %>%
+      mutate(
+        value = as.numeric(value),
+        year = as.numeric(year)
+      ) %>%
+      rename(
+        weight_value = value,
+        weight_name = variable_name,
+        weight_year = year
+      )
+    # Do join depending on whether weight var has a year
+    if (all(is.na(weight_df$weight_year))) {
+      df <- df %>%
+        inner_join(weight_df, by = join_by(fips))
+    } else {
+      df <- df %>%
+        inner_join(weight_df, by = join_by(fips, year == weight_year))
+    }
+    # Weight the variable appropriately
+    var_weighted <- paste0(var, '_weighted')
+    df <- df %>%
+      mutate(!!sym(var_weighted) := !!sym(var) * sqrt(weight_value)) %>% 
+      drop_na(!!sym(var_weighted))
+    
+    ##  Only use fips that produce balanced panel
+    balanced_fips <- df %>%
+      group_by(fips) %>%
+      filter(n() == length(unique(df$year))) %>%
+      pull(fips) %>%
+      unique()
+    df <- df %>%
+      filter(fips %in% balanced_fips)
+    
+    ## Create lw object
+    lw <- neast_counties_2024 %>%
+      filter(fips %in% balanced_fips) %>%
+      filter(fips %in% df$fips) %>%
+      poly2nb() %>%
+      nb2listw(zero.policy = TRUE)
+    cat('\nCreated lw')
+    
+    ## Run pooled panel model
+    df <- plm::pdata.frame(df)
+    # formula <- as.formula(paste(var_weighted, "~ as.numeric(year)"))
+    formula <- as.formula(paste(var_weighted, "~ as.numeric(year)"))
+    model <- spml(
+      formula,
+      data = df,
+      listw = lw,
+      index = c('fips', 'year'),
+      model = 'pooling'
+    )
+   
+    cat('\nRan model')
+   
+    return(list('model' = model, 'fips' = balanced_fips))
+    },
+    error = function(e) {
+      return(paste0('Error with ', var, ': ', e))
+    }
+  )
+}, .progress = FALSE) %>% 
+ setNames(c(vars))
+out
+out[[2]]
+out$cropDiversity # check for smoothed weighting var
+get_str(out)
+get_str(out[[1]])
+summary(out$gini$model)
+map(out, ~ .x['fips'])
+map(out, ~ summary(.x[[1]]))
+# Getting errors because there are NO balanced fips
+
+# Save for posterity
+saveRDS(out, 'data/objects/spatial_panel_outs.rds')
 ```
 
 Check how they turned out:
 
 ```{r}
 #| output: false
-out <- readRDS('data/objects/spatial_regression_outs.rds')
+out <- readRDS('data/objects/spatial_panel_outs.rds')
+get_str(out)
 
 # How many were successful
-perc_success <- mean(map(out, class) == 'list') * 100
+(perc_success <- mean(map(out, class) == 'list') * 100)
 
 # Check out errors only
 errors <- out %>% 
@@ -658,30 +871,18 @@ errors
 error_vars <- names(errors)
 ```
 
-`{r} length(error_vars)` models failed: `{r} paste(error_vars, collapse = ', ')`. This includes all the Forest Inventory Analysis vars. Note to check this and see if they are missing data for lots of counties.
+`{r} length(error_vars)` models failed: `{r} paste(error_vars, collapse = ', ')`.
 
-
-### Results
+#### Results
 
 Check out the successful models:
+
+##### Table
 
 ```{r}
 #| label: spatial_panel_table
 model_outs <- out %>% 
   keep(is.list)
-# get_str(model_outs)
-# get_str(model_outs[[1]])
-# get_str(model_outs[[1]][[1]])
-
-# Check model type
-# model_outs[[1]][[1]]$type
-# table(map_chr(model_outs, ~ .x[[1]]$type))
-# They are all RE models - no FE
-
-
-## Test out outcomes
-# sum <- summary(model_outs[[1]][[1]])
-# coefs <- sum$CoefTable[2, ]
 
 # Make a table
 spatial_table <- imap(model_outs, ~ {
@@ -691,6 +892,12 @@ spatial_table <- imap(model_outs, ~ {
     sum <- summary(.x[[1]])
     coefs <- sum$CoefTable[2, ]
     
+    # Add confidence intervals
+    conf_ints <- confint(.x[[1]])[2, ] %>% 
+      as.vector()
+    # df$ci_low <- conf_ints[1]
+    # df$ci_high <- conf_ints[2]
+  
     df <- data.frame(
       n = length(.x$fips),
       # type = .x[[1]]$type,
@@ -700,6 +907,8 @@ spatial_table <- imap(model_outs, ~ {
       est = coefs[1],
       se = coefs[2],
       t = coefs[3],
+      ci_low = conf_ints[1],
+      ci_high = conf_ints[2],
       p = coefs[4]
     ) 
     
@@ -738,16 +947,24 @@ spatial_table <- imap(model_outs, ~ {
   )
 }) %>% 
   bind_rows()
-get_str(spatial_table)
+# get_str(spatial_table)
 
-# Round off and make table
+
+## Make table for Word
+spatial_table %>% 
+  select(n:t, p, outcome) %>% 
+  mutate(across(c(rho:p), ~ format(round(.x, 3), nsmall = 3))) %>% 
+  flextable() %>% 
+  flextable::font(part = "all", fontname = "Times New Roman") %>% 
+  save_as_docx(
+    path = 'outputs/spatial_reg_outputs.docx'
+  )
+
+
+## Round off and make table for Quarto
 spatial_table %>% 
   mutate(
     across(c(rho:p), ~ format(round(.x, 3), nsmall = 3))
-    # type = case_when(
-    #   str_detect(type, 'random') ~ 'RE',
-    #   .default = NA
-    # )
   ) %>% 
   get_reactable(
     defaultColDef = colDef(minWidth = 50),
@@ -759,8 +976,7 @@ spatial_table %>%
         name = 'β'
       ),
       outcome = colDef(minWidth = 75),
-      # rho = colDef(name = 'ρ'),
-      # phi = colDef(name = 'φ'),
+      rho = colDef(name = 'ρ'),
       p = colDef(name = 'p-value'),
       'p-value' = colDef(minWidth = 100)
     )
@@ -779,3 +995,58 @@ spatial_table %>%
 - sig: whether p is < 0.05
 - reverse: whether the metric has been reversed so that lower numbers are better and higher numbers are worse (like food insecurity)
 - outcome: if the regression is significant, is it getting better or worse? Accounts for the 'reverse' variable
+
+##### Figure
+
+```{r}
+#| label: spatial_reg_figure
+# get_str(framed_outputs)
+# get_str(spatial_table)
+framed_outputs <- data_paper_meta %>% 
+  select(dimension, index, indicator, metric, variable_name) %>% 
+  right_join(spatial_table, by = join_by(variable_name == var))
+# get_str(framed_outputs)
+
+# Save some outputs to OneDrive
+write_csv(
+  framed_outputs,
+  'outputs/spatial_reg_outputs.csv'
+)
+
+flex <- framed_outputs %>% 
+  select(-variable_name) %>% 
+  as_flextable(show_coltype = FALSE)
+flextable::save_as_docx(
+  flex,
+  path = 'outputs/spatial_reg_outputs.docx'
+)
+out <- framed_outputs %>% 
+  mutate(
+    across(c(est, starts_with('ci')), as.numeric),
+    outcome = case_when(
+      outcome == '' ~ 'no change',
+      .default = outcome
+    ) %>% 
+      snakecase::to_title_case()
+  ) %>% 
+  ggplot(aes(x = est, y = reorder(metric, est))) +
+  geom_point(aes(color = outcome)) +
+  geom_errorbarh(aes(xmin = ci_low, xmax = ci_high, color = outcome)) +
+  geom_vline(xintercept = 0) +
+  scale_color_manual(values = c('darkgreen', 'grey', 'purple')) +
+  theme_minimal() +
+  labs(
+    x = 'Average Weighted Change per Year',
+    y = 'Metric',
+    color = 'Outcome'
+  )
+ggsave(
+  'outputs/spatial_reg_conf_ints.png',
+  plot = out,
+  width = 8,
+  height = 5,
+  units = 'in',
+  bg = 'white'
+)
+out
+```
