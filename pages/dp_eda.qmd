@@ -42,7 +42,7 @@ pacman::p_load(
 )
 
 pacman::p_load_gh(
-  'ChrisDonovan307/projecter', 
+  'ChrisDonovan307/projecter',
   'Food-Systems-Research-Institute/SMdata'
 )
 
@@ -361,7 +361,6 @@ map <- tm_shape(tiles) +
     palette = "brewer.greens",
     title = "Metric\nRepresentation",
     breaks = seq(21, 45, 3),
-    # col = 'white',
     fill.legend = tm_legend(
       reverse = TRUE
     )
@@ -456,7 +455,7 @@ maps <- df %>%
 Reduce(`+`, maps)
 ```
 
-Hamilton, warren counties missing data in NY, and Cameron county in PA stick out in particular. And lots of economic data missing from much of Maine and New Hampshire.
+Hamilton, Warren counties missing data in NY, and Cameron county in PA stick out in particular. And lots of economic data missing from much of Maine and New Hampshire.
 
 
 ## Time Series
@@ -631,27 +630,38 @@ df <- metrics %>%
     names_from = metric
   )
 get_str(df)
-# skimr::skim(df)
 
-# Arrange metrics in order of dimensions
+# Get an ordered framework from which we will pull metrics in alphabetical order
+# and get the counts of metrics per dimension that we will use to draw lines
+# between dimensions
 get_str(data_paper_meta)
-order <- data_paper_meta %>% 
+ordered_framework <- data_paper_meta %>% 
   arrange(dimension, metric) %>% 
-  filter(metric %in% names(df)) %>% 
+  filter(metric %in% names(df))
+ordered_framework
+
+# Get line placements to divide dimensions
+# Reverse them to match alphabetical order of dimensions top to bottom
+# Get cumulative sums to space them out across graph
+# Then add 0.5 to each to put them in between cells
+line_placements <- ordered_framework %>% 
+  group_by(dimension) %>% 
+  summarize(count = n()) %>% 
+  pull(count) %>% 
+  rev() %>% 
+  cumsum() %>% 
+  {. + 0.5}
+line_placements
+
+# Reorder our df in proper metric order
+metric_order <- ordered_framework %>% 
   pull(metric)
-
-# check
-# data_paper_meta %>% 
-#   arrange(dimension, variable_name) %>% 
-#   filter(variable_name %in% names(df)) %>% 
-#   select(variable_name, dimension) %>% 
-#   group_by(dimension) %>% 
-#   summarize(count = n())
-
 df <- df %>% 
-  select(fips, any_of(order))
+  select(fips, any_of(metric_order)) %>% 
+  select(rev(everything()))
 get_str(df)
 
+# Create matrix of values
 mat <- df %>% 
   na.omit() %>% 
   select(-fips) %>% 
@@ -678,14 +688,14 @@ corplot <- cor_r %>%
     high = "#1b7837", 
     midpoint = 0
   ) +
-  geom_hline(yintercept = 9.5) +
-  geom_hline(yintercept = 19.5) +
-  geom_hline(yintercept = 31.5) +
-  geom_hline(yintercept = 36.5) +
-  geom_vline(xintercept = 9.5) +
-  geom_vline(xintercept = 19.5) +
-  geom_vline(xintercept = 31.5) +
-  geom_vline(xintercept = 36.5) +
+  geom_hline(yintercept = line_placements[1]) +
+  geom_hline(yintercept = line_placements[2]) +
+  geom_hline(yintercept = line_placements[3]) +
+  geom_hline(yintercept = line_placements[4]) +
+  geom_vline(xintercept = line_placements[1]) +
+  geom_vline(xintercept = line_placements[2]) +
+  geom_vline(xintercept = line_placements[3]) +
+  geom_vline(xintercept = line_placements[4]) +
   theme(
     axis.text.x = element_text(
       hjust = 1, 
@@ -699,6 +709,7 @@ corplot <- cor_r %>%
     y = NULL,
     fill = NULL
   )
+corplot
 ggsave(
   plot = corplot,
   filename = 'outputs/corr_plot.png',
@@ -708,12 +719,9 @@ ggsave(
 )
 ```
 
-
 ```{r}
 #| echo: false
 #| fig-height: 8
 #| fig-width: 10
 corplot
 ```
-
-

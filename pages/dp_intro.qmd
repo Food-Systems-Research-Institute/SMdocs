@@ -41,7 +41,7 @@ pacman::p_load(
 )
 
 pacman::p_load_gh(
-  'ChrisDonovan307/projecter', 
+  'ChrisDonovan307/projecter',
   'Food-Systems-Research-Institute/SMdata'
 )
 

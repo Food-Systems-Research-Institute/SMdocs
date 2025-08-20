@@ -1,6 +1,5 @@
 /.quarto/
 .Rproj.user
-data/sm_data.rds
 .Renviron
 .venv
 
