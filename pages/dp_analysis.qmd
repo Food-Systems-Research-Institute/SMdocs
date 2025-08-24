@@ -42,7 +42,10 @@ pacman::p_load(
   officer
 )
 
-pacman::p_load_gh('ChrisDonovan307/projecter', 'Food-Systems-Research-Institute/SMdata')
+pacman::p_load_gh(
+  'ChrisDonovan307/projecter', 
+  'Food-Systems-Research-Institute/SMdata'
+)
 
 # Functions
 source('dev/get_reactable.R')
@@ -157,6 +160,7 @@ Run regressions for all time series variables where time points > 1.
 ```{r}
 #| label: regressions
 #| output: false
+#| eval: false
 # Get a crosswalk to add state as a fixed effect
 state_link <- fips_key %>% 
   filter(str_length(fips) == 2, fips != '00') %>% 
@@ -173,7 +177,6 @@ res <- map(datasets$series_vars, ~ {
           state_fips = str_sub(fips, end = 2)
         ) %>% 
         left_join(state_link, by = join_by(state_fips == fips))
-      # get_str(df)
       
       # Add weighting variable
       weight_var <- weights_crosswalk$weight_variable[weights_crosswalk$variable_name == .x]
@@ -222,14 +225,19 @@ res <- map(datasets$series_vars, ~ {
   discard(\(x) is.null(x))
 get_str(res, 1)
 get_str(res)
+
+# Save immediate output
+saveRDS(res, 'data/objects/weighted_ols_outs.rds')
 ```
 
-Now that we have regression outputs, let's put them in a table to see which ones were significant. 
+Now that we have regression outputs, let's put them in a table to see which ones change significantly over time.
 
 ```{r}
 #| label: make_reg_table
 #| output: false
 # Put together one table of results from all models, add stars
+res <- readRDS('data/objects/weighted_ols_outs.rds')
+get_str(res)
 res_df <- imap(res, ~ {
   df <- .x %>% 
     tidy() %>% 
@@ -245,14 +253,21 @@ res_df <- imap(res, ~ {
   mutate(sig = ifelse(p.value < 0.05, '*', ''))
 res_df
 
-# How many metrics
-n_metrics <- nrow(res_df)
+# How many time series metrics total
+(n_metrics <- nrow(res_df))
 
-# How many are significant
+# How many change over time significantly
+(
+  n_change <- res_df %>% 
+    filter(sig == '*') %>% 
+    nrow()
+)
+
+# Percentage significant
 (perc_sig <- mean(res_df$sig == '*', na.rm = TRUE) * 100)
 ```
 
-We have `{r} n_metrics` metrics, `{r} round(perc_sig, 1)` of which vary significantly over time.
+Out of `{r} n_metrics` metrics with > 1 time point, we have `{r} n_change` metrics that change significantly over time (`{r} round(perc_sig, 2)`%).
 
 Still have to make sense of the directional values of our metrics. These were defined in the [Aggregation](../pages/aggregation.qmd) from the main analysis branch.
 
@@ -297,15 +312,16 @@ model_outputs <- raw_outputs %>%
 model_outputs
 
 # See what we lost
-lost <- setdiff(raw_outputs$term, model_outputs$term) %>% 
-  paste0(collapse = ', ')
+(lost <- setdiff(raw_outputs$term, model_outputs$term))
+(n_lost <- length(lost))
+(print_lost <- lost %>% paste0(collapse = ', '))
 
 # proportion getting better or worse
 (tab <- table(model_outputs$outcome))
 (percs <- round(prop.table(tab), 3) * 100)
 ```
 
-`{r} percs[['better']]`% are getting better and `{r} percs[['worse']]`% are getting worse. We drop `{r} length(lost)` metrics here that don't have proper directions (`{r} lost`).
+`{r} percs[['better']]`% are getting better and `{r} percs[['worse']]`% are getting worse. We drop `{r} length(lost)` metrics here that don't have proper directions (`{r} print_lost`).
 
 Check out table with outputs for each regression. Filter by significance and outcome. Trend is just whether it is going up or down, outcome is whether that is good or bad.
 
@@ -382,7 +398,7 @@ lm_figure <- framed_outputs %>%
   scale_color_manual(values = c('darkgreen', 'grey', 'purple')) +
   theme_minimal() +
   labs(
-    x = 'Average Percent Change per Year',
+    x = 'Average Relative Percent Change per Year',
     y = 'Metric',
     color = 'Outcome'
   )
@@ -470,38 +486,6 @@ weights_crosswalk <- data_paper_meta %>%
   na.omit()
 get_str(weights_crosswalk)
 weights_crosswalk
-
-# Get weight for each var, given fips and year. This is what we use to join to
-# our county metrics
-# get_str(datasets$dp_weights)
-# get_str(weights_crosswalk)
-# weights_by_year_fips <- datasets$dp_weights %>% 
-#   rename(
-#     weight_variable = variable_name,
-#     weight_value = value
-#   ) %>% 
-#   left_join(weights_crosswalk, by = join_by(weight_variable)) %>% 
-#   # drop_na(year) %>% 
-#   mutate(across(c(year, weight_value), ~ as.numeric(.x)))
-# weights_by_year_fips
-# get_str(weights_by_year_fips)
-# head(weights_by_year_fips, 100)
-# tail(weights_by_year_fips, 100)
-# 
-# 
-# # Now join to county metrics
-# get_str(weights_by_year_fips)
-# get_str(datasets$dp_metrics_county)
-# dat <- datasets$dp_metrics_county %>% 
-#   mutate(year = as.numeric(year)) %>% 
-#   group_by(fips, year, variable_name) %>% 
-#   left_join(weights_by_year_fips) %>% 
-#   arrange(variable_name, fips, year) %>% 
-#   ungroup()
-# get_str(dat)
-# head(dat, 100)
-# tail(dat, 100)
-# print(dat[25000:26000, ])
 ```
 
 
@@ -578,8 +562,8 @@ get_str(dat)
 
 # Get rid of geometry, make our df a plm object
 df <- dat %>% 
-  # select(fips, year, gini) %>%
-  select(fips, year, otyAnnualAvgEstabsCountPctChgNAICS11) %>%
+  select(fips, year, gini) %>%
+  # select(fips, year, otyAnnualAvgEstabsCountPctChgNAICS11) %>%
   filter(str_detect(fips, '^09', negate = TRUE)) %>%
   na.omit() %>%
   plm::pdata.frame()
@@ -636,8 +620,8 @@ summary(re_err)
 
 # Try lagsarlm
 lagsar <- lagsarlm(
-  otyAnnualAvgEstabsCountPctChgNAICS11 ~ as.numeric(year),
-  # gini ~ as.numeric(year),
+  # otyAnnualAvgEstabsCountPctChgNAICS11 ~ as.numeric(year),
+  gini ~ as.numeric(year),
   data = df,
   listw = lw
 )
@@ -740,6 +724,7 @@ saveRDS(out, 'data/objects/spatial_regression_outs.rds')
 ```{r}
 #| label: spml_models_weighted
 #| eval: false
+# TODO: fix this. we broke it here somewhere.
 get_str(datasets$dp_county_wide)
 dat <- datasets$dp_county_wide %>% 
   select(fips, year, any_of(datasets$series_vars))
@@ -867,7 +852,7 @@ get_str(out)
 errors <- out %>% 
   keep(is.character)
 errors
-error_vars <- names(errors)
+(error_vars <- names(errors))
 ```
 
 `{r} length(error_vars)` models failed: `{r} paste(error_vars, collapse = ', ')`.
@@ -968,7 +953,7 @@ spatial_table %>%
   get_reactable(
     defaultColDef = colDef(minWidth = 50),
     columns = list(
-      n = colDef(minWidth = 25),
+      n = colDef(minWidth = 50),
       var = colDef(minWidth = 200),
       est = colDef(
         minWidth = 100,
@@ -981,6 +966,8 @@ spatial_table %>%
     )
   )
 ```
+
+Issue here is that we have to drop many counties for some variables. The `n` column shows number of counties included. Some are well below half - not sure this is a great way to assess change if that is the case.
 
 - n: Number of counties included in regression
 <!-- - type: FE = fixed effects (every county has $\beta$), RE = random effects (counties have different $\beta$s) -->
@@ -999,27 +986,27 @@ spatial_table %>%
 
 ```{r}
 #| label: spatial_reg_figure
-# get_str(framed_outputs)
+# get_str(spatial_framed_outputs)
 # get_str(spatial_table)
-framed_outputs <- data_paper_meta %>% 
+spatial_framed_outputs <- data_paper_meta %>% 
   select(dimension, index, indicator, metric, variable_name) %>% 
   right_join(spatial_table, by = join_by(variable_name == var))
-# get_str(framed_outputs)
+# get_str(spatial_framed_outputs)
 
 # Save some outputs to OneDrive
 write_csv(
-  framed_outputs,
+  spatial_framed_outputs,
   'outputs/spatial_reg_outputs.csv'
 )
 
-flex <- framed_outputs %>% 
+flex <- spatial_framed_outputs %>% 
   select(-variable_name) %>% 
   as_flextable(show_coltype = FALSE)
 flextable::save_as_docx(
   flex,
   path = 'outputs/spatial_reg_outputs.docx'
 )
-out <- framed_outputs %>% 
+out <- spatial_framed_outputs %>% 
   mutate(
     across(c(est, starts_with('ci')), as.numeric),
     outcome = case_when(
@@ -1035,7 +1022,7 @@ out <- framed_outputs %>%
   scale_color_manual(values = c('darkgreen', 'grey', 'purple')) +
   theme_minimal() +
   labs(
-    x = 'Average Weighted Change per Year',
+    x = 'Average Relative Weighted Percent Change per Year',
     y = 'Metric',
     color = 'Outcome'
   )

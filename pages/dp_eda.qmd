@@ -78,7 +78,9 @@ get_str(data_paper_meta)
 meta <- data_paper_meta %>% 
   filter(
     !is.na(variable_name),
-    !variable_name %in% c('tbd', '', 'NONE')
+    !variable_name %in% c('tbd', '', 'NONE'),
+    analyze != '',
+    !is.na(analyze)
   ) %>% 
   select(
     variable_name,
@@ -198,36 +200,6 @@ miss_plot <- miss %>%
 #| fig-height: 8
 #| fig-width: 6
 miss_plot
-```
-
-
-```{r}
-#| label: check_miss
-#| eval: false
-#| include: false
-
-# This is old missing table
-
-vars <- names(dp_county_wide)[!names(dp_county_wide) %in% c(
-  'fips', 
-  'year'
-)]
-miss_table <- map(vars, \(name) {
-  out <- wide %>% 
-    select(fips, year, !!sym(name)) %>% 
-    na.omit() %>% 
-    complete(fips, year)
-  data.frame(
-    var = name,
-    n_miss = sum(is.na(out[[name]])),
-    total = length(out[[name]])
-  ) %>% 
-    mutate(
-      prop_miss = round(n_miss/total, 2)
-    )
-}) %>% 
-  bind_rows() %>% 
-  arrange(desc(prop_miss))
 ```
 
 

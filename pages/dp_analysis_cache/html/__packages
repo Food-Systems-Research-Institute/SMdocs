@@ -1,6 +1,6 @@
-dplyr
 conflicted
 projecter
+dplyr
 htmltools
 stringr
 tidyr
@@ -19,11 +19,11 @@ splm
 spData
 sf
 spdep
+Matrix
+spatialreg
 skimr
 ggpubr
 readr
-SMdata
-Matrix
-spatialreg
 flextable
 officer
+SMdata

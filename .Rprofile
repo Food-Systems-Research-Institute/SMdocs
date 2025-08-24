@@ -1,21 +1,21 @@
-suppressPackageStartupMessages(
-  pacman::p_load(
-    conflicted
-  )
-)
+# suppressPackageStartupMessages(
+#   pacman::p_load(
+#     conflicted
+#   )
+# )
 
 # pacman::p_load_gh('ChrisDonovan307/projecter')
 
-conflicted::conflicts_prefer(
-  dplyr::filter(),
-  dplyr::select(),
-  dplyr::arrange(),
-  dplyr::as_data_frame(),
-  dplyr::summarize(),
-  dplyr::arrange(),
-  dplyr::pull(),
-  .quiet = TRUE
-)
+# conflicted::conflicts_prefer(
+#   dplyr::filter(),
+#   dplyr::select(),
+#   dplyr::arrange(),
+#   dplyr::as_data_frame(),
+#   dplyr::summarize(),
+#   dplyr::arrange(),
+#   dplyr::pull(),
+#   .quiet = TRUE
+# )
 
 options(
   scipen = 999,

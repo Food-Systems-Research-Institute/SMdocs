@@ -9,3 +9,4 @@ temp/
 _*
 graveyard/
 data/
+.Rprofile
