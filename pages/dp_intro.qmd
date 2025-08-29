@@ -37,7 +37,8 @@ pacman::p_load(
   htmltools,
   reactable,
   downloadthis,
-  reticulate
+  reticulate,
+  scico
 )
 
 pacman::p_load_gh(
@@ -71,6 +72,8 @@ This group of pages will present a survey of secondary data at the regional/coun
 #| include: false
 # Filter DF and check data
 source('dev/get_reactable.R')
+
+# Removing soil metrics for now - not suitable for analysis really
 tree <- data_paper_tree %>% 
   mutate(
     indicator = case_when(
@@ -79,7 +82,8 @@ tree <- data_paper_tree %>%
         str_detect(indicator, 'metabolic') ~ 'presence of disease',
         .default = indicator
       ) %>% 
-      str_remove(' of food business')
+      str_remove(' of food business'),
+    metric = paste0(' ', metric)
   )
 # get_reactable(tree)
 
@@ -97,7 +101,16 @@ plots$econ <- get_dimension_ggraph(
   include_metrics = TRUE,
   dimension_in = 'economics',
   y_limits = c(-3.75, 3.25),
-  palette = "scico::batlowW"
+  palette = "scico::batlowW",
+  # leaf_font_size = 4.5,
+  # index_label_size = 0.2,
+  # index_font_size = 4.5,
+  arrow = arrow(
+    angle = 15,
+    length = unit(0.1, 'inches'),
+    ends = 'last',
+    type = 'closed'
+  ) 
 )
 plots$econ
 ```
@@ -111,8 +124,15 @@ plots$env <- get_dimension_ggraph(
   framework_df = tree,
   include_metrics = TRUE,
   dimension_in = 'environment',
-  y_limits = c(-4.5, 3.25),
-  palette = "scico::batlowW"
+  # y_limits = c(-4.5, 3.25),
+  y_limits = c(-3, 3.25),
+  palette = "scico::batlowW",
+  arrow = arrow(
+    angle = 15,
+    length = unit(0.1, 'inches'),
+    ends = 'last',
+    type = 'closed'
+  ) 
 )
 plots$env
 ```
@@ -127,7 +147,13 @@ plots$health <- get_dimension_ggraph(
   include_metrics = TRUE,
   dimension_in = 'health',
   y_limits = c(-4.5, 3.25),
-  palette = "scico::batlowW"
+  palette = "scico::batlowW",
+  arrow = arrow(
+    angle = 15,
+    length = unit(0.1, 'inches'),
+    ends = 'last',
+    type = 'closed'
+  ) 
 )
 plots$health
 ```
@@ -142,7 +168,13 @@ plots$prod <- get_dimension_ggraph(
   include_metrics = TRUE,
   dimension_in = 'production',
   y_limits = c(-4.5, 3.25),
-  palette = "scico::batlowW"
+  palette = "scico::batlowW",
+  arrow = arrow(
+    angle = 15,
+    length = unit(0.1, 'inches'),
+    ends = 'last',
+    type = 'closed'
+  ) 
 )
 plots$prod
 ```
@@ -157,7 +189,13 @@ plots$social <- get_dimension_ggraph(
   include_metrics = TRUE,
   dimension_in = 'social',
   y_limits = c(-3, 3.25),
-  palette = "scico::batlowW"
+  palette = "scico::batlowW",
+  arrow = arrow(
+    angle = 15,
+    length = unit(0.1, 'inches'),
+    ends = 'last',
+    type = 'closed'
+  ) 
 )
 plots$social
 ```
@@ -168,12 +206,12 @@ plots$social
 # NOT SHOWN - using this to save some PNGs of graphs
 # df of dimensions to use
 dims <- data.frame(
-  heights = c(5, 7, 6, 5, 6),
-  widths = c(15, 10, 10, 12, 13)
+  heights = c(5, 6, 6, 5, 6),
+  widths = c(15, 13, 16, 15, 16)
 )
 pwalk(list(plots, names(plots), 1:nrow(dims)), \(plot, name, i) {
   ggsave(
-    paste0('outputs/dimension_', name, 'graph.png'),
+    paste0('outputs/dimension_', name, '_graph.png'),
     plot = plot,
     height = dims[i, 1],
     width = dims[i, 2],

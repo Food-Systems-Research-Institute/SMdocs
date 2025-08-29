@@ -27,3 +27,6 @@ readr
 flextable
 officer
 SMdata
+zoo
+lmtest
+sandwich
