@@ -253,6 +253,7 @@ Check residuals of outputs:
 #| freeze: true
 #| warnings: false
 #| outputs: false
+#| eval: false
 res <- readRDS('data/objects/weighted_ols_outs.rds')
 res_plots <- map(res, ~ {
   try(performance::check_model(.x))
@@ -462,7 +463,8 @@ lm_figure <- framed_outputs %>%
     x = 'Average Relative Percent Change per Year',
     y = 'Metric',
     color = 'Outcome'
-  )
+  ) + 
+  scale_x_continuous(n.breaks = 8)
 ggsave(
   'outputs/lm_conf_ints.png',
   plot = lm_figure,
@@ -550,16 +552,15 @@ weights_crosswalk
 ```
 
 
-## Spatial Panel Regressions
+## Spatial Regressions
 
-### Spatialreg
+### One Model
 
 `spatialreg` for spatially weighted regressions, but not panels. First trying a single example with gini. Note that because Census data spans the change in administrative boundaries in CT, we can't use CT at all here.
 
 ```{r}
 #| label: spatialreg_test
 #| output: false
-#| eval: false
 get_str(datasets$dp_metrics_county)
 
 dat <- datasets$dp_metrics_county %>% 
@@ -573,6 +574,7 @@ get_str(dat)
 # Remove CT. Drop na ginis, but, get complete cases for relevant fips and years
 dat <- dat %>% 
   select(fips, year, gini) %>% 
+  mutate(gini_normed = min_max(gini)) %>% 
   filter(str_detect(fips, '^09', negate = TRUE)) %>%
   drop_na(gini) %>% 
   complete(fips, year)
@@ -585,24 +587,55 @@ lw <- neast_counties_2024 %>%
   poly2nb() %>% 
   nb2listw(zero.policy = TRUE)
 
+# Regular weights
+get_str(weights_crosswalk)
+weight_var <- weights_crosswalk$weight_variable[weights_crosswalk$variable_name == 'gini']
+weight_df <- datasets$dp_weights
+
+# if (!is.na(weight_var) && length(weight_var) > 0) {
+#   weight_df <- weight_df %>% 
+#     filter(variable_name == weight_var)
+# }
+
+weight_df <- weight_df %>% 
+  mutate(
+    value = as.numeric(value), 
+    year = as.numeric(year)
+  ) %>% 
+  rename(
+    weight_value = value, 
+    weight_name = variable_name,
+    weight_year = year
+  ) %>% 
+  filter(weight_name == weight_var, str_length(fips) == 5)
+get_str(weight_df)
+
+get_str(dat)
+dat <- left_join(dat, weight_df, by = join_by(fips, year == weight_year)) %>% 
+  distinct()
+get_str(dat)
+
 # Run regression
-m1e <- errorsarlm(
-  gini ~ year,
+sar <- errorsarlm(
+  gini_normed ~ year,
   data = dat,
-  listw = lw
+  listw = lw,
+  weight = weight_value
 )
-summary(m1e)
+```
+
+```{r}
+summary(sar)
 ```
 
 
-#### All Models
+### All Models
 
 Use `errorsarlm` on all metrics.
 
 ```{r}
 #| label: spatial_reg_all
 #| eval: false
-# herehere
 get_str(datasets$dp_metrics_county)
 state_link <- fips_key %>% 
   filter(str_length(fips) == 2, fips != '00') %>% 
@@ -621,35 +654,60 @@ dat <- datasets$dp_metrics_county %>%
 get_str(dat)
 
 # Get vector of vars
-(vars <- names(dat)[!names(dat) %in% c('fips', 'year')])
+(vars <- names(dat)[!names(dat) %in% c('fips', 'year', 'state_code')])
 
 tic()
 get_time()
-plan(multisession, workers = availableCores(omit = 1))
+plan(multisession, workers = availableCores(omit = 2))
 out <- future_map(vars, \(var) {
-# out <- map(vars[1:5], \(var) {
+# out <- map(vars[1], \(var) {
   cat('\n\nStarting', var)
   
   tryCatch({
     # Reduce to relevant variable, remove NAs
     df <- dat %>% 
       select(fips, year, !!sym(var), state_code) %>% 
-      drop_na(!!sym(var))
+      drop_na(!!sym(var)) %>% 
+      mutate(normed = min_max(!!sym(var)))
  
+    # Regular weights
+    weight_var <- weights_crosswalk$weight_variable[weights_crosswalk$variable_name == var]
+    weight_df <- datasets$dp_weights
+    # if (!is.na(weight_var) && length(weight_var) > 0) {
+    #   weight_df <- weight_df %>% 
+    #     filter(variable_name == weight_var)
+    # }
+    weight_df <- weight_df %>% 
+      mutate(
+        value = as.numeric(value), 
+        year = as.numeric(year)
+      ) %>% 
+      rename(
+        weight_value = value, 
+        weight_name = variable_name,
+        weight_year = year
+      ) %>% 
+      filter(weight_name == weight_var, str_length(fips) == 5)
+    df <- df %>% 
+      inner_join(weight_df, by = join_by(fips, year == weight_year))
+      # distinct()
+    cat('\nJoined to weights')
+
     # List weights
     lw <- neast_counties_2024 %>% 
       right_join(df) %>% 
-      select(fips, year, !!sym(var)) %>% 
+      select(fips, year, normed) %>% 
       poly2nb() %>% 
       nb2listw(zero.policy = TRUE)   
     cat('\nCreated lw')
-
+    
     # Run error sar model
-    formula <- as.formula(paste(var, "~ as.numeric(year) + state_code"))
+    # formula <- as.formula(paste(var, "~ as.numeric(year) + state_code"))
     model <- errorsarlm(
-      formula,
+      normed ~ as.numeric(year) + state_code,
       data = df,
-      listw = lw
+      listw = lw,
+      weights = weight_value
     ) 
     cat('\nRan model')
    
@@ -660,30 +718,219 @@ out <- future_map(vars, \(var) {
     }
   )
 }, .progress = FALSE) %>% 
- setNames(c(vars))
+  setNames(c(vars))
 plan(sequential)
 toc()
+# 6 to 12 minutes or so
 
 out
+out[[1]]
 
-# get_str(out)
+get_str(out)
+map(out, class)
 # get_str(out[[1]])
-# summary(out[[1]]$model)
 # map(out, ~ .x['fips'])
-# map(out, ~ summary(.x[[1]]))
+# map(out, ~ summary(.x))
 
-saveRDS(out, 'data/objects/errorsarlm_outs.rds')
+saveRDS(out, 'data/objects/errorsarlm_weighted_outs.rds')
 ```
+
+
+#### Table
 
 ```{r}
+#| output: false
 sar_outs <- readRDS('data/objects/errorsarlm_outs.rds')
-get_str(sar_outs)
+# sar_outs <- readRDS('data/objects/errorsarlm_weighted_outs.rds')
+sar_outs <- sar_outs[names(sar_outs) != 'state_code'] %>% 
+  keep(~ class(.x) == 'Sarlm')
+get_str(sar_outs, 1)
+get_str(sar_outs[[1]])
+
+summary(sar_outs[[1]])
+sum <- summary(sar_outs[[1]])
+tidy(sum)
+# # No robust errors here
+confint(sar_outs[[1]])
+# confint(sar_outs[[1]])[3, ]
+# confints <- confint(sar_outs[[2]])[3, ]
+
+sar_df <- imap(sar_outs, ~ {
+  tryCatch(
+    {
+      confints <- confint(.x)[3, ]
+      out <- .x %>% 
+        tidy() %>% 
+        filter(str_detect(term, 'year')) %>% 
+        mutate(
+          variable_name = .y,
+          conf_low = confints[1],
+          conf_high = confints[2]
+        ) %>% 
+        select(-term) %>% 
+        mutate(sig = ifelse(p.value < 0.05, '*', ' ') %>% as.character())  
+      return(out)
+    },
+      error = function(e) {
+        message('Error')
+        print(e)
+    }
+  )
+})
+sar_df <- sar_df %>% 
+  keep(is.data.frame) %>% 
+  bind_rows()
+# get_str(sar_df)
+# sar_df
+
+sar_raw_outputs <- sar_df %>% 
+  mutate(trend = case_when(
+    estimate > 0 & sig == '*' ~ 'increasing',
+    sig == '' ~ NA_character_,
+    .default = 'decreasing'
+  ))
+# get_str(sar_raw_outputs)
+# sar_raw_outputs
+
+# Bring in directional values. Keep only the ones without question marks, 
+# clearly higher or lower
+get_str(data_paper_meta)
+directions <- data_paper_meta %>% 
+  filter(str_detect(desirable, 'higher|lower'), !is.na(variable_name)) %>% 
+  mutate(desirable = str_remove_all(desirable, '\\?')) %>% 
+  select(variable_name, desirable)
+reverse <- directions %>% 
+  filter(desirable == 'lower') %>% 
+  pull(variable_name)
+
+# Reduce to only vars that have a direction.
+# Here we lose a few metrics
+sar_model_outputs <- sar_raw_outputs %>% 
+  filter(variable_name %in% directions$variable_name) %>% 
+  mutate(
+    reverse = ifelse(variable_name %in% reverse, TRUE, FALSE),
+    outcome = case_when(
+      reverse == FALSE & trend == 'increasing' ~ 'better',
+      reverse == FALSE & trend == 'decreasing' ~ 'worse',
+      reverse == TRUE & trend == 'increasing' ~ 'worse',
+      reverse == TRUE & trend == 'decreasing' ~ 'better',
+      .default = NA
+    ),
+    outcome = ifelse(sig != '*', NA, outcome),
+    across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))
+  )
+sar_model_outputs
+
+(n_metrics <- dim(sar_model_outputs)[1])
+
+# See what we lost
+(lost <- setdiff(sar_raw_outputs$variable_name, sar_model_outputs$variable_name))
+(n_lost <- length(lost))
+(print_lost <- lost %>% paste0(collapse = ', '))
+
+# proportion getting better or worse
+(tab <- get_table(sar_model_outputs$outcome))
+(percs <- round(prop.table(tab), 3) * 100)
+```
+
+We have `{r} n_metrics` metrics modeled. `{r} percs[['better']]`% are getting better, `{r} percs[['worse']]`% are getting worse, and `{r} percs[3]`% are stable. We drop `{r} length(lost)` metrics here that don't have proper directions (`{r} print_lost`).
+
+```{r}
+#| label: errorsar_reactable
+sar_framed_outputs <- data_paper_meta %>% 
+  select(dimension, index, indicator, metric, variable_name) %>% 
+  right_join(sar_model_outputs, by = join_by(variable_name == variable_name))
+
+## Save some outputs for paper
+# Raw csv for reference
+write_csv(
+  sar_framed_outputs,
+  'outputs/errorsar_reg_outputs.csv'
+)
+
+# Make table for Word
+# framed_outputs %>% 
+#   select(-c(
+#     dimension,
+#     index, 
+#     indicator,
+#     variable_name,
+#     trend,
+#     reverse,
+#     sig,
+#     starts_with('ci')
+#   )) %>% 
+#   flextable() %>% 
+#   flextable::font(part = "all", fontname = "Times New Roman") %>% 
+#   save_as_docx(
+#     path = 'outputs/lm_reg_outputs.docx'
+#   )
+
+
+## Create interactive table for Quarto
+get_reactable(
+  sar_framed_outputs, 
+  defaultPageSize = 10,
+  columns = list(
+   variable_name = colDef(minWidth = 200),
+   sig = colDef(minWidth = 50),
+   reverse = colDef(minWidth = 75),
+   statistic = colDef(minWidth = 75),
+   outcome = colDef(minWidth = 75)
+  )
+)
 ```
 
 
-### Panels
+#### Figure
 
-#### Test Run
+```{r}
+#| label: errorsar_figure
+# get_str(framed_outputs)
+# test <- framed_outputs %>% 
+#   mutate(
+#     across(c(estimate:conf_high), ~ as.numeric(.x)),
+#     outcome = ifelse(is.na(outcome), 'no change', outcome) %>% 
+#       snakecase::to_title_case()
+#   )
+# test$outcome
+
+errorsar_figure <- sar_framed_outputs %>% 
+  mutate(across(c(estimate:conf_high), ~ as.numeric(.x))) %>% 
+  filter(str_detect(metric, 'easements|wages', negate = TRUE)) %>%
+  mutate(
+    across(c(estimate, starts_with('ci|conf')), as.numeric),
+    outcome = ifelse(is.na(outcome), 'no change', outcome) %>% 
+      snakecase::to_title_case()
+  ) %>% 
+  ggplot(aes(x = estimate, y = reorder(metric, estimate))) +
+  geom_point(aes(color = outcome)) +
+  geom_errorbarh(aes(xmin = conf_low, xmax = conf_high, color = outcome)) +
+  geom_vline(xintercept = 0) +
+  scale_color_manual(values = c('darkgreen', 'grey', 'purple')) +
+  theme_minimal() +
+  labs(
+    x = 'Average Relative Percent Change per Year',
+    y = 'Metric',
+    color = 'Outcome'
+  ) + 
+  scale_x_continuous(n.breaks = 8)
+ggsave(
+  'outputs/errorsar_conf_ints.png',
+  plot = errorsar_figure,
+  width = 8,
+  height = 5,
+  units = 'in',
+  bg = 'white'
+)
+errorsar_figure
+```
+
+
+
+## Spatial Panels
+
+### Test Run
 
 Trying splm package for spatially weighted panel models. This is not going well though - too much missing data means it is very difficult to get a balanced panel.
 
@@ -778,7 +1025,7 @@ summary(lagsar)
 ```
 
 
-#### All Models
+### All Models
 
 ```{r}
 #| label: spml_models
@@ -862,7 +1109,7 @@ saveRDS(out, 'data/objects/spatial_regression_outs.rds')
 ```
 
 
-#### All Models Weighted
+### All Models Weighted
 
 ```{r}
 #| label: spml_models_weighted
@@ -1000,11 +1247,11 @@ errors
 
 `{r} length(error_vars)` models failed: `{r} paste(error_vars, collapse = ', ')`.
 
-#### Results
+### Results
 
 Check out the successful models:
 
-##### Table
+#### Table
 
 ```{r}
 #| label: spatial_panel_table
@@ -1125,7 +1372,7 @@ Issue here is that we have to drop many counties for some variables. The `n` col
 - reverse: whether the metric has been reversed so that lower numbers are better and higher numbers are worse (like food insecurity)
 - outcome: if the regression is significant, is it getting better or worse? Accounts for the 'reverse' variable
 
-##### Figure
+#### Figure
 
 ```{r}
 #| label: spatial_reg_figure

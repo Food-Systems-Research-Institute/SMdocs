@@ -1,0 +1,31 @@
+dimension,index,indicator,metric,variable_name,estimate,std.error,statistic,p.value,conf_low,conf_high,sig,trend,reverse,outcome
+economics,community economy,access to land,Land and building value per acre,landValPerAcre, 0.039,0.015,  2.538,0.011, 0.009, 0.069,*,increasing,FALSE,better
+economics,community economy,business failure rate,Change in agricultural establishments,otyAnnualAvgEstabsCountPctChgNAICS11, 0.046,0.010,  4.532,0.000, 0.026, 0.066,*,increasing,FALSE,better
+economics,community economy,wealth and income distribution,Average weekly wages,annualAvgWklyWageNAICS11, 0.665,0.017, 39.272,0.000, 0.631, 0.698,*,increasing,FALSE,better
+economics,community economy,wealth and income distribution,Gini Index,gini, 0.640,0.110,  5.801,0.000, 0.424, 0.856,*,increasing,TRUE,worse
+economics,food business resilience,farm insurance,Total indemnities,totalIndemnities, 0.073,0.009,  8.547,0.000, 0.056, 0.090,*,increasing,TRUE,worse
+economics,food business resilience,income stability,Expenses per operation,expPF, 0.544,0.048, 11.400,0.000, 0.450, 0.637,*,increasing,TRUE,worse
+economics,food business resilience,income stability,Percent change in wages,otyAnnualAvgWklyWagePctChgNAICS11, 0.037,0.008,  4.746,0.000, 0.022, 0.053,*,increasing,FALSE,better
+economics,food business resilience,operations diversification,Sales from agritourism and recreation,incomeAgTourismRecPropTotal, 0.529,0.082,  6.463,0.000, 0.369, 0.690,*,increasing,FALSE,better
+environment,"carbon, ghg, and nutrients",embodied carbon,Fuel expenses,fuelExpensePropTotalExpense, 0.078,0.021,  3.667,0.000, 0.036, 0.120,*,increasing,TRUE,worse
+environment,forests,forest complexity,Tree size diversity,sizeDiversity, 0.271,0.021, 13.225,0.000, 0.231, 0.312,*,increasing,FALSE,better
+environment,forests,forest complexity,Tree species diversity,treeDiversity,-0.096,0.030, -3.209,0.001,-0.155,-0.037,*,decreasing,FALSE,worse
+environment,forests,forest health,Proportion of invasive species,propInvasive, 0.046,0.013,  3.522,0.000, 0.021, 0.072,*,increasing,TRUE,worse
+environment,species and habitat,land use diversity,Land Use Diversity,lulcDiversity,-0.040,0.148, -0.269,0.788,-0.329, 0.250, ,decreasing,FALSE,NA
+environment,water,water quantity,Weeks of extreme drought,droughtNonConWeeksCat2,-0.338,0.037, -9.191,0.000,-0.410,-0.266,*,decreasing,TRUE,better
+health,education,educational attainment,High school graduation rate,edPercHSOrMore,-0.904,0.156, -5.806,0.000,-1.209,-0.598,*,decreasing,FALSE,worse
+health,food security,food access,Limited access to healthy foods,limitedAccessToHealthyFoods,-0.072,0.250, -0.286,0.775,-0.562, 0.418, ,decreasing,TRUE,NA
+health,food security,food affordability,Price of a meal,costPerMeal, 2.250,0.032, 71.056,0.000, 2.188, 2.312,*,increasing,TRUE,worse
+health,food security,food security rate,"Food insecurity rate, overall",foodInsecurityRate,-0.643,0.053,-12.234,0.000,-0.746,-0.540,*,decreasing,TRUE,better
+health,mental health,stress and anxiety,Poor mental health days,poorMentalHealthDays, 8.138,0.207, 39.342,0.000, 7.733, 8.544,*,increasing,TRUE,worse
+health,physical health,access to care,Proportion uninsured,uninsured,-0.499,0.179, -2.789,0.005,-0.850,-0.148,*,decreasing,TRUE,better
+health,physical health,"mobility, pain",Frequent physical distress,frequentPhysicalDistress,-0.549,0.254, -2.157,0.031,-1.048,-0.050,*,decreasing,TRUE,better
+health,physical health,"mobility, pain",Mobility disability,mobilityDisability,-1.527,1.546, -0.988,0.323,-4.557, 1.503, ,decreasing,TRUE,NA
+health,physical health,prevalence of diet-related disease,Diabetes prevelance,diabetesPrevalence,-2.683,0.177,-15.166,0.000,-3.029,-2.336,*,decreasing,TRUE,better
+health,physical health,prevalence of diet-related disease,Heart disease prevalence,heartDisease, 0.266,0.344,  0.773,0.439,-0.408, 0.941, ,decreasing,TRUE,NA
+production,product quality,certificates of assurance,Proportion of organic operations,propOpsOrganic, 0.520,0.119,  4.362,0.000, 0.286, 0.754,*,increasing,FALSE,better
+production,production diversity,crop diversity,Crop diversity,cropDiversity, 0.264,0.046,  5.794,0.000, 0.175, 0.354,*,increasing,FALSE,better
+production,production margins,total quantity food products,Total animal and crop sales,salesAnimalAndCrop, 0.157,0.030,  5.304,0.000, 0.099, 0.214,*,increasing,FALSE,better
+social,food and farmworker diversity,age diversity,Producer age skew,producerAgeSkew,-0.494,0.203, -2.430,0.015,-0.893,-0.096,*,decreasing,TRUE,better
+social,food system governance,community safety,Firearm fatalities,firearmFatalities, 0.377,0.185,  2.036,0.042, 0.014, 0.739,*,increasing,TRUE,worse
+social,stewardship participation,conservation program,Acres in conservation easements,consEasementAcres, 0.157,0.293,  0.538,0.591,-0.416, 0.731, ,decreasing,FALSE,NA

@@ -26,6 +26,7 @@ pacman::p_load(
   purrr,
   broom,
   knitr,
+  kableExtra,
   skimr,
   ggplot2,
   ggpubr,
@@ -38,9 +39,12 @@ pacman::p_load(
   Hmisc,
   reshape2,
   mapview,
-  viridisLite
+  viridisLite,
+  conflicted,
+  readr
 )
 
+# GitHub packages
 pacman::p_load_gh(
   'ChrisDonovan307/projecter',
   'Food-Systems-Research-Institute/SMdata'
@@ -214,6 +218,7 @@ Exploring distributions using latest year available for each metric.
 #| fig-height: 25
 #| fig-width: 10
 #| freeze: true
+#| cache: true
 # Get skews of variables
 dat <- dp_county %>% 
   get_latest_year() %>% 
@@ -268,6 +273,8 @@ ggarrange(
 #| label: state_distributions
 #| fig-height: 10
 #| fig-width: 10
+#| cache: true
+#| freeze: true
 source('dev/get_distributions.R')
 dat <- dp_state %>% 
   filter(!(
@@ -468,6 +475,8 @@ Land value per acre also appears jenky, but it is because Richmond County, NY (S
 #| label: county_time_series
 #| fig-height: 25
 #| fig-width: 12
+#| cache: true
+#| freeze: true
 plots <- map(series_vars, ~ {
   df <- dp_county %>%
     filter(variable_name == .x) %>%
@@ -691,9 +700,65 @@ ggsave(
 )
 ```
 
+### Figure
+
 ```{r}
 #| echo: false
 #| fig-height: 8
 #| fig-width: 10
 corplot
+```
+
+### Table
+
+Large and unwieldy correlation matrix. Added another interactive one below that is probably easier to work with.
+
+```{r}
+cor$r %>% 
+  as.data.frame() %>% 
+  write_csv(
+    'outputs/table_metric_correlations_wide.csv'
+  )
+
+cor$r %>% 
+  kbl(
+    digits = 3, 
+    format = "html"
+  ) %>%
+  column_spec(1, width = '500px') %>% 
+  kable_styling(
+    full_width = FALSE, 
+    bootstrap_options = c(
+      "striped", 
+      "hover", 
+      "condensed"
+    )
+  )
+```
+
+### Long Table
+
+Longer format table that is interactive and shows p values.
+
+```{r}
+#| label: correlation_table_long
+# Create long table with p values and stars
+tab <- cor_r %>% 
+  rename(cor = value) %>% 
+  inner_join(cor_p, by = join_by(var_1 == Var1, var_2 == Var2)) %>% 
+  rename(p = value) %>% 
+  mutate(sig = ifelse(p < 0.05, '*', ''))
+
+# Save to outputs
+write_csv(
+  tab,
+  'outputs/table_metric_correlations_long.csv'
+)
+
+tab %>% 
+  get_reactable(
+    defaultColDef = colDef(
+      format = colFormat(digits = 3)
+    )
+  )
 ```
