@@ -106,11 +106,15 @@ website:
             href: pages/sensitivity.qmd
       - section: Regional/County Analyses
         contents:
-          - text: Intro
+          - text: Introduction
             href: pages/dp_intro.qmd
-          - text: Exploratory Data Analysis
+          - text: Exploratory 
             href: pages/dp_eda.qmd
-          - text: Analysis
+          - text: Coverage
+            href: pages/dp_coverage.qmd
+          - text: Correlations
+            href: pages/dp_correlations.qmd
+          - text: Trends
             href: pages/dp_analysis.qmd
           # - text: Aggregation
           #   href: pages/dp_aggregation.qmd
@@ -134,7 +138,7 @@ website:
 format:
   html:
     page-layout: article 
-    theme: custom_theme.scss # modified sandstone
+    theme: custom_theme.scss
     fig-align: left
     css: styles.css
     toc: true

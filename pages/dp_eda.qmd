@@ -201,8 +201,8 @@ miss_plot <- miss %>%
 ```{r}
 #| label: plot_missing
 #| echo: false
-#| fig-height: 8
-#| fig-width: 6
+#| out-width: 75%
+#| fig-align: 'center'
 miss_plot
 ```
 
@@ -368,6 +368,8 @@ tmap_save(
 #| echo: false
 #| fig-height: 8
 #| fig-width: 8
+#| out-width: '75%'
+#| fig-align: 'center'
 map
 ```
 
@@ -431,6 +433,7 @@ maps <- df %>%
 
 ```{r}
 #| echo: false
+#| out-width: '75%'
 Reduce(`+`, maps)
 ```
 
@@ -735,6 +738,7 @@ cor$r %>%
     )
   )
 ```
+
 
 ### Long Table
 

@@ -732,7 +732,7 @@ map(out, class)
 # map(out, ~ .x['fips'])
 # map(out, ~ summary(.x))
 
-saveRDS(out, 'data/objects/errorsarlm_weighted_outs.rds')
+saveRDS(out, 'data/objects/errorsarlm_outs.rds')
 ```
 
 
@@ -741,9 +741,9 @@ saveRDS(out, 'data/objects/errorsarlm_weighted_outs.rds')
 ```{r}
 #| output: false
 sar_outs <- readRDS('data/objects/errorsarlm_outs.rds')
-# sar_outs <- readRDS('data/objects/errorsarlm_weighted_outs.rds')
 sar_outs <- sar_outs[names(sar_outs) != 'state_code'] %>% 
   keep(~ class(.x) == 'Sarlm')
+length(sar_outs)
 get_str(sar_outs, 1)
 get_str(sar_outs[[1]])
 
@@ -776,12 +776,15 @@ sar_df <- imap(sar_outs, ~ {
         print(e)
     }
   )
-})
-sar_df <- sar_df %>% 
+}) %>% 
   keep(is.data.frame) %>% 
   bind_rows()
-# get_str(sar_df)
+get_str(sar_df)
 # sar_df
+
+# 37 down to 33. Where did others go
+(lost <- setdiff(names(sar_outs), sar_df$variable_name))
+sar_outs[names(sar_outs) %in% lost]
 
 sar_raw_outputs <- sar_df %>% 
   mutate(trend = case_when(
