@@ -65,6 +65,16 @@ conflicts_prefer(
 
 This group of pages will present a survey of secondary data at the regional/county level in the Northeast. Note that the graphs and CSV below have been updated to reflect some liberties and consolidation we have done with the framework to make it a bit more presentable. 
 
+## Arrange Datasets
+
+In this section we pull metadata from the secondary metric framework to put together datasets for county/regional analyses. 
+
+To do here:
+
+- Pull revised excel sheet
+- Save data paper specific datasets to an object available in this project. 
+- This includes data paper meta, data paper tree, and data paper metrics
+
 ## Dimension Graphs
 
 ```{r}
