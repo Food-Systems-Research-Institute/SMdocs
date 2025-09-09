@@ -203,23 +203,25 @@ plots$social
 ```{r}
 #| label: save_pngs
 #| include: false
+#| eval: false
 # NOT SHOWN - using this to save some PNGs of graphs
-# df of dimensions to use
-dims <- data.frame(
-  heights = c(5, 6, 6, 5, 6),
-  widths = c(15, 13, 16, 15, 16)
-)
-pwalk(list(plots, names(plots), 1:nrow(dims)), \(plot, name, i) {
-  ggsave(
-    paste0('outputs/dimension_', name, '_graph.png'),
-    plot = plot,
-    height = dims[i, 1],
-    width = dims[i, 2],
-    units = 'in',
-    bg = 'white',
-    dpi = 500
-  )  
-})
+# NOTE: Not using this for the time being.
+
+# dims <- data.frame(
+#   heights = c(5, 6, 6, 5, 6),
+#   widths = c(15, 13, 16, 15, 16)
+# )
+# pwalk(list(plots, names(plots), 1:nrow(dims)), \(plot, name, i) {
+#   ggsave(
+#     paste0('outputs/fig_dim_', name, '.png'),
+#     plot = plot,
+#     height = dims[i, 1],
+#     width = dims[i, 2],
+#     units = 'in',
+#     bg = 'white',
+#     dpi = 500
+#   )  
+# })
 ```
 
 

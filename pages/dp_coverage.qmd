@@ -1,0 +1,219 @@
+---
+title: "Coverage"
+format:
+  html:
+    fig-dpi: 200
+    code-fold: true
+editor_options: 
+  chunk_output_type: console
+warnings: false
+execute:
+  cache: false
+---
+
+```{r}
+#| label: prep
+#| cache: false
+#| output: false
+options(scipen = 999)
+
+pacman::p_load(
+  dplyr,
+  htmltools,
+  stringr,
+  tidyr,
+  purrr,
+  broom,
+  ggplot2,
+  ggpubr,
+  tibble,
+  Hmisc,
+  reshape2,
+  viridisLite,
+  conflicted,
+  readr,
+  sf,
+  tmap,
+  mapview
+)
+
+# GitHub packages
+pacman::p_load_gh(
+  'ChrisDonovan307/projecter',
+  'Food-Systems-Research-Institute/SMdata'
+)
+
+# Functions
+source('dev/get_reactable.R')
+source('dev/get_missing.R')
+source('dev/data_pipeline_functions.R')
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::pull(),
+  dplyr::summarize(),
+  stats::lag(),
+  base::setdiff(),
+  .quiet = TRUE
+)
+datasets <- readRDS('data/data_paper/datasets_from_eda.rds')
+```
+
+Here we explore how secondary data sources cover the region by dimension, geography, and over time.
+
+
+## Dimensional
+
+Explore coverage by dimension.
+
+## Geographic
+
+Turns out this map is not as interesting as I'd hoped it would be. Currently showing the unique count of metrics with any values in a county. Need a better way to represent the missing data here though. 
+
+```{r}
+#| output: false
+# Load datasets from eda script
+## Get bounding box - commenting out to avoid downloading this each time
+# bbox_new <- st_bbox(neast_counties_2024)
+# xrange <- bbox_new$xmax - bbox_new$xmin # range of x values
+# yrange <- bbox_new$ymax - bbox_new$ymin # range of y values
+# 
+# bbox_new[1] <- bbox_new[1] - (0.05 * xrange) # xmin - left
+# bbox_new[3] <- bbox_new[3] + (0.05 * xrange) # xmax - right
+# bbox_new[2] <- bbox_new[2] - (0.05 * yrange) # ymin - bottom
+# bbox_new[4] <- bbox_new[4] + (0.05 * yrange) # ymax - top
+# 
+# tiles <- get_tiles(
+#   bbox_new,
+#   provider = "CartoDB.PositronNoLabels",
+#   zoom = 7,
+#   crop = TRUE
+# )
+# terra::saveRDS(tiles, 'data/data_paper/neast_tiles.rds')
+
+# Load tiles for background
+tiles <- terra::readRDS('data/data_paper/neast_tiles.rds')
+
+# Counts of unique metrics in each county
+var_counts <- datasets$dp_metrics_all %>% 
+  filter_fips('counties') %>% 
+  group_by(fips) %>% 
+  summarize(n_metrics = length(unique(variable_name)))
+ 
+# Join 
+df <- neast_counties_2024 %>% 
+  left_join(var_counts)
+
+tmap_mode('plot')
+map <- tm_shape(tiles) +
+  tm_rgb() +
+  tm_shape(df) +
+  tm_polygons(
+    "n_metrics", 
+    palette = "brewer.greens",
+    title = "Metric\nRepresentation",
+    breaks = seq(21, 45, 3),
+    fill.legend = tm_legend(
+      reverse = TRUE
+    )
+  ) +
+  tm_borders(col = 'black', lwd = 1.25) +
+  tm_layout(
+    legend.position = c('left', 'top'),
+    legend.title.fontface = 'bold',
+    legend.width = 8,
+    legend.height = 12,
+    legend.title.size = 1.1,
+    inner.margins = rep(0, 4),
+    outer.margins = rep(0, 4),
+    legend.text.size = 1
+  )
+
+tmap_save(
+  tm = map,
+  filename = 'outputs/metric_coverage_map.png',
+  asp = 0,
+  dpi = 300
+)
+```
+
+```{r}
+#| echo: false
+#| fig-height: 8
+#| fig-width: 8
+#| out-width: '75%'
+#| fig-align: 'center'
+map
+```
+
+Let's try an interactive map so we can explore each dimension
+
+```{r}
+#| label: var_counts
+#| output: false
+# How many total metrics at county level
+total_count <- datasets$dp_metrics_all %>% 
+  filter_fips('counties') %>% 
+  pull(variable_name) %>% 
+  unique %>% 
+  length
+total_count
+
+# Dimension crosswalk
+crosswalk <- data_paper_meta %>% 
+  select(dimension, variable_name)
+
+dimension_counts <- data_paper_meta %>% 
+  select(dimension, variable_name, resolution) %>% 
+  filter(!is.na(variable_name), resolution != 'state') %>% 
+  select(-resolution) %>% 
+  group_by(dimension) %>% 
+  summarize(count = n())
+dimension_counts
+  
+# Counts of unique metrics in each county by dimension
+var_counts <- datasets$dp_metrics_all %>% 
+  filter_fips('counties') %>% 
+  left_join(crosswalk) %>% 
+  group_by(dimension, fips) %>% 
+  summarize(
+    n_metrics = length(unique(variable_name))
+  ) %>% 
+  left_join(dimension_counts) %>% 
+  mutate(prop_metrics = n_metrics / count)
+var_counts
+ 
+# Join 
+df <- neast_counties_2024 %>% 
+  left_join(var_counts)
+get_str(df)
+
+maps <- df %>%
+  split(.$dimension) %>%
+  imap(~ {
+    to_hide <- ifelse(.y == 'economics', FALSE, TRUE)
+    mapview(
+      .x, 
+      layer.name = .y, 
+      zcol = "prop_metrics",
+      hide = to_hide,
+      # col.regions = brewer.pal(5, "Greens"),
+      col.regions = rev(viridis(5)),
+      alpha.regions = 0.7
+    )
+  }) 
+```
+
+```{r}
+#| echo: false
+#| out-width: '75%'
+Reduce(`+`, maps)
+```
+
+Hamilton, Warren counties missing data in NY, and Cameron county in PA stick out in particular. And lots of economic data missing from much of Maine and New Hampshire.
+
+## Temporal
+
+Add Isabella's graphs showing metrics and indicators over the years.
+

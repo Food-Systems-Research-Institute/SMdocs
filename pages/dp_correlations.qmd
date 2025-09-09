@@ -1,0 +1,264 @@
+---
+title: "Correlations"
+format:
+  html:
+    fig-dpi: 200
+    code-fold: true
+editor_options: 
+  chunk_output_type: console
+warnings: false
+execute:
+  cache: false
+---
+
+```{r}
+#| label: prep
+#| cache: false
+#| output: false
+options(scipen = 999)
+
+pacman::p_load(
+  dplyr,
+  htmltools,
+  stringr,
+  tidyr,
+  reactable,
+  purrr,
+  broom,
+  knitr,
+  kableExtra,
+  ggplot2,
+  ggpubr,
+  psych,
+  tibble,
+  Hmisc,
+  reshape2,
+  viridisLite,
+  conflicted,
+  readr
+)
+
+# GitHub packages
+pacman::p_load_gh(
+  'ChrisDonovan307/projecter',
+  'Food-Systems-Research-Institute/SMdata'
+)
+
+# Functions
+source('dev/get_reactable.R')
+source('dev/get_missing.R')
+source('dev/data_pipeline_functions.R')
+
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::pull(),
+  dplyr::summarize(),
+  stats::lag(),
+  base::setdiff(),
+  .quiet = TRUE
+)
+```
+
+This page explores correlations among metrics.
+
+## Wrangling
+
+```{r}
+#| label: correlations
+#| output: false
+#| fig-height: 10
+#| fig-width: 10
+
+# metric crosswalk
+crosswalk <- data_paper_meta %>% 
+  select(variable_name, metric)
+
+# Get df ready
+get_str(metrics)
+df <- metrics %>% 
+  filter(variable_name %in% data_paper_meta$variable_name) %>% 
+  get_latest_year() %>% 
+  filter_fips('new') %>% 
+  mutate(variable_name = str_split_i(variable_name, '_', 1)) %>% 
+  left_join(crosswalk) %>% 
+  select(-variable_name) %>% 
+  pivot_wider(
+    id_cols = fips,
+    values_from = value,
+    names_from = metric
+  )
+get_str(df)
+
+# Get an ordered framework from which we will pull metrics in alphabetical order
+# and get the counts of metrics per dimension that we will use to draw lines
+# between dimensions
+get_str(data_paper_meta)
+ordered_framework <- data_paper_meta %>% 
+  arrange(dimension, metric) %>% 
+  filter(metric %in% names(df))
+ordered_framework
+
+# Get line placements to divide dimensions
+# Reverse them to match alphabetical order of dimensions top to bottom
+# Get cumulative sums to space them out across graph
+# Then add 0.5 to each to put them in between cells
+line_placements <- ordered_framework %>% 
+  group_by(dimension) %>% 
+  summarize(count = n()) %>% 
+  pull(count) %>% 
+  rev() %>% 
+  cumsum() %>% 
+  {. + 0.5}
+line_placements
+
+# Reorder our df in proper metric order
+metric_order <- ordered_framework %>% 
+  pull(metric)
+df <- df %>% 
+  select(fips, any_of(metric_order)) %>% 
+  select(rev(everything()))
+get_str(df)
+
+# Create matrix of values
+mat <- df %>% 
+  na.omit() %>% 
+  select(-fips) %>% 
+  as.matrix()
+
+# Get correlations
+cor <- rcorr(mat, type = 'pearson')
+
+# Melt correlation values and rename columns
+cor_r <- reshape::melt(cor$r) %>% 
+  setNames(c('var_1', 'var_2', 'value'))
+
+# Save p values
+cor_p <- melt(cor$P)
+p.value <- cor_p$value
+
+# Make heatmap
+corplot <- cor_r %>% 
+  ggplot(aes(var_1, var_2, fill = value)) + 
+  geom_tile() + 
+  scale_fill_gradient2(
+    low = "#762a83", 
+    mid = "white", 
+    high = "#1b7837", 
+    midpoint = 0
+  ) +
+  geom_hline(yintercept = line_placements[1]) +
+  geom_hline(yintercept = line_placements[2]) +
+  geom_hline(yintercept = line_placements[3]) +
+  geom_hline(yintercept = line_placements[4]) +
+  geom_vline(xintercept = line_placements[1]) +
+  geom_vline(xintercept = line_placements[2]) +
+  geom_vline(xintercept = line_placements[3]) +
+  geom_vline(xintercept = line_placements[4]) +
+  theme(
+    axis.text.x = element_text(
+      hjust = 1, 
+      angle = 45
+    )
+    # axis.text.x = element_blank(),
+    # axis.ticks.x = element_blank()
+  ) +
+  labs(
+    x = NULL,
+    y = NULL,
+    fill = NULL
+  )
+ggsave(
+  plot = corplot,
+  filename = 'outputs/fig_corplot.png',
+  height = 8,
+  width = 9.5,
+  dpi = 300
+)
+```
+
+## Figure
+
+```{r}
+#| echo: false
+#| fig-height: 8
+#| fig-width: 10
+corplot
+```
+
+## Table
+
+Large and unwieldy correlation matrix. Added another interactive one below that is probably easier to work with.
+
+```{r}
+# Latex table
+df <- cor$r %>% 
+  as.data.frame() %>% 
+  tibble::rownames_to_column('var') %>% 
+  mutate(var = str_sub(var, end = 6)) %>% 
+  setNames(c(names(.) %>% str_sub(end = 6)))
+get_str(df)
+  
+df %>% 
+  kbl(
+    digits = 3, 
+    format = "latex",
+    caption = 'Correlation matrix of metrics using latest available time point',
+    label = 'tab_correlations',
+    booktabs = TRUE
+    # longtable = TRUE
+  ) %>%
+  kable_styling(
+    font_size = 5,
+    bootstrap_options = c(
+      "condensed"
+    )
+  ) %>% 
+  save_kable(
+    file = 'outputs/tab_correlations.tex'
+  )
+
+# HTML for website
+cor$r %>% 
+  kbl(
+    digits = 3, 
+    format = "html"
+  ) %>%
+  column_spec(1, width = '500px') %>% 
+  kable_styling(
+    full_width = FALSE, 
+    bootstrap_options = c(
+      "striped", 
+      "hover", 
+      "condensed"
+    )
+  )
+```
+
+
+## Long Table
+
+Longer format table that is interactive and shows p values.
+
+```{r}
+#| label: correlation_table_long
+# Create long table with p values and stars
+tab <- cor_r %>% 
+  rename(cor = value) %>% 
+  inner_join(cor_p, by = join_by(var_1 == Var1, var_2 == Var2)) %>% 
+  rename(p = value) %>% 
+  mutate(sig = ifelse(p < 0.05, '*', ''))
+
+# Save to outputs
+write_csv(
+  tab,
+  'outputs/table_metric_correlations_long.csv'
+)
+
+tab %>% 
+  get_reactable(
+    defaultColDef = colDef(
+      format = colFormat(digits = 3)
+    )
+  )
+```
