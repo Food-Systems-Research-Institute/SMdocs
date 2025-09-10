@@ -35,7 +35,9 @@ pacman::p_load(
   reshape2,
   viridisLite,
   conflicted,
-  readr
+  readr,
+  ggtext,
+  snakecase
 )
 
 # GitHub packages
@@ -137,16 +139,68 @@ cor_r <- reshape::melt(cor$r) %>%
 cor_p <- melt(cor$P)
 p.value <- cor_p$value
 
+# Color code by dimension
+dimension_colors <- c(
+  "economics"  = "#BF7417FF",
+  "environment"  = "#A8BE74FF",
+  "health" = "#9CB6A9FF",
+  "production" = "#635C72FF",
+  "social" = "#784116FF"
+)
+
+# Pasting dimension colors to metrics
+colored_labels <- ordered_framework %>%
+  mutate(
+    label = paste0(
+      "<span style='color:", dimension_colors[dimension], "'>", to_title_case(str_replace_all(metric, "_", " ")), "</span>"
+    )
+  ) %>%
+  select(metric, label) %>%
+  deframe()
+
+# Dummy data frame for dimension legend
+dimension_legend_df <- tibble(
+  x = -Inf,
+  y = -Inf,
+  dimension = factor(names(dimension_colors), levels = names(dimension_colors))
+)
+
 # Make heatmap
-corplot <- cor_r %>% 
-  ggplot(aes(var_1, var_2, fill = value)) + 
+corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
   geom_tile() + 
+  
+  geom_point(
+    data = dimension_legend_df,
+    aes(x = x, y = y, color = dimension),
+    shape = 15,
+    size = 5,
+    inherit.aes = FALSE,
+    show.legend = TRUE,
+    alpha = 0  # fully transparent points, so they don't show up
+  ) +
+  
   scale_fill_gradient2(
     low = "#762a83", 
     mid = "white", 
     high = "#1b7837", 
-    midpoint = 0
+    midpoint = 0,
+    name = "Correlation"
   ) +
+  scale_color_manual(
+    values = dimension_colors,
+    labels = str_to_title(names(dimension_colors)),
+    name = "Dimension"
+  ) +
+  
+  # Legend overrides
+  guides(
+    color = guide_legend(
+      override.aes = list(shape = 15, size = 5, alpha = 1),
+      nrow = 2
+    )
+  ) +
+  
+  # line placements
   geom_hline(yintercept = line_placements[1]) +
   geom_hline(yintercept = line_placements[2]) +
   geom_hline(yintercept = line_placements[3]) +
@@ -155,19 +209,23 @@ corplot <- cor_r %>%
   geom_vline(xintercept = line_placements[2]) +
   geom_vline(xintercept = line_placements[3]) +
   geom_vline(xintercept = line_placements[4]) +
+  scale_x_discrete(labels = colored_labels) +
+  scale_y_discrete(labels = colored_labels) +
+  
   theme(
-    axis.text.x = element_text(
-      hjust = 1, 
-      angle = 45
-    )
-    # axis.text.x = element_blank(),
-    # axis.ticks.x = element_blank()
-  ) +
-  labs(
-    x = NULL,
-    y = NULL,
-    fill = NULL
+    axis.text.x = element_markdown(angle = 45, hjust = 1),
+    axis.text.y = element_markdown(),
+    axis.text = element_text(family = "Times New Roman"),
+    axis.title = element_blank(),
+    plot.title = element_text(hjust = 0),
+    legend.position = "top",
+    legend.title.position = "top",
+    legend.title = element_text(size = 10, family = "Times New Roman", hjust = 0.5),
+    legend.text = element_text(size = 9, family = "Times New Roman"),
+    legend.key = element_rect(fill = "transparent", colour = NA),
+    legend.background = element_rect(fill = "transparent", colour = NA)
   )
+
 ggsave(
   plot = corplot,
   filename = 'outputs/fig_corplot.png',
