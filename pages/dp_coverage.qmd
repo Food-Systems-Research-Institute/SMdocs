@@ -286,3 +286,89 @@ ggplot(indicators_by_year_data, aes(x = year, y = indicator_count, fill = dimens
 
 
 ```
+
+Metric representation each year.
+
+```{r}
+#| label: Metric representation each year
+#| output: false
+
+library(SMdata)
+
+# Join based on "variable_name"
+merged_df <- data_paper_metrics %>%
+  left_join(data_paper_meta %>%
+              select(variable_name,
+                     dimension = dimension,
+                     index = index,
+                     indicator = indicator,
+                     metric = metric),
+            by = "variable_name") 
+
+# Save and read the merged data
+write.csv(merged_df, "metrics_and_meta.csv", row.names = FALSE)
+
+metrics_and_meta <- readr::read_csv("metrics_and_meta.csv")
+
+# Group dimension columns together in ascending order; filter out before 2000 and NAs
+heatmap_easy_data <- metrics_and_meta %>%
+  filter(!is.na(indicator)) %>%
+  filter(year >= 2000) %>%
+  distinct(indicator, dimension, year, metric)
+
+heatmap_easy_data <- heatmap_easy_data %>%
+  mutate(
+    dimension = factor(dimension, levels = sort(unique(dimension)))
+  ) %>%
+  filter(!is.na(metric)) %>%
+  arrange(dimension, metric) %>%
+  mutate(
+    metric = factor(metric, levels = rev(unique(metric)))
+  )
+
+heatmap_easy_data <- heatmap_easy_data %>%
+  distinct(year, dimension, metric)
+
+# Full grid of all combinations (to show blanks)
+full_grid <- expand.grid(
+  metric = unique(heatmap_easy_data$metric),
+  year = unique(heatmap_easy_data$year),
+  stringsAsFactors = FALSE
+)
+
+# Left join to get "present" boxes
+data_full <- left_join(full_grid, heatmap_easy_data, by = c("metric", "year"))
+
+# Plot
+ggplot(data_full, aes(x = as.factor(year), y = metric, fill = dimension)) +
+  geom_tile(color = "gray80", linewidth = 0.25) +
+  scale_y_discrete(labels = to_title_case) +
+  scale_x_discrete(
+    breaks = seq(min(heatmap_easy_data$year), max(heatmap_easy_data$year), by = 5)) +
+  scale_fill_manual(values = c(
+    "economics"  = "#BF7417FF",
+    "environment"  = "#A8BE74FF",
+    "health" = "#9CB6A9FF",
+    "production" = "#635C72FF",
+    "social" = "#784116FF",
+    "FALSE" = "white"), 
+    na.value = "white",
+    labels = to_title_case) +
+  labs(
+    x = "Year",
+    y = "Metric",
+    fill = "Dimension"
+  ) +
+  theme_classic() +
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.title.position = "top",
+    panel.grid = element_blank(),
+    text = element_text(family = "Times New Roman"),
+    axis.title = element_text(family = "Times New Roman"),
+    axis.text = element_text(family = "Times New Roman"),
+    legend.title = element_text(family = "Times New Roman", hjust = 0.5),
+    legend.text = element_text(family = "Times New Roman")
+  )
+```
