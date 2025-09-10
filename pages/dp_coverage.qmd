@@ -34,7 +34,8 @@ pacman::p_load(
   readr,
   sf,
   tmap,
-  mapview
+  mapview,
+  snakecase
 )
 
 # GitHub packages
@@ -217,3 +218,71 @@ Hamilton, Warren counties missing data in NY, and Cameron county in PA stick out
 
 Add Isabella's graphs showing metrics and indicators over the years.
 
+Total number of indicators represented each year.
+
+```{r}
+#| label: Total indicators each year
+#| output: false
+library(SMdata)
+
+# Join based on 'variable_name'
+merged_df <- data_paper_metrics %>%
+  left_join(data_paper_meta %>%
+              select(variable_name,
+                     dimension = dimension,
+                     index = index,
+                     indicator = indicator
+              ),
+            by = "variable_name") 
+
+# Save and read the result
+write.csv(merged_df, "metrics_and_meta.csv", row.names = FALSE)
+
+metrics_and_meta <- readr::read_csv("metrics_and_meta.csv")
+
+
+# Filter out before 2000 and NAs; create "indicator count"
+indicators_by_year_data <- metrics_and_meta %>%
+  filter(!is.na(indicator)) %>%
+  filter(year >= 2000) %>%
+  distinct(indicator, dimension, year) %>%
+  count(year, dimension, name = "indicator_count")
+
+
+# Histogram
+ggplot(indicators_by_year_data, aes(x = year, y = indicator_count, fill = dimension)) +
+  geom_col(position = "stack") +
+  scale_y_continuous(breaks = seq(0, max(1000), by = 5)) + # max is set to 1000 values - change max for more data
+  scale_x_continuous(
+    breaks = seq(
+      min(indicators_by_year_data$year), 
+      max(indicators_by_year_data$year),
+      by = 5)) +
+  scale_fill_manual(
+    values = c(
+      "economics"  = "#BF7417FF",
+      "environment"  = "#A8BE74FF",
+      "health" = "#9CB6A9FF",
+      "production" = "#635C72FF",
+      "social" = "#784116FF"),
+    labels = to_title_case
+  ) +
+  labs(
+    x = "Year",
+    y = "Number of Indicators Represented",
+    fill = "Dimension"
+  ) +
+  theme_minimal() +
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.title.position = "top",
+    text = element_text(family = "Times New Roman"),
+    axis.title = element_text(family = "Times New Roman"),
+    axis.text = element_text(family = "Times New Roman"),
+    legend.title = element_text(family = "Times New Roman", hjust = 0.5),
+    legend.text = element_text(family = "Times New Roman")
+  )
+
+
+```
