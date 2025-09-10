@@ -117,7 +117,6 @@ plots <- map(series_vars, ~ {
     geom_smooth(
       method = 'loess',
       lwd = 2
-      # col = '#154734'
     ) +
     labs(
       x = 'Year',
@@ -134,22 +133,48 @@ ggarrange(
 ```
 
 ```{r}
-#| label: checking
-#| eval: false
+#| label: tiny_trend_graphs
 #| include: false
-#| output: false
-datasets$dp_metrics_county %>% 
-  filter(variable_name == 'landValPerAcre', year == 2022) %>% 
-  pull(value) %>% 
-  hist()
+# Saving tiny graphs of each for table in paper
+plots <- map(series_vars, ~ {
+  df <- datasets$dp_metrics_county %>%
+    filter(variable_name == .x) %>%
+    ggplot(aes(x = year, y = value)) +
+    geom_line(
+      aes(group = fips),
+      alpha = 0
+    ) +
+    geom_smooth(
+      method = 'loess',
+      lwd = 1,
+      se = FALSE
+    ) +
+    # scale_x_continuous(breaks = seq(2000, 2025, 25)) +
+    coord_cartesian(xlim = c(2000, 2024)) +
+    theme_bw() +
+    theme(
+      axis.text = element_blank(),
+      axis.title = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_blank()
+    )
+}) %>% 
+  setNames(c(series_vars))
 
-datasets$dp_metrics_county %>% 
-  filter(variable_name == 'landValPerAcre', year == 2022) %>% 
-  arrange(value)
-# 36085 has 2.5 million. Everything else belo2 600k, mostly below 100k
-
-fips_key$county_name[fips_key$fips == 36085]
-# Richmond County, NY
+# Save them all to outputs with variable names
+iwalk(plots, \(plot, var) {
+  ggsave(
+    filename = paste0('outputs/trend_plots/fig_trend_', var, '.png'),
+    plot = plot,
+    width = 2,
+    height = 2,
+    units = 'cm',
+    dpi = 300,
+    bg = NULL
+  )
+})
 ```
 
 ### State Data
@@ -203,6 +228,49 @@ ggarrange(
   ncol = 3,
   nrow = 4
 )
+```
+
+```{r}
+#| label: tiny_trend_graphs_state
+#| include: false
+tiny_state_plots <- map(state_series_vars, ~ {
+  df <- datasets$dp_metrics_state %>%
+    filter(variable_name == .x) %>%
+    ggplot(aes(x = year, y = value)) +
+    geom_line(
+      aes(group = fips),
+      alpha = 0
+    ) +
+    geom_smooth(
+      method = 'loess',
+      lwd = 1,
+      se = FALSE
+    ) +
+    coord_cartesian(xlim = c(2000, 2024)) +
+    theme_bw() +
+    theme(
+      axis.text = element_blank(),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.grid.major = element_blank(),
+      axis.title = element_blank()
+    )
+}) %>% 
+  setNames(c(state_series_vars))
+
+# Save them all to outputs with variable names
+iwalk(tiny_state_plots, \(plot, var) {
+  ggsave(
+    filename = paste0('outputs/trend_plots/fig_trend_', var, '.png'),
+    plot = plot,
+    width = 2,
+    height = 2,
+    units = 'cm',
+    dpi = 300,
+    bg = NULL
+  )
+})
 ```
 
 ```{r}
@@ -670,6 +738,7 @@ Use `errorsarlm` on all metrics.
 ```{r}
 #| label: spatial_reg_all
 #| eval: false
+#| output: false
 get_str(datasets$dp_metrics_county)
 state_link <- fips_key %>% 
   filter(str_length(fips) == 2, fips != '00') %>% 
@@ -893,13 +962,6 @@ sar_framed_outputs <- data_paper_meta %>%
   select(dimension, index, indicator, metric, variable_name) %>% 
   right_join(sar_model_outputs, by = join_by(variable_name == variable_name))
 
-## Save some outputs for paper
-# Raw csv for reference
-write_csv(
-  sar_framed_outputs,
-  'outputs/errorsar_reg_outputs.csv'
-)
-
 ## Create interactive table for Quarto
 get_reactable(
   sar_framed_outputs, 
@@ -920,6 +982,7 @@ Saving table to $\LaTeX$ for paper:
 
 ```{r}
 #| label: latex_table
+#| output: false
 get_str(sar_framed_outputs)
 
 # Reduce to specific columns

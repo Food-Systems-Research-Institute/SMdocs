@@ -62,12 +62,12 @@ conflicts_prefer(
 )
 ```
 
-This page explores correlations among metrics.
+This page explores correlations among metrics across counties using the latest available time point for each metric.
 
 ## Wrangling
 
 ```{r}
-#| label: correlations
+#| label: wrangle
 #| output: false
 #| fig-height: 10
 #| fig-width: 10
@@ -100,7 +100,13 @@ ordered_framework <- data_paper_meta %>%
   arrange(dimension, metric) %>% 
   filter(metric %in% names(df))
 ordered_framework
+```
 
+## Figure
+
+```{r}
+#| label: make_cor_table
+#| output: false
 # Get line placements to divide dimensions
 # Reverse them to match alphabetical order of dimensions top to bottom
 # Get cumulative sums to space them out across graph
@@ -229,18 +235,17 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
 ggsave(
   plot = corplot,
   filename = 'outputs/fig_corplot.png',
-  height = 8,
-  width = 9.5,
-  dpi = 300
+  height = 9,
+  width = 9,
+  # dpi = 300
 )
 ```
 
-## Figure
-
 ```{r}
+#| label: show_cor_table
 #| echo: false
-#| fig-height: 8
-#| fig-width: 10
+#| fig-height: 9
+#| fig-width: 9
 corplot
 ```
 
@@ -249,13 +254,13 @@ corplot
 Large and unwieldy correlation matrix. Added another interactive one below that is probably easier to work with.
 
 ```{r}
+#| label: latex_table
 # Latex table
 df <- cor$r %>% 
   as.data.frame() %>% 
   tibble::rownames_to_column('var') %>% 
   mutate(var = str_sub(var, end = 6)) %>% 
   setNames(c(names(.) %>% str_sub(end = 6)))
-get_str(df)
   
 df %>% 
   kbl(
@@ -299,19 +304,13 @@ cor$r %>%
 Longer format table that is interactive and shows p values.
 
 ```{r}
-#| label: correlation_table_long
+#| label: cor_table_long
 # Create long table with p values and stars
 tab <- cor_r %>% 
   rename(cor = value) %>% 
   inner_join(cor_p, by = join_by(var_1 == Var1, var_2 == Var2)) %>% 
   rename(p = value) %>% 
   mutate(sig = ifelse(p < 0.05, '*', ''))
-
-# Save to outputs
-write_csv(
-  tab,
-  'outputs/table_metric_correlations_long.csv'
-)
 
 tab %>% 
   get_reactable(

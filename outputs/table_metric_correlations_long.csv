@@ -1,0 +1,1937 @@
+var_1,var_2,cor,p,sig
+Social isolation,Social isolation,1,NA,NA
+Ratio of female to male producers,Social isolation,0.2403000768698899,0.17797143977531116,
+Racial diversity of producers,Social isolation,-0.24704975566557139,0.16572688081666676,
+Producer age skew,Social isolation,0.028892639380228236,0.8731891370054825,
+Firearm fatalities,Social isolation,0.35885295697281017,0.04028242396751103,*
+Annual population change,Social isolation,-0.5012568202106764,0.0029628768704759167,*
+Acres in conservation easements,Social isolation,0.2899296650240396,0.10169941306534325,
+Total animal and crop sales,Social isolation,-0.040096282972709486,0.8246695360803751,
+Proportion of organic operations,Social isolation,0.29177173204381796,0.09944607666689631,
+Proportion of operations using precision agriculture,Social isolation,-0.15653434745410869,0.3843389666152368,
+Crop diversity,Social isolation,-0.18897319576083657,0.29223218854786404,
+Rental vacancy rate,Social isolation,-0.0723711151934907,0.6889829331228767,
+Proportion uninsured,Social isolation,0.04202437582631522,0.816378298231689,
+Price of a meal,Social isolation,-0.045235395164650624,0.8026138685680948,
+Poor mental health days,Social isolation,0.5300475025773687,0.0015106883305737728,*
+Mobility disability,Social isolation,-0.03711972879445157,0.8375056891649502,
+Limited access to healthy foods,Social isolation,0.04308906821036393,0.8118081787410563,
+Lacking social support,Social isolation,0.18584714372654465,0.3004349745553192,
+High school graduation rate,Social isolation,0.06659670203162334,0.7127040306786392,
+Heart disease prevalence,Social isolation,0.014265834523288853,0.9371957158205277,
+Frequent physical distress,Social isolation,0.2272806151263818,0.20336977542152246,
+"Food insecurity rate, overall",Social isolation,0.40168828458648065,0.020498059281408132,*
+Diabetes prevelance,Social isolation,-0.15937470228749487,0.37566170623877193,
+Weeks of extreme drought,Social isolation,-0.28892783680505246,0.10294102382399983,
+Tree species diversity,Social isolation,0.3548746941644323,0.04271467851692856,*
+Tree size diversity,Social isolation,0.1589092604011357,0.3770756902427448,
+Total ecosystem carbon per acre,Social isolation,0.44670723299071824,0.009158782846103719,*
+Soil organic carbon,Social isolation,0.5639508180510888,6.308723855141807e-4,*
+Rarefied richness of plants,Social isolation,0.12661725171443478,0.48258639201598097,
+Rarefied richness of animals,Social isolation,0.30285702372528744,0.08667663155724492,
+Proportion of invasive species,Social isolation,-0.3128214851434033,0.07630809603123412,
+Land Use Diversity,Social isolation,-0.43694195021746474,0.011006154271269608,*
+Fuel expenses,Social isolation,0.01578535811371608,0.9305214500477663,
+Available water storage,Social isolation,0.5155225412459717,0.0021376494608515983,*
+Annual precipitation,Social isolation,0.18031180760548152,0.3153138849842452,
+Total indemnities,Social isolation,-0.008210145998166453,0.9638316627520425,
+Sales from agritourism and recreation,Social isolation,-0.02512575415119242,0.8896138847952653,
+Percent change in wages,Social isolation,-0.14974564890074804,0.40554478278759776,
+Market channel ratio,Social isolation,-0.295750284694558,0.09470865862951117,
+Land and building value per acre,Social isolation,-0.5459201773847007,0.0010152884558265463,*
+Gini Index,Social isolation,-0.1663074014719195,0.3549710299117952,
+Expenses per operation,Social isolation,-0.2201421747500531,0.21831204235266477,
+Change in agricultural establishments,Social isolation,0.12939109041589555,0.4729666765867353,
+Average weekly wages,Social isolation,-0.16941722008515087,0.3459165776771278,
+Social isolation,Ratio of female to male producers,0.2403000768698899,0.17797143977531116,
+Ratio of female to male producers,Ratio of female to male producers,1,NA,NA
+Racial diversity of producers,Ratio of female to male producers,-0.0042464555478707745,0.9812885315375457,
+Producer age skew,Ratio of female to male producers,-0.2825377682564544,0.11113176231344557,
+Firearm fatalities,Ratio of female to male producers,0.22363824663795526,0.21090300785371507,
+Annual population change,Ratio of female to male producers,-0.1757072576249207,0.32803517017952877,
+Acres in conservation easements,Ratio of female to male producers,0.2973714174386584,0.09282838087952783,
+Total animal and crop sales,Ratio of female to male producers,-0.361491081478205,0.03873198539055611,*
+Proportion of organic operations,Ratio of female to male producers,0.1526752965338666,0.3963131903627797,
+Proportion of operations using precision agriculture,Ratio of female to male producers,-0.23319685990671224,0.19153434072390008,
+Crop diversity,Ratio of female to male producers,-0.10556619096385855,0.5587587042090791,
+Rental vacancy rate,Ratio of female to male producers,0.0076651286140122015,0.9662312279842444,
+Proportion uninsured,Ratio of female to male producers,-0.09278426417972632,0.6075572935255695,
+Price of a meal,Ratio of female to male producers,0.18110978992446655,0.31314101628298685,
+Poor mental health days,Ratio of female to male producers,0.23826893170739621,0.1817782757590105,
+Mobility disability,Ratio of female to male producers,0.017213290952385805,0.9242537048278467,
+Limited access to healthy foods,Ratio of female to male producers,-0.2888484013046311,0.10303995986554293,
+Lacking social support,Ratio of female to male producers,-0.5033784377784221,0.0028249448261874477,*
+High school graduation rate,Ratio of female to male producers,-0.05355588970205874,0.7672263103457788,
+Heart disease prevalence,Ratio of female to male producers,0.12025168875989296,0.5050386136869758,
+Frequent physical distress,Ratio of female to male producers,0.013085784580142382,0.9423818162993935,
+"Food insecurity rate, overall",Ratio of female to male producers,0.20961559218061296,0.24168615083478961,
+Diabetes prevelance,Ratio of female to male producers,-0.20594684341683414,0.25021171473145354,
+Weeks of extreme drought,Ratio of female to male producers,-0.2798853601969108,0.11467159527314852,
+Tree species diversity,Ratio of female to male producers,0.19400132811644527,0.2793413211283826,
+Tree size diversity,Ratio of female to male producers,0.1644888005701669,0.3603312718823335,
+Total ecosystem carbon per acre,Ratio of female to male producers,0.29844384515094735,0.09160026370177143,
+Soil organic carbon,Ratio of female to male producers,0.4947928071071675,0.003419723116489415,*
+Rarefied richness of plants,Ratio of female to male producers,0.19653683763715063,0.272982566881816,
+Rarefied richness of animals,Ratio of female to male producers,0.14655999368258116,0.4157202854437283,
+Proportion of invasive species,Ratio of female to male producers,-0.08264875986043997,0.647485685390917,
+Land Use Diversity,Ratio of female to male producers,-0.4057130703806843,0.019153381860567364,*
+Fuel expenses,Ratio of female to male producers,-0.13764851787352556,0.44493379436886693,
+Available water storage,Ratio of female to male producers,0.24335058748723887,0.1723606103274551,
+Annual precipitation,Ratio of female to male producers,0.4032883919513225,0.019954387393446682,*
+Total indemnities,Ratio of female to male producers,-0.23445804873703824,0.18907496729734818,
+Sales from agritourism and recreation,Ratio of female to male producers,0.0894176681456654,0.6207042112758037,
+Percent change in wages,Ratio of female to male producers,-0.11872592847737796,0.5104967819761121,
+Market channel ratio,Ratio of female to male producers,-0.349919112585921,0.045908018138282713,*
+Land and building value per acre,Ratio of female to male producers,-0.308799876633518,0.08037042464456867,
+Gini Index,Ratio of female to male producers,0.25990511052939774,0.1440949897030377,
+Expenses per operation,Ratio of female to male producers,-0.5478755940933725,9.654659307880564e-4,*
+Change in agricultural establishments,Ratio of female to male producers,0.24945750240613082,0.16150838108543875,
+Average weekly wages,Ratio of female to male producers,0.14659983245795372,0.41559215587309906,
+Social isolation,Racial diversity of producers,-0.24704975566557139,0.16572688081666676,
+Ratio of female to male producers,Racial diversity of producers,-0.0042464555478707745,0.9812885315375457,
+Racial diversity of producers,Racial diversity of producers,1,NA,NA
+Producer age skew,Racial diversity of producers,0.14245044179849853,0.4290560932554339,
+Firearm fatalities,Racial diversity of producers,-0.44591330877689905,0.009298437575279817,*
+Annual population change,Racial diversity of producers,0.3614106013906187,0.03877856050879869,*
+Acres in conservation easements,Racial diversity of producers,-0.4739236994893353,0.005334637825169519,*
+Total animal and crop sales,Racial diversity of producers,0.018502425076759508,0.9185990273310416,
+Proportion of organic operations,Racial diversity of producers,-0.2077364621638883,0.2460283302623265,
+Proportion of operations using precision agriculture,Racial diversity of producers,0.008354577289716825,0.963195821892876,
+Crop diversity,Racial diversity of producers,0.42602733353694455,0.013433849022640665,*
+Rental vacancy rate,Racial diversity of producers,-0.4361179059380456,0.011175495327777174,*
+Proportion uninsured,Racial diversity of producers,-0.06511609390525194,0.7188301743974455,
+Price of a meal,Racial diversity of producers,-0.12628215860460976,0.4837553006033386,
+Poor mental health days,Racial diversity of producers,-0.2395826183018837,0.17930962359319969,
+Mobility disability,Racial diversity of producers,-0.04195147043424643,0.8166914587424174,
+Limited access to healthy foods,Racial diversity of producers,0.0668167578837228,0.711795022073386,
+Lacking social support,Racial diversity of producers,0.02560007361746213,0.8875430865999847,
+High school graduation rate,Racial diversity of producers,-0.16039408618788176,0.37257577511427753,
+Heart disease prevalence,Racial diversity of producers,-0.2883389400798079,0.1036761975824736,
+Frequent physical distress,Racial diversity of producers,-0.07721889115631549,0.6692894069892121,
+"Food insecurity rate, overall",Racial diversity of producers,-0.24018322912552428,0.17818889781880554,
+Diabetes prevelance,Racial diversity of producers,0.33837827128673387,0.054087561183431276,
+Weeks of extreme drought,Racial diversity of producers,0.3519364479511908,0.04458575229471018,*
+Tree species diversity,Racial diversity of producers,-0.43614240542480764,0.011170429156658335,*
+Tree size diversity,Racial diversity of producers,-0.3006987795013734,0.08905849216989026,
+Total ecosystem carbon per acre,Racial diversity of producers,-0.3645818101988614,0.03697722560433814,*
+Soil organic carbon,Racial diversity of producers,-0.3007639427402262,0.08898585132038805,
+Rarefied richness of plants,Racial diversity of producers,0.0034151030628687996,0.9849513176985272,
+Rarefied richness of animals,Racial diversity of producers,-0.050936198076027006,0.7783219700077368,
+Proportion of invasive species,Racial diversity of producers,0.3650071281809091,0.03674087030831741,*
+Land Use Diversity,Racial diversity of producers,0.4279460560686956,0.01297716027355178,*
+Fuel expenses,Racial diversity of producers,-0.32016829443721256,0.06929976328695009,
+Available water storage,Racial diversity of producers,-0.18186534220076786,0.3110923417700542,
+Annual precipitation,Racial diversity of producers,0.026161180148406647,0.8850943338668484,
+Total indemnities,Racial diversity of producers,0.03665079744646791,0.8395317612049715,
+Sales from agritourism and recreation,Racial diversity of producers,0.3242486391301649,0.06563049219891948,
+Percent change in wages,Racial diversity of producers,-0.1596037306001977,0.37496707652279304,
+Market channel ratio,Racial diversity of producers,0.09828470583033558,0.5863362558419891,
+Land and building value per acre,Racial diversity of producers,0.32054012870943405,0.06895890138763439,
+Gini Index,Racial diversity of producers,0.003998287361606743,0.9823818789921128,
+Expenses per operation,Racial diversity of producers,0.10396597354618935,0.5647676274544975,
+Change in agricultural establishments,Racial diversity of producers,-0.16454313181805158,0.36017043670128324,
+Average weekly wages,Racial diversity of producers,-0.27879074839631773,0.11615676234345051,
+Social isolation,Producer age skew,0.028892639380228236,0.8731891370054825,
+Ratio of female to male producers,Producer age skew,-0.2825377682564544,0.11113176231344557,
+Racial diversity of producers,Producer age skew,0.14245044179849853,0.4290560932554339,
+Producer age skew,Producer age skew,1,NA,NA
+Firearm fatalities,Producer age skew,-0.08423529748458451,0.6411678269467536,
+Annual population change,Producer age skew,0.2751077665211567,0.12125938368779998,
+Acres in conservation easements,Producer age skew,-0.23707494505466173,0.1840426965823645,
+Total animal and crop sales,Producer age skew,0.08431336516885482,0.6408575806388783,
+Proportion of organic operations,Producer age skew,0.08623737206055407,0.6332304034449516,
+Proportion of operations using precision agriculture,Producer age skew,-0.05659067949288532,0.7544291314623663,
+Crop diversity,Producer age skew,0.3635908490150503,0.03753269213911303,*
+Rental vacancy rate,Producer age skew,-0.03304363332212587,0.8551498119851972,
+Proportion uninsured,Producer age skew,-0.02644812323325695,0.8838424730306806,
+Price of a meal,Producer age skew,0.03085821984369497,0.8646387671011764,
+Poor mental health days,Producer age skew,0.08225554465355504,0.6490552966346947,
+Mobility disability,Producer age skew,-0.0027371558820686597,0.9879384548929342,
+Limited access to healthy foods,Producer age skew,0.3097366299544664,0.07940959340283049,
+Lacking social support,Producer age skew,-0.04501841375214492,0.8035422032521415,
+High school graduation rate,Producer age skew,-0.05997386500957422,0.7402381525415604,
+Heart disease prevalence,Producer age skew,0.002641951068771251,0.9883579553983777,
+Frequent physical distress,Producer age skew,0.052319856829967856,0.7724560016997386,
+"Food insecurity rate, overall",Producer age skew,0.015505261673852699,0.9317513933181905,
+Diabetes prevelance,Producer age skew,-0.11720994471109035,0.5159488578008071,
+Weeks of extreme drought,Producer age skew,0.19470050727411053,0.27757838465693907,
+Tree species diversity,Producer age skew,0.01929604092317373,0.9151198266739504,
+Tree size diversity,Producer age skew,-0.05052778839368935,0.7800557208708931,
+Total ecosystem carbon per acre,Producer age skew,-0.04061442384792237,0.8224395453789985,
+Soil organic carbon,Producer age skew,-0.08992313692489225,0.6187228041018127,
+Rarefied richness of plants,Producer age skew,0.2380141590095855,0.18225980046277446,
+Rarefied richness of animals,Producer age skew,-0.061772807317131806,0.7327261354078418,
+Proportion of invasive species,Producer age skew,-0.1489955253745361,0.4079279729334355,
+Land Use Diversity,Producer age skew,0.17164594283580747,0.33951439531957117,
+Fuel expenses,Producer age skew,0.34802160739230714,0.04718021396154448,*
+Available water storage,Producer age skew,0.16247800535306986,0.36631387731484644,
+Annual precipitation,Producer age skew,-0.22335086564044396,0.2115054316602729,
+Total indemnities,Producer age skew,0.11212781353016489,0.534433221933929,
+Sales from agritourism and recreation,Producer age skew,0.26216988298739735,0.1405080228625617,
+Percent change in wages,Producer age skew,0.0700040526415864,0.6986731320218911,
+Market channel ratio,Producer age skew,-0.11506005411951367,0.5237296277230843,
+Land and building value per acre,Producer age skew,0.09323818055102669,0.6057937765117658,
+Gini Index,Producer age skew,-0.38622264929266026,0.026413671290300922,*
+Expenses per operation,Producer age skew,0.10943505871872074,0.54435413924688,
+Change in agricultural establishments,Producer age skew,-0.06042041006843864,0.7383712420335713,
+Average weekly wages,Producer age skew,-0.3921042388134242,0.02401742280541086,*
+Social isolation,Firearm fatalities,0.35885295697281017,0.04028242396751103,*
+Ratio of female to male producers,Firearm fatalities,0.22363824663795526,0.21090300785371507,
+Racial diversity of producers,Firearm fatalities,-0.44591330877689905,0.009298437575279817,*
+Producer age skew,Firearm fatalities,-0.08423529748458451,0.6411678269467536,
+Firearm fatalities,Firearm fatalities,1,NA,NA
+Annual population change,Firearm fatalities,-0.09664775655934822,0.5926174958644064,
+Acres in conservation easements,Firearm fatalities,0.5327887772294085,0.001412428990798631,*
+Total animal and crop sales,Firearm fatalities,0.05923348648278911,0.7433367216784177,
+Proportion of organic operations,Firearm fatalities,0.41921192310777267,0.015166625159380942,*
+Proportion of operations using precision agriculture,Firearm fatalities,-0.14087364467236782,0.43423495872238327,
+Crop diversity,Firearm fatalities,-0.58427415140894845,3.568007994294575e-4,*
+Rental vacancy rate,Firearm fatalities,0.47264446414295147,0.005477228045862592,*
+Proportion uninsured,Firearm fatalities,0.545941949581469,0.0010147215065861026,*
+Price of a meal,Firearm fatalities,-0.08467986179562773,0.6394018959401391,
+Poor mental health days,Firearm fatalities,0.37335605603575367,0.03234356770678093,*
+Mobility disability,Firearm fatalities,0.07610043485512019,0.6738144347352453,
+Limited access to healthy foods,Firearm fatalities,-0.3664276855422734,0.0359602954883842,*
+Lacking social support,Firearm fatalities,-0.1465775705923614,0.41566375180829285,
+High school graduation rate,Firearm fatalities,0.319396771604439,0.07001121578515024,
+Heart disease prevalence,Firearm fatalities,0.3141127546851497,0.07503808975529225,
+Frequent physical distress,Firearm fatalities,0.009027975398786277,0.9602315700925255,
+"Food insecurity rate, overall",Firearm fatalities,0.5140531930895328,0.00221218572658044,*
+Diabetes prevelance,Firearm fatalities,-0.3938370158236916,0.023346661064830965,*
+Weeks of extreme drought,Firearm fatalities,-0.6850520467360848,1.0924435504211516e-5,*
+Tree species diversity,Firearm fatalities,0.4768417248785184,0.00502124891774014,*
+Tree size diversity,Firearm fatalities,-0.17193513551528775,0.3386889962828572,
+Total ecosystem carbon per acre,Firearm fatalities,0.31179245215918616,0.07733206186433206,
+Soil organic carbon,Firearm fatalities,0.5685623751517325,5.561331486942933e-4,*
+Rarefied richness of plants,Firearm fatalities,0.08375633491320812,0.6430725596419067,
+Rarefied richness of animals,Firearm fatalities,0.204285004099432,0.25413844861095725,
+Proportion of invasive species,Firearm fatalities,-0.3151277940973553,0.07405133069549086,
+Land Use Diversity,Firearm fatalities,-0.5004196000396653,0.003018891740775853,*
+Fuel expenses,Firearm fatalities,0.25056008644392785,0.159602545831095,
+Available water storage,Firearm fatalities,0.48559538135328745,0.004174150534935084,*
+Annual precipitation,Firearm fatalities,0.44815115238679426,0.008909348470981682,*
+Total indemnities,Firearm fatalities,0.036122096978668715,0.8418172850163548,
+Sales from agritourism and recreation,Firearm fatalities,0.08153857566078086,0.6519210605740593,
+Percent change in wages,Firearm fatalities,0.20945159187074364,0.2420630571654261,
+Market channel ratio,Firearm fatalities,-0.3112323151084975,0.07789389513648604,
+Land and building value per acre,Firearm fatalities,-0.7835871818584498,6.961215781586816e-8,*
+Gini Index,Firearm fatalities,-0.1942407892683519,0.2787367218906045,
+Expenses per operation,Firearm fatalities,-0.1859819999944729,0.3000781297479498,
+Change in agricultural establishments,Firearm fatalities,0.22254317879775407,0.21320487721269088,
+Average weekly wages,Firearm fatalities,-0.2289064861404069,0.20006798368313228,
+Social isolation,Annual population change,-0.5012568202106764,0.0029628768704759167,*
+Ratio of female to male producers,Annual population change,-0.1757072576249207,0.32803517017952877,
+Racial diversity of producers,Annual population change,0.3614106013906187,0.03877856050879869,*
+Producer age skew,Annual population change,0.2751077665211567,0.12125938368779998,
+Firearm fatalities,Annual population change,-0.09664775655934822,0.5926174958644064,
+Annual population change,Annual population change,1,NA,NA
+Acres in conservation easements,Annual population change,-0.1634040006998618,0.3635515367273483,
+Total animal and crop sales,Annual population change,-0.1330104593714144,0.4605671377403926,
+Proportion of organic operations,Annual population change,-0.015405919064404925,0.932187658201961,
+Proportion of operations using precision agriculture,Annual population change,-0.00424531527921128,0.98129355511153,
+Crop diversity,Annual population change,0.1825795022854109,0.309163647642849,
+Rental vacancy rate,Annual population change,0.0039013462710871865,0.9828089782250047,
+Proportion uninsured,Annual population change,0.15785322512674035,0.380295407682536,
+Price of a meal,Annual population change,-0.22502106308344166,0.2080207707363244,
+Poor mental health days,Annual population change,-0.23260089974497217,0.19270423755369936,
+Mobility disability,Annual population change,0.03819478159617184,0.8328646840045497,
+Limited access to healthy foods,Annual population change,-0.28619883483366315,0.1063813103195923,
+Lacking social support,Annual population change,-0.053676044230643365,0.7667184659988875,
+High school graduation rate,Annual population change,0.07422449598396812,0.6814292541102656,
+Heart disease prevalence,Annual population change,-8.685198995381996e-4,0.9961726574797236,
+Frequent physical distress,Annual population change,-0.06495972318116577,0.7194781834484929,
+"Food insecurity rate, overall",Annual population change,-0.10463213541214975,0.5622625574254556,
+Diabetes prevelance,Annual population change,0.018218394982819217,0.9198445747289086,
+Weeks of extreme drought,Annual population change,0.10635116867327651,0.5558218973854017,
+Tree species diversity,Annual population change,-0.3256045311270384,0.06444549456399518,
+Tree size diversity,Annual population change,-0.18060466014621712,0.31451537007312513,
+Total ecosystem carbon per acre,Annual population change,-0.33793965330060394,0.05441983502379566,
+Soil organic carbon,Annual population change,-0.3176743299315642,0.0716201023112446,
+Rarefied richness of plants,Annual population change,0.08603186992649625,0.6340433102284764,
+Rarefied richness of animals,Annual population change,-0.008255183027058076,0.9636333904503072,
+Proportion of invasive species,Annual population change,0.01801931534819153,0.920717703433388,
+Land Use Diversity,Annual population change,0.30681675085204557,0.08243411919161359,
+Fuel expenses,Annual population change,-0.0017196228587915599,0.9924221475891466,
+Available water storage,Annual population change,-0.2121473200188532,0.23591751286385643,
+Annual precipitation,Annual population change,-0.07030756266260674,0.6974279826064052,
+Total indemnities,Annual population change,-0.06878933736515526,0.7036641905788332,
+Sales from agritourism and recreation,Annual population change,0.3198647026228775,0.06957904111955804,
+Percent change in wages,Annual population change,-0.017818285637880463,0.9215994770340883,
+Market channel ratio,Annual population change,0.07914549872919711,0.6615215563854813,
+Land and building value per acre,Annual population change,0.23155298542323147,0.19477342837370037,
+Gini Index,Annual population change,-0.08773375528098308,0.6273238841012581,
+Expenses per operation,Annual population change,0.01693339901447751,0.9254819174954607,
+Change in agricultural establishments,Annual population change,-0.1150264556135828,0.523851677954287,
+Average weekly wages,Annual population change,-0.18117153575561365,0.31297327683214915,
+Social isolation,Acres in conservation easements,0.2899296650240396,0.10169941306534325,
+Ratio of female to male producers,Acres in conservation easements,0.2973714174386584,0.09282838087952783,
+Racial diversity of producers,Acres in conservation easements,-0.4739236994893353,0.005334637825169519,*
+Producer age skew,Acres in conservation easements,-0.23707494505466173,0.1840426965823645,
+Firearm fatalities,Acres in conservation easements,0.5327887772294085,0.001412428990798631,*
+Annual population change,Acres in conservation easements,-0.1634040006998618,0.3635515367273483,
+Acres in conservation easements,Acres in conservation easements,1,NA,NA
+Total animal and crop sales,Acres in conservation easements,0.09778585732241568,0.5882473076874652,
+Proportion of organic operations,Acres in conservation easements,0.36916435170966705,0.03449442783690815,*
+Proportion of operations using precision agriculture,Acres in conservation easements,0.02816318897879326,0.8763659201212577,
+Crop diversity,Acres in conservation easements,-0.4921219141903279,0.003625568818519831,*
+Rental vacancy rate,Acres in conservation easements,0.12364546210738749,0.49300363187697016,
+Proportion uninsured,Acres in conservation easements,-0.11827640774292637,0.5121104435526194,
+Price of a meal,Acres in conservation easements,0.20635640911651235,0.24925017995549958,
+Poor mental health days,Acres in conservation easements,0.40696638985097494,0.018749927359953622,*
+Mobility disability,Acres in conservation easements,-0.19337686851578742,0.2809219612726772,
+Limited access to healthy foods,Acres in conservation easements,-0.3557655879493668,0.042159997410554206,*
+Lacking social support,Acres in conservation easements,-0.2610569797626267,0.1422624024403989,
+High school graduation rate,Acres in conservation easements,0.03824200852204718,0.8326609310046669,
+Heart disease prevalence,Acres in conservation easements,0.028199310923749752,0.8762085627487677,
+Frequent physical distress,Acres in conservation easements,-0.17607446397218798,0.3270092120959296,
+"Food insecurity rate, overall",Acres in conservation easements,0.2217362140155555,0.21491213667419773,
+Diabetes prevelance,Acres in conservation easements,-0.5220690327746015,0.0018315091269196504,*
+Weeks of extreme drought,Acres in conservation easements,-0.49366245404602155,0.00350557149995101,*
+Tree species diversity,Acres in conservation easements,0.4304356991463697,0.012404096322331304,*
+Tree size diversity,Acres in conservation easements,0.23523367049823646,0.1875735074766478,
+Total ecosystem carbon per acre,Acres in conservation easements,0.7090600033634554,3.859737929712281e-6,*
+Soil organic carbon,Acres in conservation easements,0.6463389956773008,4.8377324896264895e-5,*
+Rarefied richness of plants,Acres in conservation easements,0.3844439614401586,0.02717581783975298,*
+Rarefied richness of animals,Acres in conservation easements,0.4010509567764216,0.02071799669558505,*
+Proportion of invasive species,Acres in conservation easements,-0.2825537717558051,0.11111065627828687,
+Land Use Diversity,Acres in conservation easements,-0.6882671951294154,9.557675116234066e-6,*
+Fuel expenses,Acres in conservation easements,0.038870120726832574,0.8299520628044572,
+Available water storage,Acres in conservation easements,0.5433763607062809,0.0010834776737556062,*
+Annual precipitation,Acres in conservation easements,0.06319564757998715,0.7268017962308071,
+Total indemnities,Acres in conservation easements,-0.13171931509937607,0.4649704998148154,
+Sales from agritourism and recreation,Acres in conservation easements,-0.334814465681869,0.056834407240083706,
+Percent change in wages,Acres in conservation easements,0.18276662353254314,0.30865954410136887,
+Market channel ratio,Acres in conservation easements,-0.2587625794911334,0.1459296547316533,
+Land and building value per acre,Acres in conservation easements,-0.6296900296377503,8.625845080967309e-5,*
+Gini Index,Acres in conservation easements,0.03929668322161195,0.8281135138225431,
+Expenses per operation,Acres in conservation easements,-0.19555337966148162,0.2754376940122967,
+Change in agricultural establishments,Acres in conservation easements,0.4795365767643101,0.0047460074835927735,*
+Average weekly wages,Acres in conservation easements,0.1066137074541825,0.5548412722009184,
+Social isolation,Total animal and crop sales,-0.040096282972709486,0.8246695360803751,
+Ratio of female to male producers,Total animal and crop sales,-0.361491081478205,0.03873198539055611,*
+Racial diversity of producers,Total animal and crop sales,0.018502425076759508,0.9185990273310416,
+Producer age skew,Total animal and crop sales,0.08431336516885482,0.6408575806388783,
+Firearm fatalities,Total animal and crop sales,0.05923348648278911,0.7433367216784177,
+Annual population change,Total animal and crop sales,-0.1330104593714144,0.4605671377403926,
+Acres in conservation easements,Total animal and crop sales,0.09778585732241568,0.5882473076874652,
+Total animal and crop sales,Total animal and crop sales,1,NA,NA
+Proportion of organic operations,Total animal and crop sales,0.09894770488280226,0.5838006005962062,
+Proportion of operations using precision agriculture,Total animal and crop sales,0.6155171805527578,1.375431390719939e-4,*
+Crop diversity,Total animal and crop sales,-0.01129812355495789,0.950242612230707,
+Rental vacancy rate,Total animal and crop sales,-0.21600810697895104,0.22730012314521186,
+Proportion uninsured,Total animal and crop sales,-0.10791602194358267,0.549988839454211,
+Price of a meal,Total animal and crop sales,-0.1175621351948534,0.514679686620906,
+Poor mental health days,Total animal and crop sales,0.06986625373233976,0.6992387065823256,
+Mobility disability,Total animal and crop sales,-0.2083858953866403,0.2445218209122606,
+Limited access to healthy foods,Total animal and crop sales,-0.04388029235386367,0.8084158379940507,
+Lacking social support,Total animal and crop sales,0.026022960927366813,0.8856974472343091,
+High school graduation rate,Total animal and crop sales,0.13063590236821582,0.4686825079099517,
+Heart disease prevalence,Total animal and crop sales,-0.26651971950757564,0.13380253054112656,
+Frequent physical distress,Total animal and crop sales,-0.07263362904641278,0.6879112118892197,
+"Food insecurity rate, overall",Total animal and crop sales,-0.041301145217192956,0.8194861154480932,
+Diabetes prevelance,Total animal and crop sales,0.03441987765075837,0.8491843455366204,
+Weeks of extreme drought,Total animal and crop sales,0.06995069481082589,0.6988921122366065,
+Tree species diversity,Total animal and crop sales,0.010996970250027192,0.9515673323426381,
+Tree size diversity,Total animal and crop sales,-0.16130610578713708,0.36982756013588514,
+Total ecosystem carbon per acre,Total animal and crop sales,-0.052381738705515594,0.7721939417955737,
+Soil organic carbon,Total animal and crop sales,-0.04470006546363404,0.8049047032853798,
+Rarefied richness of plants,Total animal and crop sales,0.15316903571204177,0.3947693420531784,
+Rarefied richness of animals,Total animal and crop sales,0.035191374332852875,0.8458437833258052,
+Proportion of invasive species,Total animal and crop sales,-0.25403449484042034,0.15370279879564963,
+Land Use Diversity,Total animal and crop sales,0.29285727440207165,0.09813601906480351,
+Fuel expenses,Total animal and crop sales,0.08430496453960855,0.6408909624504118,
+Available water storage,Total animal and crop sales,-0.013089948546020778,0.9423635122349443,
+Annual precipitation,Total animal and crop sales,-0.06778165666514298,0.7078138202679223,
+Total indemnities,Total animal and crop sales,0.3447601806936337,0.04943257515965316,*
+Sales from agritourism and recreation,Total animal and crop sales,-0.0665160418811432,0.7130373195875053,
+Percent change in wages,Total animal and crop sales,-0.07794901577932341,0.6663416179985255,
+Market channel ratio,Total animal and crop sales,-0.13637148705476634,0.44920928326729337,
+Land and building value per acre,Total animal and crop sales,-0.13478972502691855,0.4545355808098406,
+Gini Index,Total animal and crop sales,-0.26213331275050145,0.1405654196416133,
+Expenses per operation,Total animal and crop sales,0.7909472413352948,4.3032093222095114e-8,*
+Change in agricultural establishments,Total animal and crop sales,0.06048437188858806,0.7381039509458589,
+Average weekly wages,Total animal and crop sales,-0.05663392922883412,0.7542472084100238,
+Social isolation,Proportion of organic operations,0.29177173204381796,0.09944607666689631,
+Ratio of female to male producers,Proportion of organic operations,0.1526752965338666,0.3963131903627797,
+Racial diversity of producers,Proportion of organic operations,-0.2077364621638883,0.2460283302623265,
+Producer age skew,Proportion of organic operations,0.08623737206055407,0.6332304034449516,
+Firearm fatalities,Proportion of organic operations,0.41921192310777267,0.015166625159380942,*
+Annual population change,Proportion of organic operations,-0.015405919064404925,0.932187658201961,
+Acres in conservation easements,Proportion of organic operations,0.36916435170966705,0.03449442783690815,*
+Total animal and crop sales,Proportion of organic operations,0.09894770488280226,0.5838006005962062,
+Proportion of organic operations,Proportion of organic operations,1,NA,NA
+Proportion of operations using precision agriculture,Proportion of organic operations,-0.05012974755044387,0.7817464559936156,
+Crop diversity,Proportion of organic operations,-0.5678995298667419,5.663690831358981e-4,*
+Rental vacancy rate,Proportion of organic operations,0.2665950601742066,0.1336885007700459,
+Proportion uninsured,Proportion of organic operations,0.12278397461737205,0.4960447298688384,
+Price of a meal,Proportion of organic operations,0.4454999174766061,0.009371866834975595,*
+Poor mental health days,Proportion of organic operations,0.13454999463484676,0.45534577064671566,
+Mobility disability,Proportion of organic operations,-0.25056354603959063,0.1595965914215265,
+Limited access to healthy foods,Proportion of organic operations,-0.3697058837739095,0.03421019327130237,*
+Lacking social support,Proportion of organic operations,-0.4472177326172586,0.009069926675747686,*
+High school graduation rate,Proportion of organic operations,-0.27689967518315617,0.11875634689338743,
+Heart disease prevalence,Proportion of organic operations,0.04756506976976481,0.7926634993571247,
+Frequent physical distress,Proportion of organic operations,-0.20750654095309146,0.2465631645148474,
+"Food insecurity rate, overall",Proportion of organic operations,0.2702541953247294,0.12823594443529318,
+Diabetes prevelance,Proportion of organic operations,-0.6255655634102443,9.903606292782641e-5,*
+Weeks of extreme drought,Proportion of organic operations,-0.5959055873642074,2.5309272354623324e-4,*
+Tree species diversity,Proportion of organic operations,0.2334916731545744,0.19095744885728427,
+Tree size diversity,Proportion of organic operations,-0.07163969665436161,0.6919720987309599,
+Total ecosystem carbon per acre,Proportion of organic operations,0.29169528872512374,0.09953882757667043,
+Soil organic carbon,Proportion of organic operations,0.38336308542153685,0.027647705358272212,*
+Rarefied richness of plants,Proportion of organic operations,0.15645425849957784,0.38458531446326516,
+Rarefied richness of animals,Proportion of organic operations,0.2281871093188529,0.20152426216060526,
+Proportion of invasive species,Proportion of organic operations,-0.11591225933958718,0.5206385425963602,
+Land Use Diversity,Proportion of organic operations,-0.26422103020097665,0.13731611979751945,
+Fuel expenses,Proportion of organic operations,0.07308944324114842,0.6860517517674614,
+Available water storage,Proportion of organic operations,0.30667103764969417,0.08258734739717899,
+Annual precipitation,Proportion of organic operations,0.10655132837234806,0.5550741954067491,
+Total indemnities,Proportion of organic operations,-0.07072204976046148,0.6957288009237288,
+Sales from agritourism and recreation,Proportion of organic operations,-0.22091003924187655,0.2166697168581977,
+Percent change in wages,Proportion of organic operations,0.04931310433869034,0.7852183275939217,
+Market channel ratio,Proportion of organic operations,-0.24505283639508982,0.16928489962739235,
+Land and building value per acre,Proportion of organic operations,-0.48257032023500057,0.004451770985561154,*
+Gini Index,Proportion of organic operations,-0.0816547865204775,0.6514562261210572,
+Expenses per operation,Proportion of organic operations,-0.05367652953596267,0.7667164150035908,
+Change in agricultural establishments,Proportion of organic operations,-0.03842634339725836,0.8318657501207438,
+Average weekly wages,Proportion of organic operations,-0.16284079234485024,0.36523016664544805,
+Social isolation,Proportion of operations using precision agriculture,-0.15653434745410869,0.3843389666152368,
+Ratio of female to male producers,Proportion of operations using precision agriculture,-0.23319685990671224,0.19153434072390008,
+Racial diversity of producers,Proportion of operations using precision agriculture,0.008354577289716825,0.963195821892876,
+Producer age skew,Proportion of operations using precision agriculture,-0.05659067949288532,0.7544291314623663,
+Firearm fatalities,Proportion of operations using precision agriculture,-0.14087364467236782,0.43423495872238327,
+Annual population change,Proportion of operations using precision agriculture,-0.00424531527921128,0.98129355511153,
+Acres in conservation easements,Proportion of operations using precision agriculture,0.02816318897879326,0.8763659201212577,
+Total animal and crop sales,Proportion of operations using precision agriculture,0.6155171805527578,1.375431390719939e-4,*
+Proportion of organic operations,Proportion of operations using precision agriculture,-0.05012974755044387,0.7817464559936156,
+Proportion of operations using precision agriculture,Proportion of operations using precision agriculture,1,NA,NA
+Crop diversity,Proportion of operations using precision agriculture,-0.11667219086207734,0.5178897070604416,
+Rental vacancy rate,Proportion of operations using precision agriculture,-0.256578807480142,0.14948351493660805,
+Proportion uninsured,Proportion of operations using precision agriculture,-0.3512673441420404,0.04502088934103199,*
+Price of a meal,Proportion of operations using precision agriculture,0.004020255491894237,0.9822850933332594,
+Poor mental health days,Proportion of operations using precision agriculture,0.1105202546998452,0.5403455042178265,
+Mobility disability,Proportion of operations using precision agriculture,0.0666577105106952,0.7124519773945874,
+Limited access to healthy foods,Proportion of operations using precision agriculture,-0.10083969664708689,0.5765914768488525,
+Lacking social support,Proportion of operations using precision agriculture,-0.14518215569166368,0.42016531932691725,
+High school graduation rate,Proportion of operations using precision agriculture,0.04748595375130808,0.7930008985126111,
+Heart disease prevalence,Proportion of operations using precision agriculture,-0.03552518125518281,0.8443992199475541,
+Frequent physical distress,Proportion of operations using precision agriculture,0.0758811777624783,0.6747028236636501,
+"Food insecurity rate, overall",Proportion of operations using precision agriculture,-0.15758211509674513,0.38112457048907067,
+Diabetes prevelance,Proportion of operations using precision agriculture,0.006463571847496299,0.9715223576388177,
+Weeks of extreme drought,Proportion of operations using precision agriculture,0.05145834024272079,0.7761069382925849,
+Tree species diversity,Proportion of operations using precision agriculture,-0.09739988907661284,0.5897277983913096,
+Tree size diversity,Proportion of operations using precision agriculture,0.1327270203864401,0.46153188382328914,
+Total ecosystem carbon per acre,Proportion of operations using precision agriculture,-0.039201942011884476,0.8285217858104361,
+Soil organic carbon,Proportion of operations using precision agriculture,-0.07834798764221022,0.6647328818980407,
+Rarefied richness of plants,Proportion of operations using precision agriculture,-0.004680487388379946,0.9793764114111818,
+Rarefied richness of animals,Proportion of operations using precision agriculture,0.015334132482681404,0.9325029223483754,
+Proportion of invasive species,Proportion of operations using precision agriculture,-0.3096750201673435,0.0794725127755247,
+Land Use Diversity,Proportion of operations using precision agriculture,0.218008268505226,0.2229206648326505,
+Fuel expenses,Proportion of operations using precision agriculture,0.045505562000051625,0.8014583552028487,
+Available water storage,Proportion of operations using precision agriculture,-0.13477459624987081,0.45458668699421145,
+Annual precipitation,Proportion of operations using precision agriculture,0.13814053074653546,0.4432924469935786,
+Total indemnities,Proportion of operations using precision agriculture,-0.05241631984346043,0.772047506931457,
+Sales from agritourism and recreation,Proportion of operations using precision agriculture,0.07728078026226523,0.6690393485135955,
+Percent change in wages,Proportion of operations using precision agriculture,-0.2536534776612113,0.15434198054903137,
+Market channel ratio,Proportion of operations using precision agriculture,-0.1521043496727132,0.39810276835584846,
+Land and building value per acre,Proportion of operations using precision agriculture,-0.09474609652596418,0.5999510602921876,
+Gini Index,Proportion of operations using precision agriculture,-0.062214628112832106,0.7308848683844293,
+Expenses per operation,Proportion of operations using precision agriculture,0.3248076058483124,0.065139925455864,
+Change in agricultural establishments,Proportion of operations using precision agriculture,-0.05874394300642203,0.7453876933838619,
+Average weekly wages,Proportion of operations using precision agriculture,-0.03237192461980866,0.8580642811637333,
+Social isolation,Crop diversity,-0.18897319576083657,0.29223218854786404,
+Ratio of female to male producers,Crop diversity,-0.10556619096385855,0.5587587042090791,
+Racial diversity of producers,Crop diversity,0.42602733353694455,0.013433849022640665,*
+Producer age skew,Crop diversity,0.3635908490150503,0.03753269213911303,*
+Firearm fatalities,Crop diversity,-0.58427415140894845,3.568007994294575e-4,*
+Annual population change,Crop diversity,0.1825795022854109,0.309163647642849,
+Acres in conservation easements,Crop diversity,-0.4921219141903279,0.003625568818519831,*
+Total animal and crop sales,Crop diversity,-0.01129812355495789,0.950242612230707,
+Proportion of organic operations,Crop diversity,-0.5678995298667419,5.663690831358981e-4,*
+Proportion of operations using precision agriculture,Crop diversity,-0.11667219086207734,0.5178897070604416,
+Crop diversity,Crop diversity,1,NA,NA
+Rental vacancy rate,Crop diversity,-0.34770941949370493,0.04739219618019774,*
+Proportion uninsured,Crop diversity,-0.2553645245124176,0.15148657916466268,
+Price of a meal,Crop diversity,-0.19770592658649896,0.2700825940907938,
+Poor mental health days,Crop diversity,-0.20142338821808742,0.260995179289343,
+Mobility disability,Crop diversity,-0.09339504957075527,0.6051848293768902,
+Limited access to healthy foods,Crop diversity,0.324093815633465,0.06576688077519477,
+Lacking social support,Crop diversity,0.24028525106066612,0.17799902075742713,
+High school graduation rate,Crop diversity,-0.032279505761169565,0.858465421147059,
+Heart disease prevalence,Crop diversity,-0.3174143289007088,0.071865443063144685,
+Frequent physical distress,Crop diversity,-0.07749869926307407,0.6681591403521421,
+"Food insecurity rate, overall",Crop diversity,-0.30320543138109807,0.08629675277467053,
+Diabetes prevelance,Crop diversity,0.37789588820176806,0.030138573061319285,*
+Weeks of extreme drought,Crop diversity,0.7474134039786254,5.805206333420188e-7,*
+Tree species diversity,Crop diversity,-0.43444097046491176,0.011526902881111134,*
+Tree size diversity,Crop diversity,0.010466699528027859,0.9539002065919873,
+Total ecosystem carbon per acre,Crop diversity,-0.27514871021304976,0.12120175691548174,
+Soil organic carbon,Crop diversity,-0.35084216420589437,0.045299159592112836,*
+Rarefied richness of plants,Crop diversity,0.1954874284349875,0.27560284698559934,
+Rarefied richness of animals,Crop diversity,-0.272648454760671,0.12475826465280027,
+Proportion of invasive species,Crop diversity,0.11558643530597777,0.5218193026787492,
+Land Use Diversity,Crop diversity,0.4070139425009083,0.0187347599386134,*
+Fuel expenses,Crop diversity,-0.10286540979634824,0.5689173884765522,
+Available water storage,Crop diversity,-0.2487632021003496,0.16271684062733938,
+Annual precipitation,Crop diversity,-0.391900881431947,0.024097173607172895,*
+Total indemnities,Crop diversity,0.06674411497844918,0.7120950530265777,
+Sales from agritourism and recreation,Crop diversity,0.05620961081953367,0.7560325943914488,
+Percent change in wages,Crop diversity,-0.20647333743788587,0.24897611923654228,
+Market channel ratio,Crop diversity,0.04716557039302691,0.7943675854708068,
+Land and building value per acre,Crop diversity,0.5331736349467215,0.001399092160428772,*
+Gini Index,Crop diversity,-0.1163832405919708,0.5189340606513397,
+Expenses per operation,Crop diversity,0.16682959286794438,0.3534407844914216,
+Change in agricultural establishments,Crop diversity,-0.06455281439393032,0.721165333847382,
+Average weekly wages,Crop diversity,0.042959810278087464,0.8123626877959143,
+Social isolation,Rental vacancy rate,-0.0723711151934907,0.6889829331228767,
+Ratio of female to male producers,Rental vacancy rate,0.0076651286140122015,0.9662312279842444,
+Racial diversity of producers,Rental vacancy rate,-0.4361179059380456,0.011175495327777174,*
+Producer age skew,Rental vacancy rate,-0.03304363332212587,0.8551498119851972,
+Firearm fatalities,Rental vacancy rate,0.47264446414295147,0.005477228045862592,*
+Annual population change,Rental vacancy rate,0.0039013462710871865,0.9828089782250047,
+Acres in conservation easements,Rental vacancy rate,0.12364546210738749,0.49300363187697016,
+Total animal and crop sales,Rental vacancy rate,-0.21600810697895104,0.22730012314521186,
+Proportion of organic operations,Rental vacancy rate,0.2665950601742066,0.1336885007700459,
+Proportion of operations using precision agriculture,Rental vacancy rate,-0.256578807480142,0.14948351493660805,
+Crop diversity,Rental vacancy rate,-0.34770941949370493,0.04739219618019774,*
+Rental vacancy rate,Rental vacancy rate,1,NA,NA
+Proportion uninsured,Rental vacancy rate,0.4953298248078911,0.0033795786954962104,*
+Price of a meal,Rental vacancy rate,0.23811003231278677,0.18207849289599265,
+Poor mental health days,Rental vacancy rate,0.19921464329474467,0.26636995257827345,
+Mobility disability,Rental vacancy rate,0.4346904444052672,0.011474042281821806,*
+Limited access to healthy foods,Rental vacancy rate,0.041812483384393945,0.8172885458950765,
+Lacking social support,Rental vacancy rate,-0.14104451557820954,0.43367209390407213,
+High school graduation rate,Rental vacancy rate,0.22673434017219,0.20448755658769602,
+Heart disease prevalence,Rental vacancy rate,0.7114372012381411,3.4624802367488883e-6,*
+Frequent physical distress,Rental vacancy rate,0.1401966870608495,0.43646886006787877,
+"Food insecurity rate, overall",Rental vacancy rate,0.4978050291949151,0.003199770761826759,*
+Diabetes prevelance,Rental vacancy rate,-0.22793898819847844,0.20202824884084558,
+Weeks of extreme drought,Rental vacancy rate,-0.24337453788565744,0.17231706182111894,
+Tree species diversity,Rental vacancy rate,0.2597030744838325,0.1444181876478985,
+Tree size diversity,Rental vacancy rate,-0.25558601516114915,0.15111976992252485,
+Total ecosystem carbon per acre,Rental vacancy rate,-0.03124467271529904,0.8629594183557949,
+Soil organic carbon,Rental vacancy rate,0.19149977957246547,0.2857079607232085,
+Rarefied richness of plants,Rental vacancy rate,0.029695676123556766,0.8696941310606794,
+Rarefied richness of animals,Rental vacancy rate,0.13760879028755435,0.4450664685748458,
+Proportion of invasive species,Rental vacancy rate,-0.06543897900233757,0.717492728868397,
+Land Use Diversity,Rental vacancy rate,-0.3075384176713188,0.08167845994704281,
+Fuel expenses,Rental vacancy rate,0.25724324726881975,0.14839563087351415,
+Available water storage,Rental vacancy rate,-0.01770132539527467,0.9221125402204002,
+Annual precipitation,Rental vacancy rate,0.23947838239498503,0.17950463151531149,
+Total indemnities,Rental vacancy rate,0.037546962321424585,0.835660668429703,
+Sales from agritourism and recreation,Rental vacancy rate,-0.035135214244212946,0.846086867004602,
+Percent change in wages,Rental vacancy rate,0.23019603752550477,0.19747578144277877,
+Market channel ratio,Rental vacancy rate,-0.2546567244016927,0.15266308340555224,
+Land and building value per acre,Rental vacancy rate,-0.3367743010041674,0.055310510576994876,
+Gini Index,Rental vacancy rate,0.2394008078742727,0.1796498576825427,
+Expenses per operation,Rental vacancy rate,-0.21959629180715387,0.21948474698724119,
+Change in agricultural establishments,Rental vacancy rate,-0.3540633140654627,0.0432249415576309,*
+Average weekly wages,Rental vacancy rate,-0.10062649239728509,0.5774018577339302,
+Social isolation,Proportion uninsured,0.04202437582631522,0.816378298231689,
+Ratio of female to male producers,Proportion uninsured,-0.09278426417972632,0.6075572935255695,
+Racial diversity of producers,Proportion uninsured,-0.06511609390525194,0.7188301743974455,
+Producer age skew,Proportion uninsured,-0.02644812323325695,0.8838424730306806,
+Firearm fatalities,Proportion uninsured,0.545941949581469,0.0010147215065861026,*
+Annual population change,Proportion uninsured,0.15785322512674035,0.380295407682536,
+Acres in conservation easements,Proportion uninsured,-0.11827640774292637,0.5121104435526194,
+Total animal and crop sales,Proportion uninsured,-0.10791602194358267,0.549988839454211,
+Proportion of organic operations,Proportion uninsured,0.12278397461737205,0.4960447298688384,
+Proportion of operations using precision agriculture,Proportion uninsured,-0.3512673441420404,0.04502088934103199,*
+Crop diversity,Proportion uninsured,-0.2553645245124176,0.15148657916466268,
+Rental vacancy rate,Proportion uninsured,0.4953298248078911,0.0033795786954962104,*
+Proportion uninsured,Proportion uninsured,1,NA,NA
+Price of a meal,Proportion uninsured,-0.40553371115850056,0.01921170459556576,*
+Poor mental health days,Proportion uninsured,-0.01734777537598657,0.9236636255478532,
+Mobility disability,Proportion uninsured,0.30525779963404714,0.08408487967191647,
+Limited access to healthy foods,Proportion uninsured,-0.14068791002746703,0.4348472409433568,
+Lacking social support,Proportion uninsured,0.19636526686922443,0.27340985212173696,
+High school graduation rate,Proportion uninsured,0.3436810117207226,0.05019644792095268,
+Heart disease prevalence,Proportion uninsured,0.36286558898473475,0.03794348541945736,*
+Frequent physical distress,Proportion uninsured,0.08020338615698451,0.6572709047811571,
+"Food insecurity rate, overall",Proportion uninsured,0.43101906875622276,0.01227294181452332,*
+Diabetes prevelance,Proportion uninsured,0.16717525532012206,0.3524300292073983,
+Weeks of extreme drought,Proportion uninsured,-0.27702513822596947,0.1185825466709356,
+Tree species diversity,Proportion uninsured,0.18569591734863242,0.300835456162982,
+Tree size diversity,Proportion uninsured,-0.5285172372831102,0.0015681000059943884,*
+Total ecosystem carbon per acre,Proportion uninsured,-0.36047907316821826,0.03932094887903226,*
+Soil organic carbon,Proportion uninsured,0.031062218211871967,0.8637522098977772,
+Rarefied richness of plants,Proportion uninsured,-0.27001934728699345,0.12858088138925083,
+Rarefied richness of animals,Proportion uninsured,-0.19944201115240137,0.26581335634335646,
+Proportion of invasive species,Proportion uninsured,-0.09945094819207026,0.5818791827901191,
+Land Use Diversity,Proportion uninsured,0.05445137577326178,0.7634437536688965,
+Fuel expenses,Proportion uninsured,0.09514513133410467,0.5984089883697439,
+Available water storage,Proportion uninsured,0.02421110387895832,0.8936091031774367,
+Annual precipitation,Proportion uninsured,0.4519013784708282,0.008288280470135856,*
+Total indemnities,Proportion uninsured,0.28175628297218047,0.11216607950669855,
+Sales from agritourism and recreation,Proportion uninsured,0.2985682087726477,0.09145865261155972,
+Percent change in wages,Proportion uninsured,0.08575597766003672,0.635135320233229,
+Market channel ratio,Proportion uninsured,0.12369739747453348,0.4928206012216445,
+Land and building value per acre,Proportion uninsured,-0.25081803205423137,0.15915902607671573,
+Gini Index,Proportion uninsured,-0.15344196587882933,0.3939174165068149,
+Expenses per operation,Proportion uninsured,0.018447739993181014,0.918838821276335,
+Change in agricultural establishments,Proportion uninsured,-0.20232619786333622,0.25881895286478995,
+Average weekly wages,Proportion uninsured,-0.4172666066905559,0.015694198049793107,*
+Social isolation,Price of a meal,-0.045235395164650624,0.8026138685680948,
+Ratio of female to male producers,Price of a meal,0.18110978992446655,0.31314101628298685,
+Racial diversity of producers,Price of a meal,-0.12628215860460976,0.4837553006033386,
+Producer age skew,Price of a meal,0.03085821984369497,0.8646387671011764,
+Firearm fatalities,Price of a meal,-0.08467986179562773,0.6394018959401391,
+Annual population change,Price of a meal,-0.22502106308344166,0.2080207707363244,
+Acres in conservation easements,Price of a meal,0.20635640911651235,0.24925017995549958,
+Total animal and crop sales,Price of a meal,-0.1175621351948534,0.514679686620906,
+Proportion of organic operations,Price of a meal,0.4454999174766061,0.009371866834975595,*
+Proportion of operations using precision agriculture,Price of a meal,0.004020255491894237,0.9822850933332594,
+Crop diversity,Price of a meal,-0.19770592658649896,0.2700825940907938,
+Rental vacancy rate,Price of a meal,0.23811003231278677,0.18207849289599265,
+Proportion uninsured,Price of a meal,-0.40553371115850056,0.01921170459556576,*
+Price of a meal,Price of a meal,1,NA,NA
+Poor mental health days,Price of a meal,-0.11314474976820439,0.5307092333365377,
+Mobility disability,Price of a meal,-0.30540616316193,0.08392669243923656,
+Limited access to healthy foods,Price of a meal,-0.05288574147447565,0.7700604924497354,
+Lacking social support,Price of a meal,-0.6009349203192047,2.172723176725455e-4,*
+High school graduation rate,Price of a meal,-0.6475011787700329,4.640341897443889e-5,*
+Heart disease prevalence,Price of a meal,-0.0759987189070885,0.6742265151349707,
+Frequent physical distress,Price of a meal,-0.34907552848863654,0.04647017159383093,*
+"Food insecurity rate, overall",Price of a meal,-0.11546552772644549,0.5222577948302711,
+Diabetes prevelance,Price of a meal,-0.6451557182780419,5.046438345956972e-5,*
+Weeks of extreme drought,Price of a meal,-0.20957093006809144,0.24178875460031635,
+Tree species diversity,Price of a meal,0.09469826199436022,0.6001360317531474,
+Tree size diversity,Price of a meal,0.22469359322382157,0.20870085727919618,
+Total ecosystem carbon per acre,Price of a meal,0.3671933701743254,0.03554517017453307,*
+Soil organic carbon,Price of a meal,0.1786665447111182,0.3198234979681389,
+Rarefied richness of plants,Price of a meal,0.11723651337930972,0.5158530598314206,
+Rarefied richness of animals,Price of a meal,0.1420492981487514,0.4303703696766572,
+Proportion of invasive species,Price of a meal,0.16463509106081273,0.3598983101310136,
+Land Use Diversity,Price of a meal,-0.3134862269487086,0.0756522358618037,
+Fuel expenses,Price of a meal,-0.004350587308995475,0.9808297710660372,
+Available water storage,Price of a meal,0.029208143601891293,0.8718157036358494,
+Annual precipitation,Price of a meal,-0.1297298607154364,0.47179873331585,
+Total indemnities,Price of a meal,-0.2332866556019983,0.19135849919818382,
+Sales from agritourism and recreation,Price of a meal,-0.3000293950071928,0.08980732108245437,
+Percent change in wages,Price of a meal,0.17297588565353517,0.3357286841603355,
+Market channel ratio,Price of a meal,-0.16965673731299488,0.3452250610652272,
+Land and building value per acre,Price of a meal,-0.09841019110624045,0.5858559621913155,
+Gini Index,Price of a meal,0.4041349602871869,0.019671620063268946,*
+Expenses per operation,Price of a meal,-0.2512188208166707,0.1584716570993836,
+Change in agricultural establishments,Price of a meal,0.06812398234526011,0.7064031905165791,
+Average weekly wages,Price of a meal,0.1686570189224825,0.34811692643157466,
+Social isolation,Poor mental health days,0.5300475025773687,0.0015106883305737728,*
+Ratio of female to male producers,Poor mental health days,0.23826893170739621,0.1817782757590105,
+Racial diversity of producers,Poor mental health days,-0.2395826183018837,0.17930962359319969,
+Producer age skew,Poor mental health days,0.08225554465355504,0.6490552966346947,
+Firearm fatalities,Poor mental health days,0.37335605603575367,0.03234356770678093,*
+Annual population change,Poor mental health days,-0.23260089974497217,0.19270423755369936,
+Acres in conservation easements,Poor mental health days,0.40696638985097494,0.018749927359953622,*
+Total animal and crop sales,Poor mental health days,0.06986625373233976,0.6992387065823256,
+Proportion of organic operations,Poor mental health days,0.13454999463484676,0.45534577064671566,
+Proportion of operations using precision agriculture,Poor mental health days,0.1105202546998452,0.5403455042178265,
+Crop diversity,Poor mental health days,-0.20142338821808742,0.260995179289343,
+Rental vacancy rate,Poor mental health days,0.19921464329474467,0.26636995257827345,
+Proportion uninsured,Poor mental health days,-0.01734777537598657,0.9236636255478532,
+Price of a meal,Poor mental health days,-0.11314474976820439,0.5307092333365377,
+Poor mental health days,Poor mental health days,1,NA,NA
+Mobility disability,Poor mental health days,0.4607324303082792,0.006969502310869791,*
+Limited access to healthy foods,Poor mental health days,0.19740896051039325,0.2708173201470594,
+Lacking social support,Poor mental health days,-0.14383249050343272,0.42454508039029193,
+High school graduation rate,Poor mental health days,0.5644927945904624,6.21651390377842e-4,*
+Heart disease prevalence,Poor mental health days,0.4868671098404001,0.004061973018546938,*
+Frequent physical distress,Poor mental health days,0.5742284428124513,4.7509928619726693e-4,*
+"Food insecurity rate, overall",Poor mental health days,0.6867660453306573,1.017523978674717e-5,*
+Diabetes prevelance,Poor mental health days,-0.020568052082733837,0.9095465974714765,
+Weeks of extreme drought,Poor mental health days,-0.18960899283614566,0.29058152800386283,
+Tree species diversity,Poor mental health days,0.37291946313673746,0.032562367241988355,*
+Tree size diversity,Poor mental health days,-0.005352989166867066,0.9764139421642795,
+Total ecosystem carbon per acre,Poor mental health days,0.38326795600565555,0.027689556361787826,*
+Soil organic carbon,Poor mental health days,0.6171013806616525,1.3069936423715234e-4,*
+Rarefied richness of plants,Poor mental health days,0.4041204698899238,0.019676431962236673,*
+Rarefied richness of animals,Poor mental health days,0.3524557848634774,0.04425034257353211,*
+Proportion of invasive species,Poor mental health days,-0.42994100594746654,0.01251623669542079,*
+Land Use Diversity,Poor mental health days,-0.4501308603190091,0.008576745538243724,*
+Fuel expenses,Poor mental health days,0.09470621010425835,0.6001052954896893,
+Available water storage,Poor mental health days,0.4851483142735233,0.004214215004874067,*
+Annual precipitation,Poor mental health days,0.34454171597510175,0.04958645898471037,*
+Total indemnities,Poor mental health days,0.06940319888472686,0.7011404055575619,
+Sales from agritourism and recreation,Poor mental health days,0.053069005908259005,0.7692851411243413,
+Percent change in wages,Poor mental health days,0.0706692302575617,0.6959452529111041,
+Market channel ratio,Poor mental health days,-0.5767596048486743,4.4241345616802263e-4,*
+Land and building value per acre,Poor mental health days,-0.6729400093524408,1.7812640070946628e-5,*
+Gini Index,Poor mental health days,0.04794377009864036,0.7910490013080014,
+Expenses per operation,Poor mental health days,-0.1875683188807144,0.29590072734164274,
+Change in agricultural establishments,Poor mental health days,0.03244469472642386,0.8577484502334847,
+Average weekly wages,Poor mental health days,-0.16768925562137102,0.3509302549516504,
+Social isolation,Mobility disability,-0.03711972879445157,0.8375056891649502,
+Ratio of female to male producers,Mobility disability,0.017213290952385805,0.9242537048278467,
+Racial diversity of producers,Mobility disability,-0.04195147043424643,0.8166914587424174,
+Producer age skew,Mobility disability,-0.0027371558820686597,0.9879384548929342,
+Firearm fatalities,Mobility disability,0.07610043485512019,0.6738144347352453,
+Annual population change,Mobility disability,0.03819478159617184,0.8328646840045497,
+Acres in conservation easements,Mobility disability,-0.19337686851578742,0.2809219612726772,
+Total animal and crop sales,Mobility disability,-0.2083858953866403,0.2445218209122606,
+Proportion of organic operations,Mobility disability,-0.25056354603959063,0.1595965914215265,
+Proportion of operations using precision agriculture,Mobility disability,0.0666577105106952,0.7124519773945874,
+Crop diversity,Mobility disability,-0.09339504957075527,0.6051848293768902,
+Rental vacancy rate,Mobility disability,0.4346904444052672,0.011474042281821806,*
+Proportion uninsured,Mobility disability,0.30525779963404714,0.08408487967191647,
+Price of a meal,Mobility disability,-0.30540616316193,0.08392669243923656,
+Poor mental health days,Mobility disability,0.4607324303082792,0.006969502310869791,*
+Mobility disability,Mobility disability,1,NA,NA
+Limited access to healthy foods,Mobility disability,0.37616883628652575,0.03096246556892268,*
+Lacking social support,Mobility disability,0.07924711844611104,0.6611127893104924,
+High school graduation rate,Mobility disability,0.6538994296578993,3.67774411920152e-5,*
+Heart disease prevalence,Mobility disability,0.8545240036027526,2.4955193467235404e-10,*
+Frequent physical distress,Mobility disability,0.8116138935094115,1.0002260797392637e-8,*
+"Food insecurity rate, overall",Mobility disability,0.48693224334751173,0.004056298343748654,*
+Diabetes prevelance,Mobility disability,0.5071206928241506,0.0025951940133026596,*
+Weeks of extreme drought,Mobility disability,0.13388292821391481,0.45760424164972147,
+Tree species diversity,Mobility disability,0.10034644545084404,0.5784670790868152,
+Tree size diversity,Mobility disability,-0.3347534005660194,0.05688241716075426,
+Total ecosystem carbon per acre,Mobility disability,-0.35483197869487354,0.04274142028201844,*
+Soil organic carbon,Mobility disability,0.09694122866017563,0.5914892400508225,
+Rarefied richness of plants,Mobility disability,-0.14210242647715007,0.43019617656899634,
+Rarefied richness of animals,Mobility disability,0.05475654799394419,0.7621559188809388,
+Proportion of invasive species,Mobility disability,-0.10817709593346236,0.5490184735136463,
+Land Use Diversity,Mobility disability,0.14107122678831788,0.43358414092649156,
+Fuel expenses,Mobility disability,0.02293372422036863,0.8991930103118424,
+Available water storage,Mobility disability,-0.2106786176224055,0.23925262215104937,
+Annual precipitation,Mobility disability,0.3492331434626516,0.046364722810940506,*
+Total indemnities,Mobility disability,0.18778301795010655,0.2953381976393543,
+Sales from agritourism and recreation,Mobility disability,0.3752510059586207,0.031407738403298247,*
+Percent change in wages,Mobility disability,-0.06186818262508548,0.7323285391916865,
+Market channel ratio,Mobility disability,-0.31537138197456355,0.07381603618733323,
+Land and building value per acre,Mobility disability,-0.12261063184300602,0.4966577870149833,
+Gini Index,Mobility disability,0.2511207626446958,0.15863963309527818,
+Expenses per operation,Mobility disability,-0.1909122975683939,0.28721655729135476,
+Change in agricultural establishments,Mobility disability,-0.49390387719867335,0.003487081008120896,*
+Average weekly wages,Mobility disability,-0.12130310747399814,0.5012944182738648,
+Social isolation,Limited access to healthy foods,0.04308906821036393,0.8118081787410563,
+Ratio of female to male producers,Limited access to healthy foods,-0.2888484013046311,0.10303995986554293,
+Racial diversity of producers,Limited access to healthy foods,0.0668167578837228,0.711795022073386,
+Producer age skew,Limited access to healthy foods,0.3097366299544664,0.07940959340283049,
+Firearm fatalities,Limited access to healthy foods,-0.3664276855422734,0.0359602954883842,*
+Annual population change,Limited access to healthy foods,-0.28619883483366315,0.1063813103195923,
+Acres in conservation easements,Limited access to healthy foods,-0.3557655879493668,0.042159997410554206,*
+Total animal and crop sales,Limited access to healthy foods,-0.04388029235386367,0.8084158379940507,
+Proportion of organic operations,Limited access to healthy foods,-0.3697058837739095,0.03421019327130237,*
+Proportion of operations using precision agriculture,Limited access to healthy foods,-0.10083969664708689,0.5765914768488525,
+Crop diversity,Limited access to healthy foods,0.324093815633465,0.06576688077519477,
+Rental vacancy rate,Limited access to healthy foods,0.041812483384393945,0.8172885458950765,
+Proportion uninsured,Limited access to healthy foods,-0.14068791002746703,0.4348472409433568,
+Price of a meal,Limited access to healthy foods,-0.05288574147447565,0.7700604924497354,
+Poor mental health days,Limited access to healthy foods,0.19740896051039325,0.2708173201470594,
+Mobility disability,Limited access to healthy foods,0.37616883628652575,0.03096246556892268,*
+Limited access to healthy foods,Limited access to healthy foods,1,NA,NA
+Lacking social support,Limited access to healthy foods,0.32603947877988465,0.06406894389898765,
+High school graduation rate,Limited access to healthy foods,0.12920763238755695,0.47359979662994034,
+Heart disease prevalence,Limited access to healthy foods,0.1868095068152755,0.29789433825377953,
+Frequent physical distress,Limited access to healthy foods,0.49567461394552287,0.003354019626699234,*
+"Food insecurity rate, overall",Limited access to healthy foods,-0.03920211084844261,0.82852105819727,
+Diabetes prevelance,Limited access to healthy foods,0.4361856404755498,0.011161493445771331,*
+Weeks of extreme drought,Limited access to healthy foods,0.4934233492115558,0.0035239679103318267,*
+Tree species diversity,Limited access to healthy foods,-0.04930160668778359,0.7852672378118788,
+Tree size diversity,Limited access to healthy foods,-0.0027363080995457954,0.9879421904591126,
+Total ecosystem carbon per acre,Limited access to healthy foods,-0.24121949898446626,0.17626690990297678,
+Soil organic carbon,Limited access to healthy foods,-0.2197534774100082,0.2191466299376752,
+Rarefied richness of plants,Limited access to healthy foods,0.08631827266627265,0.632910499527767,
+Rarefied richness of animals,Limited access to healthy foods,0.08599598114288119,0.634185318939718,
+Proportion of invasive species,Limited access to healthy foods,0.01064893212894769,0.9530984487496894,
+Land Use Diversity,Limited access to healthy foods,0.19000463839648013,0.2895573664093021,
+Fuel expenses,Limited access to healthy foods,0.12613427783815356,0.4842716185504674,
+Available water storage,Limited access to healthy foods,-0.23570932136413753,0.18665688504838895,
+Annual precipitation,Limited access to healthy foods,-0.20301657290131106,0.2571628892156457,
+Total indemnities,Limited access to healthy foods,0.22602199582491656,0.20595151791776622,
+Sales from agritourism and recreation,Limited access to healthy foods,-0.0514897580400875,0.7759737127111377,
+Percent change in wages,Limited access to healthy foods,0.20164448879238045,0.26046110666331823,
+Market channel ratio,Limited access to healthy foods,-0.12373070965865564,0.4927032206273536,
+Land and building value per acre,Limited access to healthy foods,0.26681363080594234,0.13335809367265483,
+Gini Index,Limited access to healthy foods,0.03289006793905416,0.8558159508574703,
+Expenses per operation,Limited access to healthy foods,0.07319337861167766,0.6856280075549477,
+Change in agricultural establishments,Limited access to healthy foods,-0.3150990308681551,0.07407915304960166,
+Average weekly wages,Limited access to healthy foods,-0.02161290290684923,0.9049718074748467,
+Social isolation,Lacking social support,0.18584714372654465,0.3004349745553192,
+Ratio of female to male producers,Lacking social support,-0.5033784377784221,0.0028249448261874477,*
+Racial diversity of producers,Lacking social support,0.02560007361746213,0.8875430865999847,
+Producer age skew,Lacking social support,-0.04501841375214492,0.8035422032521415,
+Firearm fatalities,Lacking social support,-0.1465775705923614,0.41566375180829285,
+Annual population change,Lacking social support,-0.053676044230643365,0.7667184659988875,
+Acres in conservation easements,Lacking social support,-0.2610569797626267,0.1422624024403989,
+Total animal and crop sales,Lacking social support,0.026022960927366813,0.8856974472343091,
+Proportion of organic operations,Lacking social support,-0.4472177326172586,0.009069926675747686,*
+Proportion of operations using precision agriculture,Lacking social support,-0.14518215569166368,0.42016531932691725,
+Crop diversity,Lacking social support,0.24028525106066612,0.17799902075742713,
+Rental vacancy rate,Lacking social support,-0.14104451557820954,0.43367209390407213,
+Proportion uninsured,Lacking social support,0.19636526686922443,0.27340985212173696,
+Price of a meal,Lacking social support,-0.6009349203192047,2.172723176725455e-4,*
+Poor mental health days,Lacking social support,-0.14383249050343272,0.42454508039029193,
+Mobility disability,Lacking social support,0.07924711844611104,0.6611127893104924,
+Limited access to healthy foods,Lacking social support,0.32603947877988465,0.06406894389898765,
+Lacking social support,Lacking social support,1,NA,NA
+High school graduation rate,Lacking social support,0.2739471504612327,0.12290139514452236,
+Heart disease prevalence,Lacking social support,-0.10884814807076104,0.5465279827276719,
+Frequent physical distress,Lacking social support,0.1550420501126727,0.38894422915986393,
+"Food insecurity rate, overall",Lacking social support,-0.1301687215591368,0.4702879682022725,
+Diabetes prevelance,Lacking social support,0.49521508307051976,0.0033881217281526155,*
+Weeks of extreme drought,Lacking social support,0.4414429224679604,0.01011895355978143,*
+Tree species diversity,Lacking social support,-0.19435793758572903,0.2784412505545817,
+Tree size diversity,Lacking social support,-0.0154227872415008,0.9321135799256366,
+Total ecosystem carbon per acre,Lacking social support,-0.1918139170902455,0.2849033791009141,
+Soil organic carbon,Lacking social support,-0.2383977780895102,0.18153509581997263,
+Rarefied richness of plants,Lacking social support,-0.1937311944365769,0.28002438001225305,
+Rarefied richness of animals,Lacking social support,-0.032417312789654366,0.8578672885628558,
+Proportion of invasive species,Lacking social support,0.06782816108135228,0.7076221323041629,
+Land Use Diversity,Lacking social support,0.15698226830945822,0.38296288714387217,
+Fuel expenses,Lacking social support,-0.1851972017760819,0.3021585624311218,
+Available water storage,Lacking social support,-0.08006790088447739,0.6578147076628005,
+Annual precipitation,Lacking social support,-0.3148379751821738,0.07433204079913347,
+Total indemnities,Lacking social support,0.35295056917331225,0.04393267545405766,*
+Sales from agritourism and recreation,Lacking social support,-0.0478483051866637,0.7914559130178878,
+Percent change in wages,Lacking social support,-0.12411411837960754,0.49135324740362063,
+Market channel ratio,Lacking social support,0.32730694452225606,0.06298149128641906,
+Land and building value per acre,Lacking social support,0.28633196500461117,0.10621149688410414,
+Gini Index,Lacking social support,-0.23598353277554765,0.1861298864891343,
+Expenses per operation,Lacking social support,0.3146342616872776,0.07452984581890787,
+Change in agricultural establishments,Lacking social support,-0.09556916309741474,0.5967721923964207,
+Average weekly wages,Lacking social support,0.022810898995843445,0.899730179961264,
+Social isolation,High school graduation rate,0.06659670203162334,0.7127040306786392,
+Ratio of female to male producers,High school graduation rate,-0.05355588970205874,0.7672263103457788,
+Racial diversity of producers,High school graduation rate,-0.16039408618788176,0.37257577511427753,
+Producer age skew,High school graduation rate,-0.05997386500957422,0.7402381525415604,
+Firearm fatalities,High school graduation rate,0.319396771604439,0.07001121578515024,
+Annual population change,High school graduation rate,0.07422449598396812,0.6814292541102656,
+Acres in conservation easements,High school graduation rate,0.03824200852204718,0.8326609310046669,
+Total animal and crop sales,High school graduation rate,0.13063590236821582,0.4686825079099517,
+Proportion of organic operations,High school graduation rate,-0.27689967518315617,0.11875634689338743,
+Proportion of operations using precision agriculture,High school graduation rate,0.04748595375130808,0.7930008985126111,
+Crop diversity,High school graduation rate,-0.032279505761169565,0.858465421147059,
+Rental vacancy rate,High school graduation rate,0.22673434017219,0.20448755658769602,
+Proportion uninsured,High school graduation rate,0.3436810117207226,0.05019644792095268,
+Price of a meal,High school graduation rate,-0.6475011787700329,4.640341897443889e-5,*
+Poor mental health days,High school graduation rate,0.5644927945904624,6.21651390377842e-4,*
+Mobility disability,High school graduation rate,0.6538994296578993,3.67774411920152e-5,*
+Limited access to healthy foods,High school graduation rate,0.12920763238755695,0.47359979662994034,
+Lacking social support,High school graduation rate,0.2739471504612327,0.12290139514452236,
+High school graduation rate,High school graduation rate,1,NA,NA
+Heart disease prevalence,High school graduation rate,0.5826490512296233,3.7395355343439185e-4,*
+Frequent physical distress,High school graduation rate,0.634777497005054,7.254518411592414e-5,*
+"Food insecurity rate, overall",High school graduation rate,0.5883845521071451,3.1649404342704024e-4,*
+Diabetes prevelance,High school graduation rate,0.46287785440678114,0.006677643628264951,*
+Weeks of extreme drought,High school graduation rate,0.08510795770650577,0.637703216082826,
+Tree species diversity,High school graduation rate,0.1360239077981536,0.4503767990508618,
+Tree size diversity,High school graduation rate,-0.23463977338764727,0.1887224289943925,
+Total ecosystem carbon per acre,High school graduation rate,-0.15978148291277386,0.3744284844533623,
+Soil organic carbon,High school graduation rate,0.20712704861673262,0.24744761841294594,
+Rarefied richness of plants,High school graduation rate,0.07249709899225519,0.6884685260074344,
+Rarefied richness of animals,High school graduation rate,0.006672728877978549,0.9706012297942324,
+Proportion of invasive species,High school graduation rate,-0.2893688177939852,0.10239309213552605,
+Land Use Diversity,High school graduation rate,0.03770278642231052,0.8349879507677809,
+Fuel expenses,High school graduation rate,0.03907458859439835,0.8290706642326255,
+Available water storage,High school graduation rate,0.10975607505055397,0.5431668661798317,
+Annual precipitation,High school graduation rate,0.24014941062647505,0.17825187037519852,
+Total indemnities,High school graduation rate,0.26893943175439716,0.13017585137533283,
+Sales from agritourism and recreation,High school graduation rate,0.27090961587015727,0.1272769019461102,
+Percent change in wages,High school graduation rate,0.07765198124895373,0.6675402706697502,
+Market channel ratio,High school graduation rate,-0.20097669314955197,0.2620763747456105,
+Land and building value per acre,High school graduation rate,-0.23566373477437863,0.18674459800075072,
+Gini Index,High school graduation rate,-0.12010435964558192,0.5055643822206404,
+Expenses per operation,High school graduation rate,0.13149320066061843,0.46574393120291413,
+Change in agricultural establishments,High school graduation rate,-0.15802544500904006,0.37976923821114394,
+Average weekly wages,High school graduation rate,-0.04529181207852209,0.8023725373962081,
+Social isolation,Heart disease prevalence,0.014265834523288853,0.9371957158205277,
+Ratio of female to male producers,Heart disease prevalence,0.12025168875989296,0.5050386136869758,
+Racial diversity of producers,Heart disease prevalence,-0.2883389400798079,0.1036761975824736,
+Producer age skew,Heart disease prevalence,0.002641951068771251,0.9883579553983777,
+Firearm fatalities,Heart disease prevalence,0.3141127546851497,0.07503808975529225,
+Annual population change,Heart disease prevalence,-8.685198995381996e-4,0.9961726574797236,
+Acres in conservation easements,Heart disease prevalence,0.028199310923749752,0.8762085627487677,
+Total animal and crop sales,Heart disease prevalence,-0.26651971950757564,0.13380253054112656,
+Proportion of organic operations,Heart disease prevalence,0.04756506976976481,0.7926634993571247,
+Proportion of operations using precision agriculture,Heart disease prevalence,-0.03552518125518281,0.8443992199475541,
+Crop diversity,Heart disease prevalence,-0.3174143289007088,0.071865443063144685,
+Rental vacancy rate,Heart disease prevalence,0.7114372012381411,3.4624802367488883e-6,*
+Proportion uninsured,Heart disease prevalence,0.36286558898473475,0.03794348541945736,*
+Price of a meal,Heart disease prevalence,-0.0759987189070885,0.6742265151349707,
+Poor mental health days,Heart disease prevalence,0.4868671098404001,0.004061973018546938,*
+Mobility disability,Heart disease prevalence,0.8545240036027526,2.4955193467235404e-10,*
+Limited access to healthy foods,Heart disease prevalence,0.1868095068152755,0.29789433825377953,
+Lacking social support,Heart disease prevalence,-0.10884814807076104,0.5465279827276719,
+High school graduation rate,Heart disease prevalence,0.5826490512296233,3.7395355343439185e-4,*
+Heart disease prevalence,Heart disease prevalence,1,NA,NA
+Frequent physical distress,Heart disease prevalence,0.600563571583679,2.1975347293490266e-4,*
+"Food insecurity rate, overall",Heart disease prevalence,0.6143924168203605,1.425948927069598e-4,*
+Diabetes prevelance,Heart disease prevalence,0.12475875410038413,0.48908776371572893,
+Weeks of extreme drought,Heart disease prevalence,-0.13105921444792842,0.4672302958811658,
+Tree species diversity,Heart disease prevalence,0.21763626244102605,0.22373081382098658,
+Tree size diversity,Heart disease prevalence,-0.3019687665532715,0.08765093009629843,
+Total ecosystem carbon per acre,Heart disease prevalence,-0.13288838486981291,0.46098251329361783,
+Soil organic carbon,Heart disease prevalence,0.22362799997135824,0.210924467174735,
+Rarefied richness of plants,Heart disease prevalence,-0.056978707248693285,0.7527974195062632,
+Rarefied richness of animals,Heart disease prevalence,0.11480932406068967,0.524640766138907,
+Proportion of invasive species,Heart disease prevalence,-0.2085705254009143,0.2440946554949357,
+Land Use Diversity,Heart disease prevalence,-0.1012641588945472,0.5749796327155468,
+Fuel expenses,Heart disease prevalence,0.15517370980013237,0.38853664514144204,
+Available water storage,Heart disease prevalence,-0.09366457621510034,0.6041391680850372,
+Annual precipitation,Heart disease prevalence,0.36841048386780934,0.03489330064354812,*
+Total indemnities,Heart disease prevalence,0.0392246090442207,0.8284241018724172,
+Sales from agritourism and recreation,Heart disease prevalence,0.2783929552692517,0.11670003103579596,
+Percent change in wages,Heart disease prevalence,0.0203656637720883,0.9104330716990146,
+Market channel ratio,Heart disease prevalence,-0.33501852204412036,0.05667420877446294,
+Land and building value per acre,Heart disease prevalence,-0.29196783976654994,0.09920843317284866,
+Gini Index,Heart disease prevalence,0.2319744680332425,0.19393932276616233,
+Expenses per operation,Heart disease prevalence,-0.2866457854124601,0.10581201345526825,
+Change in agricultural establishments,Heart disease prevalence,-0.43112712554625393,0.012248776835633635,*
+Average weekly wages,Heart disease prevalence,-0.08407762649108229,0.6417946039196056,
+Social isolation,Frequent physical distress,0.2272806151263818,0.20336977542152246,
+Ratio of female to male producers,Frequent physical distress,0.013085784580142382,0.9423818162993935,
+Racial diversity of producers,Frequent physical distress,-0.07721889115631549,0.6692894069892121,
+Producer age skew,Frequent physical distress,0.052319856829967856,0.7724560016997386,
+Firearm fatalities,Frequent physical distress,0.009027975398786277,0.9602315700925255,
+Annual population change,Frequent physical distress,-0.06495972318116577,0.7194781834484929,
+Acres in conservation easements,Frequent physical distress,-0.17607446397218798,0.3270092120959296,
+Total animal and crop sales,Frequent physical distress,-0.07263362904641278,0.6879112118892197,
+Proportion of organic operations,Frequent physical distress,-0.20750654095309146,0.2465631645148474,
+Proportion of operations using precision agriculture,Frequent physical distress,0.0758811777624783,0.6747028236636501,
+Crop diversity,Frequent physical distress,-0.07749869926307407,0.6681591403521421,
+Rental vacancy rate,Frequent physical distress,0.1401966870608495,0.43646886006787877,
+Proportion uninsured,Frequent physical distress,0.08020338615698451,0.6572709047811571,
+Price of a meal,Frequent physical distress,-0.34907552848863654,0.04647017159383093,*
+Poor mental health days,Frequent physical distress,0.5742284428124513,4.7509928619726693e-4,*
+Mobility disability,Frequent physical distress,0.8116138935094115,1.0002260797392637e-8,*
+Limited access to healthy foods,Frequent physical distress,0.49567461394552287,0.003354019626699234,*
+Lacking social support,Frequent physical distress,0.1550420501126727,0.38894422915986393,
+High school graduation rate,Frequent physical distress,0.634777497005054,7.254518411592414e-5,*
+Heart disease prevalence,Frequent physical distress,0.600563571583679,2.1975347293490266e-4,*
+Frequent physical distress,Frequent physical distress,1,NA,NA
+"Food insecurity rate, overall",Frequent physical distress,0.4987876147573163,0.003130723361597809,*
+Diabetes prevelance,Frequent physical distress,0.5500341242641044,9.129771260667496e-4,*
+Weeks of extreme drought,Frequent physical distress,0.11877931103550235,0.5103053206192518,
+Tree species diversity,Frequent physical distress,0.1577613553002023,0.3805762642085737,
+Tree size diversity,Frequent physical distress,-0.1606351473657618,0.3718482117332109,
+Total ecosystem carbon per acre,Frequent physical distress,-0.2405238544614948,0.17755550555796829,
+Soil organic carbon,Frequent physical distress,0.17823037917772888,0.32102570391920104,
+Rarefied richness of plants,Frequent physical distress,-0.0585474598887272,0.7462113547882228,
+Rarefied richness of animals,Frequent physical distress,0.12247545718150071,0.49713612225294335,
+Proportion of invasive species,Frequent physical distress,-0.18271920733837455,0.3087872341489091,
+Land Use Diversity,Frequent physical distress,0.13165190237896832,0.4652010160288318,
+Fuel expenses,Frequent physical distress,0.029290919596336232,0.8714554289881238,
+Available water storage,Frequent physical distress,-0.06721201416941217,0.7101632722530462,
+Annual precipitation,Frequent physical distress,0.27413018467877276,0.12264135231978646,
+Total indemnities,Frequent physical distress,0.19033309098224901,0.288708897136293,
+Sales from agritourism and recreation,Frequent physical distress,0.3478392893669158,0.047303919508893344,*
+Percent change in wages,Frequent physical distress,-0.0968317046508933,0.5919101962238242,
+Market channel ratio,Frequent physical distress,-0.3098082912911621,0.07933645726036276,
+Land and building value per acre,Frequent physical distress,-0.10787634517222652,0.5501363812914108,
+Gini Index,Frequent physical distress,0.1712988313016415,0.3405067211607635,
+Expenses per operation,Frequent physical distress,-0.05112616869842945,0.7775158773923292,
+Change in agricultural establishments,Frequent physical distress,-0.3403440886567705,0.05261807966758747,
+Average weekly wages,Frequent physical distress,-0.035020392954696486,0.8465839035156884,
+Social isolation,"Food insecurity rate, overall",0.40168828458648065,0.020498059281408132,*
+Ratio of female to male producers,"Food insecurity rate, overall",0.20961559218061296,0.24168615083478961,
+Racial diversity of producers,"Food insecurity rate, overall",-0.24018322912552428,0.17818889781880554,
+Producer age skew,"Food insecurity rate, overall",0.015505261673852699,0.9317513933181905,
+Firearm fatalities,"Food insecurity rate, overall",0.5140531930895328,0.00221218572658044,*
+Annual population change,"Food insecurity rate, overall",-0.10463213541214975,0.5622625574254556,
+Acres in conservation easements,"Food insecurity rate, overall",0.2217362140155555,0.21491213667419773,
+Total animal and crop sales,"Food insecurity rate, overall",-0.041301145217192956,0.8194861154480932,
+Proportion of organic operations,"Food insecurity rate, overall",0.2702541953247294,0.12823594443529318,
+Proportion of operations using precision agriculture,"Food insecurity rate, overall",-0.15758211509674513,0.38112457048907067,
+Crop diversity,"Food insecurity rate, overall",-0.30320543138109807,0.08629675277467053,
+Rental vacancy rate,"Food insecurity rate, overall",0.4978050291949151,0.003199770761826759,*
+Proportion uninsured,"Food insecurity rate, overall",0.43101906875622276,0.01227294181452332,*
+Price of a meal,"Food insecurity rate, overall",-0.11546552772644549,0.5222577948302711,
+Poor mental health days,"Food insecurity rate, overall",0.6867660453306573,1.017523978674717e-5,*
+Mobility disability,"Food insecurity rate, overall",0.48693224334751173,0.004056298343748654,*
+Limited access to healthy foods,"Food insecurity rate, overall",-0.03920211084844261,0.82852105819727,
+Lacking social support,"Food insecurity rate, overall",-0.1301687215591368,0.4702879682022725,
+High school graduation rate,"Food insecurity rate, overall",0.5883845521071451,3.1649404342704024e-4,*
+Heart disease prevalence,"Food insecurity rate, overall",0.6143924168203605,1.425948927069598e-4,*
+Frequent physical distress,"Food insecurity rate, overall",0.4987876147573163,0.003130723361597809,*
+"Food insecurity rate, overall","Food insecurity rate, overall",1,NA,NA
+Diabetes prevelance,"Food insecurity rate, overall",0.023433785672252492,0.8970064735633676,
+Weeks of extreme drought,"Food insecurity rate, overall",-0.3502744310661606,0.04567287395281605,*
+Tree species diversity,"Food insecurity rate, overall",0.3117609389129882,0.07736358699721091,
+Tree size diversity,"Food insecurity rate, overall",-0.3009982384713154,0.08872504447216434,
+Total ecosystem carbon per acre,"Food insecurity rate, overall",0.1386689080738286,0.4415334575704988,
+Soil organic carbon,"Food insecurity rate, overall",0.5402974460786532,0.0011713672995405933,*
+Rarefied richness of plants,"Food insecurity rate, overall",0.14115994855041153,0.4332920739198842,
+Rarefied richness of animals,"Food insecurity rate, overall",0.07858913450591051,0.6637612391979912,
+Proportion of invasive species,"Food insecurity rate, overall",-0.31463114605431847,0.07453287425673838,
+Land Use Diversity,"Food insecurity rate, overall",-0.3577572336386467,0.04094091225122298,*
+Fuel expenses,"Food insecurity rate, overall",0.1085338021168462,0.547693959276774,
+Available water storage,"Food insecurity rate, overall",0.4181017402442601,0.015465859420326744,*
+Annual precipitation,"Food insecurity rate, overall",0.5334803603800271,0.0013885420315729036,*
+Total indemnities,"Food insecurity rate, overall",0.20846846619237877,0.2443307210567469,
+Sales from agritourism and recreation,"Food insecurity rate, overall",0.3176312839454005,0.07166067601153614,
+Percent change in wages,"Food insecurity rate, overall",0.12400481289518676,0.49173791694503,
+Market channel ratio,"Food insecurity rate, overall",-0.25055279980822065,0.15961508759176968,
+Land and building value per acre,"Food insecurity rate, overall",-0.5919555069453689,2.8481829205029285e-4,*
+Gini Index,"Food insecurity rate, overall",0.21219235348668863,0.23581574804738503,
+Expenses per operation,"Food insecurity rate, overall",-0.0911528278962539,0.6139134998066691,
+Change in agricultural establishments,"Food insecurity rate, overall",-0.15046283941384922,0.4032736363479752,
+Average weekly wages,"Food insecurity rate, overall",-0.23450964168756405,0.18897483223156186,
+Social isolation,Diabetes prevelance,-0.15937470228749487,0.37566170623877193,
+Ratio of female to male producers,Diabetes prevelance,-0.20594684341683414,0.25021171473145354,
+Racial diversity of producers,Diabetes prevelance,0.33837827128673387,0.054087561183431276,
+Producer age skew,Diabetes prevelance,-0.11720994471109035,0.5159488578008071,
+Firearm fatalities,Diabetes prevelance,-0.3938370158236916,0.023346661064830965,*
+Annual population change,Diabetes prevelance,0.018218394982819217,0.9198445747289086,
+Acres in conservation easements,Diabetes prevelance,-0.5220690327746015,0.0018315091269196504,*
+Total animal and crop sales,Diabetes prevelance,0.03441987765075837,0.8491843455366204,
+Proportion of organic operations,Diabetes prevelance,-0.6255655634102443,9.903606292782641e-5,*
+Proportion of operations using precision agriculture,Diabetes prevelance,0.006463571847496299,0.9715223576388177,
+Crop diversity,Diabetes prevelance,0.37789588820176806,0.030138573061319285,*
+Rental vacancy rate,Diabetes prevelance,-0.22793898819847844,0.20202824884084558,
+Proportion uninsured,Diabetes prevelance,0.16717525532012206,0.3524300292073983,
+Price of a meal,Diabetes prevelance,-0.6451557182780419,5.046438345956972e-5,*
+Poor mental health days,Diabetes prevelance,-0.020568052082733837,0.9095465974714765,
+Mobility disability,Diabetes prevelance,0.5071206928241506,0.0025951940133026596,*
+Limited access to healthy foods,Diabetes prevelance,0.4361856404755498,0.011161493445771331,*
+Lacking social support,Diabetes prevelance,0.49521508307051976,0.0033881217281526155,*
+High school graduation rate,Diabetes prevelance,0.46287785440678114,0.006677643628264951,*
+Heart disease prevalence,Diabetes prevelance,0.12475875410038413,0.48908776371572893,
+Frequent physical distress,Diabetes prevelance,0.5500341242641044,9.129771260667496e-4,*
+"Food insecurity rate, overall",Diabetes prevelance,0.023433785672252492,0.8970064735633676,
+Diabetes prevelance,Diabetes prevelance,1,NA,NA
+Weeks of extreme drought,Diabetes prevelance,0.5200202680425167,0.0019229151897737218,*
+Tree species diversity,Diabetes prevelance,-0.37521929844802493,0.03142321365695233,*
+Tree size diversity,Diabetes prevelance,-0.2868014207625233,0.10561431528299048,
+Total ecosystem carbon per acre,Diabetes prevelance,-0.6012895969692968,2.1492590679494938e-4,*
+Soil organic carbon,Diabetes prevelance,-0.2537541506077351,0.154172908670557,
+Rarefied richness of plants,Diabetes prevelance,-0.24495642143353885,0.16945805452314122,
+Rarefied richness of animals,Diabetes prevelance,-0.1570906973022545,0.38263020910893086,
+Proportion of invasive species,Diabetes prevelance,0.129463027118863,0.47271854143995196,
+Land Use Diversity,Diabetes prevelance,0.5728073698724344,4.943725802948329e-4,*
+Fuel expenses,Diabetes prevelance,-0.2958561186297374,0.09458502860066864,
+Available water storage,Diabetes prevelance,-0.35828969944981914,0.04061984605744984,*
+Annual precipitation,Diabetes prevelance,0.017173525274219677,0.924428192882536,
+Total indemnities,Diabetes prevelance,0.3892993508720558,0.025136809741261423,*
+Sales from agritourism and recreation,Diabetes prevelance,0.27251014287097214,0.12495724082374826,
+Percent change in wages,Diabetes prevelance,-0.1600239374717064,0.3736945773097671,
+Market channel ratio,Diabetes prevelance,0.24324780245755467,0.17254759104084894,
+Land and building value per acre,Diabetes prevelance,0.4693674412447071,0.0058574986356392245,*
+Gini Index,Diabetes prevelance,0.07487678308348816,0.6787779401110661,
+Expenses per operation,Diabetes prevelance,0.31612579890752546,0.0730909892317606,
+Change in agricultural establishments,Diabetes prevelance,-0.28292267864891624,0.110624960864949,
+Average weekly wages,Diabetes prevelance,0.07900900370508959,0.6620707609699288,
+Social isolation,Weeks of extreme drought,-0.28892783680505246,0.10294102382399983,
+Ratio of female to male producers,Weeks of extreme drought,-0.2798853601969108,0.11467159527314852,
+Racial diversity of producers,Weeks of extreme drought,0.3519364479511908,0.04458575229471018,*
+Producer age skew,Weeks of extreme drought,0.19470050727411053,0.27757838465693907,
+Firearm fatalities,Weeks of extreme drought,-0.6850520467360848,1.0924435504211516e-5,*
+Annual population change,Weeks of extreme drought,0.10635116867327651,0.5558218973854017,
+Acres in conservation easements,Weeks of extreme drought,-0.49366245404602155,0.00350557149995101,*
+Total animal and crop sales,Weeks of extreme drought,0.06995069481082589,0.6988921122366065,
+Proportion of organic operations,Weeks of extreme drought,-0.5959055873642074,2.5309272354623324e-4,*
+Proportion of operations using precision agriculture,Weeks of extreme drought,0.05145834024272079,0.7761069382925849,
+Crop diversity,Weeks of extreme drought,0.7474134039786254,5.805206333420188e-7,*
+Rental vacancy rate,Weeks of extreme drought,-0.24337453788565744,0.17231706182111894,
+Proportion uninsured,Weeks of extreme drought,-0.27702513822596947,0.1185825466709356,
+Price of a meal,Weeks of extreme drought,-0.20957093006809144,0.24178875460031635,
+Poor mental health days,Weeks of extreme drought,-0.18960899283614566,0.29058152800386283,
+Mobility disability,Weeks of extreme drought,0.13388292821391481,0.45760424164972147,
+Limited access to healthy foods,Weeks of extreme drought,0.4934233492115558,0.0035239679103318267,*
+Lacking social support,Weeks of extreme drought,0.4414429224679604,0.01011895355978143,*
+High school graduation rate,Weeks of extreme drought,0.08510795770650577,0.637703216082826,
+Heart disease prevalence,Weeks of extreme drought,-0.13105921444792842,0.4672302958811658,
+Frequent physical distress,Weeks of extreme drought,0.11877931103550235,0.5103053206192518,
+"Food insecurity rate, overall",Weeks of extreme drought,-0.3502744310661606,0.04567287395281605,*
+Diabetes prevelance,Weeks of extreme drought,0.5200202680425167,0.0019229151897737218,*
+Weeks of extreme drought,Weeks of extreme drought,1,NA,NA
+Tree species diversity,Weeks of extreme drought,-0.42393303087467293,0.013947657460673835,*
+Tree size diversity,Weeks of extreme drought,0.015561191592329923,0.9315057846279571,
+Total ecosystem carbon per acre,Weeks of extreme drought,-0.35277987866945343,0.044042056732157775,*
+Soil organic carbon,Weeks of extreme drought,-0.3889476775673357,0.025280136000739306,*
+Rarefied richness of plants,Weeks of extreme drought,0.16782286911472535,0.3505410219686236,
+Rarefied richness of animals,Weeks of extreme drought,-0.12217961527294718,0.4981838154726912,
+Proportion of invasive species,Weeks of extreme drought,0.13074093534339976,0.4683219610314824,
+Land Use Diversity,Weeks of extreme drought,0.46392357008125024,0.006539213361671292,*
+Fuel expenses,Weeks of extreme drought,-0.267542549534379,0.13226054944341525,
+Available water storage,Weeks of extreme drought,-0.33715661238618005,0.05501704745352454,
+Annual precipitation,Weeks of extreme drought,-0.46395694327520165,0.0065348361569603775,*
+Total indemnities,Weeks of extreme drought,0.2792099331227437,0.11558632538815461,
+Sales from agritourism and recreation,Weeks of extreme drought,-0.027795055404954774,0.8779698776597273,
+Percent change in wages,Weeks of extreme drought,-0.18332692653914884,0.3071531828307179,
+Market channel ratio,Weeks of extreme drought,0.08686958377200432,0.6307321995294604,
+Land and building value per acre,Weeks of extreme drought,0.5877757367040857,3.2219625443019595e-4,*
+Gini Index,Weeks of extreme drought,-0.0047595855544603615,0.9790279575715166,
+Expenses per operation,Weeks of extreme drought,0.28441394699167577,0.10867781749448202,
+Change in agricultural establishments,Weeks of extreme drought,-0.2473463538854687,0.16520301265998127,
+Average weekly wages,Weeks of extreme drought,0.05287432463465561,0.7701088018158693,
+Social isolation,Tree species diversity,0.3548746941644323,0.04271467851692856,*
+Ratio of female to male producers,Tree species diversity,0.19400132811644527,0.2793413211283826,
+Racial diversity of producers,Tree species diversity,-0.43614240542480764,0.011170429156658335,*
+Producer age skew,Tree species diversity,0.01929604092317373,0.9151198266739504,
+Firearm fatalities,Tree species diversity,0.4768417248785184,0.00502124891774014,*
+Annual population change,Tree species diversity,-0.3256045311270384,0.06444549456399518,
+Acres in conservation easements,Tree species diversity,0.4304356991463697,0.012404096322331304,*
+Total animal and crop sales,Tree species diversity,0.010996970250027192,0.9515673323426381,
+Proportion of organic operations,Tree species diversity,0.2334916731545744,0.19095744885728427,
+Proportion of operations using precision agriculture,Tree species diversity,-0.09739988907661284,0.5897277983913096,
+Crop diversity,Tree species diversity,-0.43444097046491176,0.011526902881111134,*
+Rental vacancy rate,Tree species diversity,0.2597030744838325,0.1444181876478985,
+Proportion uninsured,Tree species diversity,0.18569591734863242,0.300835456162982,
+Price of a meal,Tree species diversity,0.09469826199436022,0.6001360317531474,
+Poor mental health days,Tree species diversity,0.37291946313673746,0.032562367241988355,*
+Mobility disability,Tree species diversity,0.10034644545084404,0.5784670790868152,
+Limited access to healthy foods,Tree species diversity,-0.04930160668778359,0.7852672378118788,
+Lacking social support,Tree species diversity,-0.19435793758572903,0.2784412505545817,
+High school graduation rate,Tree species diversity,0.1360239077981536,0.4503767990508618,
+Heart disease prevalence,Tree species diversity,0.21763626244102605,0.22373081382098658,
+Frequent physical distress,Tree species diversity,0.1577613553002023,0.3805762642085737,
+"Food insecurity rate, overall",Tree species diversity,0.3117609389129882,0.07736358699721091,
+Diabetes prevelance,Tree species diversity,-0.37521929844802493,0.03142321365695233,*
+Weeks of extreme drought,Tree species diversity,-0.42393303087467293,0.013947657460673835,*
+Tree species diversity,Tree species diversity,1,NA,NA
+Tree size diversity,Tree species diversity,0.20511257715801048,0.25217792421127805,
+Total ecosystem carbon per acre,Tree species diversity,0.4577538020782001,0.007392709379301143,*
+Soil organic carbon,Tree species diversity,0.2959844388751994,0.09443529609094714,
+Rarefied richness of plants,Tree species diversity,0.22318998926492145,0.21184318528554336,
+Rarefied richness of animals,Tree species diversity,0.02482277861393082,0.8909370002320205,
+Proportion of invasive species,Tree species diversity,-0.10985822449161536,0.5427893256125915,
+Land Use Diversity,Tree species diversity,-0.46790996543720004,0.00603375742545742,*
+Fuel expenses,Tree species diversity,0.5099425431974137,0.002432854002255347,*
+Available water storage,Tree species diversity,0.3381431346944432,0.05426548758004612,
+Annual precipitation,Tree species diversity,0.16884484529972726,0.3475724911381519,
+Total indemnities,Tree species diversity,-0.1267565649213637,0.4821008541620839,
+Sales from agritourism and recreation,Tree species diversity,-0.13064364906501916,0.46865591082293356,
+Percent change in wages,Tree species diversity,0.20482969777649085,0.252846935999937,
+Market channel ratio,Tree species diversity,-0.2623023326267184,0.140300287292348,
+Land and building value per acre,Tree species diversity,-0.6162014883538708,1.3454854895345036e-4,*
+Gini Index,Tree species diversity,-0.1984081093203243,0.2683504919263233,
+Expenses per operation,Tree species diversity,-0.3008218078461112,0.08892138411917849,
+Change in agricultural establishments,Tree species diversity,0.17012093327715563,0.34388725604236514,
+Average weekly wages,Tree species diversity,-0.25059755126792466,0.15953807254507923,
+Social isolation,Tree size diversity,0.1589092604011357,0.3770756902427448,
+Ratio of female to male producers,Tree size diversity,0.1644888005701669,0.3603312718823335,
+Racial diversity of producers,Tree size diversity,-0.3006987795013734,0.08905849216989026,
+Producer age skew,Tree size diversity,-0.05052778839368935,0.7800557208708931,
+Firearm fatalities,Tree size diversity,-0.17193513551528775,0.3386889962828572,
+Annual population change,Tree size diversity,-0.18060466014621712,0.31451537007312513,
+Acres in conservation easements,Tree size diversity,0.23523367049823646,0.1875735074766478,
+Total animal and crop sales,Tree size diversity,-0.16130610578713708,0.36982756013588514,
+Proportion of organic operations,Tree size diversity,-0.07163969665436161,0.6919720987309599,
+Proportion of operations using precision agriculture,Tree size diversity,0.1327270203864401,0.46153188382328914,
+Crop diversity,Tree size diversity,0.010466699528027859,0.9539002065919873,
+Rental vacancy rate,Tree size diversity,-0.25558601516114915,0.15111976992252485,
+Proportion uninsured,Tree size diversity,-0.5285172372831102,0.0015681000059943884,*
+Price of a meal,Tree size diversity,0.22469359322382157,0.20870085727919618,
+Poor mental health days,Tree size diversity,-0.005352989166867066,0.9764139421642795,
+Mobility disability,Tree size diversity,-0.3347534005660194,0.05688241716075426,
+Limited access to healthy foods,Tree size diversity,-0.0027363080995457954,0.9879421904591126,
+Lacking social support,Tree size diversity,-0.0154227872415008,0.9321135799256366,
+High school graduation rate,Tree size diversity,-0.23463977338764727,0.1887224289943925,
+Heart disease prevalence,Tree size diversity,-0.3019687665532715,0.08765093009629843,
+Frequent physical distress,Tree size diversity,-0.1606351473657618,0.3718482117332109,
+"Food insecurity rate, overall",Tree size diversity,-0.3009982384713154,0.08872504447216434,
+Diabetes prevelance,Tree size diversity,-0.2868014207625233,0.10561431528299048,
+Weeks of extreme drought,Tree size diversity,0.015561191592329923,0.9315057846279571,
+Tree species diversity,Tree size diversity,0.20511257715801048,0.25217792421127805,
+Tree size diversity,Tree size diversity,1,NA,NA
+Total ecosystem carbon per acre,Tree size diversity,0.5699322926251136,5.354954216842955e-4,*
+Soil organic carbon,Tree size diversity,0.1285145249357762,0.47599572798443535,
+Rarefied richness of plants,Tree size diversity,0.26901413630124266,0.13006504966837085,
+Rarefied richness of animals,Tree size diversity,-0.038991813848504434,0.8294274563195951,
+Proportion of invasive species,Tree size diversity,-0.21687881328953998,0.22538655536683794,
+Land Use Diversity,Tree size diversity,-0.4132895392253081,0.016820617905454416,*
+Fuel expenses,Tree size diversity,0.16005344438592972,0.3736053180254659,
+Available water storage,Tree size diversity,0.23899970572460608,0.18040207970207245,
+Annual precipitation,Tree size diversity,-0.2442425659645206,0.17074402075049466,
+Total indemnities,Tree size diversity,-0.36476459581260495,0.03687549869375406,*
+Sales from agritourism and recreation,Tree size diversity,-0.29842358685642073,0.09162334738886502,
+Percent change in wages,Tree size diversity,0.1508596124868653,0.40202028298123516,
+Market channel ratio,Tree size diversity,0.11091447447957584,0.5388927691686296,
+Land and building value per acre,Tree size diversity,0.07309000718399211,0.6860494523207112,
+Gini Index,Tree size diversity,-0.13972558644193103,0.43802715813734494,
+Expenses per operation,Tree size diversity,-0.35731011573113725,0.04121209107871504,*
+Change in agricultural establishments,Tree size diversity,0.2798934627345338,0.11466065497846323,
+Average weekly wages,Tree size diversity,0.29156798511044824,0.09969343432042299,
+Social isolation,Total ecosystem carbon per acre,0.44670723299071824,0.009158782846103719,*
+Ratio of female to male producers,Total ecosystem carbon per acre,0.29844384515094735,0.09160026370177143,
+Racial diversity of producers,Total ecosystem carbon per acre,-0.3645818101988614,0.03697722560433814,*
+Producer age skew,Total ecosystem carbon per acre,-0.04061442384792237,0.8224395453789985,
+Firearm fatalities,Total ecosystem carbon per acre,0.31179245215918616,0.07733206186433206,
+Annual population change,Total ecosystem carbon per acre,-0.33793965330060394,0.05441983502379566,
+Acres in conservation easements,Total ecosystem carbon per acre,0.7090600033634554,3.859737929712281e-6,*
+Total animal and crop sales,Total ecosystem carbon per acre,-0.052381738705515594,0.7721939417955737,
+Proportion of organic operations,Total ecosystem carbon per acre,0.29169528872512374,0.09953882757667043,
+Proportion of operations using precision agriculture,Total ecosystem carbon per acre,-0.039201942011884476,0.8285217858104361,
+Crop diversity,Total ecosystem carbon per acre,-0.27514871021304976,0.12120175691548174,
+Rental vacancy rate,Total ecosystem carbon per acre,-0.03124467271529904,0.8629594183557949,
+Proportion uninsured,Total ecosystem carbon per acre,-0.36047907316821826,0.03932094887903226,*
+Price of a meal,Total ecosystem carbon per acre,0.3671933701743254,0.03554517017453307,*
+Poor mental health days,Total ecosystem carbon per acre,0.38326795600565555,0.027689556361787826,*
+Mobility disability,Total ecosystem carbon per acre,-0.35483197869487354,0.04274142028201844,*
+Limited access to healthy foods,Total ecosystem carbon per acre,-0.24121949898446626,0.17626690990297678,
+Lacking social support,Total ecosystem carbon per acre,-0.1918139170902455,0.2849033791009141,
+High school graduation rate,Total ecosystem carbon per acre,-0.15978148291277386,0.3744284844533623,
+Heart disease prevalence,Total ecosystem carbon per acre,-0.13288838486981291,0.46098251329361783,
+Frequent physical distress,Total ecosystem carbon per acre,-0.2405238544614948,0.17755550555796829,
+"Food insecurity rate, overall",Total ecosystem carbon per acre,0.1386689080738286,0.4415334575704988,
+Diabetes prevelance,Total ecosystem carbon per acre,-0.6012895969692968,2.1492590679494938e-4,*
+Weeks of extreme drought,Total ecosystem carbon per acre,-0.35277987866945343,0.044042056732157775,*
+Tree species diversity,Total ecosystem carbon per acre,0.4577538020782001,0.007392709379301143,*
+Tree size diversity,Total ecosystem carbon per acre,0.5699322926251136,5.354954216842955e-4,*
+Total ecosystem carbon per acre,Total ecosystem carbon per acre,1,NA,NA
+Soil organic carbon,Total ecosystem carbon per acre,0.5916660022158876,2.872769273625231e-4,*
+Rarefied richness of plants,Total ecosystem carbon per acre,0.4828690418785506,0.0044236669377299975,*
+Rarefied richness of animals,Total ecosystem carbon per acre,0.20133079668350284,0.26121904960773645,
+Proportion of invasive species,Total ecosystem carbon per acre,-0.1886498932884603,0.29307384024991534,
+Land Use Diversity,Total ecosystem carbon per acre,-0.7916772324823458,4.098489525539151e-8,*
+Fuel expenses,Total ecosystem carbon per acre,0.06157423633253545,0.7335541477286225,
+Available water storage,Total ecosystem carbon per acre,0.6744174027061783,1.6801610028149838e-5,*
+Annual precipitation,Total ecosystem carbon per acre,-0.12335200198678864,0.49403849441814707,
+Total indemnities,Total ecosystem carbon per acre,-0.252937296587516,0.15554861360587213,
+Sales from agritourism and recreation,Total ecosystem carbon per acre,-0.36875980247100154,0.03470801274757562,*
+Percent change in wages,Total ecosystem carbon per acre,0.14561299790408938,0.41877253825948557,
+Market channel ratio,Total ecosystem carbon per acre,-0.0663708856341033,0.7136372384853686,
+Land and building value per acre,Total ecosystem carbon per acre,-0.533190961787192,0.001398494320869137,*
+Gini Index,Total ecosystem carbon per acre,-0.01623993496948126,0.9285256754286624,
+Expenses per operation,Total ecosystem carbon per acre,-0.3112448381451534,0.07788129974953839,
+Change in agricultural establishments,Total ecosystem carbon per acre,0.5264226506159936,0.0016497729281397255,*
+Average weekly wages,Total ecosystem carbon per acre,0.08148447978254592,0.6521374837800544,
+Social isolation,Soil organic carbon,0.5639508180510888,6.308723855141807e-4,*
+Ratio of female to male producers,Soil organic carbon,0.4947928071071675,0.003419723116489415,*
+Racial diversity of producers,Soil organic carbon,-0.3007639427402262,0.08898585132038805,
+Producer age skew,Soil organic carbon,-0.08992313692489225,0.6187228041018127,
+Firearm fatalities,Soil organic carbon,0.5685623751517325,5.561331486942933e-4,*
+Annual population change,Soil organic carbon,-0.3176743299315642,0.0716201023112446,
+Acres in conservation easements,Soil organic carbon,0.6463389956773008,4.8377324896264895e-5,*
+Total animal and crop sales,Soil organic carbon,-0.04470006546363404,0.8049047032853798,
+Proportion of organic operations,Soil organic carbon,0.38336308542153685,0.027647705358272212,*
+Proportion of operations using precision agriculture,Soil organic carbon,-0.07834798764221022,0.6647328818980407,
+Crop diversity,Soil organic carbon,-0.35084216420589437,0.045299159592112836,*
+Rental vacancy rate,Soil organic carbon,0.19149977957246547,0.2857079607232085,
+Proportion uninsured,Soil organic carbon,0.031062218211871967,0.8637522098977772,
+Price of a meal,Soil organic carbon,0.1786665447111182,0.3198234979681389,
+Poor mental health days,Soil organic carbon,0.6171013806616525,1.3069936423715234e-4,*
+Mobility disability,Soil organic carbon,0.09694122866017563,0.5914892400508225,
+Limited access to healthy foods,Soil organic carbon,-0.2197534774100082,0.2191466299376752,
+Lacking social support,Soil organic carbon,-0.2383977780895102,0.18153509581997263,
+High school graduation rate,Soil organic carbon,0.20712704861673262,0.24744761841294594,
+Heart disease prevalence,Soil organic carbon,0.22362799997135824,0.210924467174735,
+Frequent physical distress,Soil organic carbon,0.17823037917772888,0.32102570391920104,
+"Food insecurity rate, overall",Soil organic carbon,0.5402974460786532,0.0011713672995405933,*
+Diabetes prevelance,Soil organic carbon,-0.2537541506077351,0.154172908670557,
+Weeks of extreme drought,Soil organic carbon,-0.3889476775673357,0.025280136000739306,*
+Tree species diversity,Soil organic carbon,0.2959844388751994,0.09443529609094714,
+Tree size diversity,Soil organic carbon,0.1285145249357762,0.47599572798443535,
+Total ecosystem carbon per acre,Soil organic carbon,0.5916660022158876,2.872769273625231e-4,*
+Soil organic carbon,Soil organic carbon,1,NA,NA
+Rarefied richness of plants,Soil organic carbon,0.26904102343540065,0.13002518773052052,
+Rarefied richness of animals,Soil organic carbon,0.2972850747399738,0.09292780210908425,
+Proportion of invasive species,Soil organic carbon,-0.2826248938342909,0.11101689410605453,
+Land Use Diversity,Soil organic carbon,-0.6480523127509421,4.549294163558315e-5,*
+Fuel expenses,Soil organic carbon,-0.23511319406584943,0.18780617694595758,
+Available water storage,Soil organic carbon,0.7355635589889976,1.0786623374503534e-6,*
+Annual precipitation,Soil organic carbon,0.3531499950597516,0.043805156287088476,*
+Total indemnities,Soil organic carbon,-0.0034943741441508733,0.9846020497290899,
+Sales from agritourism and recreation,Soil organic carbon,-0.09281608055980259,0.6074336123065678,
+Percent change in wages,Soil organic carbon,-0.013062939434115474,0.9424822400732147,
+Market channel ratio,Soil organic carbon,-0.3644801293602358,0.03703391295882685,*
+Land and building value per acre,Soil organic carbon,-0.6629836174685866,2.6189714604107905e-5,*
+Gini Index,Soil organic carbon,0.08790995298106243,0.6266298796117462,
+Expenses per operation,Soil organic carbon,-0.26094086376169656,0.14244636444496095,
+Change in agricultural establishments,Soil organic carbon,0.2664096483655932,0.13396925420176453,
+Average weekly wages,Soil organic carbon,0.05175213188196944,0.7748613747208826,
+Social isolation,Rarefied richness of plants,0.12661725171443478,0.48258639201598097,
+Ratio of female to male producers,Rarefied richness of plants,0.19653683763715063,0.272982566881816,
+Racial diversity of producers,Rarefied richness of plants,0.0034151030628687996,0.9849513176985272,
+Producer age skew,Rarefied richness of plants,0.2380141590095855,0.18225980046277446,
+Firearm fatalities,Rarefied richness of plants,0.08375633491320812,0.6430725596419067,
+Annual population change,Rarefied richness of plants,0.08603186992649625,0.6340433102284764,
+Acres in conservation easements,Rarefied richness of plants,0.3844439614401586,0.02717581783975298,*
+Total animal and crop sales,Rarefied richness of plants,0.15316903571204177,0.3947693420531784,
+Proportion of organic operations,Rarefied richness of plants,0.15645425849957784,0.38458531446326516,
+Proportion of operations using precision agriculture,Rarefied richness of plants,-0.004680487388379946,0.9793764114111818,
+Crop diversity,Rarefied richness of plants,0.1954874284349875,0.27560284698559934,
+Rental vacancy rate,Rarefied richness of plants,0.029695676123556766,0.8696941310606794,
+Proportion uninsured,Rarefied richness of plants,-0.27001934728699345,0.12858088138925083,
+Price of a meal,Rarefied richness of plants,0.11723651337930972,0.5158530598314206,
+Poor mental health days,Rarefied richness of plants,0.4041204698899238,0.019676431962236673,*
+Mobility disability,Rarefied richness of plants,-0.14210242647715007,0.43019617656899634,
+Limited access to healthy foods,Rarefied richness of plants,0.08631827266627265,0.632910499527767,
+Lacking social support,Rarefied richness of plants,-0.1937311944365769,0.28002438001225305,
+High school graduation rate,Rarefied richness of plants,0.07249709899225519,0.6884685260074344,
+Heart disease prevalence,Rarefied richness of plants,-0.056978707248693285,0.7527974195062632,
+Frequent physical distress,Rarefied richness of plants,-0.0585474598887272,0.7462113547882228,
+"Food insecurity rate, overall",Rarefied richness of plants,0.14115994855041153,0.4332920739198842,
+Diabetes prevelance,Rarefied richness of plants,-0.24495642143353885,0.16945805452314122,
+Weeks of extreme drought,Rarefied richness of plants,0.16782286911472535,0.3505410219686236,
+Tree species diversity,Rarefied richness of plants,0.22318998926492145,0.21184318528554336,
+Tree size diversity,Rarefied richness of plants,0.26901413630124266,0.13006504966837085,
+Total ecosystem carbon per acre,Rarefied richness of plants,0.4828690418785506,0.0044236669377299975,*
+Soil organic carbon,Rarefied richness of plants,0.26904102343540065,0.13002518773052052,
+Rarefied richness of plants,Rarefied richness of plants,1,NA,NA
+Rarefied richness of animals,Rarefied richness of plants,0.31652590454496093,0.07270871392411471,
+Proportion of invasive species,Rarefied richness of plants,-0.25308178454493985,0.15530463172352915,
+Land Use Diversity,Rarefied richness of plants,-0.3304489265299744,0.0603482426973847,
+Fuel expenses,Rarefied richness of plants,0.10675868660298854,0.5543000962654696,
+Available water storage,Rarefied richness of plants,0.3007905301955005,0.08895622593760377,
+Annual precipitation,Rarefied richness of plants,-0.29104134535219944,0.10033495887533217,
+Total indemnities,Rarefied richness of plants,-0.011340389273670006,0.9500567031922362,
+Sales from agritourism and recreation,Rarefied richness of plants,-0.18005452058565324,0.31601646793310323,
+Percent change in wages,Rarefied richness of plants,0.2935823058307988,0.0972683603860014,
+Market channel ratio,Rarefied richness of plants,-0.31650032670288136,0.07273310528230459,
+Land and building value per acre,Rarefied richness of plants,-0.3477360552197571,0.047374080309446454,*
+Gini Index,Rarefied richness of plants,-0.1975941398173258,0.2703590139287759,
+Expenses per operation,Rarefied richness of plants,-0.09104988347386263,0.6143155126675541,
+Change in agricultural establishments,Rarefied richness of plants,0.20543288332165108,0.2514218152015042,
+Average weekly wages,Rarefied richness of plants,-0.1416894061448975,0.43155138038473395,
+Social isolation,Rarefied richness of animals,0.30285702372528744,0.08667663155724492,
+Ratio of female to male producers,Rarefied richness of animals,0.14655999368258116,0.4157202854437283,
+Racial diversity of producers,Rarefied richness of animals,-0.050936198076027006,0.7783219700077368,
+Producer age skew,Rarefied richness of animals,-0.061772807317131806,0.7327261354078418,
+Firearm fatalities,Rarefied richness of animals,0.204285004099432,0.25413844861095725,
+Annual population change,Rarefied richness of animals,-0.008255183027058076,0.9636333904503072,
+Acres in conservation easements,Rarefied richness of animals,0.4010509567764216,0.02071799669558505,*
+Total animal and crop sales,Rarefied richness of animals,0.035191374332852875,0.8458437833258052,
+Proportion of organic operations,Rarefied richness of animals,0.2281871093188529,0.20152426216060526,
+Proportion of operations using precision agriculture,Rarefied richness of animals,0.015334132482681404,0.9325029223483754,
+Crop diversity,Rarefied richness of animals,-0.272648454760671,0.12475826465280027,
+Rental vacancy rate,Rarefied richness of animals,0.13760879028755435,0.4450664685748458,
+Proportion uninsured,Rarefied richness of animals,-0.19944201115240137,0.26581335634335646,
+Price of a meal,Rarefied richness of animals,0.1420492981487514,0.4303703696766572,
+Poor mental health days,Rarefied richness of animals,0.3524557848634774,0.04425034257353211,*
+Mobility disability,Rarefied richness of animals,0.05475654799394419,0.7621559188809388,
+Limited access to healthy foods,Rarefied richness of animals,0.08599598114288119,0.634185318939718,
+Lacking social support,Rarefied richness of animals,-0.032417312789654366,0.8578672885628558,
+High school graduation rate,Rarefied richness of animals,0.006672728877978549,0.9706012297942324,
+Heart disease prevalence,Rarefied richness of animals,0.11480932406068967,0.524640766138907,
+Frequent physical distress,Rarefied richness of animals,0.12247545718150071,0.49713612225294335,
+"Food insecurity rate, overall",Rarefied richness of animals,0.07858913450591051,0.6637612391979912,
+Diabetes prevelance,Rarefied richness of animals,-0.1570906973022545,0.38263020910893086,
+Weeks of extreme drought,Rarefied richness of animals,-0.12217961527294718,0.4981838154726912,
+Tree species diversity,Rarefied richness of animals,0.02482277861393082,0.8909370002320205,
+Tree size diversity,Rarefied richness of animals,-0.038991813848504434,0.8294274563195951,
+Total ecosystem carbon per acre,Rarefied richness of animals,0.20133079668350284,0.26121904960773645,
+Soil organic carbon,Rarefied richness of animals,0.2972850747399738,0.09292780210908425,
+Rarefied richness of plants,Rarefied richness of animals,0.31652590454496093,0.07270871392411471,
+Rarefied richness of animals,Rarefied richness of animals,1,NA,NA
+Proportion of invasive species,Rarefied richness of animals,0.005396517185948808,0.9762222050774885,
+Land Use Diversity,Rarefied richness of animals,-0.2487328748863017,0.16276977381011926,
+Fuel expenses,Rarefied richness of animals,0.029482757886241655,0.8706205686486816,
+Available water storage,Rarefied richness of animals,0.1521394857133189,0.3979925043543733,
+Annual precipitation,Rarefied richness of animals,-0.072685438583767,0.6876997681028456,
+Total indemnities,Rarefied richness of animals,0.06509299739192806,0.7189258755603212,
+Sales from agritourism and recreation,Rarefied richness of animals,-0.22505900983038973,0.2079420621434318,
+Percent change in wages,Rarefied richness of animals,0.05807188157759645,0.7482061290760744,
+Market channel ratio,Rarefied richness of animals,-0.5054814288137649,0.002693755318967428,*
+Land and building value per acre,Rarefied richness of animals,-0.344118287936511,0.049885803617356395,*
+Gini Index,Rarefied richness of animals,0.15046338277898128,0.4032719184098028,
+Expenses per operation,Rarefied richness of animals,-0.058090570567234864,0.7481277092889784,
+Change in agricultural establishments,Rarefied richness of animals,-0.0036440755417111526,0.9839424738583051,
+Average weekly wages,Rarefied richness of animals,-0.08323966011988487,0.6451297690547917,
+Social isolation,Proportion of invasive species,-0.3128214851434033,0.07630809603123412,
+Ratio of female to male producers,Proportion of invasive species,-0.08264875986043997,0.647485685390917,
+Racial diversity of producers,Proportion of invasive species,0.3650071281809091,0.03674087030831741,*
+Producer age skew,Proportion of invasive species,-0.1489955253745361,0.4079279729334355,
+Firearm fatalities,Proportion of invasive species,-0.3151277940973553,0.07405133069549086,
+Annual population change,Proportion of invasive species,0.01801931534819153,0.920717703433388,
+Acres in conservation easements,Proportion of invasive species,-0.2825537717558051,0.11111065627828687,
+Total animal and crop sales,Proportion of invasive species,-0.25403449484042034,0.15370279879564963,
+Proportion of organic operations,Proportion of invasive species,-0.11591225933958718,0.5206385425963602,
+Proportion of operations using precision agriculture,Proportion of invasive species,-0.3096750201673435,0.0794725127755247,
+Crop diversity,Proportion of invasive species,0.11558643530597777,0.5218193026787492,
+Rental vacancy rate,Proportion of invasive species,-0.06543897900233757,0.717492728868397,
+Proportion uninsured,Proportion of invasive species,-0.09945094819207026,0.5818791827901191,
+Price of a meal,Proportion of invasive species,0.16463509106081273,0.3598983101310136,
+Poor mental health days,Proportion of invasive species,-0.42994100594746654,0.01251623669542079,*
+Mobility disability,Proportion of invasive species,-0.10817709593346236,0.5490184735136463,
+Limited access to healthy foods,Proportion of invasive species,0.01064893212894769,0.9530984487496894,
+Lacking social support,Proportion of invasive species,0.06782816108135228,0.7076221323041629,
+High school graduation rate,Proportion of invasive species,-0.2893688177939852,0.10239309213552605,
+Heart disease prevalence,Proportion of invasive species,-0.2085705254009143,0.2440946554949357,
+Frequent physical distress,Proportion of invasive species,-0.18271920733837455,0.3087872341489091,
+"Food insecurity rate, overall",Proportion of invasive species,-0.31463114605431847,0.07453287425673838,
+Diabetes prevelance,Proportion of invasive species,0.129463027118863,0.47271854143995196,
+Weeks of extreme drought,Proportion of invasive species,0.13074093534339976,0.4683219610314824,
+Tree species diversity,Proportion of invasive species,-0.10985822449161536,0.5427893256125915,
+Tree size diversity,Proportion of invasive species,-0.21687881328953998,0.22538655536683794,
+Total ecosystem carbon per acre,Proportion of invasive species,-0.1886498932884603,0.29307384024991534,
+Soil organic carbon,Proportion of invasive species,-0.2826248938342909,0.11101689410605453,
+Rarefied richness of plants,Proportion of invasive species,-0.25308178454493985,0.15530463172352915,
+Rarefied richness of animals,Proportion of invasive species,0.005396517185948808,0.9762222050774885,
+Proportion of invasive species,Proportion of invasive species,1,NA,NA
+Land Use Diversity,Proportion of invasive species,0.20083958185815623,0.26240883256441294,
+Fuel expenses,Proportion of invasive species,-0.17914719866909568,0.318501914973087,
+Available water storage,Proportion of invasive species,-0.2055839104566689,0.2510658253471454,
+Annual precipitation,Proportion of invasive species,-0.2855645444124199,0.10719318638767228,
+Total indemnities,Proportion of invasive species,-0.07719925094163255,0.6693687691513237,
+Sales from agritourism and recreation,Proportion of invasive species,-0.2967526517047468,0.09354266844761616,
+Percent change in wages,Proportion of invasive species,-0.04806992653718742,0.7905113524191809,
+Market channel ratio,Proportion of invasive species,0.2527984227612416,0.1557833759956151,
+Land and building value per acre,Proportion of invasive species,0.3290867768281524,0.061478981286335,
+Gini Index,Proportion of invasive species,0.08115005809001648,0.6534760336655068,
+Expenses per operation,Proportion of invasive species,0.0030221085600884933,0.986682888676705,
+Change in agricultural establishments,Proportion of invasive species,-0.1734073398663193,0.33450611264963026,
+Average weekly wages,Proportion of invasive species,0.0866395568791263,0.6316406954489953,
+Social isolation,Land Use Diversity,-0.43694195021746474,0.011006154271269608,*
+Ratio of female to male producers,Land Use Diversity,-0.4057130703806843,0.019153381860567364,*
+Racial diversity of producers,Land Use Diversity,0.4279460560686956,0.01297716027355178,*
+Producer age skew,Land Use Diversity,0.17164594283580747,0.33951439531957117,
+Firearm fatalities,Land Use Diversity,-0.5004196000396653,0.003018891740775853,*
+Annual population change,Land Use Diversity,0.30681675085204557,0.08243411919161359,
+Acres in conservation easements,Land Use Diversity,-0.6882671951294154,9.557675116234066e-6,*
+Total animal and crop sales,Land Use Diversity,0.29285727440207165,0.09813601906480351,
+Proportion of organic operations,Land Use Diversity,-0.26422103020097665,0.13731611979751945,
+Proportion of operations using precision agriculture,Land Use Diversity,0.218008268505226,0.2229206648326505,
+Crop diversity,Land Use Diversity,0.4070139425009083,0.0187347599386134,*
+Rental vacancy rate,Land Use Diversity,-0.3075384176713188,0.08167845994704281,
+Proportion uninsured,Land Use Diversity,0.05445137577326178,0.7634437536688965,
+Price of a meal,Land Use Diversity,-0.3134862269487086,0.0756522358618037,
+Poor mental health days,Land Use Diversity,-0.4501308603190091,0.008576745538243724,*
+Mobility disability,Land Use Diversity,0.14107122678831788,0.43358414092649156,
+Limited access to healthy foods,Land Use Diversity,0.19000463839648013,0.2895573664093021,
+Lacking social support,Land Use Diversity,0.15698226830945822,0.38296288714387217,
+High school graduation rate,Land Use Diversity,0.03770278642231052,0.8349879507677809,
+Heart disease prevalence,Land Use Diversity,-0.1012641588945472,0.5749796327155468,
+Frequent physical distress,Land Use Diversity,0.13165190237896832,0.4652010160288318,
+"Food insecurity rate, overall",Land Use Diversity,-0.3577572336386467,0.04094091225122298,*
+Diabetes prevelance,Land Use Diversity,0.5728073698724344,4.943725802948329e-4,*
+Weeks of extreme drought,Land Use Diversity,0.46392357008125024,0.006539213361671292,*
+Tree species diversity,Land Use Diversity,-0.46790996543720004,0.00603375742545742,*
+Tree size diversity,Land Use Diversity,-0.4132895392253081,0.016820617905454416,*
+Total ecosystem carbon per acre,Land Use Diversity,-0.7916772324823458,4.098489525539151e-8,*
+Soil organic carbon,Land Use Diversity,-0.6480523127509421,4.549294163558315e-5,*
+Rarefied richness of plants,Land Use Diversity,-0.3304489265299744,0.0603482426973847,
+Rarefied richness of animals,Land Use Diversity,-0.2487328748863017,0.16276977381011926,
+Proportion of invasive species,Land Use Diversity,0.20083958185815623,0.26240883256441294,
+Land Use Diversity,Land Use Diversity,1,NA,NA
+Fuel expenses,Land Use Diversity,-0.045790580255484034,0.8002397692336856,
+Available water storage,Land Use Diversity,-0.710151410073072,3.672472544735683e-6,*
+Annual precipitation,Land Use Diversity,-0.2131476690531597,0.2336639183789324,
+Total indemnities,Land Use Diversity,0.25486228870427474,0.15232071594423857,
+Sales from agritourism and recreation,Land Use Diversity,0.22444547047052152,0.20921717526692252,
+Percent change in wages,Land Use Diversity,-0.32865712935503444,0.061839074758024415,
+Market channel ratio,Land Use Diversity,0.16447440541898134,0.360373892601767,
+Land and building value per acre,Land Use Diversity,0.6120654543286851,1.535761676245695e-4,*
+Gini Index,Land Use Diversity,-0.1533017441162379,0.39435497317052604,
+Expenses per operation,Land Use Diversity,0.518740805188279,0.001981995411565851,*
+Change in agricultural establishments,Land Use Diversity,-0.41794412216328164,0.015508740685357791,*
+Average weekly wages,Land Use Diversity,-0.03306325154927615,0.8550647187215166,
+Social isolation,Fuel expenses,0.01578535811371608,0.9305214500477663,
+Ratio of female to male producers,Fuel expenses,-0.13764851787352556,0.44493379436886693,
+Racial diversity of producers,Fuel expenses,-0.32016829443721256,0.06929976328695009,
+Producer age skew,Fuel expenses,0.34802160739230714,0.04718021396154448,*
+Firearm fatalities,Fuel expenses,0.25056008644392785,0.159602545831095,
+Annual population change,Fuel expenses,-0.0017196228587915599,0.9924221475891466,
+Acres in conservation easements,Fuel expenses,0.038870120726832574,0.8299520628044572,
+Total animal and crop sales,Fuel expenses,0.08430496453960855,0.6408909624504118,
+Proportion of organic operations,Fuel expenses,0.07308944324114842,0.6860517517674614,
+Proportion of operations using precision agriculture,Fuel expenses,0.045505562000051625,0.8014583552028487,
+Crop diversity,Fuel expenses,-0.10286540979634824,0.5689173884765522,
+Rental vacancy rate,Fuel expenses,0.25724324726881975,0.14839563087351415,
+Proportion uninsured,Fuel expenses,0.09514513133410467,0.5984089883697439,
+Price of a meal,Fuel expenses,-0.004350587308995475,0.9808297710660372,
+Poor mental health days,Fuel expenses,0.09470621010425835,0.6001052954896893,
+Mobility disability,Fuel expenses,0.02293372422036863,0.8991930103118424,
+Limited access to healthy foods,Fuel expenses,0.12613427783815356,0.4842716185504674,
+Lacking social support,Fuel expenses,-0.1851972017760819,0.3021585624311218,
+High school graduation rate,Fuel expenses,0.03907458859439835,0.8290706642326255,
+Heart disease prevalence,Fuel expenses,0.15517370980013237,0.38853664514144204,
+Frequent physical distress,Fuel expenses,0.029290919596336232,0.8714554289881238,
+"Food insecurity rate, overall",Fuel expenses,0.1085338021168462,0.547693959276774,
+Diabetes prevelance,Fuel expenses,-0.2958561186297374,0.09458502860066864,
+Weeks of extreme drought,Fuel expenses,-0.267542549534379,0.13226054944341525,
+Tree species diversity,Fuel expenses,0.5099425431974137,0.002432854002255347,*
+Tree size diversity,Fuel expenses,0.16005344438592972,0.3736053180254659,
+Total ecosystem carbon per acre,Fuel expenses,0.06157423633253545,0.7335541477286225,
+Soil organic carbon,Fuel expenses,-0.23511319406584943,0.18780617694595758,
+Rarefied richness of plants,Fuel expenses,0.10675868660298854,0.5543000962654696,
+Rarefied richness of animals,Fuel expenses,0.029482757886241655,0.8706205686486816,
+Proportion of invasive species,Fuel expenses,-0.17914719866909568,0.318501914973087,
+Land Use Diversity,Fuel expenses,-0.045790580255484034,0.8002397692336856,
+Fuel expenses,Fuel expenses,1,NA,NA
+Available water storage,Fuel expenses,0.002045526529610552,0.9909860431702293,
+Annual precipitation,Fuel expenses,0.08889517817456473,0.6227550939386453,
+Total indemnities,Fuel expenses,-0.16149330313560453,0.3692649580975287,
+Sales from agritourism and recreation,Fuel expenses,0.023713511037368643,0.8957836875089087,
+Percent change in wages,Fuel expenses,0.18544788939698037,0.3014930218411649,
+Market channel ratio,Fuel expenses,-0.21156843290156924,0.23722828863022416,
+Land and building value per acre,Fuel expenses,-0.21391924325250064,0.23193565062643984,
+Gini Index,Fuel expenses,-0.295972051024391,0.09444974317080268,
+Expenses per operation,Fuel expenses,-0.13009761776789602,0.4705325682779269,
+Change in agricultural establishments,Fuel expenses,-0.11017103665345744,0.5416339571597732,
+Average weekly wages,Fuel expenses,-0.36251406319768503,0.03814389598000023,*
+Social isolation,Available water storage,0.5155225412459717,0.0021376494608515983,*
+Ratio of female to male producers,Available water storage,0.24335058748723887,0.1723606103274551,
+Racial diversity of producers,Available water storage,-0.18186534220076786,0.3110923417700542,
+Producer age skew,Available water storage,0.16247800535306986,0.36631387731484644,
+Firearm fatalities,Available water storage,0.48559538135328745,0.004174150534935084,*
+Annual population change,Available water storage,-0.2121473200188532,0.23591751286385643,
+Acres in conservation easements,Available water storage,0.5433763607062809,0.0010834776737556062,*
+Total animal and crop sales,Available water storage,-0.013089948546020778,0.9423635122349443,
+Proportion of organic operations,Available water storage,0.30667103764969417,0.08258734739717899,
+Proportion of operations using precision agriculture,Available water storage,-0.13477459624987081,0.45458668699421145,
+Crop diversity,Available water storage,-0.2487632021003496,0.16271684062733938,
+Rental vacancy rate,Available water storage,-0.01770132539527467,0.9221125402204002,
+Proportion uninsured,Available water storage,0.02421110387895832,0.8936091031774367,
+Price of a meal,Available water storage,0.029208143601891293,0.8718157036358494,
+Poor mental health days,Available water storage,0.4851483142735233,0.004214215004874067,*
+Mobility disability,Available water storage,-0.2106786176224055,0.23925262215104937,
+Limited access to healthy foods,Available water storage,-0.23570932136413753,0.18665688504838895,
+Lacking social support,Available water storage,-0.08006790088447739,0.6578147076628005,
+High school graduation rate,Available water storage,0.10975607505055397,0.5431668661798317,
+Heart disease prevalence,Available water storage,-0.09366457621510034,0.6041391680850372,
+Frequent physical distress,Available water storage,-0.06721201416941217,0.7101632722530462,
+"Food insecurity rate, overall",Available water storage,0.4181017402442601,0.015465859420326744,*
+Diabetes prevelance,Available water storage,-0.35828969944981914,0.04061984605744984,*
+Weeks of extreme drought,Available water storage,-0.33715661238618005,0.05501704745352454,
+Tree species diversity,Available water storage,0.3381431346944432,0.05426548758004612,
+Tree size diversity,Available water storage,0.23899970572460608,0.18040207970207245,
+Total ecosystem carbon per acre,Available water storage,0.6744174027061783,1.6801610028149838e-5,*
+Soil organic carbon,Available water storage,0.7355635589889976,1.0786623374503534e-6,*
+Rarefied richness of plants,Available water storage,0.3007905301955005,0.08895622593760377,
+Rarefied richness of animals,Available water storage,0.1521394857133189,0.3979925043543733,
+Proportion of invasive species,Available water storage,-0.2055839104566689,0.2510658253471454,
+Land Use Diversity,Available water storage,-0.710151410073072,3.672472544735683e-6,*
+Fuel expenses,Available water storage,0.002045526529610552,0.9909860431702293,
+Available water storage,Available water storage,1,NA,NA
+Annual precipitation,Available water storage,0.2515688309975949,0.15787312512539642,
+Total indemnities,Available water storage,-0.08919657440449842,0.6215717096660167,
+Sales from agritourism and recreation,Available water storage,-0.08335023436254535,0.6446892851170019,
+Percent change in wages,Available water storage,0.13006290388812886,0.4706520097579894,
+Market channel ratio,Available water storage,-0.048577264915120356,0.7883501555101902,
+Land and building value per acre,Available water storage,-0.5720213154633124,5.053281365525741e-4,*
+Gini Index,Available water storage,-0.1755665318493951,0.3284288772505142,
+Expenses per operation,Available water storage,-0.17528645500980344,0.32921331175198865,
+Change in agricultural establishments,Available water storage,0.3904065765351413,0.024689913226263904,*
+Average weekly wages,Available water storage,-0.28397765828938415,0.10924479106530094,
+Social isolation,Annual precipitation,0.18031180760548152,0.3153138849842452,
+Ratio of female to male producers,Annual precipitation,0.4032883919513225,0.019954387393446682,*
+Racial diversity of producers,Annual precipitation,0.026161180148406647,0.8850943338668484,
+Producer age skew,Annual precipitation,-0.22335086564044396,0.2115054316602729,
+Firearm fatalities,Annual precipitation,0.44815115238679426,0.008909348470981682,*
+Annual population change,Annual precipitation,-0.07030756266260674,0.6974279826064052,
+Acres in conservation easements,Annual precipitation,0.06319564757998715,0.7268017962308071,
+Total animal and crop sales,Annual precipitation,-0.06778165666514298,0.7078138202679223,
+Proportion of organic operations,Annual precipitation,0.10655132837234806,0.5550741954067491,
+Proportion of operations using precision agriculture,Annual precipitation,0.13814053074653546,0.4432924469935786,
+Crop diversity,Annual precipitation,-0.391900881431947,0.024097173607172895,*
+Rental vacancy rate,Annual precipitation,0.23947838239498503,0.17950463151531149,
+Proportion uninsured,Annual precipitation,0.4519013784708282,0.008288280470135856,*
+Price of a meal,Annual precipitation,-0.1297298607154364,0.47179873331585,
+Poor mental health days,Annual precipitation,0.34454171597510175,0.04958645898471037,*
+Mobility disability,Annual precipitation,0.3492331434626516,0.046364722810940506,*
+Limited access to healthy foods,Annual precipitation,-0.20301657290131106,0.2571628892156457,
+Lacking social support,Annual precipitation,-0.3148379751821738,0.07433204079913347,
+High school graduation rate,Annual precipitation,0.24014941062647505,0.17825187037519852,
+Heart disease prevalence,Annual precipitation,0.36841048386780934,0.03489330064354812,*
+Frequent physical distress,Annual precipitation,0.27413018467877276,0.12264135231978646,
+"Food insecurity rate, overall",Annual precipitation,0.5334803603800271,0.0013885420315729036,*
+Diabetes prevelance,Annual precipitation,0.017173525274219677,0.924428192882536,
+Weeks of extreme drought,Annual precipitation,-0.46395694327520165,0.0065348361569603775,*
+Tree species diversity,Annual precipitation,0.16884484529972726,0.3475724911381519,
+Tree size diversity,Annual precipitation,-0.2442425659645206,0.17074402075049466,
+Total ecosystem carbon per acre,Annual precipitation,-0.12335200198678864,0.49403849441814707,
+Soil organic carbon,Annual precipitation,0.3531499950597516,0.043805156287088476,*
+Rarefied richness of plants,Annual precipitation,-0.29104134535219944,0.10033495887533217,
+Rarefied richness of animals,Annual precipitation,-0.072685438583767,0.6876997681028456,
+Proportion of invasive species,Annual precipitation,-0.2855645444124199,0.10719318638767228,
+Land Use Diversity,Annual precipitation,-0.2131476690531597,0.2336639183789324,
+Fuel expenses,Annual precipitation,0.08889517817456473,0.6227550939386453,
+Available water storage,Annual precipitation,0.2515688309975949,0.15787312512539642,
+Annual precipitation,Annual precipitation,1,NA,NA
+Total indemnities,Annual precipitation,-0.11712095320592522,0.5162697960946161,
+Sales from agritourism and recreation,Annual precipitation,0.42111401921516195,0.014665204137026322,*
+Percent change in wages,Annual precipitation,-0.08762679541640231,0.6277453287872041,
+Market channel ratio,Annual precipitation,-0.20259489979949127,0.2581735608130711,
+Land and building value per acre,Annual precipitation,-0.4587628459626964,0.007246955311540182,*
+Gini Index,Annual precipitation,0.1726512835203965,0.33665027898740885,
+Expenses per operation,Annual precipitation,-0.26092427051016404,0.1424726672206411,
+Change in agricultural establishments,Annual precipitation,-0.0986099616869527,0.5850917006219865,
+Average weekly wages,Annual precipitation,-0.2777198237399105,0.1176236485219544,
+Social isolation,Total indemnities,-0.008210145998166453,0.9638316627520425,
+Ratio of female to male producers,Total indemnities,-0.23445804873703824,0.18907496729734818,
+Racial diversity of producers,Total indemnities,0.03665079744646791,0.8395317612049715,
+Producer age skew,Total indemnities,0.11212781353016489,0.534433221933929,
+Firearm fatalities,Total indemnities,0.036122096978668715,0.8418172850163548,
+Annual population change,Total indemnities,-0.06878933736515526,0.7036641905788332,
+Acres in conservation easements,Total indemnities,-0.13171931509937607,0.4649704998148154,
+Total animal and crop sales,Total indemnities,0.3447601806936337,0.04943257515965316,*
+Proportion of organic operations,Total indemnities,-0.07072204976046148,0.6957288009237288,
+Proportion of operations using precision agriculture,Total indemnities,-0.05241631984346043,0.772047506931457,
+Crop diversity,Total indemnities,0.06674411497844918,0.7120950530265777,
+Rental vacancy rate,Total indemnities,0.037546962321424585,0.835660668429703,
+Proportion uninsured,Total indemnities,0.28175628297218047,0.11216607950669855,
+Price of a meal,Total indemnities,-0.2332866556019983,0.19135849919818382,
+Poor mental health days,Total indemnities,0.06940319888472686,0.7011404055575619,
+Mobility disability,Total indemnities,0.18778301795010655,0.2953381976393543,
+Limited access to healthy foods,Total indemnities,0.22602199582491656,0.20595151791776622,
+Lacking social support,Total indemnities,0.35295056917331225,0.04393267545405766,*
+High school graduation rate,Total indemnities,0.26893943175439716,0.13017585137533283,
+Heart disease prevalence,Total indemnities,0.0392246090442207,0.8284241018724172,
+Frequent physical distress,Total indemnities,0.19033309098224901,0.288708897136293,
+"Food insecurity rate, overall",Total indemnities,0.20846846619237877,0.2443307210567469,
+Diabetes prevelance,Total indemnities,0.3892993508720558,0.025136809741261423,*
+Weeks of extreme drought,Total indemnities,0.2792099331227437,0.11558632538815461,
+Tree species diversity,Total indemnities,-0.1267565649213637,0.4821008541620839,
+Tree size diversity,Total indemnities,-0.36476459581260495,0.03687549869375406,*
+Total ecosystem carbon per acre,Total indemnities,-0.252937296587516,0.15554861360587213,
+Soil organic carbon,Total indemnities,-0.0034943741441508733,0.9846020497290899,
+Rarefied richness of plants,Total indemnities,-0.011340389273670006,0.9500567031922362,
+Rarefied richness of animals,Total indemnities,0.06509299739192806,0.7189258755603212,
+Proportion of invasive species,Total indemnities,-0.07719925094163255,0.6693687691513237,
+Land Use Diversity,Total indemnities,0.25486228870427474,0.15232071594423857,
+Fuel expenses,Total indemnities,-0.16149330313560453,0.3692649580975287,
+Available water storage,Total indemnities,-0.08919657440449842,0.6215717096660167,
+Annual precipitation,Total indemnities,-0.11712095320592522,0.5162697960946161,
+Total indemnities,Total indemnities,1,NA,NA
+Sales from agritourism and recreation,Total indemnities,0.13693876618239473,0.44730730833254384,
+Percent change in wages,Total indemnities,0.06836625137403814,0.7054054453774083,
+Market channel ratio,Total indemnities,-0.0627399767253902,0.7286974208140575,
+Land and building value per acre,Total indemnities,0.046913885950998525,0.7954416387957424,
+Gini Index,Total indemnities,0.19047326220756333,0.2883472877768567,
+Expenses per operation,Total indemnities,0.538922001259113,0.0012126112132722078,*
+Change in agricultural establishments,Total indemnities,0.09082400092678027,0.615198002751864,
+Average weekly wages,Total indemnities,-0.005112842275879817,0.9774717910560309,
+Social isolation,Sales from agritourism and recreation,-0.02512575415119242,0.8896138847952653,
+Ratio of female to male producers,Sales from agritourism and recreation,0.0894176681456654,0.6207042112758037,
+Racial diversity of producers,Sales from agritourism and recreation,0.3242486391301649,0.06563049219891948,
+Producer age skew,Sales from agritourism and recreation,0.26216988298739735,0.1405080228625617,
+Firearm fatalities,Sales from agritourism and recreation,0.08153857566078086,0.6519210605740593,
+Annual population change,Sales from agritourism and recreation,0.3198647026228775,0.06957904111955804,
+Acres in conservation easements,Sales from agritourism and recreation,-0.334814465681869,0.056834407240083706,
+Total animal and crop sales,Sales from agritourism and recreation,-0.0665160418811432,0.7130373195875053,
+Proportion of organic operations,Sales from agritourism and recreation,-0.22091003924187655,0.2166697168581977,
+Proportion of operations using precision agriculture,Sales from agritourism and recreation,0.07728078026226523,0.6690393485135955,
+Crop diversity,Sales from agritourism and recreation,0.05620961081953367,0.7560325943914488,
+Rental vacancy rate,Sales from agritourism and recreation,-0.035135214244212946,0.846086867004602,
+Proportion uninsured,Sales from agritourism and recreation,0.2985682087726477,0.09145865261155972,
+Price of a meal,Sales from agritourism and recreation,-0.3000293950071928,0.08980732108245437,
+Poor mental health days,Sales from agritourism and recreation,0.053069005908259005,0.7692851411243413,
+Mobility disability,Sales from agritourism and recreation,0.3752510059586207,0.031407738403298247,*
+Limited access to healthy foods,Sales from agritourism and recreation,-0.0514897580400875,0.7759737127111377,
+Lacking social support,Sales from agritourism and recreation,-0.0478483051866637,0.7914559130178878,
+High school graduation rate,Sales from agritourism and recreation,0.27090961587015727,0.1272769019461102,
+Heart disease prevalence,Sales from agritourism and recreation,0.2783929552692517,0.11670003103579596,
+Frequent physical distress,Sales from agritourism and recreation,0.3478392893669158,0.047303919508893344,*
+"Food insecurity rate, overall",Sales from agritourism and recreation,0.3176312839454005,0.07166067601153614,
+Diabetes prevelance,Sales from agritourism and recreation,0.27251014287097214,0.12495724082374826,
+Weeks of extreme drought,Sales from agritourism and recreation,-0.027795055404954774,0.8779698776597273,
+Tree species diversity,Sales from agritourism and recreation,-0.13064364906501916,0.46865591082293356,
+Tree size diversity,Sales from agritourism and recreation,-0.29842358685642073,0.09162334738886502,
+Total ecosystem carbon per acre,Sales from agritourism and recreation,-0.36875980247100154,0.03470801274757562,*
+Soil organic carbon,Sales from agritourism and recreation,-0.09281608055980259,0.6074336123065678,
+Rarefied richness of plants,Sales from agritourism and recreation,-0.18005452058565324,0.31601646793310323,
+Rarefied richness of animals,Sales from agritourism and recreation,-0.22505900983038973,0.2079420621434318,
+Proportion of invasive species,Sales from agritourism and recreation,-0.2967526517047468,0.09354266844761616,
+Land Use Diversity,Sales from agritourism and recreation,0.22444547047052152,0.20921717526692252,
+Fuel expenses,Sales from agritourism and recreation,0.023713511037368643,0.8957836875089087,
+Available water storage,Sales from agritourism and recreation,-0.08335023436254535,0.6446892851170019,
+Annual precipitation,Sales from agritourism and recreation,0.42111401921516195,0.014665204137026322,*
+Total indemnities,Sales from agritourism and recreation,0.13693876618239473,0.44730730833254384,
+Sales from agritourism and recreation,Sales from agritourism and recreation,1,NA,NA
+Percent change in wages,Sales from agritourism and recreation,-0.05679140751796145,0.7535849109395096,
+Market channel ratio,Sales from agritourism and recreation,0.03200275791586577,0.8596668403720908,
+Land and building value per acre,Sales from agritourism and recreation,0.05373822128008206,0.7664557062723858,
+Gini Index,Sales from agritourism and recreation,0.09848912594525698,0.5855539288403149,
+Expenses per operation,Sales from agritourism and recreation,-0.08779816042614202,0.6270701698249974,
+Change in agricultural establishments,Sales from agritourism and recreation,-0.09481190319145875,0.5996966324323512,
+Average weekly wages,Sales from agritourism and recreation,-0.31330345438784923,0.07583212896654645,
+Social isolation,Percent change in wages,-0.14974564890074804,0.40554478278759776,
+Ratio of female to male producers,Percent change in wages,-0.11872592847737796,0.5104967819761121,
+Racial diversity of producers,Percent change in wages,-0.1596037306001977,0.37496707652279304,
+Producer age skew,Percent change in wages,0.0700040526415864,0.6986731320218911,
+Firearm fatalities,Percent change in wages,0.20945159187074364,0.2420630571654261,
+Annual population change,Percent change in wages,-0.017818285637880463,0.9215994770340883,
+Acres in conservation easements,Percent change in wages,0.18276662353254314,0.30865954410136887,
+Total animal and crop sales,Percent change in wages,-0.07794901577932341,0.6663416179985255,
+Proportion of organic operations,Percent change in wages,0.04931310433869034,0.7852183275939217,
+Proportion of operations using precision agriculture,Percent change in wages,-0.2536534776612113,0.15434198054903137,
+Crop diversity,Percent change in wages,-0.20647333743788587,0.24897611923654228,
+Rental vacancy rate,Percent change in wages,0.23019603752550477,0.19747578144277877,
+Proportion uninsured,Percent change in wages,0.08575597766003672,0.635135320233229,
+Price of a meal,Percent change in wages,0.17297588565353517,0.3357286841603355,
+Poor mental health days,Percent change in wages,0.0706692302575617,0.6959452529111041,
+Mobility disability,Percent change in wages,-0.06186818262508548,0.7323285391916865,
+Limited access to healthy foods,Percent change in wages,0.20164448879238045,0.26046110666331823,
+Lacking social support,Percent change in wages,-0.12411411837960754,0.49135324740362063,
+High school graduation rate,Percent change in wages,0.07765198124895373,0.6675402706697502,
+Heart disease prevalence,Percent change in wages,0.0203656637720883,0.9104330716990146,
+Frequent physical distress,Percent change in wages,-0.0968317046508933,0.5919101962238242,
+"Food insecurity rate, overall",Percent change in wages,0.12400481289518676,0.49173791694503,
+Diabetes prevelance,Percent change in wages,-0.1600239374717064,0.3736945773097671,
+Weeks of extreme drought,Percent change in wages,-0.18332692653914884,0.3071531828307179,
+Tree species diversity,Percent change in wages,0.20482969777649085,0.252846935999937,
+Tree size diversity,Percent change in wages,0.1508596124868653,0.40202028298123516,
+Total ecosystem carbon per acre,Percent change in wages,0.14561299790408938,0.41877253825948557,
+Soil organic carbon,Percent change in wages,-0.013062939434115474,0.9424822400732147,
+Rarefied richness of plants,Percent change in wages,0.2935823058307988,0.0972683603860014,
+Rarefied richness of animals,Percent change in wages,0.05807188157759645,0.7482061290760744,
+Proportion of invasive species,Percent change in wages,-0.04806992653718742,0.7905113524191809,
+Land Use Diversity,Percent change in wages,-0.32865712935503444,0.061839074758024415,
+Fuel expenses,Percent change in wages,0.18544788939698037,0.3014930218411649,
+Available water storage,Percent change in wages,0.13006290388812886,0.4706520097579894,
+Annual precipitation,Percent change in wages,-0.08762679541640231,0.6277453287872041,
+Total indemnities,Percent change in wages,0.06836625137403814,0.7054054453774083,
+Sales from agritourism and recreation,Percent change in wages,-0.05679140751796145,0.7535849109395096,
+Percent change in wages,Percent change in wages,1,NA,NA
+Market channel ratio,Percent change in wages,0.0877984110629126,0.627069182561429,
+Land and building value per acre,Percent change in wages,-0.08895388588088428,0.6225245146971645,
+Gini Index,Percent change in wages,-0.03785955044559733,0.834311291119052,
+Expenses per operation,Percent change in wages,-0.1572314216008199,0.3821986949283116,
+Change in agricultural establishments,Percent change in wages,0.22045330433632798,0.2176455699464368,
+Average weekly wages,Percent change in wages,0.11017629555445273,0.5416145434432866,
+Social isolation,Market channel ratio,-0.295750284694558,0.09470865862951117,
+Ratio of female to male producers,Market channel ratio,-0.349919112585921,0.045908018138282713,*
+Racial diversity of producers,Market channel ratio,0.09828470583033558,0.5863362558419891,
+Producer age skew,Market channel ratio,-0.11506005411951367,0.5237296277230843,
+Firearm fatalities,Market channel ratio,-0.3112323151084975,0.07789389513648604,
+Annual population change,Market channel ratio,0.07914549872919711,0.6615215563854813,
+Acres in conservation easements,Market channel ratio,-0.2587625794911334,0.1459296547316533,
+Total animal and crop sales,Market channel ratio,-0.13637148705476634,0.44920928326729337,
+Proportion of organic operations,Market channel ratio,-0.24505283639508982,0.16928489962739235,
+Proportion of operations using precision agriculture,Market channel ratio,-0.1521043496727132,0.39810276835584846,
+Crop diversity,Market channel ratio,0.04716557039302691,0.7943675854708068,
+Rental vacancy rate,Market channel ratio,-0.2546567244016927,0.15266308340555224,
+Proportion uninsured,Market channel ratio,0.12369739747453348,0.4928206012216445,
+Price of a meal,Market channel ratio,-0.16965673731299488,0.3452250610652272,
+Poor mental health days,Market channel ratio,-0.5767596048486743,4.4241345616802263e-4,*
+Mobility disability,Market channel ratio,-0.31537138197456355,0.07381603618733323,
+Limited access to healthy foods,Market channel ratio,-0.12373070965865564,0.4927032206273536,
+Lacking social support,Market channel ratio,0.32730694452225606,0.06298149128641906,
+High school graduation rate,Market channel ratio,-0.20097669314955197,0.2620763747456105,
+Heart disease prevalence,Market channel ratio,-0.33501852204412036,0.05667420877446294,
+Frequent physical distress,Market channel ratio,-0.3098082912911621,0.07933645726036276,
+"Food insecurity rate, overall",Market channel ratio,-0.25055279980822065,0.15961508759176968,
+Diabetes prevelance,Market channel ratio,0.24324780245755467,0.17254759104084894,
+Weeks of extreme drought,Market channel ratio,0.08686958377200432,0.6307321995294604,
+Tree species diversity,Market channel ratio,-0.2623023326267184,0.140300287292348,
+Tree size diversity,Market channel ratio,0.11091447447957584,0.5388927691686296,
+Total ecosystem carbon per acre,Market channel ratio,-0.0663708856341033,0.7136372384853686,
+Soil organic carbon,Market channel ratio,-0.3644801293602358,0.03703391295882685,*
+Rarefied richness of plants,Market channel ratio,-0.31650032670288136,0.07273310528230459,
+Rarefied richness of animals,Market channel ratio,-0.5054814288137649,0.002693755318967428,*
+Proportion of invasive species,Market channel ratio,0.2527984227612416,0.1557833759956151,
+Land Use Diversity,Market channel ratio,0.16447440541898134,0.360373892601767,
+Fuel expenses,Market channel ratio,-0.21156843290156924,0.23722828863022416,
+Available water storage,Market channel ratio,-0.048577264915120356,0.7883501555101902,
+Annual precipitation,Market channel ratio,-0.20259489979949127,0.2581735608130711,
+Total indemnities,Market channel ratio,-0.0627399767253902,0.7286974208140575,
+Sales from agritourism and recreation,Market channel ratio,0.03200275791586577,0.8596668403720908,
+Percent change in wages,Market channel ratio,0.0877984110629126,0.627069182561429,
+Market channel ratio,Market channel ratio,1,NA,NA
+Land and building value per acre,Market channel ratio,0.5278827632563101,0.0015924578400068334,*
+Gini Index,Market channel ratio,-0.06351056445400022,0.725492646430653,
+Expenses per operation,Market channel ratio,0.21996061375785794,0.21870160859202614,
+Change in agricultural establishments,Market channel ratio,0.07079781764417671,0.6954183486363203,
+Average weekly wages,Market channel ratio,0.09722229073377646,0.5904095752093614,
+Social isolation,Land and building value per acre,-0.5459201773847007,0.0010152884558265463,*
+Ratio of female to male producers,Land and building value per acre,-0.308799876633518,0.08037042464456867,
+Racial diversity of producers,Land and building value per acre,0.32054012870943405,0.06895890138763439,
+Producer age skew,Land and building value per acre,0.09323818055102669,0.6057937765117658,
+Firearm fatalities,Land and building value per acre,-0.7835871818584498,6.961215781586816e-8,*
+Annual population change,Land and building value per acre,0.23155298542323147,0.19477342837370037,
+Acres in conservation easements,Land and building value per acre,-0.6296900296377503,8.625845080967309e-5,*
+Total animal and crop sales,Land and building value per acre,-0.13478972502691855,0.4545355808098406,
+Proportion of organic operations,Land and building value per acre,-0.48257032023500057,0.004451770985561154,*
+Proportion of operations using precision agriculture,Land and building value per acre,-0.09474609652596418,0.5999510602921876,
+Crop diversity,Land and building value per acre,0.5331736349467215,0.001399092160428772,*
+Rental vacancy rate,Land and building value per acre,-0.3367743010041674,0.055310510576994876,
+Proportion uninsured,Land and building value per acre,-0.25081803205423137,0.15915902607671573,
+Price of a meal,Land and building value per acre,-0.09841019110624045,0.5858559621913155,
+Poor mental health days,Land and building value per acre,-0.6729400093524408,1.7812640070946628e-5,*
+Mobility disability,Land and building value per acre,-0.12261063184300602,0.4966577870149833,
+Limited access to healthy foods,Land and building value per acre,0.26681363080594234,0.13335809367265483,
+Lacking social support,Land and building value per acre,0.28633196500461117,0.10621149688410414,
+High school graduation rate,Land and building value per acre,-0.23566373477437863,0.18674459800075072,
+Heart disease prevalence,Land and building value per acre,-0.29196783976654994,0.09920843317284866,
+Frequent physical distress,Land and building value per acre,-0.10787634517222652,0.5501363812914108,
+"Food insecurity rate, overall",Land and building value per acre,-0.5919555069453689,2.8481829205029285e-4,*
+Diabetes prevelance,Land and building value per acre,0.4693674412447071,0.0058574986356392245,*
+Weeks of extreme drought,Land and building value per acre,0.5877757367040857,3.2219625443019595e-4,*
+Tree species diversity,Land and building value per acre,-0.6162014883538708,1.3454854895345036e-4,*
+Tree size diversity,Land and building value per acre,0.07309000718399211,0.6860494523207112,
+Total ecosystem carbon per acre,Land and building value per acre,-0.533190961787192,0.001398494320869137,*
+Soil organic carbon,Land and building value per acre,-0.6629836174685866,2.6189714604107905e-5,*
+Rarefied richness of plants,Land and building value per acre,-0.3477360552197571,0.047374080309446454,*
+Rarefied richness of animals,Land and building value per acre,-0.344118287936511,0.049885803617356395,*
+Proportion of invasive species,Land and building value per acre,0.3290867768281524,0.061478981286335,
+Land Use Diversity,Land and building value per acre,0.6120654543286851,1.535761676245695e-4,*
+Fuel expenses,Land and building value per acre,-0.21391924325250064,0.23193565062643984,
+Available water storage,Land and building value per acre,-0.5720213154633124,5.053281365525741e-4,*
+Annual precipitation,Land and building value per acre,-0.4587628459626964,0.007246955311540182,*
+Total indemnities,Land and building value per acre,0.046913885950998525,0.7954416387957424,
+Sales from agritourism and recreation,Land and building value per acre,0.05373822128008206,0.7664557062723858,
+Percent change in wages,Land and building value per acre,-0.08895388588088428,0.6225245146971645,
+Market channel ratio,Land and building value per acre,0.5278827632563101,0.0015924578400068334,*
+Land and building value per acre,Land and building value per acre,1,NA,NA
+Gini Index,Land and building value per acre,0.06922271795714037,0.7018820976427353,
+Expenses per operation,Land and building value per acre,0.26047763282359127,0.14318198675088412,
+Change in agricultural establishments,Land and building value per acre,-0.17906516920541102,0.3187272182863332,
+Average weekly wages,Land and building value per acre,0.37450866096425606,0.03177168337148539,*
+Social isolation,Gini Index,-0.1663074014719195,0.3549710299117952,
+Ratio of female to male producers,Gini Index,0.25990511052939774,0.1440949897030377,
+Racial diversity of producers,Gini Index,0.003998287361606743,0.9823818789921128,
+Producer age skew,Gini Index,-0.38622264929266026,0.026413671290300922,*
+Firearm fatalities,Gini Index,-0.1942407892683519,0.2787367218906045,
+Annual population change,Gini Index,-0.08773375528098308,0.6273238841012581,
+Acres in conservation easements,Gini Index,0.03929668322161195,0.8281135138225431,
+Total animal and crop sales,Gini Index,-0.26213331275050145,0.1405654196416133,
+Proportion of organic operations,Gini Index,-0.0816547865204775,0.6514562261210572,
+Proportion of operations using precision agriculture,Gini Index,-0.062214628112832106,0.7308848683844293,
+Crop diversity,Gini Index,-0.1163832405919708,0.5189340606513397,
+Rental vacancy rate,Gini Index,0.2394008078742727,0.1796498576825427,
+Proportion uninsured,Gini Index,-0.15344196587882933,0.3939174165068149,
+Price of a meal,Gini Index,0.4041349602871869,0.019671620063268946,*
+Poor mental health days,Gini Index,0.04794377009864036,0.7910490013080014,
+Mobility disability,Gini Index,0.2511207626446958,0.15863963309527818,
+Limited access to healthy foods,Gini Index,0.03289006793905416,0.8558159508574703,
+Lacking social support,Gini Index,-0.23598353277554765,0.1861298864891343,
+High school graduation rate,Gini Index,-0.12010435964558192,0.5055643822206404,
+Heart disease prevalence,Gini Index,0.2319744680332425,0.19393932276616233,
+Frequent physical distress,Gini Index,0.1712988313016415,0.3405067211607635,
+"Food insecurity rate, overall",Gini Index,0.21219235348668863,0.23581574804738503,
+Diabetes prevelance,Gini Index,0.07487678308348816,0.6787779401110661,
+Weeks of extreme drought,Gini Index,-0.0047595855544603615,0.9790279575715166,
+Tree species diversity,Gini Index,-0.1984081093203243,0.2683504919263233,
+Tree size diversity,Gini Index,-0.13972558644193103,0.43802715813734494,
+Total ecosystem carbon per acre,Gini Index,-0.01623993496948126,0.9285256754286624,
+Soil organic carbon,Gini Index,0.08790995298106243,0.6266298796117462,
+Rarefied richness of plants,Gini Index,-0.1975941398173258,0.2703590139287759,
+Rarefied richness of animals,Gini Index,0.15046338277898128,0.4032719184098028,
+Proportion of invasive species,Gini Index,0.08115005809001648,0.6534760336655068,
+Land Use Diversity,Gini Index,-0.1533017441162379,0.39435497317052604,
+Fuel expenses,Gini Index,-0.295972051024391,0.09444974317080268,
+Available water storage,Gini Index,-0.1755665318493951,0.3284288772505142,
+Annual precipitation,Gini Index,0.1726512835203965,0.33665027898740885,
+Total indemnities,Gini Index,0.19047326220756333,0.2883472877768567,
+Sales from agritourism and recreation,Gini Index,0.09848912594525698,0.5855539288403149,
+Percent change in wages,Gini Index,-0.03785955044559733,0.834311291119052,
+Market channel ratio,Gini Index,-0.06351056445400022,0.725492646430653,
+Land and building value per acre,Gini Index,0.06922271795714037,0.7018820976427353,
+Gini Index,Gini Index,1,NA,NA
+Expenses per operation,Gini Index,-0.11570072200305609,0.5214049878561309,
+Change in agricultural establishments,Gini Index,0.01439890988999606,0.9366110292698298,
+Average weekly wages,Gini Index,0.2609833433727052,0.14237904408153534,
+Social isolation,Expenses per operation,-0.2201421747500531,0.21831204235266477,
+Ratio of female to male producers,Expenses per operation,-0.5478755940933725,9.654659307880564e-4,*
+Racial diversity of producers,Expenses per operation,0.10396597354618935,0.5647676274544975,
+Producer age skew,Expenses per operation,0.10943505871872074,0.54435413924688,
+Firearm fatalities,Expenses per operation,-0.1859819999944729,0.3000781297479498,
+Annual population change,Expenses per operation,0.01693339901447751,0.9254819174954607,
+Acres in conservation easements,Expenses per operation,-0.19555337966148162,0.2754376940122967,
+Total animal and crop sales,Expenses per operation,0.7909472413352948,4.3032093222095114e-8,*
+Proportion of organic operations,Expenses per operation,-0.05367652953596267,0.7667164150035908,
+Proportion of operations using precision agriculture,Expenses per operation,0.3248076058483124,0.065139925455864,
+Crop diversity,Expenses per operation,0.16682959286794438,0.3534407844914216,
+Rental vacancy rate,Expenses per operation,-0.21959629180715387,0.21948474698724119,
+Proportion uninsured,Expenses per operation,0.018447739993181014,0.918838821276335,
+Price of a meal,Expenses per operation,-0.2512188208166707,0.1584716570993836,
+Poor mental health days,Expenses per operation,-0.1875683188807144,0.29590072734164274,
+Mobility disability,Expenses per operation,-0.1909122975683939,0.28721655729135476,
+Limited access to healthy foods,Expenses per operation,0.07319337861167766,0.6856280075549477,
+Lacking social support,Expenses per operation,0.3146342616872776,0.07452984581890787,
+High school graduation rate,Expenses per operation,0.13149320066061843,0.46574393120291413,
+Heart disease prevalence,Expenses per operation,-0.2866457854124601,0.10581201345526825,
+Frequent physical distress,Expenses per operation,-0.05112616869842945,0.7775158773923292,
+"Food insecurity rate, overall",Expenses per operation,-0.0911528278962539,0.6139134998066691,
+Diabetes prevelance,Expenses per operation,0.31612579890752546,0.0730909892317606,
+Weeks of extreme drought,Expenses per operation,0.28441394699167577,0.10867781749448202,
+Tree species diversity,Expenses per operation,-0.3008218078461112,0.08892138411917849,
+Tree size diversity,Expenses per operation,-0.35731011573113725,0.04121209107871504,*
+Total ecosystem carbon per acre,Expenses per operation,-0.3112448381451534,0.07788129974953839,
+Soil organic carbon,Expenses per operation,-0.26094086376169656,0.14244636444496095,
+Rarefied richness of plants,Expenses per operation,-0.09104988347386263,0.6143155126675541,
+Rarefied richness of animals,Expenses per operation,-0.058090570567234864,0.7481277092889784,
+Proportion of invasive species,Expenses per operation,0.0030221085600884933,0.986682888676705,
+Land Use Diversity,Expenses per operation,0.518740805188279,0.001981995411565851,*
+Fuel expenses,Expenses per operation,-0.13009761776789602,0.4705325682779269,
+Available water storage,Expenses per operation,-0.17528645500980344,0.32921331175198865,
+Annual precipitation,Expenses per operation,-0.26092427051016404,0.1424726672206411,
+Total indemnities,Expenses per operation,0.538922001259113,0.0012126112132722078,*
+Sales from agritourism and recreation,Expenses per operation,-0.08779816042614202,0.6270701698249974,
+Percent change in wages,Expenses per operation,-0.1572314216008199,0.3821986949283116,
+Market channel ratio,Expenses per operation,0.21996061375785794,0.21870160859202614,
+Land and building value per acre,Expenses per operation,0.26047763282359127,0.14318198675088412,
+Gini Index,Expenses per operation,-0.11570072200305609,0.5214049878561309,
+Expenses per operation,Expenses per operation,1,NA,NA
+Change in agricultural establishments,Expenses per operation,-0.04409212675393477,0.807508184822735,
+Average weekly wages,Expenses per operation,0.05520738800173207,0.7602545083046919,
+Social isolation,Change in agricultural establishments,0.12939109041589555,0.4729666765867353,
+Ratio of female to male producers,Change in agricultural establishments,0.24945750240613082,0.16150838108543875,
+Racial diversity of producers,Change in agricultural establishments,-0.16454313181805158,0.36017043670128324,
+Producer age skew,Change in agricultural establishments,-0.06042041006843864,0.7383712420335713,
+Firearm fatalities,Change in agricultural establishments,0.22254317879775407,0.21320487721269088,
+Annual population change,Change in agricultural establishments,-0.1150264556135828,0.523851677954287,
+Acres in conservation easements,Change in agricultural establishments,0.4795365767643101,0.0047460074835927735,*
+Total animal and crop sales,Change in agricultural establishments,0.06048437188858806,0.7381039509458589,
+Proportion of organic operations,Change in agricultural establishments,-0.03842634339725836,0.8318657501207438,
+Proportion of operations using precision agriculture,Change in agricultural establishments,-0.05874394300642203,0.7453876933838619,
+Crop diversity,Change in agricultural establishments,-0.06455281439393032,0.721165333847382,
+Rental vacancy rate,Change in agricultural establishments,-0.3540633140654627,0.0432249415576309,*
+Proportion uninsured,Change in agricultural establishments,-0.20232619786333622,0.25881895286478995,
+Price of a meal,Change in agricultural establishments,0.06812398234526011,0.7064031905165791,
+Poor mental health days,Change in agricultural establishments,0.03244469472642386,0.8577484502334847,
+Mobility disability,Change in agricultural establishments,-0.49390387719867335,0.003487081008120896,*
+Limited access to healthy foods,Change in agricultural establishments,-0.3150990308681551,0.07407915304960166,
+Lacking social support,Change in agricultural establishments,-0.09556916309741474,0.5967721923964207,
+High school graduation rate,Change in agricultural establishments,-0.15802544500904006,0.37976923821114394,
+Heart disease prevalence,Change in agricultural establishments,-0.43112712554625393,0.012248776835633635,*
+Frequent physical distress,Change in agricultural establishments,-0.3403440886567705,0.05261807966758747,
+"Food insecurity rate, overall",Change in agricultural establishments,-0.15046283941384922,0.4032736363479752,
+Diabetes prevelance,Change in agricultural establishments,-0.28292267864891624,0.110624960864949,
+Weeks of extreme drought,Change in agricultural establishments,-0.2473463538854687,0.16520301265998127,
+Tree species diversity,Change in agricultural establishments,0.17012093327715563,0.34388725604236514,
+Tree size diversity,Change in agricultural establishments,0.2798934627345338,0.11466065497846323,
+Total ecosystem carbon per acre,Change in agricultural establishments,0.5264226506159936,0.0016497729281397255,*
+Soil organic carbon,Change in agricultural establishments,0.2664096483655932,0.13396925420176453,
+Rarefied richness of plants,Change in agricultural establishments,0.20543288332165108,0.2514218152015042,
+Rarefied richness of animals,Change in agricultural establishments,-0.0036440755417111526,0.9839424738583051,
+Proportion of invasive species,Change in agricultural establishments,-0.1734073398663193,0.33450611264963026,
+Land Use Diversity,Change in agricultural establishments,-0.41794412216328164,0.015508740685357791,*
+Fuel expenses,Change in agricultural establishments,-0.11017103665345744,0.5416339571597732,
+Available water storage,Change in agricultural establishments,0.3904065765351413,0.024689913226263904,*
+Annual precipitation,Change in agricultural establishments,-0.0986099616869527,0.5850917006219865,
+Total indemnities,Change in agricultural establishments,0.09082400092678027,0.615198002751864,
+Sales from agritourism and recreation,Change in agricultural establishments,-0.09481190319145875,0.5996966324323512,
+Percent change in wages,Change in agricultural establishments,0.22045330433632798,0.2176455699464368,
+Market channel ratio,Change in agricultural establishments,0.07079781764417671,0.6954183486363203,
+Land and building value per acre,Change in agricultural establishments,-0.17906516920541102,0.3187272182863332,
+Gini Index,Change in agricultural establishments,0.01439890988999606,0.9366110292698298,
+Expenses per operation,Change in agricultural establishments,-0.04409212675393477,0.807508184822735,
+Change in agricultural establishments,Change in agricultural establishments,1,NA,NA
+Average weekly wages,Change in agricultural establishments,0.2664953684487363,0.1338394016977924,
+Social isolation,Average weekly wages,-0.16941722008515087,0.3459165776771278,
+Ratio of female to male producers,Average weekly wages,0.14659983245795372,0.41559215587309906,
+Racial diversity of producers,Average weekly wages,-0.27879074839631773,0.11615676234345051,
+Producer age skew,Average weekly wages,-0.3921042388134242,0.02401742280541086,*
+Firearm fatalities,Average weekly wages,-0.2289064861404069,0.20006798368313228,
+Annual population change,Average weekly wages,-0.18117153575561365,0.31297327683214915,
+Acres in conservation easements,Average weekly wages,0.1066137074541825,0.5548412722009184,
+Total animal and crop sales,Average weekly wages,-0.05663392922883412,0.7542472084100238,
+Proportion of organic operations,Average weekly wages,-0.16284079234485024,0.36523016664544805,
+Proportion of operations using precision agriculture,Average weekly wages,-0.03237192461980866,0.8580642811637333,
+Crop diversity,Average weekly wages,0.042959810278087464,0.8123626877959143,
+Rental vacancy rate,Average weekly wages,-0.10062649239728509,0.5774018577339302,
+Proportion uninsured,Average weekly wages,-0.4172666066905559,0.015694198049793107,*
+Price of a meal,Average weekly wages,0.1686570189224825,0.34811692643157466,
+Poor mental health days,Average weekly wages,-0.16768925562137102,0.3509302549516504,
+Mobility disability,Average weekly wages,-0.12130310747399814,0.5012944182738648,
+Limited access to healthy foods,Average weekly wages,-0.02161290290684923,0.9049718074748467,
+Lacking social support,Average weekly wages,0.022810898995843445,0.899730179961264,
+High school graduation rate,Average weekly wages,-0.04529181207852209,0.8023725373962081,
+Heart disease prevalence,Average weekly wages,-0.08407762649108229,0.6417946039196056,
+Frequent physical distress,Average weekly wages,-0.035020392954696486,0.8465839035156884,
+"Food insecurity rate, overall",Average weekly wages,-0.23450964168756405,0.18897483223156186,
+Diabetes prevelance,Average weekly wages,0.07900900370508959,0.6620707609699288,
+Weeks of extreme drought,Average weekly wages,0.05287432463465561,0.7701088018158693,
+Tree species diversity,Average weekly wages,-0.25059755126792466,0.15953807254507923,
+Tree size diversity,Average weekly wages,0.29156798511044824,0.09969343432042299,
+Total ecosystem carbon per acre,Average weekly wages,0.08148447978254592,0.6521374837800544,
+Soil organic carbon,Average weekly wages,0.05175213188196944,0.7748613747208826,
+Rarefied richness of plants,Average weekly wages,-0.1416894061448975,0.43155138038473395,
+Rarefied richness of animals,Average weekly wages,-0.08323966011988487,0.6451297690547917,
+Proportion of invasive species,Average weekly wages,0.0866395568791263,0.6316406954489953,
+Land Use Diversity,Average weekly wages,-0.03306325154927615,0.8550647187215166,
+Fuel expenses,Average weekly wages,-0.36251406319768503,0.03814389598000023,*
+Available water storage,Average weekly wages,-0.28397765828938415,0.10924479106530094,
+Annual precipitation,Average weekly wages,-0.2777198237399105,0.1176236485219544,
+Total indemnities,Average weekly wages,-0.005112842275879817,0.9774717910560309,
+Sales from agritourism and recreation,Average weekly wages,-0.31330345438784923,0.07583212896654645,
+Percent change in wages,Average weekly wages,0.11017629555445273,0.5416145434432866,
+Market channel ratio,Average weekly wages,0.09722229073377646,0.5904095752093614,
+Land and building value per acre,Average weekly wages,0.37450866096425606,0.03177168337148539,*
+Gini Index,Average weekly wages,0.2609833433727052,0.14237904408153534,
+Expenses per operation,Average weekly wages,0.05520738800173207,0.7602545083046919,
+Change in agricultural establishments,Average weekly wages,0.2664953684487363,0.1338394016977924,
+Average weekly wages,Average weekly wages,1,NA,NA
