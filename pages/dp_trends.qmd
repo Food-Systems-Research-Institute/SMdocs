@@ -41,7 +41,9 @@ pacman::p_load(
   readr,
   lmtest,
   sandwich,
-  performance
+  performance,
+  snakecase,
+  ggtext
 )
 
 pacman::p_load_gh(
@@ -557,28 +559,121 @@ Figure below shows 95% confidence intervals for the coefficients of each metric,
 
 ```{r}
 #| label: regression_figure
-# get_str(framed_outputs)
-lm_figure <- framed_outputs %>% 
+# Combined label for indicator and metric
+output_data <- framed_outputs %>%
+  mutate(
+    indicator = snakecase::to_title_case(indicator),
+    metric = snakecase::to_title_case(metric),
+    combined_label = paste(indicator, "-", metric)  # Combine indicator and metric
+  )
+
+# Color code by dimension
+dimension_colors <- c(
+  "economics"  = "#BF7417FF",
+  "environment"  = "#A8BE74FF",
+  "health" = "#9CB6A9FF",
+  "production" = "#635C72FF",
+  "social" = "#784116FF"
+)
+
+# Order dimensions alphabetically
+ordered_dims <- sort(unique(output_data$dimension))
+
+# Group by dimension, then alphabetically, and filter out "poor mental health"
+output_data <- output_data %>%
+  mutate(
+    dimension = factor(dimension, levels = ordered_dims)
+  ) %>%
+  arrange(dimension, combined_label) %>%
+  mutate(
+    combined_label = factor(combined_label, levels = rev(unique(combined_label))) 
+  ) %>%
+  filter(metric != "Poor Mental Health Days") %>%
+  ungroup()
+
+# Getting colors correctly mapped to combined labels
+label_dimension_lookup <- output_data %>%
+  distinct(combined_label, dimension)
+
+# Percent change graph
+lm_figure <- output_data %>% 
   mutate(
     across(c(estimate, starts_with('ci')), as.numeric),
     outcome = ifelse(is.na(outcome), 'no change', outcome) %>% 
       snakecase::to_title_case()
   ) %>% 
-  filter(!variable_name %in% c('voterTurnout', 'mobilityDisability')) %>% 
-  ggplot(aes(x = estimate, y = reorder(metric, estimate))) +
+  ggplot(aes(x = estimate, y = combined_label)) +
   geom_point(aes(color = outcome)) +
   geom_errorbarh(aes(xmin = ci_low, xmax = ci_high, color = outcome)) +
   geom_vline(xintercept = 0) +
-  scale_color_manual(values = c('darkgreen', 'grey', 'purple')) +
+  
+  # Invisible points to create a second legend (dimension colors)
+  geom_point(
+    aes(fill = dimension, color = dimension), 
+    shape = 22, 
+    alpha = 0, 
+    show.legend = TRUE
+  ) +
+  
+  # Outcome legend (color of real points and lines)
+  scale_color_manual(
+    values = c('Better' = 'darkgreen', 'No Change' = 'grey', 'Worse' = 'purple'),
+    name = "Outcome"
+  ) +
+  
+  # Dimension legend (fill colors)
+  scale_fill_manual(
+    values = dimension_colors,
+    name = "Dimension",
+    labels = snakecase::to_title_case(names(dimension_colors))
+  ) +
+  
+  # Add both legends
+  guides(
+    color = guide_legend(order = 1, nrow = 2),
+    fill = guide_legend(
+      override.aes = list(shape = 22, size = 4, alpha = 1, color = dimension_colors),
+      order = 2,
+      nrow = 2
+    )
+  ) +
+  
   theme_minimal() +
+  
   labs(
-    x = 'Average Relative Percent Change per Year',
-    y = 'Metric',
-    color = 'Outcome'
+    x = 'Average Percent Change per Year',
+    y = 'Indicator with Metric'
   ) + 
-  scale_x_continuous(n.breaks = 8)
-
-# Save copy to outputs folder
+  
+  scale_y_discrete(
+    labels = function(x) {
+      sapply(x, function(y) {
+        dim_val <- label_dimension_lookup$dimension[label_dimension_lookup$combined_label == y]
+        dimension_label_color <- dimension_colors[as.character(dim_val)]
+        
+        # Split the combined label into indicator and metric
+        parts <- strsplit(y, " - ", fixed = TRUE)[[1]]
+        indicator_bold <- paste0("<b>", parts[1], "</b>")
+        metric <- parts[2]
+        
+        # Recombine with bold indicator and normal metric
+        formatted_label <- paste(indicator_bold, "-", metric)
+        
+        paste0('<span style="color:', dimension_label_color, ';">', formatted_label, '</span>')
+      })
+    }
+  ) +
+  theme(
+    legend.position = "top",
+    legend.direction = "horizontal",
+    legend.title.position = "top",
+    axis.text.y = ggtext::element_markdown(),
+    text = element_text(family = "Times New Roman"),
+    axis.title = element_text(family = "Times New Roman"),
+    axis.text = element_text(family = "Times New Roman"),
+    legend.title = element_text(family = "Times New Roman", hjust = 0.5),
+    legend.text = element_text(family = "Times New Roman")
+  )
 ggsave(
   'outputs/fig_lm.png',
   plot = lm_figure,
@@ -587,9 +682,8 @@ ggsave(
   units = 'in',
   bg = 'white'
 )
-
-# Show figure
 lm_figure
+
 ```
 
 ## Spatial Regressions {#sec-spdep}
