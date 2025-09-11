@@ -39,15 +39,13 @@ pacman::p_load(
 )
 
 # GitHub packages
-pacman::p_load_gh(
+pacman::p_load_current_gh(
   'ChrisDonovan307/projecter',
   'Food-Systems-Research-Institute/SMdata'
 )
 
-# Functions
-source('dev/get_reactable.R')
-source('dev/get_missing.R')
-source('dev/data_pipeline_functions.R')
+# Load SMdocs package
+devtools::load_all()
 
 conflicts_prefer(
   dplyr::select(),
@@ -58,9 +56,6 @@ conflicts_prefer(
   base::setdiff(),
   .quiet = TRUE
 )
-
-# Load datasets from EDA script
-datasets <- readRDS('data/data_paper/datasets_from_eda.rds')
 
 # Set a ggplot theme
 dp_theme <- theme_classic() +
@@ -75,16 +70,17 @@ dp_theme <- theme_classic() +
     legend.title = element_text(family = "Times New Roman", hjust = 0.5),
     legend.text = element_text(family = "Times New Roman")
   )
+usethis::use_data(dp_theme, overwrite = TRUE)
 
 # Set theme palette
 dp_palette <- c(
-  "economics"  = "#BF7417FF",
-  "environment"  = "#A8BE74FF",
-  "health" = "#9CB6A9FF",
-  "production" = "#635C72FF",
-  "social" = "#784116FF"
+  "Economics"  = "#BF7417FF",
+  "Environment"  = "#A8BE74FF",
+  "Health" = "#9CB6A9FF",
+  "Production" = "#635C72FF",
+  "Social" = "#784116FF"
 )
- 
+usethis::use_data(dp_palette, overwrite = TRUE)
 ```
 
 Here we explore how secondary data sources cover the region by dimension, geography, and over time.
@@ -123,8 +119,8 @@ Turns out this map is not as interesting as I'd hoped it would be. Currently sho
 tiles <- terra::readRDS('data/data_paper/neast_tiles.rds')
 
 # Counts of unique metrics in each county
-var_counts <- datasets$dp_metrics_all %>% 
-  filter_fips('counties') %>% 
+# var_counts <- datasets$dp_metrics_all %>% 
+var_counts <- dp_metrics_county %>% 
   group_by(fips) %>% 
   summarize(n_metrics = length(unique(variable_name)))
  
@@ -140,7 +136,7 @@ map <- tm_shape(tiles) +
     "n_metrics", 
     palette = "brewer.greens",
     title = "Metric\nRepresentation",
-    breaks = seq(21, 45, 3),
+    breaks = c(seq(21, 41, 5), 42:47),
     fill.legend = tm_legend(
       reverse = TRUE
     )
@@ -157,12 +153,12 @@ map <- tm_shape(tiles) +
     legend.text.size = 1
   )
 
-tmap_save(
-  tm = map,
-  filename = 'outputs/metric_coverage_map.png',
-  asp = 0,
-  dpi = 300
-)
+# tmap_save(
+#   tm = map,
+#   filename = 'outputs/metric_coverage_map.png',
+#   asp = 0,
+#   dpi = 300
+# )
 ```
 
 ```{r}
@@ -180,18 +176,17 @@ Let's try an interactive map so we can explore each dimension
 #| label: var_counts
 #| output: false
 # How many total metrics at county level
-total_count <- datasets$dp_metrics_all %>% 
-  filter_fips('counties') %>% 
+total_count <- dp_metrics_county %>% 
   pull(variable_name) %>% 
   unique %>% 
   length
 total_count
 
 # Dimension crosswalk
-crosswalk <- data_paper_meta %>% 
+crosswalk <- dp_meta %>% 
   select(dimension, variable_name)
 
-dimension_counts <- data_paper_meta %>% 
+dimension_counts <- dp_meta %>% 
   select(dimension, variable_name, resolution) %>% 
   filter(!is.na(variable_name), resolution != 'state') %>% 
   select(-resolution) %>% 
@@ -200,8 +195,7 @@ dimension_counts <- data_paper_meta %>%
 dimension_counts
   
 # Counts of unique metrics in each county by dimension
-var_counts <- datasets$dp_metrics_all %>% 
-  filter_fips('counties') %>% 
+var_counts <- dp_metrics_county %>% 
   left_join(crosswalk) %>% 
   group_by(dimension, fips) %>% 
   summarize(
@@ -249,8 +243,8 @@ Total number of indicators represented each year.
 ```{r}
 #| label: Total indicators each year
 # Join based on 'variable_name'
-merged_df <- data_paper_metrics %>%
-  left_join(data_paper_meta %>%
+merged_df <- SMdocs::dp_metrics_county %>%
+  left_join(SMdocs::dp_meta %>%
               select(variable_name,
                      dimension = dimension,
                      index = index,
@@ -265,12 +259,13 @@ indicators_by_year_data <- merged_df %>%
   distinct(indicator, dimension, year) %>%
   count(year, dimension, name = "indicator_count") %>% 
   mutate(year = as.numeric(year))
+get_str(indicators_by_year_data)
 
 # Histogram
 indicator_plot <- ggplot(
-  indicators_by_year_data, 
-  aes(x = year, y = indicator_count, fill = dimension)
-) +
+    indicators_by_year_data, 
+    aes(x = year, y = indicator_count, fill = dimension)
+  ) +
   geom_col(position = "stack") +
   scale_y_continuous(breaks = seq(0, max(1000), by = 5)) + 
   # max is set to 1000 values - change max for more data
@@ -314,13 +309,13 @@ Metric representation each year.
 #| fig-height: 8
 #| fig-width: 7
 # Join based on "variable_name"
-metrics_and_meta <- data_paper_metrics %>%
-  left_join(data_paper_meta %>%
+metrics_and_meta <- SMdocs::dp_metrics %>%
+  left_join(SMdocs::dp_meta %>%
               select(variable_name,
-                     dimension = dimension,
-                     index = index,
-                     indicator = indicator,
-                     metric = metric),
+                     dimension,
+                     index,
+                     indicator,
+                     metric),
             by = "variable_name") 
 
 # Group dimension columns together in ascending order; filter out before 2000 

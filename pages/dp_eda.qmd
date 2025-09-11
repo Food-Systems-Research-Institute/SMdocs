@@ -36,15 +36,18 @@ pacman::p_load(
 )
 
 # GitHub packages
-pacman::p_load_gh(
+pacman::p_load_current_gh(
   'ChrisDonovan307/projecter',
   'Food-Systems-Research-Institute/SMdata'
 )
 
+# Load SMdocs
+devtools::load_all()
+
 # Functions
-source('dev/get_reactable.R')
-source('dev/get_missing.R')
-source('dev/data_pipeline_functions.R')
+# source('dev/get_reactable.R')
+# source('dev/get_missing.R')
+# source('dev/data_pipeline_functions.R')
 
 conflicts_prefer(
   dplyr::select(),
@@ -60,76 +63,37 @@ conflicts_prefer(
 
 ## Wrangling
 
+Saving some new data `.rda` objects to use through manuscript project.
+
 ```{r}
 #| output: false
 #| freeze: true
-# Create a list of the clean datasets we will use throughout analysis
-datasets <- list()
-
-# Check out summary from OneDrive that has our variable names
-get_str(data_paper_meta)
-
-# Pull vars to reduce metrics down
-meta <- data_paper_meta %>% 
-  filter(
-    !is.na(variable_name),
-    !variable_name %in% c('tbd', '', 'NONE'),
-    analyze != '',
-    !is.na(analyze)
-  ) %>% 
-  select(
-    variable_name,
-    resolution,
-    starts_with('n_'),
-    latest_year,
-    dimension:metric,
-    weighting:desirable,
-  )
-get_str(meta)
-
-# Load neast metrics for data paper, both county and state
-get_str(data_paper_metrics)
-all <- data_paper_metrics %>% 
-  filter_fips('neast') %>% 
-  inner_join(select(meta, variable_name, resolution)) %>% 
-  mutate(across(c(year, value), as.numeric))
-get_str(all)
-
-## Cleaning
-# "annualAvgWklyWageNAICS11" should have NAs instead of zeroes
-all$value[all$variable_name == "annualAvgWklyWageNAICS11" & all$value == 0] <- NA
-
-# Save to dataset list
-datasets$dp_metrics_all <- all
-
 # Pull out county and state separately, based on spec in metadata
-dp_county <- all %>% 
-  filter_fips('counties') %>% 
-  filter(resolution != 'state') %>% 
-  select(-resolution)
-get_str(dp_county)
-unique(dp_county$fips)
-datasets$dp_metrics_county <- dp_county
+dp_metrics_county <- SMdocs::dp_metrics %>% 
+  SMdata::filter_fips('counties')
+get_str(dp_metrics_county)
+unique(dp_metrics_county$fips)
+usethis::use_data(dp_metrics_county, overwrite = TRUE)
 
-dp_state <- all %>% 
-  filter_fips('states') %>% 
-  filter(resolution == 'state') %>% 
-  select(-resolution)
-get_str(dp_state)
-unique(dp_state$fips)
-datasets$dp_metrics_state <- dp_state
+# Only take state data for which there is no county data
+county_vars <- unique(dp_metrics_county$variable_name)
+dp_metrics_state <- SMdocs::dp_metrics %>% 
+  SMdata::filter_fips('states') %>% 
+  filter(!variable_name %in% county_vars)
+get_str(dp_metrics_state)
+unique(dp_metrics_state$fips)
+unique(dp_metrics_state$variable_name)
+usethis::use_data(dp_metrics_state, overwrite = TRUE)
 
 # Get another DF of weighting variables
-weights <- metrics %>%
-  filter(variable_name %in% weighting$variable_name) %>%
+dp_weights <- SMdata::metrics %>%
+  filter(variable_name %in% SMdocs::dp_weight_vars$variable_name) %>%
   filter_fips('neast')
-get_str(weights)
+get_str(dp_weights)
+usethis::use_data(dp_weights, overwrite = TRUE)
  
-# Save to dataset list
-datasets$dp_weights <- weights
-  
 # Pivot wider for transformations, then alphabetize columns
-dp_county_wide <- dp_county %>% 
+dp_metrics_county_wide <- dp_metrics_county %>% 
   # Remove one weird doubled up value
   filter(!(
     fips == '42' & year == 2022 & variable_name == 'hayYieldMeasuredInTonsAcre'
@@ -140,10 +104,8 @@ dp_county_wide <- dp_county %>%
     names_from = 'variable_name'
   ) %>% 
   select(fips, year, sort(names(.)[2:length(names(.))]))
-get_str(dp_county_wide)
-
-# Save to datasets
-datasets$dp_county_wide <- dp_county_wide
+get_str(dp_metrics_county_wide)
+usethis::use_data(dp_metrics_county_wide, overwrite = TRUE)
 ```
 
 
@@ -154,18 +116,18 @@ Explore missing data for each individual metric. Note that there is a baseline o
 ```{r}
 #| label: missing_data
 #| output: false
-skimr::skim(dp_county_wide)
+skimr::skim(dp_metrics_county_wide)
 # Missing years are county areas, that's fine
 # Other missing values are because years don't match up, that's fine
-get_str(dp_county_wide)
-vars <- names(dp_county_wide[, 3:ncol(dp_county_wide)])
+get_str(dp_metrics_county_wide)
+vars <- names(dp_metrics_county_wide[, 3:ncol(dp_metrics_county_wide)])
 
 out <- map_dbl(vars, ~ {
-  years <- dp_county_wide %>% 
+  years <- dp_metrics_county_wide %>% 
     drop_na(.x) %>% 
     distinct(year) %>% 
     pull(year)
-  df <- dp_county_wide %>% 
+  df <- dp_metrics_county_wide %>% 
     select(year, fips, all_of(.x)) %>% 
     filter(year %in% years) %>% 
     complete(year, fips)
@@ -210,7 +172,8 @@ Exploring distributions using latest year available for each metric.
 #| freeze: true
 #| cache: true
 # Get skews of variables
-dat <- dp_county %>% 
+# get_str(dp_metrics_county)
+dat <- dp_metrics_county %>% 
   get_latest_year() %>% 
   pivot_wider(
     id_cols = fips,
@@ -221,10 +184,11 @@ dat <- dp_county %>%
 
 skewed <- psych::describe(dat[, -1]) %>% 
   as.data.frame() %>% 
-  rownames_to_column('variable_name') %>% 
+  mutate(across(everything(), as.numeric)) %>% 
+  tibble::rownames_to_column('variable_name') %>% 
   dplyr::select(variable_name, skew) %>% 
-  dplyr::filter(abs(skew) > 2) %>% 
-  pull(variable_name)
+  dplyr::filter(abs(skew) > 1) %>% 
+  dplyr::pull(variable_name)
 
 plots <- map(names(dat)[-1], \(var){
   # color based on skewness
@@ -237,22 +201,30 @@ plots <- map(names(dat)[-1], \(var){
   }
   
   # Make plot for variable
-  dat %>% 
-    ggplot(aes(x = !!sym(var))) + 
+   dat %>% 
+    select(!!sym(var)) %>% 
+    mutate(!!sym(var) := as.numeric(!!sym(var))) %>% 
+    na.omit() %>% 
+    ggplot(aes(x = !!sym(var), group = 1)) + 
     geom_density(
       fill = fill,
       color = color,
       alpha = 0.5
     ) +
     theme_classic() +
+    scale_x_continuous(n.breaks = 5) +
     theme(plot.margin = unit(c(rep(0.5, 4)), 'cm'))
 }) 
 
 # Arrange them in 4 columns
+# TODO: Turn this into a package function
+n_col <- 4
+n_plots <- length(plots)
+n_rows <- ceiling(n_plots/n_col)
 ggarrange(
   plotlist = plots,
-  ncol = 4,
-  nrow = 11
+  ncol = n_col,
+  nrow = n_rows
 )
 ```
 
@@ -265,8 +237,8 @@ ggarrange(
 #| fig-width: 10
 #| cache: true
 #| freeze: true
-source('dev/get_distributions.R')
-dat <- dp_state %>% 
+# source('dev/get_distributions.R')
+state_dat <- dp_metrics_state %>% 
   filter(!(
     fips == '42' & year == 2022 & variable_name == 'hayYieldMeasuredInTonsAcre'
   )) %>% 
@@ -276,9 +248,15 @@ dat <- dp_state %>%
     values_from = 'value',
     names_from = 'variable_name'
   )
-get_distributions(
-  df = dat,
-  n_col = 4,
-  n_row = 5
+state_plots <- SMdocs::get_distributions(df = state_dat)
+  
+# Arrange with proper number of rows based on given number of cols
+n_col <- 4
+n_plots <- length(state_plots)
+n_rows <- ceiling(n_plots/n_col)
+ggpubr::ggarrange(
+  plotlist = state_plots,
+  ncol = n_col,
+  nrow = n_rows
 )
 ```

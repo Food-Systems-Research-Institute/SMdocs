@@ -1,0 +1,41 @@
+Package: SMdocs
+Title: Sustainability Metrics Analysis and Visualization Tools
+Version: 0.0.0.9000
+Authors@R: 
+    person("Christopher", "Donovan", , "christopher.donovan@uvm.edu", role = c("aut", "cre"))
+Description: A comprehensive toolkit for analyzing and visualizing sustainability
+    metrics data. Provides functions for data processing, normalization, 
+    statistical analysis, and visualization of multidimensional sustainability 
+    indicators. Includes specialized tools for creating interactive tables, 
+    radar charts, regression analysis, and distribution plots tailored for 
+    sustainability assessment frameworks.
+License: GPLv3, CC NC SA
+Encoding: UTF-8
+Roxygen: list(markdown = TRUE)
+RoxygenNote: 7.3.3
+Depends: 
+    R (>= 3.5)
+LazyData: true
+Imports:
+    dplyr,
+    fmsb,
+    ggplot2,
+    ggpubr,
+    ggraph,
+    graphics,
+    grDevices,
+    igraph,
+    lmtest,
+    paletteer,
+    psych,
+    purrr,
+    reactable,
+    readr,
+    rlang,
+    sandwich,
+    snakecase,
+    stargazer,
+    stats,
+    stringr,
+    tibble,
+    tidyr

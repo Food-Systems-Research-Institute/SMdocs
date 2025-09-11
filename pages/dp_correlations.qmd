@@ -41,15 +41,13 @@ pacman::p_load(
 )
 
 # GitHub packages
-pacman::p_load_gh(
+pacman::p_load_current_gh(
   'ChrisDonovan307/projecter',
   'Food-Systems-Research-Institute/SMdata'
 )
 
-# Functions
-source('dev/get_reactable.R')
-source('dev/get_missing.R')
-source('dev/data_pipeline_functions.R')
+# SMdocs project
+devtools::load_all()
 
 conflicts_prefer(
   dplyr::select(),
@@ -71,17 +69,16 @@ This page explores correlations among metrics across counties using the latest a
 #| output: false
 #| fig-height: 10
 #| fig-width: 10
-
 # metric crosswalk
-crosswalk <- data_paper_meta %>% 
+crosswalk <- SMdocs::dp_meta %>% 
   select(variable_name, metric)
 
 # Get df ready
-get_str(metrics)
-df <- metrics %>% 
-  filter(variable_name %in% data_paper_meta$variable_name) %>% 
-  get_latest_year() %>% 
-  filter_fips('new') %>% 
+get_str(SMdata::metrics)
+df <- SMdata::metrics %>% 
+  filter(variable_name %in% SMdocs::dp_meta$variable_name) %>% 
+  SMdocs::get_latest_year() %>% 
+  SMdata::filter_fips('new') %>% 
   mutate(variable_name = str_split_i(variable_name, '_', 1)) %>% 
   left_join(crosswalk) %>% 
   select(-variable_name) %>% 
@@ -95,8 +92,8 @@ get_str(df)
 # Get an ordered framework from which we will pull metrics in alphabetical order
 # and get the counts of metrics per dimension that we will use to draw lines
 # between dimensions
-get_str(data_paper_meta)
-ordered_framework <- data_paper_meta %>% 
+get_str(dp_meta)
+ordered_framework <- dp_meta %>% 
   arrange(dimension, metric) %>% 
   filter(metric %in% names(df))
 ordered_framework
@@ -146,19 +143,19 @@ cor_p <- melt(cor$P)
 p.value <- cor_p$value
 
 # Color code by dimension
-dimension_colors <- c(
-  "economics"  = "#BF7417FF",
-  "environment"  = "#A8BE74FF",
-  "health" = "#9CB6A9FF",
-  "production" = "#635C72FF",
-  "social" = "#784116FF"
-)
+# dimension_colors <- c(
+#   "economics"  = "#BF7417FF",
+#   "environment"  = "#A8BE74FF",
+#   "health" = "#9CB6A9FF",
+#   "production" = "#635C72FF",
+#   "social" = "#784116FF"
+# )
 
 # Pasting dimension colors to metrics
 colored_labels <- ordered_framework %>%
   mutate(
     label = paste0(
-      "<span style='color:", dimension_colors[dimension], "'>", to_title_case(str_replace_all(metric, "_", " ")), "</span>"
+      "<span style='color:", dp_palette[dimension], "'>", to_title_case(str_replace_all(metric, "_", " ")), "</span>"
     )
   ) %>%
   select(metric, label) %>%
@@ -168,7 +165,7 @@ colored_labels <- ordered_framework %>%
 dimension_legend_df <- tibble(
   x = -Inf,
   y = -Inf,
-  dimension = factor(names(dimension_colors), levels = names(dimension_colors))
+  dimension = factor(names(dp_palette), levels = names(dp_palette))
 )
 
 # Make heatmap
@@ -193,8 +190,8 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
     name = "Correlation"
   ) +
   scale_color_manual(
-    values = dimension_colors,
-    labels = str_to_title(names(dimension_colors)),
+    values = dp_palette,
+    labels = str_to_title(names(dp_palette)),
     name = "Dimension"
   ) +
   

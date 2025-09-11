@@ -18,7 +18,7 @@ The Sustainability Metrics project, as well as this site itself, are works in pr
 :::
 
 ```{r}
-#| label: setup
+#| label: prep
 #| echo: false
 #| cache: false
 pacman::p_load(
@@ -41,21 +41,21 @@ pacman::p_load(
   scico
 )
 
-pacman::p_load_gh(
+# Load GitHub packages
+pacman::p_load_current_gh(
   'ChrisDonovan307/projecter',
   'Food-Systems-Research-Institute/SMdata'
 )
 
-# Functions
-source('dev/get_dimension_ggraph.R')
-source('dev/data_pipeline_functions.R')
+# Load SMdocs package
+devtools::load_all()
 
+# Set conflict preferences
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
   dplyr::arrange(),
   dplyr::summarize(),
-  dplyr::as_data_frame(),
   .quiet = TRUE
 )
 ```
@@ -75,16 +75,17 @@ To do here:
 - Save data paper specific datasets to an object available in this project. 
 - This includes data paper meta, data paper tree, and data paper metrics
 
+
 ## Dimension Graphs
 
 ```{r}
 #| label: prep_graphs
 #| include: false
 # Filter DF and check data
-source('dev/get_reactable.R')
+# source('dev/get_reactable.R')
 
 # Removing soil metrics for now - not suitable for analysis really
-tree <- data_paper_tree %>% 
+tree <- SMdocs::dp_tree %>% 
   mutate(
     indicator = case_when(
         str_detect(indicator, 'inputs bought locally') ~ '% local inputs',
@@ -95,7 +96,6 @@ tree <- data_paper_tree %>%
       str_remove(' of food business'),
     metric = paste0(' ', metric)
   )
-# get_reactable(tree)
 
 # Set up list of results
 plots <- list()
@@ -106,7 +106,7 @@ plots <- list()
 ```{r}
 #| fig-height: 5
 #| fig-width: 12
-plots$econ <- get_dimension_ggraph(
+plots$econ <- SMdocs::get_dimension_ggraph(
   framework_df = tree,
   include_metrics = TRUE,
   dimension_in = 'economics',
@@ -130,7 +130,7 @@ plots$econ
 ```{r}
 #| fig-height: 7
 #| fig-width: 10
-plots$env <- get_dimension_ggraph(
+plots$env <- SMdocs::get_dimension_ggraph(
   framework_df = tree,
   include_metrics = TRUE,
   dimension_in = 'environment',
@@ -152,7 +152,7 @@ plots$env
 ```{r}
 #| fig-height: 7
 #| fig-width: 12
-plots$health <- get_dimension_ggraph(
+plots$health <- SMdocs::get_dimension_ggraph(
   framework_df = tree,
   include_metrics = TRUE,
   dimension_in = 'health',
@@ -173,7 +173,7 @@ plots$health
 ```{r}
 #| fig-height: 5
 #| fig-width: 14
-plots$prod <- get_dimension_ggraph(
+plots$prod <- SMdocs::get_dimension_ggraph(
   framework_df = tree,
   include_metrics = TRUE,
   dimension_in = 'production',
@@ -194,7 +194,7 @@ plots$prod
 ```{r}
 #| fig-height: 8
 #| fig-width: 13
-plots$social <- get_dimension_ggraph(
+plots$social <- SMdocs::get_dimension_ggraph(
   framework_df = tree,
   include_metrics = TRUE,
   dimension_in = 'social',
@@ -263,7 +263,7 @@ px.sunburst(
 Easier to interpret table with the framework.
 
 ```{r}
-data_paper_tree %>% 
+dp_tree %>% 
   mutate(metric = case_when(
     str_detect(metric, 'NONE') ~ NA,
     .default = metric

@@ -51,10 +51,8 @@ pacman::p_load_gh(
   'Food-Systems-Research-Institute/SMdata'
 )
 
-# Functions
-source('dev/get_reactable.R')
-source('dev/get_missing.R')
-source('dev/min_max.R')
+# Load SMdocs project
+devtools::load_all()
 
 conflicts_prefer(
   dplyr::select(),
@@ -64,9 +62,6 @@ conflicts_prefer(
   base::setdiff(),
   .quiet = TRUE
 )
-
-results <- list()
-datasets <- readRDS('data/data_paper/datasets.rds')
 ```
 
 This page explores time series data at state and county level, then runs some regressions to see whether metrics are improving or declining over time at the county level. We first run weighted OLS models with robust SEs in @sec-ols. Then in @sec-spdep, we use spatial error models weighted by both geography and weighting variables.
@@ -81,10 +76,10 @@ Plot time series of average variable that has at least 2 data points. These are 
 #| label: prep_series
 #| output: false
 # Prepare vector of county variables that are time series
-get_str(datasets$dp_metrics_county)
-vars <- unique(datasets$dp_metrics_county$variable_name)
+get_str(SMdocs::dp_metrics_county)
+vars <- unique(SMdocs::dp_metrics_county$variable_name)
 series_vars <- map(vars, ~ {
-  count <- datasets$dp_metrics_county %>% 
+  count <- SMdocs::dp_metrics_county %>% 
     filter(variable_name == .x) %>% 
     pull(year) %>% 
     unique() %>% 
@@ -97,7 +92,7 @@ series_vars <- map(vars, ~ {
 }) %>% 
   keep(~ !is.null(.x)) %>%
   unlist()
-datasets$series_vars <- series_vars
+usethis::use_data(series_vars, overwrite = TRUE)
 ```
 
 Land value per acre also appears jenky, but it is because Richmond County, NY (Staten Island) has a land value of 2.5 million per acre while most other counties are below 100k. We should probably remove this as an outlier.
@@ -109,7 +104,7 @@ Land value per acre also appears jenky, but it is because Richmond County, NY (S
 #| cache: true
 #| freeze: true
 plots <- map(series_vars, ~ {
-  df <- datasets$dp_metrics_county %>%
+  df <- SMdocs::dp_metrics_county %>%
     filter(variable_name == .x) %>%
     ggplot(aes(x = year, y = value)) +
     geom_line(
@@ -139,8 +134,10 @@ ggarrange(
 #| include: false
 # Saving tiny graphs of each for table in paper
 plots <- map(series_vars, ~ {
-  df <- datasets$dp_metrics_county %>%
-    filter(variable_name == .x) %>%
+  df <- SMdocs::dp_metrics_county %>%
+    mutate(across(c(value, year), as.numeric)) %>% 
+    filter(variable_name == .x)
+  df %>% 
     ggplot(aes(x = year, y = value)) +
     geom_line(
       aes(group = fips),
@@ -185,10 +182,9 @@ iwalk(plots, \(plot, var) {
 #| label: state_time_series
 #| fig-height: 12
 #| fig-width: 12
-# get_str(dp_state)
-vars <- unique(datasets$dp_metrics_state$variable_name)
+vars <- unique(SMdocs::dp_metrics_state$variable_name)
 state_series_vars <- map(vars, ~ {
-  count <- datasets$dp_metrics_state %>% 
+  count <- SMdocs::dp_metrics_state %>% 
     filter(variable_name == .x) %>% 
     pull(year) %>% 
     unique() %>% 
@@ -201,13 +197,12 @@ state_series_vars <- map(vars, ~ {
 }) %>% 
   keep(~ !is.null(.x)) %>%
   unlist()
-
-# Save vector of series vars for later
-datasets$state_series_vars <- state_series_vars
+usethis::use_data(state_series_vars, overwrite = TRUE)
 
 plots <- map(state_series_vars, ~ {
-  df <- datasets$dp_metrics_state %>%
+  df <- SMdocs::dp_metrics_state %>%
     filter(variable_name == .x) %>%
+    mutate(across(c(year, value), as.numeric)) %>% 
     ggplot(aes(x = year, y = value)) +
     geom_line(
       aes(group = fips),
@@ -236,8 +231,9 @@ ggarrange(
 #| label: tiny_trend_graphs_state
 #| include: false
 tiny_state_plots <- map(state_series_vars, ~ {
-  df <- datasets$dp_metrics_state %>%
+  df <- SMdocs::dp_metrics_state %>%
     filter(variable_name == .x) %>%
+    mutate(across(c(year, value), as.numeric)) %>% 
     ggplot(aes(x = year, y = value)) +
     geom_line(
       aes(group = fips),
@@ -275,13 +271,6 @@ iwalk(tiny_state_plots, \(plot, var) {
 })
 ```
 
-```{r}
-#| label: saveRDS
-#| echo: false
-# Save dataset list to use elsewhere
-saveRDS(datasets, 'data/data_paper/datasets.rds')
-```
-
 ## Linear Models {#sec-ols}
 
 First trying linear models with time as independent variable. Min max normalizing dataset with stored function before we do anything else.
@@ -289,19 +278,21 @@ First trying linear models with time as independent variable. Min max normalizin
 ```{r}
 #| label: normalize
 #| output: false
-get_str(datasets$dp_metrics_county)
+get_str(SMdocs::dp_metrics_county)
 
-vars <- unique(datasets$dp_metrics_county$variable_name)
-datasets$dp_metrics_county_normed <- map(vars, ~ {
-  datasets$dp_metrics_county %>%
+vars <- unique(SMdocs::dp_metrics_county$variable_name)
+dp_metrics_county_normed <- map(vars, ~ {
+  SMdocs::dp_metrics_county %>%
     filter(variable_name == .x) %>% 
+    mutate(across(c(year, value), as.numeric)) %>% 
     drop_na(value) %>% 
     group_by(variable_name) %>% 
     mutate(normed_value = min_max(value)) %>% 
     ungroup()
 }) %>% 
   list_rbind()
-get_str(datasets$dp_metrics_county_normed)  
+get_str(dp_metrics_county_normed)  
+usethis::use_data(dp_metrics_county_normed, overwrite = TRUE)
 ```
 
 ### Regressions
@@ -356,9 +347,9 @@ weights_crosswalk <- data.frame(
 weights_crosswalk
 
 # Link weight vars to the appropriate variables
-weights_crosswalk <- data_paper_meta %>% 
+weights_crosswalk <- SMdocs::dp_meta %>% 
   select(variable_name, weighting) %>% 
-  filter(variable_name %in% datasets$dp_metrics_county_normed$variable_name) %>% 
+  filter(variable_name %in% SMdocs::dp_metrics_county_normed$variable_name) %>% 
   left_join(weights_crosswalk, by = join_by(weighting == metric)) %>% 
   setNames(c('variable_name', 'weight_metric', 'weight_variable')) %>% 
   select(-weight_metric) %>% 
@@ -374,14 +365,14 @@ Run regressions for all time series variables where time points \> 1.
 #| output: false
 #| eval: false
 # Get a crosswalk to add state as a fixed effect
-state_link <- fips_key %>% 
+state_link <- SMdata::fips_key %>% 
   filter(str_length(fips) == 2, fips != '00') %>% 
   select(fips, state_code)
 
-res <- map(datasets$series_vars, ~ {
+res <- map(SMdocs::series_vars, ~ {
   tryCatch(
     {
-      df <- datasets$dp_metrics_county_normed %>% 
+      df <- SMdocs::dp_metrics_county_normed %>% 
         filter(variable_name == .x) %>% 
         mutate(
           value = as.numeric(value),
@@ -392,7 +383,7 @@ res <- map(datasets$series_vars, ~ {
       
       # Add weighting variable
       weight_var <- weights_crosswalk$weight_variable[weights_crosswalk$variable_name == .x]
-      weight_df <- datasets$dp_weights
+      weight_df <- SMdocs::dp_weights
       if (!is.na(weight_var) && length(weight_var) > 0) {
         weight_df <- weight_df %>% 
           filter(variable_name == weight_var)
@@ -438,14 +429,13 @@ res <- map(datasets$series_vars, ~ {
     }
   )
 }) %>% 
-  setNames(c(datasets$series_vars)) %>%
+  setNames(c(SMdocs::series_vars)) %>%
   discard(\(x) is.null(x))
 get_str(res, 1)
 get_str(res)
 
 # Robust SEs
-pacman::p_load(lmtest)
-coeftest(res[[1]])
+lmtest::coeftest(res[[1]])
 
 # Save immediate output
 saveRDS(res, 'data/objects/weighted_ols_outs.rds')
@@ -501,13 +491,6 @@ names(coefs[is.na(coefs)])
 res <- res %>% 
   discard(~ is.na(.x$coefficients[[2]]))
 
-# test
-# vcov = vcovHC(res[[1]], type = 'HC0')
-# test <- coeftest(res[[1]], vcov = vcov)
-# test['year', ]
-# cis <- coefci(res[[1]], vcov. = vcov, level = 0.95)
-# cis['year', ]
-
 # Make a table of regression outputs, including robust standard errors
 res_df <- imap(res, ~ {
   vcov = vcovHC(.x, type = 'HC0')
@@ -558,8 +541,8 @@ raw_outputs <- res_df %>%
 
 # Bring in directional values. Keep only the ones without question marks, 
 # clearly higher or lower
-get_str(data_paper_meta)
-directions <- data_paper_meta %>% 
+get_str(SMdocs::dp_meta)
+directions <- SMdocs::dp_meta %>% 
   filter(str_detect(desirable, 'higher|lower'), !is.na(variable_name)) %>% 
   mutate(desirable = str_remove_all(desirable, '\\?')) %>% 
   select(variable_name, desirable)
@@ -603,7 +586,7 @@ Check out table with outputs for each regression. Filter by significance and out
 ```{r}
 #| label: reg_table
 # Add framework info
-framed_outputs <- data_paper_meta %>% 
+framed_outputs <- SMdocs::dp_meta %>% 
   select(dimension, index, indicator, metric, variable_name) %>% 
   right_join(model_outputs, by = join_by(variable_name == term))
 
@@ -636,13 +619,13 @@ output_data <- framed_outputs %>%
   )
 
 # Color code by dimension
-dimension_colors <- c(
-  "economics"  = "#BF7417FF",
-  "environment"  = "#A8BE74FF",
-  "health" = "#9CB6A9FF",
-  "production" = "#635C72FF",
-  "social" = "#784116FF"
-)
+# dimension_colors <- c(
+#   "economics"  = "#BF7417FF",
+#   "environment"  = "#A8BE74FF",
+#   "health" = "#9CB6A9FF",
+#   "production" = "#635C72FF",
+#   "social" = "#784116FF"
+# )
 
 # Order dimensions alphabetically
 ordered_dims <- sort(unique(output_data$dimension))
@@ -691,16 +674,16 @@ lm_figure <- output_data %>%
   
   # Dimension legend (fill colors)
   scale_fill_manual(
-    values = dimension_colors,
+    values = dp_palette,
     name = "Dimension",
-    labels = snakecase::to_title_case(names(dimension_colors))
+    labels = snakecase::to_title_case(names(dp_palette))
   ) +
   
   # Add both legends
   guides(
     color = guide_legend(order = 1, nrow = 2),
     fill = guide_legend(
-      override.aes = list(shape = 22, size = 4, alpha = 1, color = dimension_colors),
+      override.aes = list(shape = 22, size = 4, alpha = 1, color = dp_palette),
       order = 2,
       nrow = 2
     )
@@ -717,7 +700,7 @@ lm_figure <- output_data %>%
     labels = function(x) {
       sapply(x, function(y) {
         dim_val <- label_dimension_lookup$dimension[label_dimension_lookup$combined_label == y]
-        dimension_label_color <- dimension_colors[as.character(dim_val)]
+        dimension_label_color <- dp_palette[as.character(dim_val)]
         
         # Split the combined label into indicator and metric
         parts <- strsplit(y, " - ", fixed = TRUE)[[1]]
@@ -742,6 +725,7 @@ lm_figure <- output_data %>%
     legend.title = element_text(family = "Times New Roman", hjust = 0.5),
     legend.text = element_text(family = "Times New Roman")
   )
+
 ggsave(
   'outputs/fig_lm.png',
   plot = lm_figure,
@@ -750,8 +734,8 @@ ggsave(
   units = 'in',
   bg = 'white'
 )
-lm_figure
 
+lm_figure
 ```
 
 ## Spatial Regressions {#sec-spdep}
@@ -763,9 +747,9 @@ lm_figure
 ```{r}
 #| label: spatialreg_test
 #| output: false
-get_str(datasets$dp_metrics_county)
+get_str(SMdocs::dp_metrics_county)
 
-dat <- datasets$dp_metrics_county %>% 
+dat <- SMdocs::dp_metrics_county %>% 
   pivot_wider(
     id_cols = fips:year,
     names_from = variable_name,
@@ -776,7 +760,10 @@ get_str(dat)
 # Remove CT. Drop na ginis, but, get complete cases for relevant fips and years
 dat <- dat %>% 
   select(fips, year, gini) %>% 
-  mutate(gini_normed = min_max(gini)) %>% 
+  mutate(
+    across(!fips, as.numeric),
+    gini_normed = min_max(gini)
+  ) %>% 
   filter(str_detect(fips, '^09', negate = TRUE)) %>%
   drop_na(gini) %>% 
   complete(fips, year)
@@ -792,7 +779,7 @@ lw <- neast_counties_2024 %>%
 # Regular weights
 get_str(weights_crosswalk)
 weight_var <- weights_crosswalk$weight_variable[weights_crosswalk$variable_name == 'gini']
-weight_df <- datasets$dp_weights
+weight_df <- SMdocs::dp_weights
 
 weight_df <- weight_df %>% 
   mutate(
@@ -833,12 +820,12 @@ Use `errorsarlm` on all metrics.
 #| label: spatial_reg_all
 #| eval: false
 #| output: false
-get_str(datasets$dp_metrics_county)
-state_link <- fips_key %>% 
+get_str(SMdocs::dp_metrics_county)
+state_link <- SMdata::fips_key %>% 
   filter(str_length(fips) == 2, fips != '00') %>% 
   select(fips, state_code)
 
-dat <- datasets$dp_metrics_county %>% 
+dat <- SMdocs::dp_metrics_county %>% 
   pivot_wider(
     id_cols = fips:year,
     names_from = variable_name,
@@ -847,7 +834,8 @@ dat <- datasets$dp_metrics_county %>%
   filter(str_detect(fips, '^09', negate = TRUE)) %>% 
   mutate(link = str_sub(fips, end = 2)) %>% 
   left_join(state_link, by = join_by(link == fips)) %>% 
-  select(-link)
+  select(-link) %>% 
+  mutate(across(!c(fips, state_code), as.numeric))
 get_str(dat)
 
 # Get vector of vars
@@ -856,12 +844,11 @@ get_str(dat)
 tic()
 get_time()
 plan(multisession, workers = availableCores(omit = 2))
-out <- future_map(vars, \(var) {
-# out <- map(vars[vars == 'treeDiversity'], \(var) {
+out <- map(vars[1], \(var) {
+# out <- future_map(vars, \(var) {
   cat('\n\nStarting', var)
   
   tryCatch({
-    browser()
     # Reduce to relevant variable, remove NAs
     df <- dat %>% 
       select(fips, year, !!sym(var), state_code) %>% 
@@ -871,7 +858,7 @@ out <- future_map(vars, \(var) {
     # Regular weights
     weight_var <- weights_crosswalk$weight_variable[weights_crosswalk$variable_name == var]
     if (!is.na(weight_var) && length(weight_var) > 0) {
-      weight_df <- datasets$dp_weights %>% 
+      weight_df <- SMdocs::dp_weights %>% 
         mutate(
           value = as.numeric(value), 
           year = as.numeric(year)
@@ -900,7 +887,7 @@ out <- future_map(vars, \(var) {
     }
     
     # List weights
-    lw <- neast_counties_2024 %>% 
+    lw <- SMdata::neast_counties_2024 %>% 
       right_join(df) %>% 
       select(fips, year, normed) %>% 
       poly2nb() %>% 
@@ -930,7 +917,7 @@ out <- future_map(vars, \(var) {
     }
   )
 }, .progress = FALSE) %>% 
-  setNames(c(vars))
+  setNames(c(vars[1]))
 plan(sequential)
 toc()
 # 6 to 12 minutes or so
@@ -957,7 +944,7 @@ start <- length(sar_outs)
 sar_outs <- sar_outs[names(sar_outs) != 'state_code'] %>% 
   keep(~ class(.x) == 'Sarlm')
 end <- length(sar_outs)
-lost <- start - end
+(lost <- start - end)
 # 39 down to 35 here
 
 sar_df <- imap(sar_outs, ~ {
@@ -1009,8 +996,8 @@ sar_raw_outputs <- sar_df %>%
 
 # Bring in directional values. Keep only the ones without question marks, 
 # clearly higher or lower
-get_str(data_paper_meta)
-directions <- data_paper_meta %>% 
+get_str(SMdocs::dp_meta)
+directions <- SMdocs::dp_meta %>% 
   filter(str_detect(desirable, 'higher|lower'), !is.na(variable_name)) %>% 
   mutate(desirable = str_remove_all(desirable, '\\?')) %>% 
   select(variable_name, desirable)
@@ -1052,7 +1039,7 @@ We have `{r} n_metrics` metrics modeled. `{r} percs[['better']]`% are getting be
 
 ```{r}
 #| label: errorsar_reactable
-sar_framed_outputs <- data_paper_meta %>% 
+sar_framed_outputs <- SMdocs::dp_meta %>% 
   select(dimension, index, indicator, metric, variable_name) %>% 
   right_join(sar_model_outputs, by = join_by(variable_name == variable_name))
 
@@ -1136,6 +1123,7 @@ errorsar_figure <- sar_framed_outputs %>%
     color = 'Outcome'
   ) + 
   scale_x_continuous(n.breaks = 8)
+
 ggsave(
   'outputs/fig_errorsarlm.png',
   plot = errorsar_figure,
@@ -1144,5 +1132,6 @@ ggsave(
   units = 'in',
   bg = 'white'
 )
+
 errorsar_figure
 ```
