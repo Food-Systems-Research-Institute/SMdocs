@@ -2,6 +2,7 @@
 .Rproj.user
 .Renviron
 .venv
+node_module/
 
 # Don't need to track the html pages after render
 _site/
