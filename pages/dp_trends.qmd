@@ -635,7 +635,7 @@ output_data <- output_data %>%
   mutate(
     dimension = factor(dimension, levels = ordered_dims)
   ) %>%
-  arrange(dimension, combined_label) %>%
+  arrange(dimension, estimate) %>%
   mutate(
     combined_label = factor(combined_label, levels = rev(unique(combined_label))) 
   ) %>%
