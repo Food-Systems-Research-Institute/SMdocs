@@ -4,14 +4,7 @@
 \alias{get_distributions}
 \title{Create density plots for variable distributions}
 \usage{
-get_distributions(
-  df,
-  fill = "#154734",
-  color = "black",
-  skew_cutoff = 2,
-  n_col,
-  n_row
-)
+get_distributions(df, fill = "#154734", color = "black", skew_cutoff = 2)
 }
 \arguments{
 \item{df}{A data frame where the first column contains identifiers and

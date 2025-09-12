@@ -1,7 +1,7 @@
 project:
   type: website
   execute-dir: project
-  preview: 
+  preview:
     browser: true
   render:
     # Same order as pages show on website. Make sure they run in right order
@@ -23,18 +23,11 @@ project:
     - pages/indicator_correlations.qmd
     - pages/validation.qmd
     - pages/sensitivity.qmd
-    # - temp/test_notebook.ipynb
-    # - temp/test_python.qmd
-    # - temp/test_python_and_r.qmd
-    # - temp/bambi.ipynb
-    # - temp/test_lang_knitr.qmd #
-    # - temp/test_lang_julia.qmd #
     - pages/dp_intro.qmd
     - pages/dp_eda.qmd
     - pages/dp_coverage.qmd
     - pages/dp_correlations.qmd
     - pages/dp_trends.qmd
-    # - pages/dp_aggregation.qmd
     - pages/bnlearn.qmd
     - pages/regional_bn.qmd
 
@@ -71,7 +64,7 @@ website:
       - text: Overview
         href: pages/overview.qmd
       - section: Indicator Refinement
-        contents: 
+        contents:
           - text: Economics
             href: pages/refine_economics.qmd
           - text: Environment
@@ -104,13 +97,13 @@ website:
             href: pages/indicator_correlations.qmd
           - text: Validation
             href: pages/validation.qmd
-          - text: Sensitivity and Uncertainty 
+          - text: Sensitivity and Uncertainty
             href: pages/sensitivity.qmd
       - section: Regional/County Analyses
         contents:
           - text: Introduction
             href: pages/dp_intro.qmd
-          - text: Exploratory 
+          - text: Exploratory
             href: pages/dp_eda.qmd
           - text: Coverage
             href: pages/dp_coverage.qmd
@@ -118,31 +111,13 @@ website:
             href: pages/dp_correlations.qmd
           - text: Trends
             href: pages/dp_trends.qmd
-          # - text: Aggregation
-          #   href: pages/dp_aggregation.qmd
-      # - section: Testing
-      #   contents:
-      #     - text: Bayesian Network
-      #       href: pages/regional_bn.qmd
-      #     - text: Regression with Bambi
-      #       href: temp/bambi.ipynb
-      #     - text: Knitr Engine
-      #       href: temp/test_lang_knitr.qmd
-      #     - text: Julia Engine
-      #       href: temp/test_lang_julia.qmd
-      #     - text: Python Notebook
-      #       href: temp/test_notebook.ipynb
-      #     - text: Python.qmd
-      #       href: temp/test_python.qmd
-      #     - text: Python and R.qmd
-      #       href: temp/test_python_and_r.qmd
 
 format:
   html:
-    page-layout: article 
-    theme: custom_theme.scss
+    page-layout: article
+    theme: _assets/custom_theme.scss
     fig-align: left
-    css: styles.css
+    css: _assets/styles.css
     toc: true
     toc-title: "On This Page"
     toc-location: right
@@ -150,7 +125,7 @@ format:
     number-sections: true
     number-depth: 4
     code-fold: true
-    grid: 
+    grid:
       body-width: 900px
       sidebar-width: 250px
       margin-width: 250px
@@ -160,7 +135,7 @@ format:
     link-external-icon: true
     title-block-style: default
 
-bibliography: fsrc.bib
+bibliography: _assets/fsrc.bib
 
 execute:
   warning: false

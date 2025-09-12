@@ -1,2 +1,0 @@
-# Send outputs folder to OneDrive
-cp ./outputs/* C:/Users/cdonov12/OneDrive\ -\ University\ of\ Vermont/Food\ Systems\ Research\ Center/Sustainability\ Metrics/Sustainability\ Metrics\ Manuscript/Results/
