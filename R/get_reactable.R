@@ -47,6 +47,7 @@
 #'   with sensible defaults.
 #'
 #' @importFrom reactable reactable
+#' @importFrom assertthat assert_that
 #'
 #' @examples
 #' \dontrun{
@@ -72,7 +73,7 @@
 #' }
 #'
 #' @export
-get_reactable <- function(df, 
+get_reactable <- function(df,
                           sortable = TRUE,
                           resizable = TRUE,
                           filterable = TRUE,
@@ -90,6 +91,9 @@ get_reactable <- function(df,
                           compact = TRUE,
                           fullWidth = TRUE,
                           ...) {
+  assert_that('data.frame' %in% class(df), msg = 'The df object must be a data.frame')
+  assert_that(nrow(df) > 0, msg = 'The df must have at least 1 row')
+
   reactable::reactable(
     df,
     sortable = sortable,

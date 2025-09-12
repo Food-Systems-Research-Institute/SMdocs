@@ -13,6 +13,8 @@ row.
 \item{dimension}{Framework dimension}
 \item{index}{Framework index}
 \item{indicator}{Framework indicator}
+\item{indicator type}{One of four categories: target, practice, result,
+outcome.}
 \item{keep}{If it stays in the revised metric set, it gets an \code{x}}
 \item{analyze}{If we can reasonable assign a normative value to it (i.e.,
 if we can say which direction is good or bad), it gets an \code{x}}
@@ -45,6 +47,7 @@ system to a governance region system circa 2022.}
 this is not the range of years. Many metrics are from USDA NASS, which only
 collect them every four years.}
 \item{latest_year}{Latest year for which data are available}
+\item{shorthand_citations}{Literature justifications to add in a table}
 }
 }
 }

@@ -10,11 +10,13 @@
 #'   \item{dimension}{Framework dimension}
 #'   \item{index}{Framework index}
 #'   \item{indicator}{Framework indicator}
+#'   \item{indicator type}{One of four categories: target, practice, result,
+#'   outcome.}
 #'   \item{keep}{If it stays in the revised metric set, it gets an `x`}
 #'   \item{analyze}{If we can reasonable assign a normative value to it (i.e.,
 #'   if we can say which direction is good or bad), it gets an `x`}
 #'   \item{metric}{Framework metric}
-#'   \item{level_of_analysis}{Level or scope that the metric refers to. Options 
+#'   \item{level_of_analysis}{Level or scope that the metric refers to. Options
 #'   are farm, agricultural sector, or population/county/landscape.}
 #'   \item{definition}{Longer form definition of the metric, usually pulled
 #'   from the source itself.}
@@ -31,16 +33,17 @@
 #'   \item{notes}{Relevant notes}
 #'   \item{status}{Whether metric is fully cleaned, wrangled, etc.}
 #'   \item{variable_name}{Unique text identifier for each metric.}
-#'   \item{n_states}{Number of states in the Northeast represented by the 
+#'   \item{n_states}{Number of states in the Northeast represented by the
 #'   metric. Maximum is 9.}
 #'   \item{n_counties}{Number of counties in the Northeast represented by the
 #'   metric. While the maximum should technically be 218, it could be 217 if the
 #'   metric was only collected before 2022, or 228 if it includes data from both
-#'   before and after 2022. This is due to Connecticut changing their county 
+#'   before and after 2022. This is due to Connecticut changing their county
 #'   system to a governance region system circa 2022.}
-#'   \item{n_years}{Number of unique years represented by the metric. Note that 
+#'   \item{n_years}{Number of unique years represented by the metric. Note that
 #'   this is not the range of years. Many metrics are from USDA NASS, which only
 #'   collect them every four years.}
 #'   \item{latest_year}{Latest year for which data are available}
+#'   \item{shorthand_citations}{Literature justifications to add in a table}
 #' }
 'dp_meta'

@@ -68,3 +68,4 @@ test_that("get_missing handles edge cases", {
   expect_equal(nrow(result_single), 1)
   expect_equal(result_single$value, 100)
 })
+

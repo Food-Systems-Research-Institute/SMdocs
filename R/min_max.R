@@ -19,6 +19,8 @@
 #'   calculations using \code{na.rm = TRUE}. If all values are NA or if
 #'   min equals max, the function will still work appropriately.
 #'
+#' @importFrom assertthat assert_that
+#'
 #' @examples
 #' # Basic usage
 #' values <- c(10, 20, 30, 40, 50)
@@ -37,6 +39,12 @@
 #'
 #' @export
 min_max <- function(x) {
+  assert_that(length(x) > 1, msg = 'Vector must have length > 1')
+  if (any(is.na(x))) {
+    n_nas <- sum(is.na(x))
+    warning(paste('Input contains', n_nas, 'NAs. These will be removed.'))
+  }
+
   normed <- (x - min(x, na.rm = TRUE)) / (max(x, na.rm = TRUE) - min(x, na.rm = TRUE))
   normed * 100
 }

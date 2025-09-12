@@ -14,7 +14,7 @@ get_dimension_ggraph(
   leaf_font_size = 4,
   index_label_size = 0.1,
   index_font_size = 4,
-  palette = "basetheme::royal",
+  palette = "scico::batlowW",
   arrow = NULL,
   slim = FALSE
 )

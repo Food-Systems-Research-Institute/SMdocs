@@ -33,7 +33,7 @@
 #'   This approach is particularly useful for temporal data where different
 #'   variables may be collected at different intervals or time periods.
 #'
-#' @importFrom dplyr select
+#' @importFrom dplyr select all_of
 #' @importFrom tidyr complete
 #' @importFrom stats na.omit
 #'
@@ -58,7 +58,7 @@
 #' @export
 get_missing <- function(df, var, out = FALSE) {
   dat <- df %>%
-    dplyr::select(fips, year, var) %>%
+    dplyr::select(fips, year, !!var) %>%
     na.omit() %>%
     tidyr::complete(fips, year)
   years <- paste0(sort(unique(dat$year)), collapse = ', ')

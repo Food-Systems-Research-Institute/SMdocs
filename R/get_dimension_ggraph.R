@@ -65,18 +65,18 @@ get_dimension_ggraph <- function(csv_path = NULL,
                                  framework_df = NULL,
                                  dimension_in,
                                  include_metrics = FALSE,
-                                 x_limits = c(0, 0), 
+                                 x_limits = c(0, 0),
                                  y_limits = c(-1.5, 2.1),
                                  leaf_font_size = 4,
                                  index_label_size = 0.1,
                                  index_font_size = 4,
-                                 palette = 'basetheme::royal',
+                                 palette = "scico::batlowW",
                                  arrow = NULL,
                                  slim = FALSE) {
   # Put input in lower case for consistency
   dimension_in <- stringr::str_to_lower(dimension_in)
-  
-  # Logic to take either path to csv 
+
+  # Logic to take either path to csv
   if (!is.null(csv_path)) {
     df <- readr::read_csv(csv_path)
   } else if (!is.null(framework_df)) {
@@ -84,72 +84,72 @@ get_dimension_ggraph <- function(csv_path = NULL,
   } else {
     stop('\nMust provide either path or framework as a dataframe.')
   }
-  
+
   # Filter to dimension, but put back to title case
-  df <- df %>% 
+  df <- df %>%
     setNames(c(stringr::str_to_lower(names(.)))) %>%
-    dplyr::mutate(dplyr::across(dplyr::any_of(c('dimension', 'index', 'indicator')), ~ stringr::str_to_lower(.x))) %>% 
+    dplyr::mutate(dplyr::across(dplyr::any_of(c('dimension', 'index', 'indicator')), ~ stringr::str_to_lower(.x))) %>%
     dplyr::filter(dimension == dimension_in)
-  
+
   # Metric logic
   if (include_metrics == TRUE) {
     if (slim == FALSE) {
-    df <- df %>% 
-      dplyr::select(dimension, index, indicator, metric) %>% 
+    df <- df %>%
+      dplyr::select(dimension, index, indicator, metric) %>%
       dplyr::arrange(desc(index), desc(indicator), desc(metric))
     } else if (slim == TRUE) {
-      df <- df %>% 
-        dplyr::select(dimension, indicator, metric) %>% 
+      df <- df %>%
+        dplyr::select(dimension, indicator, metric) %>%
         dplyr::arrange(desc(indicator), desc(metric))
     }
   } else if (include_metrics == FALSE) {
     if (slim == FALSE) {
-      df <- df %>% 
-        dplyr::select(dimension, index, indicator) %>% 
+      df <- df %>%
+        dplyr::select(dimension, index, indicator) %>%
         dplyr::arrange(desc(index), desc(indicator))
     } else {
-      df <- df %>% 
-        dplyr::select(dimension, index, indicator) %>% 
+      df <- df %>%
+        dplyr::select(dimension, index, indicator) %>%
         dplyr::arrange(desc(indicator))
     }
   }
-  
+
   ## Make edges
   # Include groupings by dimension, then combine them
   edges <- list()
-  
+
   # Logic to allow for slim graph without dimension or index
   if (slim == FALSE) {
-    edges$dim_ind <- df %>% 
-      dplyr::select(dimension, index) %>% 
-      unique() %>% 
-      dplyr::rename(from = dimension, to = index) %>% 
+    edges$dim_ind <- df %>%
+      dplyr::select(dimension, index) %>%
+      unique() %>%
+      dplyr::rename(from = dimension, to = index) %>%
       dplyr::mutate(group = to)
-    edges$ind_ind <- df %>% 
-      dplyr::select(index, indicator) %>% 
-      unique() %>% 
-      dplyr::rename(from = index, to = indicator) %>% 
+    edges$ind_ind <- df %>%
+      dplyr::select(index, indicator) %>%
+      unique() %>%
+      dplyr::rename(from = index, to = indicator) %>%
       dplyr::mutate(group = from)
   }
-  
+
   # Logic for include_metrics
   if (include_metrics == TRUE) {
-    edges$ind_met <- df %>% 
-      dplyr::select(indicator, metric) %>% 
-      unique() %>% 
+    edges$ind_met <- df %>%
+      dplyr::select(indicator, metric) %>%
+      unique() %>%
       dplyr::rename(from = indicator, to = metric)
-    
+
     if (slim == FALSE) {
-      edges$ind_met <- edges$ind_met %>% 
+      edges$ind_met <- edges$ind_met %>%
         dplyr::mutate(
           group = edges$ind_ind$group[match(.$from, edges$ind_ind$to)]
         )
     } else {
-      edges$ind_met <- edges$ind_met %>% 
+      edges$ind_met <- edges$ind_met %>%
         dplyr::mutate(
           group = from
         )
-      
+
     }
   }
   edges <- dplyr::bind_rows(edges)
@@ -160,21 +160,21 @@ get_dimension_ggraph <- function(csv_path = NULL,
     name = unique(c(as.character(edges$from), as.character(edges$to)))
     # value = runif(nrow(edges) + 1)
   )
-  
+
   # Add the dimension groupings to the vertices as well
   vertices$group = edges$group[match(vertices$name, edges$to)]
-  
+
   # IDs for vertices
   vertices$id = NA
   myleaves = which(is.na(match(vertices$name, edges$from)))
   nleaves = length(myleaves)
   vertices$id[myleaves] = seq(1:nleaves)
-  
-  
+
+
   ## Sort for colors
   unique_groups <- na.omit(unique(vertices$group))
   # group_colors <- setNames(
-  #   paletteer_d(palette, length(unique_groups), direction = -1), 
+  #   paletteer_d(palette, length(unique_groups), direction = -1),
   #   unique_groups
   # )
   n <- length(unique_groups)
@@ -187,31 +187,31 @@ get_dimension_ggraph <- function(csv_path = NULL,
     even_colors,
     unique_groups
   )
-      
+
   edges <- edges %>%
     dplyr::mutate(group = factor(group, levels = names(group_colors)))
-  
+
   # If including metrics, save names of indicators, used later for labeling
   if (include_metrics == TRUE) {
     indicator_names <- unique(df$indicator)
   } else {
     indicator_names <- NULL
   }
-  
+
   ## Create graph
   # Make ggraph object from edges and vertices
   graph <- igraph::graph_from_data_frame(edges, vertices = vertices)
-  
+
   # Plot the graph
   plot <- ggraph::ggraph(graph, layout = 'dendrogram', circular = FALSE) +
-    
+
     # Color edges by dimension
     ggraph::geom_edge_diagonal(
-      ggplot2::aes(color = group), 
-      width = 0.6, 
+      ggplot2::aes(color = group),
+      width = 0.6,
       arrow = arrow
     ) +
-    
+
     # Create text for indicators using angles, hjust, and dimension groupings
     ggraph::geom_node_text(
       ggplot2::aes(
@@ -228,12 +228,12 @@ get_dimension_ggraph <- function(csv_path = NULL,
       hjust = 0,
       vjust = 0.5
     ) +
-    
+
     # # Label the Indices within the graph
     # geom_node_label(
     #   aes(label = ifelse(
-    #     name == group | name == dimension_in | name %in% indicator_names, 
-    #     str_to_title(name), 
+    #     name == group | name == dimension_in | name %in% indicator_names,
+    #     str_to_title(name),
     #     NA
     #   )),
     #   label.padding = unit(0.2, "lines"),
@@ -241,7 +241,7 @@ get_dimension_ggraph <- function(csv_path = NULL,
     #   label.size = index_label_size,
     #   size = index_font_size
     # ) +
-    
+
     # Various formatting options
     ggplot2::scale_colour_manual(values = group_colors) +
     ggraph::scale_edge_color_manual(values = group_colors) +
@@ -252,11 +252,11 @@ get_dimension_ggraph <- function(csv_path = NULL,
       plot.margin = ggplot2::unit(c(0, 0, 0, 0), "cm")
     ) +
     ggplot2::expand_limits(x = x_limits, y = y_limits) +
-    
+
     # Flip it so it oges left to right
     ggplot2::coord_flip() +
     ggplot2::scale_y_reverse()
-  
+
   # Node labels
   plot <- plot +
     ggraph::geom_node_label(
