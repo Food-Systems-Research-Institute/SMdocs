@@ -21,4 +21,4 @@
 #'   }
 #'   \item{value}{Value of metric. See metadata for units and interpretation.}
 #' }
-"data_paper_metrics"
+"dp_metrics"

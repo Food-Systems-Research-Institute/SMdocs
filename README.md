@@ -1,3 +1,7 @@
+<!-- badges: start -->
+[![Codecov test coverage](https://codecov.io/gh/Food-Systems-Research-Center/sm-docs/graph/badge.svg)](https://app.codecov.io/gh/Food-Systems-Research-Center/sm-docs)
+<!-- badges: end -->
+
 # Sustainability Metrics Docs
 
 ## About

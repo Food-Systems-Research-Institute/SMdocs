@@ -43,4 +43,4 @@
 #'   collect them every four years.}
 #'   \item{latest_year}{Latest year for which data are available}
 #' }
-'data_paper_meta'
+'dp_meta'

@@ -70,7 +70,7 @@
 get_distributions <- function(df,
                               fill = '#154734',
                               color = 'black',
-                              skew_cutoff = 1){
+                              skew_cutoff = 2){
 
   skewed <- psych::describe(df[, -1]) %>%
     as.data.frame() %>%

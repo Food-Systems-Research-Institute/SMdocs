@@ -3,3 +3,4 @@
 ^requirements\.txt$
 ^SMdocs\.Rproj$
 ^\.Rproj\.user$
+^\.github$

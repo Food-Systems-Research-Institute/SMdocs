@@ -57,9 +57,9 @@
 #'
 #' @export
 get_missing <- function(df, var, out = FALSE) {
-  dat <- df %>% 
-    dplyr::select(fips, year, var) %>% 
-    stats::na.omit() %>% 
+  dat <- df %>%
+    dplyr::select(fips, year, var) %>%
+    na.omit() %>%
     tidyr::complete(fips, year)
   years <- paste0(sort(unique(dat$year)), collapse = ', ')
   n_miss <- sum(is.na(dat[[var]]))

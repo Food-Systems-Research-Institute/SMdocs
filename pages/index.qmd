@@ -7,7 +7,7 @@ author:
       - name: UVM Food Systems Research Institute
         city: Burlington
         state: Vermont
-        url: https://www.uvm.edu/cals/food-systems-research
+        url: https://www.uvm.edu/ovpr/food-systems-research
 date: today
 ---
 

@@ -242,6 +242,8 @@ Total number of indicators represented each year.
 
 ```{r}
 #| label: Total indicators each year
+#| out-width: 75%
+#| fig-align: center
 # Join based on 'variable_name'
 merged_df <- SMdocs::dp_metrics_county %>%
   left_join(SMdocs::dp_meta %>%
@@ -259,7 +261,7 @@ indicators_by_year_data <- merged_df %>%
   distinct(indicator, dimension, year) %>%
   count(year, dimension, name = "indicator_count") %>% 
   mutate(year = as.numeric(year))
-get_str(indicators_by_year_data)
+# get_str(indicators_by_year_data)
 
 # Histogram
 indicator_plot <- ggplot(

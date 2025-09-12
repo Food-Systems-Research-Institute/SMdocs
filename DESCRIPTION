@@ -1,6 +1,6 @@
 Package: SMdocs
 Title: Sustainability Metrics Analysis and Visualization Tools
-Version: 0.0.0.9000
+Version: 0.0.0.9001
 Authors@R: 
     person("Christopher", "Donovan", , "christopher.donovan@uvm.edu", role = c("aut", "cre"))
 Description: A comprehensive toolkit for analyzing and visualizing sustainability
@@ -39,3 +39,6 @@ Imports:
     stringr,
     tibble,
     tidyr
+Suggests: 
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
