@@ -1,5 +1,5 @@
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/Food-Systems-Research-Center/sm-docs/graph/badge.svg)](https://app.codecov.io/gh/Food-Systems-Research-Center/sm-docs)
+[![Codecov test coverage](https://codecov.io/gh/Food-Systems-Research-Institute/SMdocs/graph/badge.svg)](https://app.codecov.io/gh/Food-Systems-Research-Institute/SMdocs)
 <!-- badges: end -->
 
 # Sustainability Metrics Docs
@@ -15,7 +15,7 @@ This repository houses a Quarto project which describes the framework and contai
 
 ## Project Structure
 
-- `data`: Clean datasets imported from [SMdata](https://www.github.com/food-systems-research-center/sm-data), including:
+- `data`: Clean datasets imported from [SMdata](https://www.github.com/Food-Systems-Research-Institute/SMdata), including:
   - `sm_data.rds`: metrics, metadata, fips keys, and more as a list R object
   - `sm_spatial.rds`: polygons for Northeast states, counties, and more as a list R object
   - `metrics_and_metadata.zip`: Zip file containing three `.csv`s containing metrics, metadata, and a fips key. Thrown in here to make it easier to pull data from Python directly. Rather than handing off from R.
