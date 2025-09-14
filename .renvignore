@@ -7,6 +7,6 @@ _site/*
 # Other things
 temp/
 _*
-graveyard/
+_graveyard/
 data/
 .Rprofile

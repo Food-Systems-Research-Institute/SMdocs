@@ -44,11 +44,6 @@ pacman::p_load_current_gh(
 # Load SMdocs
 devtools::load_all()
 
-# Functions
-# source('dev/get_reactable.R')
-# source('dev/get_missing.R')
-# source('dev/data_pipeline_functions.R')
-
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
@@ -58,54 +53,6 @@ conflicts_prefer(
   base::setdiff(),
   .quiet = TRUE
 )
-```
-
-
-## Wrangling
-
-Saving some new data `.rda` objects to use through manuscript project.
-
-```{r}
-#| output: false
-#| freeze: true
-# Pull out county and state separately, based on spec in metadata
-dp_metrics_county <- SMdocs::dp_metrics %>% 
-  SMdata::filter_fips('counties')
-get_str(dp_metrics_county)
-unique(dp_metrics_county$fips)
-usethis::use_data(dp_metrics_county, overwrite = TRUE)
-
-# Only take state data for which there is no county data
-county_vars <- unique(dp_metrics_county$variable_name)
-dp_metrics_state <- SMdocs::dp_metrics %>% 
-  SMdata::filter_fips('states') %>% 
-  filter(!variable_name %in% county_vars)
-get_str(dp_metrics_state)
-unique(dp_metrics_state$fips)
-unique(dp_metrics_state$variable_name)
-usethis::use_data(dp_metrics_state, overwrite = TRUE)
-
-# Get another DF of weighting variables
-dp_weights <- SMdata::metrics %>%
-  filter(variable_name %in% SMdocs::dp_weight_vars$variable_name) %>%
-  filter_fips('neast')
-get_str(dp_weights)
-usethis::use_data(dp_weights, overwrite = TRUE)
- 
-# Pivot wider for transformations, then alphabetize columns
-dp_metrics_county_wide <- dp_metrics_county %>% 
-  # Remove one weird doubled up value
-  filter(!(
-    fips == '42' & year == 2022 & variable_name == 'hayYieldMeasuredInTonsAcre'
-  )) %>%
-  pivot_wider(
-    id_cols = c(fips, year),
-    values_from = 'value',
-    names_from = 'variable_name'
-  ) %>% 
-  select(fips, year, sort(names(.)[2:length(names(.))]))
-get_str(dp_metrics_county_wide)
-usethis::use_data(dp_metrics_county_wide, overwrite = TRUE)
 ```
 
 

@@ -78,7 +78,7 @@ combined_df <- lapply(sheet_names[1:5], function(sheet) {
   return(df)
 }) %>%
   bind_rows()
-str(combined_df)
+get_str(combined_df)
 
 
 
@@ -88,7 +88,9 @@ str(combined_df)
 # Pull out existing SMdata metrics
 existing_metrics <- SMdata::metrics %>%
   filter(variable_name %in% combined_df$variable_name) %>%
-  SMdata::filter_fips('neast')
+  SMdata::filter_fips('neast') %>%
+  bind_rows(SMdata::metrics %>%
+              filter(variable_name == 'cpi'))
 get_str(existing_metrics)
 
 
@@ -113,12 +115,6 @@ get_str(sum_stats)
 new_table_with_sum <- combined_df %>%
   left_join(sum_stats, by = 'variable_name')
 get_str(new_table_with_sum)
-
-# Also join to SMdata metadata to get units for each variable
-# TODO: fix this and add units
-# out <- metadata %>%
-#   select(variable_name, units) %>%
-#   inner_join(new_table_with_sum, by = 'variable_name')
 
 
 
@@ -162,22 +158,27 @@ get_str(giant_table)
 
 
 
-# Save Giant Table to OneDrive --------------------------------------------
+# Save Giant Table --------------------------------------------------------
 
 
+# Saving to OneDrive and as RDS
 # Note that this is not a final product, just a way to reference our giant table
+
+# OneDrive as excel
 giant_table_path <- paste0(
   root_metric_path,
   Sys.Date(),
   '_giant_table.xlsx'
 )
-
 openxlsx2::write_xlsx(
   giant_table,
   giant_table_path,
   widths = c(15, 'auto'),
   na.strings = 'NA'
 )
+
+# SMdocs as package data
+usethis::use_data(giant_table, overwrite = TRUE)
 
 
 
@@ -189,23 +190,23 @@ openxlsx2::write_xlsx(
 ## dp_tree ----
 # For making framework diagrams
 # Includes NONE_# as placeholder when we are missing a metric
-get_str(giant_table)
+# get_str(giant_table)
 dp_tree <- giant_table %>%
   select(dimension, index, indicator, metric)
 count <- sum(dp_tree$metric == 'NONE')
 dp_tree$metric[dp_tree$metric == 'NONE'] <- paste0('NONE_', 1:count)
-get_str(dp_tree)
+# get_str(dp_tree)
 usethis::use_data(dp_tree, overwrite = TRUE)
 
 ## dp_meta ----
 # all metadata for just dp_metrics based on excel sheet in OneDrive
-get_str(giant_table)
+# get_str(giant_table)
 dp_meta <- giant_table
 usethis::use_data(dp_meta, overwrite = TRUE)
 
 ## dp_metrics ----
 # Only the metrics where we have state and county level that are used in dp
-get_str(existing_metrics)
+# get_str(existing_metrics)
 dp_metrics <- existing_metrics %>%
   mutate(across(c(year, value), as.numeric))
 usethis::use_data(dp_metrics, overwrite = TRUE)
@@ -218,117 +219,59 @@ dp_weight_vars <- read_excel(
 ) %>%
   filter(status != 'stall') %>%
   select(metric, variable_name)
-get_str(dp_weight_vars)
-
-# Save to data folder
+# get_str(dp_weight_vars)
 usethis::use_data(dp_weight_vars, overwrite = TRUE)
 
+## dp_weights ----
+# Get another DF of weighting variables
+dp_weights <- SMdata::metrics %>%
+  filter(variable_name %in% dp_weight_vars$variable_name) %>%
+  filter_fips('neast')
+# get_str(dp_weights)
+usethis::use_data(dp_weights, overwrite = TRUE)
 
+## dp_metrics_county ----
+# Pull out county and state separately, based on spec in metadata
+# (resolutions <- dp_meta$resolution %>% unique)
+county_vars <- dp_meta %>%
+  filter(resolution %in% c('county', '30m', '4km')) %>%
+  pull(variable_name)
+dp_metrics_county <- dp_metrics %>%
+  filter(variable_name %in% county_vars) %>%
+  SMdata::filter_fips('counties')
+# get_str(dp_metrics_county)
+usethis::use_data(dp_metrics_county, overwrite = TRUE)
 
-# Body Table --------------------------------------------------------------
+## dp_metrics_state ----
+# Only take state data for which there is no county data
+# Also pull CPI which is system level. Join this with state metrics
+state_vars <- dp_meta %>%
+  filter(resolution %in% c('state', 'system')) %>%
+  pull(variable_name)
+dp_metrics_state <- dp_metrics %>%
+  filter(variable_name %in% state_vars) %>%
+  SMdata::filter_fips('states')
+cpi <- dp_metrics %>%
+  filter(variable_name == 'cpi')
+dp_metrics_state <- bind_rows(dp_metrics_state, cpi)
+# get_str(dp_metrics_state)
+# unique(dp_metrics_state$fips)
+# unique(dp_metrics_state$variable_name)
+usethis::use_data(dp_metrics_state, overwrite = TRUE)
 
-
-# Pulling from giant table, here we pull out relevant columns for the table that
-# goes into the body of the paper and make a latex table. We are also putting in a placeholder column for our trend graphs.
-
-# TODO: Work out cell merging in latex table for dimension, citations
-trend_files <- dir('outputs/trend_plots/')
-body_table <- giant_table %>%
-  select(
-    dimension,
-    indicator,
-    metric,
-    definition,
-    weighting,
-    source,
-    variable_name # use this to link to trend graph, then drop
-    # shorthand_citations
+## dp_metrics_county_wide ----
+# Pivot wider for transformations, then alphabetize columns
+dp_metrics_county_wide <- dp_metrics_county %>%
+  # Remove one weird doubled up value
+  filter(!(
+    fips == '42' & year == 2022 & variable_name == 'hayYieldMeasuredInTonsAcre'
+  )) %>%
+  pivot_wider(
+    id_cols = c(fips, year),
+    values_from = 'value',
+    names_from = 'variable_name'
   ) %>%
-  # Where we have a metric, include an image of trend
-  mutate(
-    trend = case_when(
-      (metric != 'NONE' & !is.na(variable_name) &
-         str_detect(paste(trend_files, collapse = "|"), variable_name)) ~ paste0(
-        '\\includegraphics[width=\\hsize,valign=c]{figures/trend_figures/fig_trend_',
-        variable_name,
-        '.png}'
-      ),
-      .default = NA_character_
-    ),
-    .after = definition,
-  ) %>%
-  mutate(
-    # Manually escape (so that we don't excape in kbl())
-    across(
-      everything(),
-      ~ .x %>%
-        str_replace_all('%', ' percent') %>%
-        str_replace_all('\\$', ' dollars')
-    ),
-    # Put a space between Tradition and Heritage
-    indicator = case_when(
-      str_detect(indicator, 'Tradition') ~ 'Tradition and Heritage',
-      .default = indicator
-    )
-  ) %>%
-  select(-variable_name) %>%
-  # Format headers
-  setNames(c(names(.) %>% snakecase::to_title_case()))
-
-get_str(body_table)
-body_table$Trend
-
-# Get baseline table
-body_latex <- body_table %>%
-  kbl(
-    format = 'latex',
-    caption = 'Metric Attributes and Trends',
-    label = 'tab_metrics',
-    escape = FALSE
-  ) %>%
-  kable_styling(
-    font_size = 10
-  )
-body_latex
-
-# Remove existing table formatting
-body <- body_latex %>%
-  str_split_i("\\\\begin\\{tabular\\}\\[t\\]\\{[^}]+\\}\\n", 2) %>%
-  str_replace("^\\\\begin\\{tabular\\}\\[t\\]\\{[^}]+\\}\\s*", "") %>%
-  str_remove_all('\\\\hline\n') %>%
-  str_remove('\\\\end\\{tabular\\}\n\\\\end\\{table\\}')
-body %>%
-  cat()
-
-# Add our own header and footer
-header <- '\\begin{landscape}
-\\scriptsize
-\\begin{longtblr}[caption = Metric Attributes]{
-  % colspec={Q[50] Q[200] Q[200] Q[200]}, % Column widths,
-  rowhead = 1,
-  row{1} = {font=\\bfseries},
-  colsep = 2pt, % Spaces between column lines and text/figure
-  cells={halign=c,valign=m}, % Center horizontal and vertical
-  column{1-2}={wd=2cm},
-  column{3}={wd=3cm},
-  column{4}={wd=4cm},
-  column{5-6}={wd=2cm},
-  column{7-Z}={wd=3cm},
-  vlines,
-  % hline{1,2,Z}={solid} % for only header and footer
-  hlines, % all horizontal lines
-}
-\\label{tab:tab_metrics_body}
-'
-
-footer <- '\\end{longtblr}
-\\end{landscape}'
-
-# Put them all together
-body_out <- paste0(header, body, footer)
-cat(body_out)
-
-# Save this to latex file
-writeLines(body_out, 'outputs/tab_body_metrics.tex')
-
+  select(fips, year, sort(names(.)[2:length(names(.))]))
+# get_str(dp_metrics_county_wide)
+usethis::use_data(dp_metrics_county_wide, overwrite = TRUE)
 

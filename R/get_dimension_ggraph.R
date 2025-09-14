@@ -43,6 +43,7 @@
 #' @importFrom ggplot2 aes scale_colour_manual scale_size_continuous theme_void
 #'   theme expand_limits coord_flip scale_y_reverse unit
 #' @importFrom rlang .data
+#' @importFrom scico scico
 #'
 #' @examples
 #' \dontrun{

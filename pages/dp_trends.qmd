@@ -46,7 +46,7 @@ pacman::p_load(
   ggtext
 )
 
-pacman::p_load_gh(
+pacman::p_load_current_gh(
   'ChrisDonovan307/projecter', 
   'Food-Systems-Research-Institute/SMdata'
 )
@@ -130,7 +130,7 @@ ggarrange(
 ```
 
 ```{r}
-#| label: tiny_trend_graphs
+#| label: tiny_trend_graphs_county
 #| include: false
 # Saving tiny graphs of each for table in paper
 plots <- map(series_vars, ~ {
