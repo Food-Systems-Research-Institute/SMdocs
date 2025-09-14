@@ -88,9 +88,146 @@ Here we explore how secondary data sources cover the region by dimension, geogra
 
 ## Dimensional
 
-Explore coverage by dimension.
+Explore coverage by dimension. Things we are interested in:
+
+- Proportion of indicators in each dimension that have at least one metric
+- Same for county metric vs state
+- Which indicators have no metrics
+
+Indicators without any metrics:
+
+```{r}
+SMdocs::dp_meta %>% 
+  filter(is.na(variable_name)) %>% 
+  select(dimension, indicator) %>% 
+  unique() %>% 
+  get_reactable()
+```
+
+Proportion of indicator coverage by dimension:
+
+```{r}
+SMdocs::dp_meta %>% 
+  group_by(dimension, indicator) %>% 
+  summarize(
+    has_metric = any(!is.na(variable_name)),
+    .groups = 'drop_last'
+  ) %>% 
+  summarize(
+    n_no_metric = sum(!has_metric),
+    total_indicators = n(),
+    prop_no_metric = mean(!has_metric),
+    .groups = "drop"
+  ) %>% 
+  mutate(prop_no_metric = format(round(prop_no_metric, 3), nsmall = 3)) %>% 
+  get_reactable()
+```
+
+How many metrics are state vs county:
+
+```{r}
+dat <- SMdocs::dp_meta %>% 
+  filter(
+    !is.na(variable_name),
+    metric != 'NONE'
+  ) %>% 
+  select(
+    dimension,
+    metric,
+    resolution
+  ) %>% 
+  mutate(resolution = case_when(
+    resolution %in% c('state', 'system') ~ 'state',
+    .default = 'county'
+  ))
+
+# Overall
+overall_county <- mean(dat$resolution == 'county') * 100
+overall_state <- 100 - overall_county
+```
+
+Overall, `{r} overall_county`% of metrics were at the county level, and `{r} overall_state`% were at the state level.
+
+Which ones were state level:
+
+```{r}
+get_reactable(dat)
+```
+
+Break down by dimension:
+
+```{r}
+# By Dimension:
+dat %>% 
+  group_by(dimension) %>% 
+  summarize(
+    prop_county = mean(resolution == 'county'),
+    prop_state = mean(resolution == 'state')
+  ) %>% 
+  mutate(across(starts_with('prop'), ~ format(round(.x, 3), nsmall = 3))) %>% 
+  get_reactable()
+```
 
 ## Geographic
+
+### Summary Stats
+
+Things we are interested in:
+
+- How many metrics were represented in each county? Breakdown by dimension
+- Which counties have least metrics
+- Which metrics are only at state level
+
+Start with metrics in each county, including population to poke around a bit with:
+
+```{r}
+#| label: geo_summary_stats
+#| output: false
+# get_str(SMdocs::dp_metrics_county)
+n_county_metrics <- SMdocs::dp_metrics_county$variable_name %>% 
+  unique %>% 
+  length
+
+# Latest population of each county
+pops <- SMdocs::dp_weights %>% 
+  filter(variable_name == 'population5YearSmooth', year == '2023') %>% 
+  select(fips, value)
+
+# Metrics per county
+# get_str(SMdocs::dp_metrics_county)
+tab_metrics <- SMdocs::dp_metrics_county %>% 
+  group_by(fips) %>% 
+  summarize(n_metrics = length(unique(variable_name))) %>% 
+  ungroup() %>% 
+  left_join(SMdata::fips_key) %>% 
+  select(-state_code) %>% 
+  left_join(pops) %>% 
+  rename(population_2023 = value) %>% 
+  mutate(population_2023 = as.numeric(population_2023)) %>% 
+  arrange(n_metrics)
+get_reactable(tab_metrics)
+```
+
+Now break down by dimension:
+
+```{r}
+dims <- SMdocs::dp_meta %>% 
+  select(variable_name, dimension) %>% 
+  na.omit() %>% 
+  filter(variable_name != 'NONE')
+tab_metrics_dim <- SMdocs::dp_metrics_county %>% 
+  left_join(dims) %>% 
+  group_by(fips, dimension) %>% 
+  summarize(n_metrics = length(unique(variable_name)))
+  # distinct(fips) %>%
+  # left_join(pops, by = 'fips') %>% 
+  # rename(population_2023 = value)
+get_reactable(tab_metrics_dim)
+tab_metrics_dim
+```
+
+
+### Maps?
 
 Turns out this map is not as interesting as I'd hoped it would be. Currently showing the unique count of metrics with any values in a county. Need a better way to represent the missing data here though. 
 

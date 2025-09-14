@@ -844,8 +844,8 @@ get_str(dat)
 tic()
 get_time()
 plan(multisession, workers = availableCores(omit = 2))
-out <- map(vars[1], \(var) {
-# out <- future_map(vars, \(var) {
+# out <- map(vars[1], \(var) {
+out <- future_map(vars, \(var) {
   cat('\n\nStarting', var)
   
   tryCatch({
@@ -917,7 +917,7 @@ out <- map(vars[1], \(var) {
     }
   )
 }, .progress = FALSE) %>% 
-  setNames(c(vars[1]))
+  setNames(c(vars))
 plan(sequential)
 toc()
 # 6 to 12 minutes or so
@@ -945,7 +945,7 @@ sar_outs <- sar_outs[names(sar_outs) != 'state_code'] %>%
   keep(~ class(.x) == 'Sarlm')
 end <- length(sar_outs)
 (lost <- start - end)
-# 39 down to 35 here
+# 42 down to 38 here
 
 sar_df <- imap(sar_outs, ~ {
   tryCatch(
@@ -980,10 +980,11 @@ sar_df <- imap(sar_outs, ~ {
 get_str(sar_df)
 # sar_df
 
-# 35 down to 32. Where did others go
+# 38 down to 35.
 (lost <- setdiff(names(sar_outs), sar_df$variable_name))
 check <- sar_outs[names(sar_outs) %in% lost]
-# Not defined because of singularities
+# Not defined because of singularities. Single time points. 
+# At least while including the weighting variables.
 
 sar_raw_outputs <- sar_df %>% 
   mutate(trend = case_when(
@@ -991,7 +992,7 @@ sar_raw_outputs <- sar_df %>%
     sig == '' ~ NA_character_,
     .default = 'decreasing'
   ))
-# get_str(sar_raw_outputs)
+get_str(sar_raw_outputs)
 # sar_raw_outputs
 
 # Bring in directional values. Keep only the ones without question marks, 
@@ -1007,6 +1008,7 @@ reverse <- directions %>%
 
 # Reduce to only vars that have a direction.
 # Here we lose a few metrics
+
 sar_model_outputs <- sar_raw_outputs %>% 
   filter(variable_name %in% directions$variable_name) %>% 
   mutate(
