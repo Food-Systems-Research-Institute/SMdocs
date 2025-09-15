@@ -223,9 +223,61 @@ tab_metrics_dim <- SMdocs::dp_metrics_county %>%
   # left_join(pops, by = 'fips') %>% 
   # rename(population_2023 = value)
 get_reactable(tab_metrics_dim)
-tab_metrics_dim
 ```
 
+Average number of metrics in each county in across years:
+
+```{r}
+# Get total number of county metrics
+total_metrics <- SMdocs::dp_metrics %>% 
+  filter(year >= 2000, year < 2025) %>% 
+  SMdata::filter_fips('counties') %>% 
+  pull(variable_name) %>% 
+  unique() %>% 
+  length()
+
+# Metric counts by county and year
+tab <- SMdocs::dp_metrics %>% 
+  filter(year >= 2000, year < 2025) %>% 
+  SMdata::filter_fips('counties') %>% 
+  group_by(fips, year) %>% 
+  summarize(
+    n_metrics = length(unique(variable_name)),
+    prop_metrics = n_metrics/total_metrics
+  ) %>% 
+  ungroup() %>% 
+  left_join(fips_key) %>% 
+  select(-state_code) %>% 
+  arrange(desc(year)) %>%
+  mutate(prop_metrics =  format(round(prop_metrics, 3), nsmall = 3)) %>% 
+  filter(state_name != 'Connecticut')
+get_reactable(tab)
+```
+
+Overall figures for metrics across years:
+
+```{r}
+# Average coverage of county overall
+mean_metrics_overall <- round(mean(tab$n_metrics, na.rm = TRUE), 3)
+prop_metrics_overall <- mean_metrics_overall/total_metrics
+```
+
+Average coverage of counties by state in any given year:
+
+```{r}
+tab %>% 
+  group_by(state_name) %>% 
+  summarize(
+    mean_metrics = mean(n_metrics, na.rm = TRUE),
+    prop_metrics = mean_metrics/total_metrics
+  ) %>% 
+  ungroup() %>% 
+  arrange(mean_metrics) %>% 
+  mutate(across(where(is.numeric), ~ format(round(.x, 3), nsmall = 3))) %>% 
+  get_reactable()
+```
+
+Note on missing data: shouldn't be calculating it this way. 5-year data does not show up every year, even if it is complete. Need to rethink this. Expand grid to get total number of data points each county should have?
 
 ### Maps?
 
@@ -366,6 +418,7 @@ maps <- df %>%
 ```{r}
 #| echo: false
 #| out-width: '75%'
+#| fig-align: center
 Reduce(`+`, maps)
 ```
 
@@ -373,13 +426,27 @@ Hamilton, Warren counties missing data in NY, and Cameron county in PA stick out
 
 ## Temporal
 
+<!-- How many metrics were time series vs single time points: -->
+
+```{r}
+# dat <- SMdocs::dp_metrics
+# get_str(dat)
+#   
+# n_county_vars <- SMdocs::dp_metrics_county %>% 
+#   pull(variable_name) %>% 
+#   unique() %>% 
+#   length()
+# SMdocs::series_vars
+# SMdocs::state_series_vars
+```
+
 ### Indicators
 
 Total number of indicators represented each year.
 
 ```{r}
 #| label: Total indicators each year
-#| out-width: 75%
+#| out-width: '75%'
 #| fig-align: center
 # Join based on 'variable_name'
 merged_df <- SMdocs::dp_metrics_county %>%
@@ -394,12 +461,12 @@ merged_df <- SMdocs::dp_metrics_county %>%
 # Filter out before 2000 and NAs; create "indicator count"
 indicators_by_year_data <- merged_df %>%
   filter(!is.na(indicator)) %>%
-  filter(year >= 2000) %>%
+  filter(year >= 2000, year < 2025) %>%
   distinct(indicator, dimension, year) %>%
   count(year, dimension, name = "indicator_count") %>% 
   mutate(year = as.numeric(year))
 # get_str(indicators_by_year_data)
-
+ 
 # Histogram
 indicator_plot <- ggplot(
     indicators_by_year_data, 
@@ -439,14 +506,36 @@ ggsave(
 indicator_plot
 ```
 
+Get a table of totals by year for reporting:
+
+```{r}
+# Get totals by year:
+totals <- indicators_by_year_data %>% 
+  group_by(year) %>% 
+  summarize(total_indicators = sum(indicator_count)) %>% 
+  ungroup()
+get_reactable(totals)
+```
+
+Breakdown by dimension:
+
+```{r}
+dim_totals <- indicators_by_year_data %>% 
+  group_by(year, dimension) %>% 
+  summarize(total_indicators = sum(indicator_count)) %>% 
+  ungroup()
+get_reactable(dim_totals)
+```
+
 ### Metrics
 
-Metric representation each year.
+Metric representation by year.
 
 ```{r}
 #| label: Metric representation each year
 #| fig-height: 8
 #| fig-width: 7
+#| out-width: 80%
 # Join based on "variable_name"
 metrics_and_meta <- SMdocs::dp_metrics %>%
   left_join(SMdocs::dp_meta %>%
@@ -461,7 +550,7 @@ metrics_and_meta <- SMdocs::dp_metrics %>%
 # and NAs
 heatmap_easy_data <- metrics_and_meta %>%
   filter(!is.na(indicator)) %>%
-  filter(year >= 2000) %>%
+  filter(year >= 2000, year < 2025) %>%
   distinct(indicator, dimension, year, metric)
 
 heatmap_easy_data <- heatmap_easy_data %>%
