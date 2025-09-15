@@ -43,6 +43,7 @@ pacman::p_load_current_gh(
   'Food-Systems-Research-Institute/SMdata'
 )
 
+options(scipen = 9999)
 
 
 # Pull Metrics Revised and Lit Justification Excel files -----------------
@@ -95,7 +96,7 @@ get_str(existing_metrics)
 
 
 
-## Summary Stats -----------------------------------------------------------
+## Coverage Stats ----------------------------------------------------------
 
 
 # Get a summary table of existing metrics
@@ -110,6 +111,7 @@ sum_stats <- existing_metrics %>%
     year_range = max(unique(as.numeric(year))) - min(unique(as.numeric(year)))
   )
 get_str(sum_stats)
+
 
 # Join to combined_df
 new_table_with_sum <- combined_df %>%
@@ -154,6 +156,56 @@ giant_table <- new_table_with_sum %>%
   ) %>%
   fill(indicator, index, shorthand_citations, .direction = "down") %>%
   select(quality, dimension, everything())
+get_str(giant_table)
+
+
+
+# Summary Stats -----------------------------------------------------------
+
+
+# Simplify resolution into only county or state.
+(all_res <- giant_table$resolution %>% unique)
+giant_table <- giant_table %>%
+  mutate(resolution = case_when(
+    resolution %in% c('system', 'state') ~ 'state',
+    resolution %in% c('county', '30m', '4km') ~ 'county',
+    .default = NA
+  ))
+get_str(giant_table)
+
+# Get mean and standard deviation depending on the resolution of metric
+get_str(existing_metrics)
+county_stats <- existing_metrics %>%
+  SMdata::filter_fips('counties') %>%
+  filter(variable_name %in% giant_table$variable_name[giant_table$resolution == 'county']) %>%
+  mutate(value = as.numeric(value)) %>%
+  group_by(variable_name) %>%
+  summarize(
+    mean = mean(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE)
+  ) %>%
+  ungroup()
+county_stats
+
+state_stats <- existing_metrics %>%
+  SMdata::filter_fips('states') %>%
+  filter(variable_name %in% giant_table$variable_name[giant_table$resolution == 'state']) %>%
+  mutate(value = as.numeric(value)) %>%
+  group_by(variable_name) %>%
+  summarize(
+    mean = mean(value, na.rm = TRUE),
+    sd = sd(value, na.rm = TRUE)
+  ) %>%
+  ungroup()
+state_stats
+
+# Combine them
+all_stats <- bind_rows(county_stats, state_stats)
+get_str(all_stats)
+
+# Add them to giant table
+giant_table <- giant_table %>%
+  left_join(all_stats)
 get_str(giant_table)
 
 

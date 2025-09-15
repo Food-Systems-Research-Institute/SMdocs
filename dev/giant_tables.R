@@ -29,22 +29,47 @@ devtools::load_all()
 # Pulling from giant table, here we pull out relevant columns for the table that
 # goes into the body of the paper and make a latex table. We are also putting in a placeholder column for our trend graphs.
 
-# TODO: Work out cell merging in latex table for dimension, citations
+
+giant_tab <- SMdocs::giant_table
+get_str(giant_tab)
+
+# # Formatting for merges. Note this apparently has to be manual once page
+# # breaks are clear.
+# % Dimensions
+# cell{2}{1}={r=7}{l},
+# cell{9}{1}={r=5}{l},
+# cell{14}{1}={r=3}{l},
+# cell{17}{1}={r=3}{l},
+# % Indicators
+# cell{7}{2}={r=2}{l},
+# cell{11}{2}={r=3}{l},
+# cell{17}{2}={r=3}{l},
+
+# Wrangle table
 trend_files <- dir('outputs/trend_plots/')
-body_table <- giant_table %>%
+body_table <- giant_tab %>%
   select(
     dimension,
     indicator,
     metric,
-    units,
     definition,
+    units,
+    mean,
+    sd,
+    scale = resolution,
     weighting,
     source,
     variable_name # use this to link to trend graph, then drop
-    # shorthand_citations
   ) %>%
-  # Where we have a metric, include an image of trend
   mutate(
+    # Paste together mean and sd into one col
+    across(c(mean, sd), ~ round(.x, 2)),
+    mean_sd = case_when(
+      !is.na(mean) & !is.na(sd) ~ paste0(mean, ' (', sd, ')'),
+      .default = NA
+    ),
+
+    # Where we have a metric, include an image of trend
     trend = case_when(
       (metric != 'NONE' & !is.na(variable_name) &
          str_detect(paste(trend_files, collapse = "|"), variable_name)) ~ paste0(
@@ -54,9 +79,7 @@ body_table <- giant_table %>%
       ),
       .default = NA_character_
     ),
-    .after = definition,
-  ) %>%
-  mutate(
+
     # Manually escape (so that we don't excape in kbl())
     across(
       everything(),
@@ -64,15 +87,48 @@ body_table <- giant_table %>%
         str_replace_all('%', ' percent') %>%
         str_replace_all('\\$', ' dollars')
     ),
+
     # Put a space between Tradition and Heritage
     indicator = case_when(
       str_detect(indicator, 'Tradition') ~ 'Tradition and Heritage',
       .default = indicator
-    )
+    ),
+
+    # Fix formatting of weighting
+    weighting = weighting %>%
+      str_to_title() %>%
+      str_replace_all('none', 'None') %>%
+      str_replace_all('Gdp', 'GDP') %>%
+      str_replace_all('Of', 'of'),
+
+    # Put scale (resolution) into title case
+    scale = str_to_title(scale)
   ) %>%
-  select(-variable_name) %>%
+
+  # Final order of columns
+  select(
+    dimension,
+    indicator,
+    metric,
+    definition,
+    mean_sd,
+    units,
+    scale,
+    trend,
+    weighting,
+    source
+  ) %>%
+
   # Format headers
-  setNames(c(names(.) %>% snakecase::to_title_case()))
+  setNames(c(names(.) %>% snakecase::to_title_case())) %>%
+  rename('Metric Definition' = Definition) %>%
+  rename('$\\mu (\\sigma)$' = 'Mean Sd') %>%
+
+  # Missing cells should all be \textemdash
+  mutate(across(everything(), ~ case_when(
+    .x %in% c('NONE', 'None', 'none') | is.na(.x) ~ '\\textemdash',
+    .default = .x
+  )))
 
 get_str(body_table)
 body_table$Trend
@@ -82,7 +138,6 @@ body_latex <- body_table %>%
   kbl(
     format = 'latex',
     caption = 'Metric Attributes and Trends',
-    label = 'tab_metrics',
     escape = FALSE
   ) %>%
   kable_styling(
@@ -100,18 +155,43 @@ body %>%
   cat()
 
 # Add our own header and footer
+    # dimension,
+    # indicator,
+    # metric,
+    # definition,
+    # mean_sd,
+    # units,
+    # trend,
+    # weighting,
+    # source
 header <- '\\begin{landscape}
 \\scriptsize
-\\begin{longtblr}[caption = Metric Attributes]{
+\\begin{longtblr}[
+  caption = Metric Attributes and Summary Statistics,
+  remark{Note} = {
+    Metrics were collected at the county level where possible,
+    otherwise state level. These scales are represented accordingly by $\\mu$
+    and $\\sigma$. Trends graphs show percent change in each metric
+    from 2000-2024. Metrics without a trend graph were available for only a
+    single year. Weighting variables were used in regression analyses only.
+    Smoothed weights were 5-year metrics from USDA NASS or US Census Bureau
+    ACS-5 and interpolated linearly between data points.
+  }
+]{
   % colspec={Q[50] Q[200] Q[200] Q[200]}, % Column widths,
   rowhead = 1,
   row{1} = {font=\\bfseries},
-  colsep = 2pt, % Spaces between column lines and text/figure
+  colsep = 1pt, % Spaces between column lines and text/figure
   cells={halign=c,valign=m}, % Center horizontal and vertical
-  column{1-4}={wd=2cm},
-  column{5}={wd=4cm},
-  column{6-7}={wd=2cm},
-  column{8-Z}={wd=3cm},
+  column{1-2}={wd=1.75cm}, % dimension, indicator
+  column{3}={wd=2cm}, % metric
+  column{4}={wd=4cm}, % definition
+  column{5}={wd=1.75cm}, % mean, sd
+  column{6}={wd=1.5cm}, % units
+  column{7}={wd=1.25cm}, % scale
+  column{8}={wd=1.25cm}, % trend
+  column{9}={wd=1.75cm}, % weighting
+  column{10}={wd=3cm}, % source
   vlines,
   % hline{1,2,Z}={solid} % for only header and footer
   hlines, % all horizontal lines
@@ -127,5 +207,91 @@ body_out <- paste0(header, body, footer)
 cat(body_out)
 
 # Save this to latex file
-writeLines(body_out, 'outputs/tab_body_metrics.tex')
+writeLines(body_out, 'outputs/tab_metrics_body.tex')
 
+
+
+# Appendix Table ----------------------------------------------------------
+
+
+#' To include:
+#'  indicator
+#'  metric
+#'  n_counties
+#'  n_years
+#'  year_range
+#'  resolution
+#'  updates
+#'  supporting literature
+#'  summary stats - mean and SD
+get_str(giant_table)
+app_table <- SMdocs::giant_table %>%
+  filter(
+    !is.na(metric),
+    metric != 'NONE',
+    !is.na(variable_name)
+  ) %>%
+  select(
+    indicator,
+    metric,
+    resolution,
+    updates,
+    states = n_states,
+    counties = n_counties,
+    years = n_years,
+    range = year_range,
+    citations = shorthand_citations
+  ) %>%
+  mutate(across(c(resolution, updates), ~ str_to_title(.x))) %>%
+  setNames(c(str_to_title(names(.))))
+get_str(app_table)
+app_table
+
+# Get baseline table
+app_latex <- app_table %>%
+  kbl(
+    format = 'latex',
+    caption = 'Supplemental Metric Data'
+    # escape = FALSE
+  ) %>%
+  kable_styling(
+    font_size = 10
+  )
+app_latex
+
+# Remove existing table formatting
+app_body <- app_latex %>%
+  str_split_i("\\\\begin\\{tabular\\}\\[t\\]\\{[^}]+\\}\\n", 2) %>%
+  str_replace("^\\\\begin\\{tabular\\}\\[t\\]\\{[^}]+\\}\\s*", "") %>%
+  str_remove_all('\\\\hline\n') %>%
+  str_remove('\\\\end\\{tabular\\}\n\\\\end\\{table\\}')
+cat(app_body)
+
+# Add our own header and footer
+app_header <- '\\begin{landscape}
+\\scriptsize
+\\begin{longtblr}[caption = Supplementary Metric Information]{
+  rowhead = 1,
+  row{1} = {font=\\bfseries},
+  colsep = 2pt, % Spaces between column lines and text/figure
+  cells={halign=c,valign=m}, % Center horizontal and vertical
+  column{1-3}={wd=2cm},
+  column{4-6}={wd=1.75cm},
+  column{7-8}={wd=1.25cm},
+  column{9}={wd=3.25cm},
+  vlines,
+  % hline{1,2,Z}={solid} % for only header and footer
+  hlines, % all horizontal lines
+}
+\\label{tab:tab_metrics_appendix}
+'
+
+app_footer <- '\\end{longtblr}
+\\end{landscape}'
+
+# Put them all together
+app_body_out <- paste0(app_header, app_body, app_footer)
+cat(app_body_out)
+
+# Save this to latex file
+writeLines(app_body_out, 'outputs/tab_metrics_appendix.tex')
