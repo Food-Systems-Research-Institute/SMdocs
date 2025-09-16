@@ -73,14 +73,24 @@ dp_theme <- theme_classic() +
 usethis::use_data(dp_theme, overwrite = TRUE)
 
 # Set theme palette
-dp_palette <- c(
+dp_text_palette <- c(
+  "Economics"  = "#BF7417FF",
+  "Environment"  = "#95A150FF",
+  "Health" = "#6692BBFF",
+  "Production" = "#635C72FF",
+  "Social" = "#784116FF"
+)
+
+dp_fill_palette <- c(
   "Economics"  = "#BF7417FF",
   "Environment"  = "#A8BE74FF",
   "Health" = "#9CB6A9FF",
   "Production" = "#635C72FF",
   "Social" = "#784116FF"
 )
-usethis::use_data(dp_palette, overwrite = TRUE)
+
+usethis::use_data(dp_text_palette, overwrite = TRUE)
+usethis::use_data(dp_fill_palette, overwrite = TRUE)
 ```
 
 Here we explore how secondary data sources cover the region by dimension, geography, and over time.
@@ -481,7 +491,7 @@ indicator_plot <- ggplot(
       max(indicators_by_year_data$year),
       by = 5)) +
   scale_fill_manual(
-    values = dp_palette,
+    values = dp_fill_palette,
     labels = to_title_case
   ) +
   labs(
@@ -590,7 +600,7 @@ metric_heatmap <- ggplot(
       by = 5)
   ) +
   scale_fill_manual(
-    values = c(dp_palette, "FALSE" = "white"),
+    values = c(dp_fill_palette, "FALSE" = "white"),
     na.value = "white",
     labels = to_title_case
   ) +

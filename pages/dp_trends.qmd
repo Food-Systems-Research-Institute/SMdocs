@@ -646,16 +646,16 @@ lm_figure <- output_data %>%
   
   # Dimension legend (fill colors)
   scale_fill_manual(
-    values = dp_palette,
+    values = dp_text_palette,
     name = "Dimension",
-    labels = snakecase::to_title_case(names(dp_palette))
+    labels = snakecase::to_title_case(names(dp_text_palette))
   ) +
   
   # Add both legends
   guides(
     color = guide_legend(order = 1, nrow = 2),
     fill = guide_legend(
-      override.aes = list(shape = 22, size = 4, alpha = 1, color = dp_palette),
+      override.aes = list(shape = 22, size = 4, alpha = 1, color = dp_text_palette),
       order = 2,
       nrow = 2
     )
@@ -672,7 +672,7 @@ lm_figure <- output_data %>%
     labels = function(x) {
       sapply(x, function(y) {
         dim_val <- label_dimension_lookup$dimension[label_dimension_lookup$combined_label == y]
-        dimension_label_color <- dp_palette[as.character(dim_val)]
+        dimension_label_color <- dp_text_palette[as.character(dim_val)]
         
         # Split the combined label into indicator and metric
         parts <- strsplit(y, " - ", fixed = TRUE)[[1]]
