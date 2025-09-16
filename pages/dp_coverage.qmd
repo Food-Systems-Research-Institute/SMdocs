@@ -592,7 +592,7 @@ metric_heatmap <- ggplot(
   aes(x = as.factor(year), y = metric, fill = dimension)
 ) +
   geom_tile(color = "gray80", linewidth = 0.25) +
-  scale_y_discrete(labels = to_title_case) +
+  scale_y_discrete() +
   scale_x_discrete(
     breaks = seq(
       min(heatmap_easy_data$year), 
