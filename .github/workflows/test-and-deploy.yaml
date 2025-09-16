@@ -73,8 +73,11 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Render site
-        run: quarto render
+      - name: Render Quarto Project
+        uses: quarto-dev/quarto-actions/render@v2
+        with: 
+          to: html
+          # path: source-folder # root by default
 
       - name: Deploy via rsync
         uses: burnett01/rsync-deployments@7.1.0
