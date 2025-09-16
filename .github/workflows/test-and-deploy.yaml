@@ -77,7 +77,7 @@ jobs:
         run: quarto render
 
       - name: Deploy via rsync
-        uses: burnett01/rsync-deployments@v8
+        uses: burnett01/rsync-deployments@7.1.0
         with:
           switches: -avzr --delete
           path: ./_site/
