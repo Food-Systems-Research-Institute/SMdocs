@@ -589,7 +589,7 @@ output_data <- framed_outputs %>%
     metric = snakecase::to_title_case(metric),
     combined_label = paste(indicator, "-", metric)  # Combine indicator and metric
   )
-
+  
 # Color code by dimension
 # dimension_colors <- c(
 #   "economics"  = "#BF7417FF",
@@ -1133,4 +1133,175 @@ ggsave(
 )
 
 errorsar_figure
+
+```
+
+
+## Function testing
+```{r}
+
+## Function to process data for figure
+
+prepare_figure_data <- function(data) {
+  # Title case and combine labels
+  figure_data <- data %>%
+    mutate(
+      indicator = snakecase::to_title_case(indicator),
+      metric = snakecase::to_title_case(metric),
+      combined_label = paste(indicator, "-", metric)
+    )
+  
+  # Order dimensions alphabetically
+  ordered_dims <- sort(unique(figure_data$dimension))
+  
+  # Arrange and filter
+  figure_data <- figure_data %>%
+    mutate(
+      dimension = factor(dimension, levels = ordered_dims)
+    ) %>%
+    arrange(dimension, estimate) %>%
+    mutate(
+      combined_label = factor(combined_label, levels = rev(unique(combined_label)))
+    ) %>%
+    filter(metric != "Poor Mental Health Days") %>%
+    ungroup()
+  
+  # Create label-dimension lookup
+  label_dimension_lookup <- figure_data %>%
+    distinct(combined_label, dimension)
+  
+  # Return both processed data and label-dimension
+  list(
+    data = figure_data,
+    label_dimension_lookup = label_dimension_lookup
+  )
+}
+
+
+## Function to make graph
+
+pct_change_graph <- function(data, dp_text_palette, label_dimension_lookup) {
+
+  # Standardize column names
+  if ("conf_low" %in% names(data) && "conf_high" %in% names(data)) {
+    data <- data %>%
+      rename(ci_low = conf_low, ci_high = conf_high)
+  }
+
+  data <- data %>%
+    mutate(across(c(estimate, ci_low, ci_high), ~ as.numeric(.x))) %>%
+    filter(str_detect(metric, 'easements|wages', negate = TRUE)) %>%
+    mutate(
+      across(c(estimate, starts_with('ci|conf')), as.numeric),
+      outcome = ifelse(is.na(outcome), 'no change', outcome),
+      outcome = snakecase::to_title_case(outcome)
+    )
+
+  ggplot(data, aes(x = estimate, y = combined_label)) +
+    geom_point(aes(color = outcome)) +
+    geom_errorbarh(aes(xmin = ci_low, xmax = ci_high, color = outcome)) +
+    geom_vline(xintercept = 0) +
+    
+    # Invisible points to create a second legend (dimension colors)
+    geom_point(
+      aes(fill = dimension, color = dimension), 
+      shape = 22, 
+      alpha = 0, 
+      show.legend = TRUE
+    ) +
+    
+    # Outcome legend (color of real points and lines)
+    scale_color_manual(
+      values = c('Better' = 'darkgreen', 'No Change' = 'grey', 'Worse' = 'purple'),
+      name = "Outcome"
+    ) +
+    
+    # Dimension legend (fill colors)
+    scale_fill_manual(
+      values = dp_text_palette,
+      name = "Dimension",
+      labels = snakecase::to_title_case(names(dp_text_palette))
+    ) +
+    
+    # Add both legends
+    guides(
+      color = guide_legend(order = 1, nrow = 2),
+      fill = guide_legend(
+        override.aes = list(shape = 22, size = 4, alpha = 1, color = dp_text_palette),
+        order = 2,
+        nrow = 2
+      )
+    ) +
+    
+    theme_minimal() +
+    
+    labs(
+      x = 'Average Percent Change per Year',
+      y = 'Indicator with Metric'
+    ) + 
+    
+    scale_y_discrete(
+      labels = function(x) {
+        sapply(x, function(y) {
+          dim_val <- label_dimension_lookup$dimension[label_dimension_lookup$combined_label == y]
+          dimension_label_color <- dp_text_palette[as.character(dim_val)]
+          
+          # Split the combined label into indicator and metric
+          parts <- strsplit(y, " - ", fixed = TRUE)[[1]]
+          indicator_bold <- paste0("<b>", parts[1], "</b>")
+          metric <- parts[2]
+          
+          # Recombine with bold indicator and normal metric
+          formatted_label <- paste(indicator_bold, "-", metric)
+          
+          paste0('<span style="color:', dimension_label_color, ';">', formatted_label, '</span>')
+        })
+      }
+    ) +
+    theme(
+      legend.position = "top",
+      legend.direction = "horizontal",
+      legend.title.position = "top",
+      text = element_text(family = "Times New Roman"),
+      axis.title = element_text(family = "Times New Roman"),
+      axis.text = element_text(family = "Times New Roman"),
+      legend.title = element_text(family = "Times New Roman", hjust = 0.5),
+      legend.text = element_text(family = "Times New Roman"),
+      axis.text.y.left = ggtext::element_markdown(),
+    )
+}
+
+
+# Processing data and making spatial regression figure
+processed_sar_data <- prepare_figure_data(sar_framed_outputs)
+
+errorsar_figure <- pct_change_graph(
+  data = processed_sar_data$data,
+  dp_text_palette = dp_text_palette,
+  label_dimension_lookup = processed_sar_data$label_dimension_lookup
+)
+
+ggsave(
+  'outputs/fig_errorsarlm.png',
+  plot = errorsar_figure,
+  width = 8,
+  height = 5,
+  units = 'in',
+  bg = 'white'
+)
+
+print(errorsar_figure)
+
+
+## Testing function on lm_figure
+processed_lm_data <- prepare_figure_data(framed_outputs)
+
+lm_test_figure <- pct_change_graph(
+  data = processed_lm_data$data,
+  dp_text_palette = dp_text_palette,
+  label_dimension_lookup = processed_lm_data$label_dimension_lookup
+)
+
+lm_test_figure
+
 ```
