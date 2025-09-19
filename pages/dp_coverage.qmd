@@ -594,29 +594,30 @@ metric_heatmap <- ggplot(
   geom_tile(color = "gray80", linewidth = 0.25) +
   scale_y_discrete() +
   scale_x_discrete(
-    breaks = seq(
-      min(heatmap_easy_data$year), 
-      max(heatmap_easy_data$year), 
-      by = 5)
+    breaks = seq(2000, 2024, 4)
   ) +
   scale_fill_manual(
     values = c(dp_fill_palette, "FALSE" = "white"),
     na.value = "white",
-    labels = to_title_case
+    labels = to_title_case,
+    na.translate = FALSE
   ) +
   labs(
     x = "Year",
     y = "Metric",
     fill = "Dimension"
   ) +
-  dp_theme
+  dp_theme + 
+  guides(
+    color = guide_legend(nrow = 2, byrow = TRUE)
+  )
 
 # Save to outputs for paper
 ggsave(
   metric_heatmap,
   filename = 'outputs/fig_metric_heatmap.png',
-  width = 7,
-  height = 8,
+  width = 7.5,
+  height = 9,
   units = 'in',
   dpi = 300,
   bg = 'white'
