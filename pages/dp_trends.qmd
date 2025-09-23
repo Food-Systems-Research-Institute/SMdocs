@@ -108,6 +108,26 @@ prepare_figure_data <- function(model_output_df) {
   )
 }
 
+# Create a function for making y-axis labels using a palette for text colors
+# and label dimension lookup from prepare_figure_data()
+make_y_axis_labels <- function(label_dimension_lookup, dp_text_palette) {
+  function(x) {
+    sapply(x, function(y) {
+      dim_val <- label_dimension_lookup$dimension[label_dimension_lookup$combined_label == y]
+      dimension_label_color <- dp_text_palette[as.character(dim_val)]
+      
+      # Split the combined label into indicator and metric
+      parts <- strsplit(y, " - ", fixed = TRUE)[[1]]
+      indicator_bold <- paste0("<b>", parts[1], "</b>")
+      metric <- parts[2]
+      
+      # Recombine with bold indicator and normal metric
+      formatted_label <- paste(indicator_bold, "-", metric)
+      
+      paste0('<span style="color:', dimension_label_color, ';">', formatted_label, '</span>')
+    })
+  }
+}
 
 # Take formatted figure data, a palette for text colors, the label dimension
 # lookup from prepare_figure_data(). Return ggplot graph object
@@ -177,23 +197,9 @@ pct_change_graph <- function(figure_data,
     ) + 
     
     scale_y_discrete(
-      labels = function(x) {
-        sapply(x, function(y) {
-          dim_val <- label_dimension_lookup$dimension[label_dimension_lookup$combined_label == y]
-          dimension_label_color <- dp_text_palette[as.character(dim_val)]
-          
-          # Split the combined label into indicator and metric
-          parts <- strsplit(y, " - ", fixed = TRUE)[[1]]
-          indicator_bold <- paste0("<b>", parts[1], "</b>")
-          metric <- parts[2]
-          
-          # Recombine with bold indicator and normal metric
-          formatted_label <- paste(indicator_bold, "-", metric)
-          
-          paste0('<span style="color:', dimension_label_color, ';">', formatted_label, '</span>')
-        })
-      }
+      labels = make_y_axis_labels(label_dimension_lookup, dp_text_palette)
     ) +
+    
     theme(
       legend.position = "top",
       legend.direction = "horizontal",
@@ -878,12 +884,12 @@ Figure below shows 95% confidence intervals for the coefficients of each metric,
 ```{r}
 #| label: regression_figure
 # Combined label for indicator and metric
-output_data <- framed_outputs %>%
-  mutate(
-    indicator = snakecase::to_title_case(indicator),
-    metric = snakecase::to_title_case(metric),
-    combined_label = paste(indicator, "-", metric)  # Combine indicator and metric
-  )
+# output_data <- framed_outputs %>%
+#   mutate(
+#     indicator = snakecase::to_title_case(indicator),
+#     metric = snakecase::to_title_case(metric),
+#     combined_label = paste(indicator, "-", metric)  # Combine indicator and metric
+#   )
   
 # Color code by dimension
 # dimension_colors <- c(
@@ -992,7 +998,6 @@ output_data <- framed_outputs %>%
 #     legend.text = element_text(family = "Times New Roman"),
 #     axis.text.y.left = ggtext::element_markdown(),
 #   )
-
 
 processed_lm_data <- prepare_figure_data(framed_outputs)
 
