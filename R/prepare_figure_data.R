@@ -18,7 +18,7 @@
 #'   by dimension and then by estimate, and creates a lookup to later add
 #'   dimension colors to labels.
 #'
-#' @importFrom dplyr mutate arrange distinct ungroup
+#' @importFrom dplyr mutate arrange distinct ungroup %>%
 #' @importFrom snakecase to_title_case
 #'
 #' @examples
@@ -57,7 +57,6 @@ prepare_figure_data <- function(model_output_df) {
     mutate(
       combined_label = factor(combined_label, levels = rev(unique(combined_label)))
     ) %>%
-    # filter(metric != "Poor Mental Health Days") %>%
     ungroup()
 
   # Create label-dimension lookup
