@@ -108,14 +108,21 @@ ordered_framework
 # Reverse them to match alphabetical order of dimensions top to bottom
 # Get cumulative sums to space them out across graph
 # Then add 0.5 to each to put them in between cells
-line_placements <- ordered_framework %>% 
+counts <- ordered_framework %>% 
   group_by(dimension) %>% 
   summarize(count = n()) %>% 
-  pull(count) %>% 
+  pull(count)
+hline_placements <- counts %>% 
   rev() %>% 
   cumsum() %>% 
   {. + 0.5}
-line_placements
+hline_placements
+
+vline_placements <- counts %>% 
+  cumsum() %>% 
+  {. + 0.5}
+vline_placements
+
 
 # Reorder our df in proper metric order
 metric_order <- ordered_framework %>% 
@@ -142,14 +149,23 @@ cor_r <- reshape::melt(cor$r) %>%
 cor_p <- melt(cor$P)
 p.value <- cor_p$value
 
-# Color code by dimension
-# dimension_colors <- c(
-#   "economics"  = "#BF7417FF",
-#   "environment"  = "#A8BE74FF",
-#   "health" = "#9CB6A9FF",
-#   "production" = "#635C72FF",
-#   "social" = "#784116FF"
-# )
+# Reverse the order to use for x-axis labels (start at Economics)
+reversed_metric_order <- rev(metric_order)
+
+# Create a reversed version of the cor_r data frame for the x-axis
+cor_r <- cor_r %>%
+  mutate(
+    var_1 = factor(var_1, levels = reversed_metric_order)
+  )
+
+# Only set values for lower triangle of the matrix
+cor_r <- cor_r %>%
+  mutate(
+    row_idx = as.integer(factor(var_1, levels = reversed_metric_order)),
+    col_idx = as.integer(factor(var_2, levels = reversed_metric_order)),
+    value = ifelse(row_idx < col_idx, NA, value)  # Set upper triangle to NA
+  ) %>%
+  select(-row_idx, -col_idx)  # Remove temporary columns
 
 # Pasting dimension colors to metrics
 colored_labels <- ordered_framework %>%
@@ -170,7 +186,7 @@ dimension_legend_df <- tibble(
 
 # Make heatmap
 corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
-  geom_tile() + 
+  geom_tile(data = cor_r %>% filter(!is.na(value))) + # Only fill triangle
   
   geom_point(
     data = dimension_legend_df,
@@ -187,7 +203,8 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
     mid = "white", 
     high = "#1b7837", 
     midpoint = 0,
-    name = "Correlation"
+    name = "Correlation",
+    na.value = "transparent"
   ) +
   scale_color_manual(
     values = dp_text_palette,
@@ -204,16 +221,70 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
   ) +
   
   # line placements
-  geom_hline(yintercept = line_placements[1]) +
-  geom_hline(yintercept = line_placements[2]) +
-  geom_hline(yintercept = line_placements[3]) +
-  geom_hline(yintercept = line_placements[4]) +
-  geom_vline(xintercept = line_placements[1]) +
-  geom_vline(xintercept = line_placements[2]) +
-  geom_vline(xintercept = line_placements[3]) +
-  geom_vline(xintercept = line_placements[4]) +
-  scale_x_discrete(labels = colored_labels) +
-  scale_y_discrete(labels = colored_labels) +
+  # geom_hline(yintercept = hline_placements[1]) +
+  # geom_hline(yintercept = hline_placements[2]) +
+  # geom_hline(yintercept = hline_placements[3]) +
+  # geom_hline(yintercept = hline_placements[4]) +
+  # geom_vline(xintercept = vline_placements[1]) +
+  # geom_vline(xintercept = vline_placements[2]) +
+  # geom_vline(xintercept = vline_placements[3]) +
+  # geom_vline(xintercept = vline_placements[4]) +
+
+  # Horizontal Lines
+  geom_segment(
+    x = 0,
+    xend = vline_placements[4],
+    y = hline_placements[1], 
+    yend = hline_placements[1]
+  ) +
+  geom_segment(
+    x = 0,
+    xend = vline_placements[3],
+    y = hline_placements[2], 
+    yend = hline_placements[2]
+  ) +
+  geom_segment(
+    x = 0,
+    xend = vline_placements[2],
+    y = hline_placements[3], 
+    yend = hline_placements[3]
+  ) +
+  geom_segment(
+    x = 0,
+    xend = vline_placements[1],
+    y = hline_placements[4], 
+    yend = hline_placements[4]
+  ) +
+    
+  # Vertical Lines
+  geom_segment(
+    x = vline_placements[1],
+    xend = vline_placements[1],
+    y = 0, 
+    yend = hline_placements[4] 
+  ) +
+  geom_segment(
+    x = vline_placements[2],
+    xend = vline_placements[2],
+    y = 0, 
+    yend = hline_placements[3] 
+  ) +
+  geom_segment(
+    x = vline_placements[3],
+    xend = vline_placements[3],
+    y = 0, 
+    yend = hline_placements[2] 
+  ) +
+  geom_segment(
+    x = vline_placements[4],
+    xend = vline_placements[4],
+    y = 0, 
+    yend = hline_placements[1] 
+  ) +
+    
+  # Correct x and y axis labels with the order
+  scale_x_discrete(labels = colored_labels, limits = metric_order) +
+  scale_y_discrete(labels = colored_labels, limits = reversed_metric_order) +
   
   theme(
     axis.text.x = element_markdown(angle = 45, hjust = 1),
@@ -226,7 +297,9 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
     legend.title = element_text(size = 10, family = "Times New Roman", hjust = 0.5),
     legend.text = element_text(size = 9, family = "Times New Roman"),
     legend.key = element_rect(fill = "transparent", colour = NA),
-    legend.background = element_rect(fill = "transparent", colour = NA)
+    legend.background = element_rect(fill = "transparent", colour = NA),
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    panel.background = element_rect(fill = "transparent", colour = NA)
   )
 
 ggsave(
@@ -234,9 +307,11 @@ ggsave(
   filename = 'outputs/fig_corplot.png',
   height = 9,
   width = 9,
-  # dpi = 300
+  dpi = 300,
+  bg = 'white'
 )
 ```
+
 
 ```{r}
 #| label: show_cor_table
