@@ -336,23 +336,18 @@ get_tiny_plots <- function(df, vars) {
   map(vars, ~ {
     df <- df %>%
       filter(variable_name == .x, !is.na(value)) %>% 
-      # group_by(variable_name, year) %>% 
-      # summarize(annual_mean = mean(value, na.rm = TRUE)) %>% 
       ggplot(aes(x = year, y = value)) +
       geom_line(
         aes(group = fips),
-        # col = 'black',
-        # size = 0.2,
-        alpha = 0.2
+        alpha = 0.25,
+        color = 'grey',
+        linewidth = 0.5
       ) +
       geom_smooth(
-        method = "loess", se = FALSE, size = 0.75
+        method = "loess", 
+        se = FALSE, 
+        linwdith = 0.75
       ) +
-      # geom_hline(
-      #   yintercept = 0,
-      #   linetype = 'dashed',
-      #   color = 'grey'
-      # ) +
       coord_cartesian(xlim = c(2000, 2024)) +
       scale_x_discrete(expand = c(0, 0)) +
       scale_y_discrete(expand = c(0, 0)) +
@@ -376,7 +371,6 @@ county_plots <- SMdocs::dp_metrics_county %>%
   get_tiny_plots(
     vars = series_vars
   )
-county_plots[[1]]
 county_plots[[2]]
 county_plots[[3]]
 county_plots[[10]]
@@ -426,14 +420,16 @@ county_plots <- SMdocs::dp_metrics_county %>%
     vars = series_vars
   )
 
+
+# Doing it again without any normalization
 county_plots <- SMdocs::dp_metrics_county %>% 
-  get_normalized_metrics() %>% 
+  # get_normalized_metrics() %>% 
   get_tiny_plots(
     vars = series_vars
   )
 
 state_plots <- SMdocs::dp_metrics_state %>% 
-  get_normalized_metrics() %>% 
+  # get_normalized_metrics() %>% 
   get_tiny_plots(
     vars = state_series_vars
   )
