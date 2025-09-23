@@ -142,14 +142,23 @@ cor_r <- reshape::melt(cor$r) %>%
 cor_p <- melt(cor$P)
 p.value <- cor_p$value
 
-# Color code by dimension
-# dimension_colors <- c(
-#   "economics"  = "#BF7417FF",
-#   "environment"  = "#A8BE74FF",
-#   "health" = "#9CB6A9FF",
-#   "production" = "#635C72FF",
-#   "social" = "#784116FF"
-# )
+# Reverse the order to use for x-axis labels (start at Economics)
+reversed_metric_order <- rev(metric_order)
+
+# Create a reversed version of the cor_r data frame for the x-axis
+cor_r <- cor_r %>%
+  mutate(
+    var_1 = factor(var_1, levels = reversed_metric_order)
+  )
+
+# Only set values for lower triangle of the matrix
+cor_r <- cor_r %>%
+  mutate(
+    row_idx = as.integer(factor(var_1, levels = reversed_metric_order)),
+    col_idx = as.integer(factor(var_2, levels = reversed_metric_order)),
+    value = ifelse(row_idx < col_idx, NA, value)  # Set upper triangle to NA
+  ) %>%
+  select(-row_idx, -col_idx)  # Remove temporary columns
 
 # Pasting dimension colors to metrics
 colored_labels <- ordered_framework %>%
@@ -170,7 +179,7 @@ dimension_legend_df <- tibble(
 
 # Make heatmap
 corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
-  geom_tile() + 
+  geom_tile(data = cor_r %>% filter(!is.na(value))) + # Only fill triangle
   
   geom_point(
     data = dimension_legend_df,
@@ -187,7 +196,8 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
     mid = "white", 
     high = "#1b7837", 
     midpoint = 0,
-    name = "Correlation"
+    name = "Correlation",
+    na.value = "transparent"
   ) +
   scale_color_manual(
     values = dp_text_palette,
@@ -212,8 +222,10 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
   geom_vline(xintercept = line_placements[2]) +
   geom_vline(xintercept = line_placements[3]) +
   geom_vline(xintercept = line_placements[4]) +
-  scale_x_discrete(labels = colored_labels) +
-  scale_y_discrete(labels = colored_labels) +
+  
+  # Correct x and y axis labels with the order
+  scale_x_discrete(labels = colored_labels, limits = metric_order) +
+  scale_y_discrete(labels = colored_labels, limits = reversed_metric_order) +
   
   theme(
     axis.text.x = element_markdown(angle = 45, hjust = 1),
@@ -226,7 +238,9 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
     legend.title = element_text(size = 10, family = "Times New Roman", hjust = 0.5),
     legend.text = element_text(size = 9, family = "Times New Roman"),
     legend.key = element_rect(fill = "transparent", colour = NA),
-    legend.background = element_rect(fill = "transparent", colour = NA)
+    legend.background = element_rect(fill = "transparent", colour = NA),
+    plot.background = element_rect(fill = "transparent", colour = NA),
+    panel.background = element_rect(fill = "transparent", colour = NA)
   )
 
 ggsave(
@@ -237,6 +251,7 @@ ggsave(
   # dpi = 300
 )
 ```
+
 
 ```{r}
 #| label: show_cor_table
