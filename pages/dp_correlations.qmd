@@ -108,14 +108,21 @@ ordered_framework
 # Reverse them to match alphabetical order of dimensions top to bottom
 # Get cumulative sums to space them out across graph
 # Then add 0.5 to each to put them in between cells
-line_placements <- ordered_framework %>% 
+counts <- ordered_framework %>% 
   group_by(dimension) %>% 
   summarize(count = n()) %>% 
-  pull(count) %>% 
+  pull(count)
+hline_placements <- counts %>% 
   rev() %>% 
   cumsum() %>% 
   {. + 0.5}
-line_placements
+hline_placements
+
+vline_placements <- counts %>% 
+  cumsum() %>% 
+  {. + 0.5}
+vline_placements
+
 
 # Reorder our df in proper metric order
 metric_order <- ordered_framework %>% 
@@ -214,15 +221,67 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
   ) +
   
   # line placements
-  geom_hline(yintercept = line_placements[1]) +
-  geom_hline(yintercept = line_placements[2]) +
-  geom_hline(yintercept = line_placements[3]) +
-  geom_hline(yintercept = line_placements[4]) +
-  geom_vline(xintercept = line_placements[1]) +
-  geom_vline(xintercept = line_placements[2]) +
-  geom_vline(xintercept = line_placements[3]) +
-  geom_vline(xintercept = line_placements[4]) +
-  
+  # geom_hline(yintercept = hline_placements[1]) +
+  # geom_hline(yintercept = hline_placements[2]) +
+  # geom_hline(yintercept = hline_placements[3]) +
+  # geom_hline(yintercept = hline_placements[4]) +
+  # geom_vline(xintercept = vline_placements[1]) +
+  # geom_vline(xintercept = vline_placements[2]) +
+  # geom_vline(xintercept = vline_placements[3]) +
+  # geom_vline(xintercept = vline_placements[4]) +
+
+  # Horizontal Lines
+  geom_segment(
+    x = 0,
+    xend = vline_placements[4],
+    y = hline_placements[1], 
+    yend = hline_placements[1]
+  ) +
+  geom_segment(
+    x = 0,
+    xend = vline_placements[3],
+    y = hline_placements[2], 
+    yend = hline_placements[2]
+  ) +
+  geom_segment(
+    x = 0,
+    xend = vline_placements[2],
+    y = hline_placements[3], 
+    yend = hline_placements[3]
+  ) +
+  geom_segment(
+    x = 0,
+    xend = vline_placements[1],
+    y = hline_placements[4], 
+    yend = hline_placements[4]
+  ) +
+    
+  # Vertical Lines
+  geom_segment(
+    x = vline_placements[1],
+    xend = vline_placements[1],
+    y = 0, 
+    yend = hline_placements[4] 
+  ) +
+  geom_segment(
+    x = vline_placements[2],
+    xend = vline_placements[2],
+    y = 0, 
+    yend = hline_placements[3] 
+  ) +
+  geom_segment(
+    x = vline_placements[3],
+    xend = vline_placements[3],
+    y = 0, 
+    yend = hline_placements[2] 
+  ) +
+  geom_segment(
+    x = vline_placements[4],
+    xend = vline_placements[4],
+    y = 0, 
+    yend = hline_placements[1] 
+  ) +
+    
   # Correct x and y axis labels with the order
   scale_x_discrete(labels = colored_labels, limits = metric_order) +
   scale_y_discrete(labels = colored_labels, limits = reversed_metric_order) +
@@ -248,7 +307,8 @@ ggsave(
   filename = 'outputs/fig_corplot.png',
   height = 9,
   width = 9,
-  # dpi = 300
+  dpi = 300,
+  bg = 'white'
 )
 ```
 
