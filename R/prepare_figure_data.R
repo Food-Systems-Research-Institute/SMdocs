@@ -51,7 +51,8 @@ prepare_figure_data <- function(model_output_df) {
   # Arrange and filter
   figure_data <- figure_data %>%
     mutate(
-      dimension = factor(dimension, levels = ordered_dims)
+      dimension = factor(dimension, levels = ordered_dims),
+      estimate = as.numeric(estimate)
     ) %>%
     arrange(dimension, estimate) %>%
     mutate(
