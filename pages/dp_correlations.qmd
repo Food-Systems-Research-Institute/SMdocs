@@ -220,16 +220,6 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
     )
   ) +
   
-  # line placements
-  # geom_hline(yintercept = hline_placements[1]) +
-  # geom_hline(yintercept = hline_placements[2]) +
-  # geom_hline(yintercept = hline_placements[3]) +
-  # geom_hline(yintercept = hline_placements[4]) +
-  # geom_vline(xintercept = vline_placements[1]) +
-  # geom_vline(xintercept = vline_placements[2]) +
-  # geom_vline(xintercept = vline_placements[3]) +
-  # geom_vline(xintercept = vline_placements[4]) +
-
   # Horizontal Lines
   geom_segment(
     x = 0,
@@ -294,7 +284,7 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
     plot.title = element_text(hjust = 0),
     legend.position = "top",
     legend.title.position = "top",
-    legend.title = element_text(size = 10, family = "Times New Roman", hjust = 0.5),
+    legend.title = element_text(size = 10, family = "Times New Roman", hjust = 1),
     legend.text = element_text(size = 9, family = "Times New Roman"),
     legend.key = element_rect(fill = "transparent", colour = NA),
     legend.background = element_rect(fill = "transparent", colour = NA),
@@ -328,26 +318,72 @@ Large and unwieldy correlation matrix. Added another interactive one below that 
 ```{r}
 #| label: latex_table
 # Latex table
-df <- cor$r %>% 
-  as.data.frame() %>% 
-  tibble::rownames_to_column('var') %>% 
-  mutate(var = str_sub(var, end = 6)) %>% 
-  setNames(c(names(.) %>% str_sub(end = 6)))
-  
+head(cor_r)
+head(cor_p)
+df <- full_join(cor_r, cor_p, by = join_by(var_1 == Var1, var_2 == Var2)) %>% 
+  setNames(c('var_1', 'var_2', 'r', 'p'))
+get_str(df)
+
+# Format and add stars
+df <- df %>% 
+  filter(!is.na(r)) %>% 
+  mutate(
+    sig = ifelse(p < 0.05, '*', ''),
+    r = format(round(r, 3), nsmall = 3),
+    r = ifelse(sig == '*', paste0(r, '*'), r)
+  ) %>% 
+  select(-c(sig, p))
+get_str(df)
+
+# Round and add stars for significance
+df <- df %>%
+  pivot_wider(
+    names_from = var_2,
+    values_from = r,
+    id_cols = var_1
+  )
+get_str(df)
+
+# Make names short, remove var header, turn NA into ''
+df <- df %>% 
+  mutate(var_1 = str_sub(var_1, end = 20)) %>%
+  mutate(across(!var_1, ~ ifelse(is.na(.x), '', .x))) %>% 
+  setNames(c(names(.) %>% str_sub(end = 20)))
+get_str(df)
+colnames(df)[1] <- ' '
+get_str(df)
+
+# Paste rotatebox around column names
+colnames(df)[2:ncol(df)] <- paste0(
+  '\\makecell{\\rotatebox{90}{',
+  colnames(df)[2:ncol(df)],
+  '}}'
+)
+
 df %>% 
   kbl(
-    digits = 3, 
     format = "latex",
-    caption = 'Correlation matrix of metrics using latest available time point',
+    caption = 'Correlation matrix of county level metrics using latest available time point',
     label = 'tab_correlations',
-    booktabs = TRUE
-    # longtable = TRUE
+    booktabs = TRUE,
+    escape = FALSE
+    # align = 'c'
   ) %>%
   kable_styling(
-    font_size = 5,
+    font_size = 8,
     bootstrap_options = c(
       "condensed"
-    )
+    ),
+    latex_options = 'scale_down'
+  ) %>% 
+  # column_spec(1:44, width = '0.5cm') %>%
+  landscape() %>% 
+  footnote(
+    general_title = "",
+    general = 
+      '\\\\textit{Note: }*: p < 0.05. Connecticut is not included in correlation analyses.',
+    threeparttable = TRUE,
+    escape = FALSE
   ) %>% 
   save_kable(
     file = 'outputs/tab_correlations.tex'
