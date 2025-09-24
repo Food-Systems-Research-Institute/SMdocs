@@ -88,7 +88,8 @@ prepare_figure_data <- function(model_output_df) {
   # Arrange and filter
   figure_data <- figure_data %>%
     mutate(
-      dimension = factor(dimension, levels = ordered_dims)
+      dimension = factor(dimension, levels = ordered_dims),
+      estimate = as.numeric(estimate)
     ) %>%
     arrange(dimension, estimate) %>%
     mutate(
@@ -1404,7 +1405,7 @@ latex_df %>%
 #| label: errorsar_figure
 # Using functions at top of script to process outputs and make graph
 errorsar_figure_data <- prepare_figure_data(model_output_df = sar_framed_outputs)
-errorsar_plot <- pct_change_graph(
+errorsar_figure <- pct_change_graph(
   figure_data = errorsar_figure_data$figure_data,
   dp_text_palette = dp_text_palette,
   label_dimension_lookup = errorsar_figure_data$label_dimension_lookup
