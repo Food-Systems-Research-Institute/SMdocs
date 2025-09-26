@@ -43,6 +43,12 @@ pacman::p_load_current_gh(
   'Food-Systems-Research-Institute/SMdata'
 )
 
+conflicted::conflicts_prefer(
+  dplyr::filter(),
+  dplyr::select(),
+  .quiet = TRUE
+)
+
 options(scipen = 9999)
 
 

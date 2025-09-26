@@ -32,7 +32,8 @@ pacman::p_load(
   reshape2,
   viridisLite,
   conflicted,
-  readr
+  readr,
+  reactable
 )
 
 # GitHub packages
@@ -56,14 +57,166 @@ conflicts_prefer(
 ```
 
 
-## Missing Data
+## New Missing Data
+
+New plan for showing missing data in a more granular way:
+
+- By metric: for each metric, figure out how many counties/states and years it should represent. Multiply. This gives total number of values it should include. Then compare that total number of data points.
+- By state/county: figure out how many metrics should be in that county, and then for how many years (not including when we just don't have those years represented, which is different I suppose).
+
+### By Metric
+
+County metrics only
+
+```{r}
+#| label: mis_by_metric
+
+# get_str(dp_metrics_county_wide)
+# get_str(dp_metrics_county)
+vars <- meta_vars(dp_metrics_county)
+
+# Years covered by each metric, multiplied by number of counties: 209 (not CT)
+n_counties <- 209
+
+# Get years, number of data points, total possible number of points based on 
+# years and 209 counties, then the percentage missing
+metric_cov <- map(vars, ~ {
+  var_df <- dp_metrics_county %>%
+    filter(
+      variable_name == .x,
+      str_detect(fips, '^09', negate = TRUE)
+    )
+  n_years <- var_df %>% 
+    pull(year) %>%
+    unique() %>%
+    length()
+  n_points <- nrow(var_df)
+  df <- data.frame(
+    variable_name = .x,
+    n_years = n_years, 
+    n_points = n_points
+  )
+  return(df)
+}) %>% 
+  bind_rows() %>% 
+  mutate(
+    n_possible = n_years * n_counties,
+    perc_miss = round(100 - ((n_points / n_possible) * 100), 2)
+  )
+
+missy_metric_df <- metric_cov %>% 
+  filter(perc_miss > 5)
+missy_metrics <- missy_metric_df$variable_name
+print_missy_metrics <- paste0(missy_metrics, collapse = ', ')
+  
+get_reactable(metric_cov)
+```
+
+The metrics with > 5% missing are: `{r} print_missy_metrics`. Now see where they are missing data:
+
+```{r}
+#| label: missy_metrics_table
+non_ct_fips <- fips_key %>% 
+  filter(
+    str_length(fips) == 5,
+    str_detect(fips, '^09', negate = TRUE)
+  ) %>% 
+  pull(fips)
+
+missing_table <- dp_metrics_county %>% 
+  filter(
+    variable_name %in% missy_metrics,
+    str_detect(fips, '^09', negate = TRUE)
+  ) %>% 
+  group_by(variable_name, year) %>%
+  summarize(
+    fips_present = c(fips),
+    fips_missing = list(setdiff(non_ct_fips, fips_present)),
+  ) %>% 
+  select(-fips_present) %>%
+  unique() %>% 
+  mutate(
+    n_fips_missing = lengths(fips_missing)
+  )
+
+# Table
+get_reactable(
+  missing_table,
+  defaultColDef = reactable::colDef(minWidth = 100),
+  columns = list(
+    fips_missing = reactable::colDef(minWidth = 500)
+  )
+)
+```
+
+### By County
+
+What are the most missed counties? For each metric, rank most missing counties in order of times they are missing
+
+```{r}
+#| label: missed_counties
+out <- map(missy_metrics, ~ {
+  missing_table %>% 
+    filter(variable_name == .x) %>% 
+    pull(fips_missing) %>% 
+    unlist() %>% 
+    table() %>% 
+    as.data.frame() %>% 
+    setNames(c('fips', 'times_missing')) %>% 
+    arrange(desc(times_missing))
+}) %>% 
+  setNames(c(missy_metrics))
+
+# Add county names
+out <- map(out, ~ {
+  left_join(.x, select(fips_key, -state_code))
+})
+```
+
+Conservation Easement Acres:
+
+```{r}
+#| class: centered-table
+get_reactable(out$consEasementAcres, fullWidth = FALSE)
+```
+
+Proportion of Invasive Species:
+
+```{r}
+#| class: centered-table
+get_reactable(out$propInvasive)
+```
+
+Proportion of farms with precision ag:
+
+```{r}
+#| class: centered-table
+get_reactable(out$propOpsPrecision)
+```
+
+Tree Size Diversity:
+
+```{r}
+#| class: centered-table
+get_reactable(out$sizeDiversity)
+```
+
+Tree Species Diversity:
+
+```{r}
+#| class: centered-table
+get_reactable(out$treeDiversity)
+```
+
+
+## Old Missing Data
 
 Explore missing data for each individual metric. Note that there is a baseline of missing for every one because of the issues with Connecticut counties. This is a bit awkward.
 
 ```{r}
 #| label: missing_data
 #| output: false
-skimr::skim(dp_metrics_county_wide)
+skimr::skim(SMdocs::dp_metrics_county_wide)
 # Missing years are county areas, that's fine
 # Other missing values are because years don't match up, that's fine
 get_str(dp_metrics_county_wide)
@@ -116,7 +269,6 @@ Exploring distributions using latest year available for each metric.
 #| label: metric_distributions_county
 #| fig-height: 25
 #| fig-width: 10
-#| freeze: true
 #| cache: true
 # Get skews of variables
 # get_str(dp_metrics_county)
@@ -183,8 +335,6 @@ ggarrange(
 #| fig-height: 10
 #| fig-width: 10
 #| cache: true
-#| freeze: true
-# source('dev/get_distributions.R')
 state_dat <- dp_metrics_state %>% 
   filter(!(
     fips == '42' & year == 2022 & variable_name == 'hayYieldMeasuredInTonsAcre'
