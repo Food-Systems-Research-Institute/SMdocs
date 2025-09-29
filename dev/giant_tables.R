@@ -223,7 +223,6 @@ writeLines(body_out, 'outputs/tab_metrics_body.tex')
 #'  resolution
 #'  updates
 #'  supporting literature
-#'  summary stats - mean and SD
 get_str(giant_table)
 app_table <- SMdocs::giant_table %>%
   filter(

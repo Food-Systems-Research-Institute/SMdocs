@@ -14,10 +14,6 @@
 #'    range, url, resolution, updates, probably others. I suppose it's just
 #'    everything else that is of any use.
 
-#' TODO: Add units to body table.
-#' TODO: Add cell merging to body table
-#' TODO: Make appendix table
-
 
 
 # Housekeeping ------------------------------------------------------------

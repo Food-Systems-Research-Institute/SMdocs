@@ -371,27 +371,15 @@ get_tiny_plots <- function(df, vars) {
     setNames(c(vars))
 }
 
-# county_plots <- SMdocs::dp_metrics_county %>% 
-#   get_tiny_plots(
-#     vars = series_vars
-#   )
-# county_plots[[2]]
-# county_plots[[3]]
-# county_plots[[10]]
-# county_plots[[11]]
-# county_plots[[12]]
-
 # Function to normalize to percent change relative to baseline first year
 percent_change <- function(x) {
   x <- as.numeric(x)
-  # if (length(x) < 2) stop("Vector must have length >= 2")
   if (sum(!is.na(x)) < 2) {
     warning("Not enough non-NA values to compute percent change; returning NA")
     return(rep(NA_real_, length(x)))
   }
   (x / first(x) - 1) * 100
 }
-
 
 # Normalize by min max or percent change to baseline?
 get_normalized_metrics <- function(df) {
@@ -402,27 +390,11 @@ get_normalized_metrics <- function(df) {
       mutate(across(c(year, value), as.numeric)) %>% 
       drop_na(value) %>% 
       group_by(variable_name, fips) %>% 
-      # mutate(value = min_max(value)) %>%
       mutate(value = percent_change(value)) %>%
       ungroup()
   }) %>% 
     list_rbind()
 }
-
-# dp_metrics_county %>% 
-#   arrange(variable_name, fips, year) %>% 
-#   get_str()
-# test <- SMdocs::dp_metrics_county %>% 
-#   get_normalized_metrics()
-# test %>% 
-#   arrange(variable_name, fips, year) %>% 
-#   get_str()
-
-# county_plots <- SMdocs::dp_metrics_county %>% 
-#   get_tiny_plots(
-#     vars = series_vars
-#   )
-
 
 # Doing without any normalization
 county_plots <- SMdocs::dp_metrics_county %>% 
@@ -447,96 +419,6 @@ iwalk(c(county_plots, state_plots), \(plot, var) {
     bg = NULL
   )
 })
-
-# # Check milk actual trend
-# SMdocs::dp_metrics_county %>% 
-#   group_by(variable_name, year) %>% 
-#   summarize(mean_value = mean(value, na.rm = TRUE)) %>% 
-#   ungroup() %>% 
-#   filter(variable_name == 'retailSalesPropWholesale') %>% 
-#   ggplot(aes(x = year, y = mean_value)) +
-#   geom_line()
-# 
-# SMdocs::dp_metrics_state %>% 
-#   group_by(variable_name, year) %>% 
-#   summarize(mean_value = mean(value, na.rm = TRUE)) %>% 
-#   ungroup() %>% 
-#   filter(variable_name == 'voterTurnout') %>% 
-#   ggplot(aes(x = year, y = mean_value)) +
-#   geom_line()
-# 
-# SMdocs::dp_metrics_county %>% 
-#   group_by(variable_name, year) %>% 
-#   summarize(mean_value = mean(value, na.rm = TRUE)) %>% 
-#   ungroup() %>% 
-#   filter(variable_name == 'totalIndemnities') %>% 
-#   ggplot(aes(x = year, y = mean_value)) +
-#   geom_line()
-# 
-# SMdocs::dp_metrics_state %>% 
-#   group_by(variable_name, year) %>% 
-#   summarize(mean_value = mean(value, na.rm = TRUE)) %>% 
-#   ungroup() %>% 
-#   filter(variable_name == 'yieldMilk') %>% 
-#   ggplot(aes(x = year, y = mean_value)) +
-#   geom_line()
-# 
-# SMdocs::dp_metrics_county %>% 
-#   group_by(variable_name, year) %>% 
-#   summarize(mean_value = mean(value, na.rm = TRUE)) %>% 
-#   ungroup() %>% 
-#   filter(variable_name == 'otyAnnualAvgEstabsCountPctChgNAICS11') %>% 
-#   ggplot(aes(x = year, y = mean_value)) +
-#   geom_line()
-# 
-# SMdocs::dp_metrics_county %>%
-#   filter(variable_name == 'otyAnnualAvgEstabsCountPctChgNAICS11') %>% 
-#   group_by(variable_name, year) %>% 
-#   mutate(mean_value = mean(value, na.rm = TRUE)) %>% 
-#   ungroup() %>% 
-#   ggplot(aes(x = year, y = value)) +
-#   geom_line(aes(group = fips), alpha = 0.1) +
-#   geom_line(aes(x = year, y = mean_value), color = 'red', lwd = 2) +
-#   geom_smooth() + 
-#   theme_bw()
-# 
-# SMdocs::dp_metrics_county %>%
-#   filter(variable_name == 'otyAnnualAvgEstabsCountPctChgNAICS11') %>% 
-#   group_by(variable_name, year) %>% 
-#   mutate(
-#     mean_value = mean(value, na.rm = TRUE),
-#     pct_change = percent_change(value)
-#   ) %>% 
-#   ungroup() %>% 
-#   ggplot(aes(x = year, y = value)) +
-#   geom_line(aes(group = fips), alpha = 0.1) +
-#   geom_line(aes(x = year, y = mean_value), color = 'red', lwd = 2) +
-#   geom_line(aes(x = year, y = pct_change), color = 'darkgreen', lwd = 2) +
-#   geom_smooth() +
-#   theme_bw()
-# 
-# ###
-# df <- SMdocs::dp_metrics_county %>%
-#   filter(variable_name == 'otyAnnualAvgEstabsCountPctChgNAICS11') %>% 
-#   group_by(variable_name, fips) %>% 
-#   arrange(year) %>%
-#   mutate(pct_change = percent_change(value)) %>% 
-#   ungroup()
-# 
-# df_avg <- df %>%
-#   group_by(variable_name, year) %>%
-#   summarize(
-#     mean_value = mean(value, na.rm = TRUE),
-#     mean_pct_change = mean(pct_change, na.rm = TRUE),
-#     .groups = "drop"
-#   )
-# 
-# ggplot() +
-#   geom_line(data = df, aes(x = year, y = value, group = fips), alpha = 0.1) +
-#   geom_line(data = df_avg, aes(x = year, y = mean_value), color = 'red', lwd = 1.2) +
-#   geom_line(data = df_avg, aes(x = year, y = mean_pct_change), color = 'darkgreen', lwd = 1.2) +
-#   geom_hline(yintercept = 0, linetype = "dashed", colo = "gray") +
-#   theme_bw()
 ```
 
 ## Linear Models {#sec-ols}
@@ -709,34 +591,7 @@ lmtest::coeftest(res[[1]])
 saveRDS(res, 'data/objects/weighted_ols_outs.rds')
 ```
 
-### Residuals
-
-Check residuals of outputs:
-
-```{r}
-#| label: lm_residuals
-#| warnings: false
-#| outputs: false
-#| eval: false
-# res <- readRDS('data/objects/weighted_ols_outs.rds')
-# res_plots <- map(res, ~ {
-#   try(performance::check_model(.x))
-# }) %>% 
-#   purrr::keep(~ length(.x) > 1)
-# saveRDS(res_plots, 'data/objects/weighted_ols_residuals.rds')
-```
-
-```{r}
-#| fig-width: 10
-#| fig-height: 10
-#| eval: false
-#| output: false
-#| echo: false
-# res_plots <- readRDS('data/objects/weighted_ols_residuals.rds')
-# res_plots
-```
-
-(Residual plots are giving us trouble currently)
+### Wrangling
 
 Now that we have regression outputs, let's put them in a table to see which ones change significantly over time.
 
@@ -1255,7 +1110,7 @@ sar_df <- imap(sar_outs, ~ {
 get_str(sar_df)
 # sar_df
 
-# 38 down to 35.
+# 38 down to 36.
 (lost <- setdiff(names(sar_outs), sar_df$variable_name))
 check <- sar_outs[names(sar_outs) %in% lost]
 # Not defined because of singularities. Single time points. 
