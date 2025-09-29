@@ -317,6 +317,7 @@ Large and unwieldy correlation matrix. Added another interactive one below that 
 
 ```{r}
 #| label: latex_table
+#| output: false
 # Latex table
 head(cor_r)
 head(cor_p)
@@ -376,7 +377,6 @@ df %>%
     ),
     latex_options = 'scale_down'
   ) %>% 
-  # column_spec(1:44, width = '0.5cm') %>%
   landscape() %>% 
   footnote(
     general_title = "",
@@ -388,7 +388,11 @@ df %>%
   save_kable(
     file = 'outputs/tab_correlations.tex'
   )
+```
 
+
+```{r}
+#| label: html_table_website
 # HTML for website
 cor$r %>% 
   kbl(

@@ -5,7 +5,7 @@ title: "Overview"
 ## Introduction
 
 <div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 35%;">
-  <img src="../images/Taylor_Conner_workshop.jpg" alt="Dr. Josh Taylor (left) and Dr. David Conner (right) at the FSRC Sustainability Metrics workshop in 2024. Photo by Colleen Goodhue, FSRC." style="width: 100%;">
+  <img src="../assets/images/Taylor_Conner_workshop.jpg" alt="Dr. Josh Taylor (left) and Dr. David Conner (right) at the FSRC Sustainability Metrics workshop in 2024. Photo by Colleen Goodhue, FSRC." style="width: 100%;">
   <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Dr. Josh Taylor (left) and Dr. David Conner (right) at the FSRC Sustainability Metrics workshop in 2024. Photo by Colleen Goodhue, FSRC.
 </div>
 </div>
@@ -17,7 +17,7 @@ As the project progressed, a collection of new indicators were proposed across a
 More information about this refinement process can be found in the [Indicator Refinement](../pages/refinement_process.qmd) pages, including results from surveys on indicator and index importance. Subsequent analyses in the [Refined Framework Analysis](../pages/refined_framework.qmd) use this reduce set of indicators. The selection of metrics to represent those indicators is tentative. For now, we are using a larger set of metrics than might be otherwise ideal to give us flexibility to explore which best represent the system and what the consequences are given different numbers and configurations of metrics.
 
 <div style="float: center; margin-left: auto; margin-right: auto; margin-bottom: 1em; width: 75%;">
-  <img src="../images/wiltshire2024_team_science_diagram.png" alt="Team science process diagram showing the progression from concept papers and backgroundf research to concept paper synthesis meetings to framework refinement, breakout groups for each dimnension, and breakout group synthesis, followed by collaborative drafting of a narrative document and manuscript." style="width: 100%;">
+  <img src="../assets/images/wiltshire2024_team_science_diagram.png" alt="Team science process diagram showing the progression from concept papers and backgroundf research to concept paper synthesis meetings to framework refinement, breakout groups for each dimnension, and breakout group synthesis, followed by collaborative drafting of a narrative document and manuscript." style="width: 100%;">
   <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Team science diagram from Wiltshire et al., 2024.
   </div>
 </div>

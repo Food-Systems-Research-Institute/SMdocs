@@ -39,7 +39,7 @@ website:
   back-to-top-navigation: true
   repo-url: https://github.com/Food-Systems-Research-Institute/SMdocs
   navbar:
-    logo: images/FSRI-SpiritMarks_FSRI-mark-white.png
+    logo: assets/images/FSRI-SpiritMarks_FSRI-mark-white.png
     logo-href: https://www.uvm.edu/ovpr/food-systems-research
     search: true
     tools:
@@ -115,9 +115,9 @@ website:
 format:
   html:
     page-layout: article
-    theme: _assets/custom_theme.scss
+    theme: assets/custom_theme.scss
     fig-align: left
-    css: _assets/styles.css
+    css: assets/styles.css
     toc: true
     toc-title: "On This Page"
     toc-location: right
@@ -135,7 +135,7 @@ format:
     link-external-icon: true
     title-block-style: default
 
-bibliography: _assets/fsrc.bib
+bibliography: assets/fsrc.bib
 
 execute:
   warning: false

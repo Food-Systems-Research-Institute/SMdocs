@@ -18,7 +18,7 @@ The Sustainability Metrics project, as well as this site itself, are works in pr
 ## Introduction {#sec-intro}
 
 <div style="float: right; margin-left: 1em; margin-bottom: 1em; width: 40%;">
-  <img src="../images/intervale_small.png" alt="description" style="width: 100%;">
+  <img src="../assets/images/intervale_small.png" alt="description" style="width: 100%;">
   <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Intervale Center, Burlington, Vermont. Copyright: Sally McCay, UVM Photo.</div>
 </div>
 
@@ -29,7 +29,7 @@ Tools for diagnosing and monitoring the sustainability of food systems are thus 
 ## Sustainability Metrics
 
 <div style="float: left; margin-right: 1em; margin-bottom: 1em; margin-top: 1em; width: 40%;">
-  <img src="../images/harvest_small.png" alt="description" style="width: 100%;">
+  <img src="../assets/images/harvest_small.png" alt="description" style="width: 100%;">
   <div style="text-align: left; margin-top: 0.5em; font-size: smaller;">Spread from the Climate Kitchen harvest dinner. Photo credit: Colleen Goodhue, FSRI.</div>
 </div>
 
