@@ -94,6 +94,10 @@ jobs:
         with:
           r-version: '4.5.1'
 
+      # Try to fix problem where httr2 couldn't be found when installing SMdata
+      - name: Install httr2 first
+        run: Rscript -e 'install.packages("httr2", repos="https://cloud.r-project.org")'
+
       - name: Install renv dependencies
         uses: r-lib/actions/setup-renv@v2
 
