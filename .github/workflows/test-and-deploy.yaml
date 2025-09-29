@@ -94,7 +94,7 @@ jobs:
         with:
           r-version: '4.5.1'
 
-      # Try to fix problem where httr2 couldn't be found when installing SMdata
+      # Fixing problem where httr2 couldn't be found when installing SMdata
       - name: Install httr2 first
         run: Rscript -e 'install.packages("httr2", repos="https://cloud.r-project.org")'
 
@@ -114,6 +114,7 @@ jobs:
         uses: burnett01/rsync-deployments@7.1.0
         with:
           switches: -avzr --delete
+          legacy_allow_rsa_hotkeys: "true"
           path: ./_site/
           remote_path: ${{ secrets.REMOTE_PATH }}
           remote_host: ${{ secrets.REMOTE_HOST }}
