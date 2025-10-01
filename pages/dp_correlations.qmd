@@ -139,7 +139,7 @@ mat <- df %>%
   as.matrix()
 
 # Get correlations
-cor <- rcorr(mat, type = 'pearson')
+cor <- rcorr(mat, type = 'spearman')
 
 # Melt correlation values and rename columns
 cor_r <- reshape::melt(cor$r) %>% 
@@ -148,6 +148,15 @@ cor_r <- reshape::melt(cor$r) %>%
 # Save p values
 cor_p <- melt(cor$P)
 p.value <- cor_p$value
+
+# Absolute values of correlations
+cor_r <- cor_r %>%
+  mutate(value = abs(value))
+
+# Pulling out significant p values
+cor_r <- cor_r %>%
+  mutate(p_value = cor_p$value) %>%
+  mutate(significant = ifelse(p_value <= 0.05, TRUE, FALSE))
 
 # Reverse the order to use for x-axis labels (start at Economics)
 reversed_metric_order <- rev(metric_order)
@@ -185,9 +194,22 @@ dimension_legend_df <- tibble(
 )
 
 # Make heatmap
-corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
-  geom_tile(data = cor_r %>% filter(!is.na(value))) + # Only fill triangle
+corplot <- ggplot(cor_r, aes(x = var_1, y = var_2)) +
   
+  # Color in significant correlations
+  geom_tile(data = cor_r %>% filter(!is.na(value) & significant), aes(fill = value)) +
+  
+  # Make non-significant correlations white
+  geom_tile(data = cor_r %>% filter(!is.na(value) & !significant), fill = "white") +
+  
+  # Grid lines for lower triangle
+  geom_tile(
+  data = cor_r %>% filter(!is.na(value)),
+  color = "gray60",
+  linewidth = 0.2,
+  fill = NA
+) +
+
   geom_point(
     data = dimension_legend_df,
     aes(x = x, y = y, color = dimension),
@@ -199,8 +221,7 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
   ) +
   
   scale_fill_gradient2(
-    low = "#762a83", 
-    mid = "white", 
+    low = "white", 
     high = "#1b7837", 
     midpoint = 0,
     name = "Correlation",
@@ -214,9 +235,14 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2, fill = value)) +
   
   # Legend overrides
   guides(
+    fill = guide_colorbar(
+    title = "Correlation", 
+    order = 1
+  ),
     color = guide_legend(
       override.aes = list(shape = 15, size = 5, alpha = 1),
-      nrow = 2
+      nrow = 2,
+      order = 2
     )
   ) +
   
