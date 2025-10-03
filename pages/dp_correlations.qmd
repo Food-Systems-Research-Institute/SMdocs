@@ -155,7 +155,7 @@ cor_r <- cor_r %>%
 
 # Pulling out significant p values
 cor_r <- cor_r %>%
-  mutate(p_value = cor_p$value) %>%
+  mutate(p_value = ifelse(var_1 == var_2, 1, cor_p$value)) %>% # Make diagonal line non-significant
   mutate(significant = ifelse(p_value <= 0.05, TRUE, FALSE))
 
 # Reverse the order to use for x-axis labels (start at Economics)
@@ -200,7 +200,7 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2)) +
   geom_tile(data = cor_r %>% filter(!is.na(value) & significant), aes(fill = value)) +
   
   # Make non-significant correlations white
-  geom_tile(data = cor_r %>% filter(!is.na(value) & !significant), fill = "white") +
+  geom_tile(data = cor_r %>% filter(!is.na(value) & !significant), fill = "gray90") +
   
   # Grid lines for lower triangle
   geom_tile(
