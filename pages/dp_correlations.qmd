@@ -87,12 +87,12 @@ df <- SMdata::metrics %>%
     values_from = value,
     names_from = metric
   )
-get_str(df)
+projecter::get_str(df)
 
 # Get an ordered framework from which we will pull metrics in alphabetical order
 # and get the counts of metrics per dimension that we will use to draw lines
 # between dimensions
-get_str(dp_meta)
+projecter::get_str(dp_meta)
 ordered_framework <- dp_meta %>% 
   arrange(dimension, metric) %>% 
   filter(metric %in% names(df))
@@ -167,12 +167,20 @@ cor_r <- cor_r %>%
     var_1 = factor(var_1, levels = reversed_metric_order)
   )
 
+# Remove last cols []
+get_str(cor_r)
+cor_r <- cor_r %>%
+  filter(var_1 != var_2)
+  # filter(!(var_1 == "Average Weekly Wages" & var_2 == "Violent Crime Rate")) %>%
+  # filter(!(var_1 == "Violent Crime Rate" & var_2 == "Average Weekly Wages"))
+get_str(cor_r)
+  
 # Only set values for lower triangle of the matrix
 cor_r <- cor_r %>%
   mutate(
     row_idx = as.integer(factor(var_1, levels = reversed_metric_order)),
     col_idx = as.integer(factor(var_2, levels = reversed_metric_order)),
-    value = ifelse(row_idx < col_idx, NA, value)  # Set upper triangle to NA
+    value = ifelse(row_idx <= col_idx, NA, value)  # Set upper triangle to NA
   ) %>%
   select(-row_idx, -col_idx)  # Remove temporary columns
 
@@ -180,11 +188,29 @@ cor_r <- cor_r %>%
 colored_labels <- ordered_framework %>%
   mutate(
     label = paste0(
-      "<span style='color:", dp_text_palette[dimension], "'>", to_title_case(str_replace_all(metric, "_", " ")), "</span>"
+      "<span style='color:",
+      dp_text_palette[dimension],
+      "'>",
+      to_title_case(str_replace_all(metric, "_", " ")),
+      "</span>"
     )
   ) %>%
   select(metric, label) %>%
   deframe()
+
+## Removing topmost y axis label and rightmost x axis label
+# Create modified label vectors
+x_labels <- colored_labels
+x_labels[metric_order[length(metric_order)]] <- ""  # remove last x-axis label
+y_labels <- colored_labels
+y_labels[reversed_metric_order[length(reversed_metric_order)]] <- "" # Blank topmost y-axis label
+
+# Create tick vectors (TRUE = show tick, FALSE = hide tick)
+x_ticks <- rep(TRUE, length(metric_order))
+x_ticks[length(metric_order)] <- FALSE  # Hide rightmost x-axis tick
+
+y_ticks <- rep(TRUE, length(reversed_metric_order))
+y_ticks[length(reversed_metric_order)] <- FALSE  # Hide topmost y-axis tick
 
 # Dummy data frame for dimension legend
 dimension_legend_df <- tibble(
@@ -197,18 +223,24 @@ dimension_legend_df <- tibble(
 corplot <- ggplot(cor_r, aes(x = var_1, y = var_2)) +
   
   # Color in significant correlations
-  geom_tile(data = cor_r %>% filter(!is.na(value) & significant), aes(fill = value)) +
+  geom_tile(
+    data = cor_r %>% filter(!is.na(value) & significant), 
+    aes(fill = value)
+  ) +
   
   # Make non-significant correlations white
-  geom_tile(data = cor_r %>% filter(!is.na(value) & !significant), fill = "gray90") +
+  geom_tile(
+    data = cor_r %>% filter(!is.na(value) & !significant), 
+    fill = "gray90"
+  ) +
   
   # Grid lines for lower triangle
   geom_tile(
-  data = cor_r %>% filter(!is.na(value)),
-  color = "gray60",
-  linewidth = 0.2,
-  fill = NA
-) +
+    data = cor_r %>% filter(!is.na(value)),
+    color = "gray60",
+    linewidth = 0.2,
+    fill = NA
+  ) +
 
   geom_point(
     data = dimension_legend_df,
@@ -299,18 +331,31 @@ corplot <- ggplot(cor_r, aes(x = var_1, y = var_2)) +
   ) +
     
   # Correct x and y axis labels with the order
-  scale_x_discrete(labels = colored_labels, limits = metric_order) +
-  scale_y_discrete(labels = colored_labels, limits = reversed_metric_order) +
+  scale_x_discrete(
+    labels = x_labels,
+    limits = metric_order
+  ) +
+  scale_y_discrete(
+    labels = y_labels,
+    limits = reversed_metric_order
+  ) +
   
   theme(
     axis.text.x = element_markdown(angle = 45, hjust = 1),
     axis.text.y = element_markdown(),
     axis.text = element_text(family = "Times New Roman"),
     axis.title = element_blank(),
+    axis.ticks.length.x = unit(ifelse(x_ticks, 0.15, 0), "cm"),
+    axis.ticks.length.y = unit(ifelse(y_ticks, 0.15, 0), "cm"),
     plot.title = element_text(hjust = 0),
     legend.position = "top",
     legend.title.position = "top",
-    legend.title = element_text(size = 10, family = "Times New Roman", hjust = 1),
+    legend.justification = "center",
+    legend.title = element_text(
+      size = 10,
+      family = "Times New Roman",
+      hjust = 0.5
+    ),
     legend.text = element_text(size = 9, family = "Times New Roman"),
     legend.key = element_rect(fill = "transparent", colour = NA),
     legend.background = element_rect(fill = "transparent", colour = NA),
@@ -348,6 +393,7 @@ Large and unwieldy correlation matrix. Added another interactive one below that 
 head(cor_r)
 head(cor_p)
 df <- full_join(cor_r, cor_p, by = join_by(var_1 == Var1, var_2 == Var2)) %>% 
+  select(1:4) %>% 
   setNames(c('var_1', 'var_2', 'r', 'p'))
 get_str(df)
 
@@ -355,26 +401,31 @@ get_str(df)
 df <- df %>% 
   filter(!is.na(r)) %>% 
   mutate(
-    sig = ifelse(p < 0.05, '*', ''),
+    stars = case_when(
+      p < 0.001 ~ '***',
+      p > 0.001 & p < 0.01~ '***',
+      p > 0.01 & p < 0.05 ~ '**',
+      .default = ''
+    ),
     r = format(round(r, 3), nsmall = 3),
-    r = ifelse(sig == '*', paste0(r, '*'), r)
+    r = paste0(r, stars)
   ) %>% 
-  select(-c(sig, p))
+  select(-c(stars, p))
 get_str(df)
 
-# Round and add stars for significance
+# Pivot
 df <- df %>%
   pivot_wider(
-    names_from = var_2,
+    names_from = var_1,
     values_from = r,
-    id_cols = var_1
+    id_cols = var_2
   )
 get_str(df)
 
 # Make names short, remove var header, turn NA into ''
 df <- df %>% 
-  mutate(var_1 = str_sub(var_1, end = 20)) %>%
-  mutate(across(!var_1, ~ ifelse(is.na(.x), '', .x))) %>% 
+  mutate(var_2 = str_sub(var_2, end = 20)) %>%
+  mutate(across(!var_2, ~ ifelse(is.na(.x), '', .x))) %>% 
   setNames(c(names(.) %>% str_sub(end = 20)))
 get_str(df)
 colnames(df)[1] <- ' '
@@ -420,7 +471,7 @@ df %>%
 ```{r}
 #| label: html_table_website
 # HTML for website
-cor$r %>% 
+cor_r %>% 
   kbl(
     digits = 3, 
     format = "html"
