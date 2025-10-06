@@ -382,9 +382,9 @@ ggsave(
 corplot
 ```
 
-## Table
+## LaTeX Table
 
-Large and unwieldy correlation matrix. Added another interactive one below that is probably easier to work with.
+Making $\LaTeX$ table for paper.
 
 ```{r}
 #| label: latex_table
@@ -467,38 +467,16 @@ df %>%
   )
 ```
 
-
-```{r}
-#| label: html_table_website
-# HTML for website
-cor_r %>% 
-  kbl(
-    digits = 3, 
-    format = "html"
-  ) %>%
-  column_spec(1, width = '500px') %>% 
-  kable_styling(
-    full_width = FALSE, 
-    bootstrap_options = c(
-      "striped", 
-      "hover", 
-      "condensed"
-    )
-  )
-```
-
-
 ## Long Table
 
-Longer format table that is interactive and shows p values.
+Long interactive table that shows p values.
 
 ```{r}
 #| label: cor_table_long
 # Create long table with p values and stars
 tab <- cor_r %>% 
-  rename(cor = value) %>% 
-  inner_join(cor_p, by = join_by(var_1 == Var1, var_2 == Var2)) %>% 
-  rename(p = value) %>% 
+  rename(rho = value, p = p_value) %>% 
+  filter(!is.na(rho)) %>% 
   mutate(sig = ifelse(p < 0.05, '*', ''))
 
 tab %>% 
