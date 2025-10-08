@@ -329,3 +329,48 @@ dp_metrics_county_wide <- dp_metrics_county %>%
 # get_str(dp_metrics_county_wide)
 usethis::use_data(dp_metrics_county_wide, overwrite = TRUE)
 
+
+# Inflation Adjustment ----------------------------------------------------
+
+# Making another set of data for dp county metrics and dp state metrics that
+# have accounted for inflation
+
+usd_metrics <- SMdocs::dp_meta %>%
+  filter(str_detect(units, 'USD')) %>%
+  select(metric, variable_name, units, resolution, source)
+usd_metrics
+
+# Pull CPI - All Items data
+cpi <- SMdata::metrics %>%
+  filter(variable_name == 'cpiAllItems') %>%
+  select(year, value) %>%
+  rename(cpi = value)
+
+# Pull 2024 CPI as constant
+cpi_2024 <- cpi$cpi[cpi$year == '2024']
+
+# Adjust columns that are in USD
+dfs <- list(SMdocs::dp_metrics_county, SMdocs::dp_metrics_state)
+adj_dfs <- map(dfs, ~ {
+  .x %>%
+    left_join(cpi, by = join_by(year)) %>%
+    mutate(value = case_when(
+      variable_name %in% usd_metrics$variable_name ~ value * (cpi_2024/cpi),
+      !variable_name %in% usd_metrics$variable_name ~ value,
+      .default = NA
+    )) %>%
+    select(-cpi)
+}) %>%
+  setNames(c('county', 'state'))
+get_str(adj_dfs, 3)
+
+# Save these as new DFs to keep them separate from nominal values
+
+## dp_metrics_county_adj ----
+dp_metrics_county_adj <- adj_dfs$county
+usethis::use_data(dp_metrics_county_adj, overwrite = TRUE)
+
+## dp_metrics_state_adj ----
+dp_metrics_state_adj <- adj_dfs$state
+usethis::use_data(dp_metrics_state_adj, overwrite = TRUE)
+

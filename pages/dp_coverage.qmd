@@ -594,7 +594,8 @@ metric_heatmap <- ggplot(
   geom_tile(color = "gray80", linewidth = 0.25) +
   scale_y_discrete() +
   scale_x_discrete(
-    breaks = seq(2000, 2024, 4)
+    breaks = seq(2000, 2024, 6) #
+    # breaks = seq(2000, 2024, 4)
   ) +
   scale_fill_manual(
     values = c(dp_fill_palette, "FALSE" = "white"),
@@ -608,16 +609,22 @@ metric_heatmap <- ggplot(
     fill = "Dimension"
   ) +
   dp_theme + 
+  theme( 
+    legend.position = 'right' #
+  ) +
   guides(
-    color = guide_legend(nrow = 2, byrow = TRUE)
-  )
+    # fill = guide_legend(nrow = 2, byrow = TRUE)
+    fill = guide_legend(direction = 'vertical') #
+  ) +
+  coord_fixed(ratio = 2) #
 
 # Save to outputs for paper
 ggsave(
   metric_heatmap,
   filename = 'outputs/fig_metric_heatmap.png',
-  width = 7.5,
-  height = 9,
+  width = 5,
+  # width = 7.5,
+  height = 7,
   units = 'in',
   dpi = 300,
   bg = 'white'

@@ -149,6 +149,62 @@ get_reactable(
 )
 ```
 
+```{r}
+#| label: mcar_test
+#| include: false
+#| eval: false
+get_str(dp_metrics_county)
+vars
+
+# Filter to our county vars
+dat <- dp_metrics_county %>% 
+  filter(variable_name %in% vars)
+get_str(dat)
+
+# Get 'complete' df by each metric - not all together.
+dat <- map(vars, ~ {
+  dat %>% 
+    filter(variable_name == .x) %>% 
+    complete(fips, year)
+}) %>% 
+  bind_rows()
+get_str(dat)
+
+# Run mcar test within each metric, see how it va
+# naniar::mcar_test(dat)
+remove <- which(vars %in% c(
+  'lackSocialSupport', 
+  'propOpsOrganic', 
+  'propOpsPrecision'
+))
+out <- map(vars[-remove], ~ {
+  df <- dat %>% 
+    filter(variable_name == .x)
+  if (any(is.na(df$value))) {
+    df %>% 
+      pivot_wider(
+        id_cols = c(fips, year),
+        names_from = 'variable_name',
+        values_from = 'value'
+      ) %>% 
+      naniar::mcar_test()
+  }
+})
+
+out
+get_str(out[[1]])
+
+# Add col for missing value
+# dat <- dat %>%
+#   mutate(missing = is.na(value))
+# mod <- glm(
+#   missing ~ fips + variable_name + year,
+#   data = dat,
+#   family = binomial
+# )
+# summary(mod)
+```
+
 ### By County
 
 What are the most missed counties? For each metric, rank most missing counties in order of times they are missing
