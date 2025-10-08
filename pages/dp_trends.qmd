@@ -1161,11 +1161,13 @@ latex_df %>%
   footnote(
     general_title = "",
     general = 
-      '\\\\textit{Note: }Table shows coefficients of the effect of year on
-      normalized metrics with state as a covariate. Metrics are weighted
-      by variables shown in \\\\ref{tab:tab_metrics_body}. Significant p-values
+      '\\\\textit{Note: }The table shows coefficients of the effect of year on
+      normalized, inflation-adjusted metrics with state as a covariate. 
+      Metrics are weighted by variables shown in Table \\\\ref{tab:tab_metrics_body}. 
+      Significant p-values
       indicated change over time, and the direction of the outcome was determined
-      based on desirable directions of change for each metric.',
+      based on desirable directions of change for each metric. ***: p < 0.001,
+      **: p < 0.01, *: p < 0.05.',
     threeparttable = TRUE,
     escape = FALSE
   ) %>% 

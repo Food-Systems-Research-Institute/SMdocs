@@ -167,12 +167,15 @@ body %>%
 header <- '\\begin{landscape}
 \\scriptsize
 \\begin{longtblr}[
-  caption = Metric Attributes and Summary Statistics,
+  caption = Metric Attributes and Data Sources,
+  label = {tab:tab_metrics_body},
   remark{Note} = {
     Metrics were collected at the county level where possible,
-    otherwise state level. These scales are represented accordingly by $\\mu$
-    and $\\sigma$. Trends graphs show percent change in each metric
-    from 2000-2024. Metrics without a trend graph were available for only a
+    otherwise at the state level. These scales are represented accordingly by $\\mu$
+    and $\\sigma$. Trend graphs show locally estimated regression lines in each metric
+    from 2000-2024 in blue, with state or counties in grey.
+    Metrics in units of USD were inflation adjusted to 2024 using the CPI.
+    Metrics without a trend graph were available for only a
     single year. Weighting variables were used in regression analyses only.
     Smoothed weights were 5-year metrics from USDA NASS or US Census Bureau
     ACS-5 and interpolated linearly between data points.
@@ -196,7 +199,6 @@ header <- '\\begin{landscape}
   % hline{1,2,Z}={solid} % for only header and footer
   hlines, % all horizontal lines
 }
-\\label{tab:tab_metrics_body}
 '
 
 footer <- '\\end{longtblr}
@@ -269,7 +271,18 @@ cat(app_body)
 # Add our own header and footer
 app_header <- '\\begin{landscape}
 \\scriptsize
-\\begin{longtblr}[caption = Supplementary Metric Information]{
+\\begin{longtblr}[
+  caption = Supplementary Metric Information,
+  label = {tab:tab_metrics_appendix}
+  remark{Note} = {Resolution reflects the finest scale to which data were
+  calculated for analyses. Metrics derived from spatial datasets are available
+  at finer scales. The States and Counties columns show the number of each
+  that the metric is available for, out of a total of 9 states and 209 counties
+  in the Northeast, not including Connecticut. Years describes the total number
+  of years represented by each metric, and Range describes the difference
+  between the first and last year available. The Citations column includes
+  literature supporting the value of the indicator.}
+]{
   rowhead = 1,
   row{1} = {font=\\bfseries},
   colsep = 2pt, % Spaces between column lines and text/figure
@@ -282,7 +295,6 @@ app_header <- '\\begin{landscape}
   % hline{1,2,Z}={solid} % for only header and footer
   hlines, % all horizontal lines
 }
-\\label{tab:tab_metrics_appendix}
 '
 
 app_footer <- '\\end{longtblr}

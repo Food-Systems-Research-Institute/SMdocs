@@ -1,6 +1,17 @@
 \begin{landscape}
 \scriptsize
-\begin{longtblr}[caption = Supplementary Metric Information]{
+\begin{longtblr}[
+  caption = Supplementary Metric Information,
+  label = {tab:tab_metrics_appendix}
+  remark{Note} = {Resolution reflects the finest scale to which data were
+  calculated for analyses. Metrics derived from spatial datasets are available
+  at finer scales. The States and Counties columns show the number of each
+  that the metric is available for, out of a total of 9 states and 209 counties
+  in the Northeast, not including Connecticut. Years describes the total number
+  of years represented by each metric, and Range describes the difference
+  between the first and last year available. The Citations column includes
+  literature supporting the value of the indicator.}
+]{
   rowhead = 1,
   row{1} = {font=\bfseries},
   colsep = 2pt, % Spaces between column lines and text/figure
@@ -13,13 +24,12 @@
   % hline{1,2,Z}={solid} % for only header and footer
   hlines, % all horizontal lines
 }
-\label{tab:tab_metrics_appendix}
 Indicator & Metric & Resolution & Updates & States & Counties & Years & Range & Citations\\
 Access to Land & Land and Building Value per Acre & County & 5 Years & 9 & 217 & 5 & 20 & Chase et al. (2021), Kolodinsky et al. (2021), Callahan et al. (2022)\\
 Business Failure Rate & Change in Agricultural Establishments & County & Annual & 0 & 226 & 22 & 24 & Cannella et al. (2021), Chodur et al. (2018)\\
 Wealth and Income Distribution & Average Weekly Wages & County & Annual & 0 & 226 & 22 & 24 & Kolodinsky et al. (2021), Morse et al. (2002)\\
 Wealth and Income Distribution & Gini Index & County & 5 Years & 9 & 226 & 3 & 10 & Kolodinsky et al. (2021), Morse et al. (2002)\\
-Marketplace & Consumer Price Index & State & Monthly & 0 & 1 & 25 & 24 & NA\\
+Marketplace & Consumer Price Index for food at home & State & Monthly & NA & NA & NA & NA & NA\\
 Farm Insurance & Total Indemnities & County & Annual & 0 & 218 & 19 & 23 & Kolodinsky et al. (2021), Glauber (2013)\\
 Income Stability & Expenses per Operation & County & 5 Years & 9 & 217 & 5 & 20 & Estrin et al. (2021), Harkness et al. (2023)\\
 Income Stability & Labor Expenses & State & 5 Years & 9 & 0 & 5 & 20 & Estrin et al. (2021), Harkness et al. (2023)\\
@@ -70,11 +80,11 @@ Yield & Hay Yield & State & Annual & 9 & 138 & 21 & 20 & Kolodinsky et al. (2021
 Yield & Maple Yield & State & Annual & 7 & 0 & 21 & 20 & Kolodinsky et al. (2021), Neher et al. (2021), Smith et al. (2017), Tilman et al. (2002)\\
 Yield & Milk Yield & State & Annual & 9 & 113 & 21 & 20 & Kolodinsky et al. (2021), Neher et al. (2021), Smith et al. (2017), Tilman et al. (2002)\\
 Social Connectedness & Social Isolation & County & Annual & 0 & 218 & 1 & 0 & Scott \& Richardson (2021), Hayden et al. (2018), Brinkley et al. (2021)\\
-Age Diversity & Producer Age Skew & County & Annual & 9 & 217 & 2 & 5 & Chase et al. (2021), Kolodinsky et al. (2021), Cannella et al. (2021), Priya \& Singh (2023)\\
-Gender Diversity & Ratio of Female to Male Producers & County & 5 Years & 9 & 217 & 2 & 5 & Chase et al. (2021), Kolodinsky et al. (2021), Cannella et al. (2021)\\
-Racial Diversity & Racial Diversity of Producers & County & 5 Years & 9 & 217 & 2 & 5 & Chase et al. (2021), Kolodinsky et al. (2021), Cannella et al. (2021)\\
+Producer Age Diversity & Producer Age Skew & County & Annual & 9 & 217 & 2 & 5 & Kolodinsky et al. (2021), Ament et al. (2021), Mariola (2012)\\
+Producer Gender Diversity & Ratio of Female to Male Producers & County & 5 Years & 9 & 217 & 2 & 5 & Kolodinsky et al. (2021), Ament et al. (2021), Mariola (2012)\\
+Producer Racial Diversity & Racial Diversity of Producers & County & 5 Years & 9 & 217 & 2 & 5 & Kolodinsky et al. (2021), Ament et al. (2021), Mariola (2012)\\
 Community Safety & Violent Crime Rate & County & Annual & 0 & 217 & 22 & 22 & Haynes-Maslow et al. (2015), Friedrichsen et al. (2025), DiFiore et al. (2022), Mui et al. (2017)\\
-Participatory Governance & Voter Turnout & State & 2 Years & 9 & 0 & 13 & 24 & Termeer et al. (2018)\\
+Participatory Governance & Voter Turnout & State & 2 Years & 9 & 0 & 13 & 24 & Termeer et al. (2018), Newig et al. (2018)\\
 Outmigration & Annual Population Change & County & 5 Years & 9 & 226 & 11 & 10 & Golding (2014)\\
 Conservation Program & Acres in Conservation Easements & County & 5 Years & 9 & 210 & 3 & 10 & Cannella et al. (2021), Smith \& Weinberg (2006)\\
 \end{longtblr}

@@ -1,12 +1,15 @@
 \begin{landscape}
 \scriptsize
 \begin{longtblr}[
-  caption = Metric Attributes and Summary Statistics,
+  caption = Metric Attributes and Data Sources,
+  label = {tab:tab_metrics_body},
   remark{Note} = {
     Metrics were collected at the county level where possible,
-    otherwise state level. These scales are represented accordingly by $\mu$
-    and $\sigma$. Trends graphs show percent change in each metric
-    from 2000-2024. Metrics without a trend graph were available for only a
+    otherwise at the state level. These scales are represented accordingly by $\mu$
+    and $\sigma$. Trend graphs show locally estimated regression lines in each metric
+    from 2000-2024 in blue, with state or counties in grey.
+    Metrics in units of USD were inflation adjusted to 2024 using the CPI.
+    Metrics without a trend graph were available for only a
     single year. Weighting variables were used in regression analyses only.
     Smoothed weights were 5-year metrics from USDA NASS or US Census Bureau
     ACS-5 and interpolated linearly between data points.
@@ -30,7 +33,6 @@
   % hline{1,2,Z}={solid} % for only header and footer
   hlines, % all horizontal lines
 }
-\label{tab:tab_metrics_body}
 Dimension & Indicator & Metric & Metric Definition & $\mu (\sigma)$ & Units & Scale & Trend & Weighting & Source\\
 Economics & Access to Land & Land and Building Value per Acre & Average value of land, including buildings, per acre & 14.36 (87.79) & Thousand USD & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_landValPerAcre.png} & Total Farm Income & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
 Economics & Business Failure Rate & Change in Agricultural Establishments & Over-the-year percent change in number of agricultural establishments in NAICS sector 11 & 2.15 (15.4) & Percentage & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_otyAnnualAvgEstabsCountPctChgNAICS11.png} & \textemdash & U.S. Bureau of Labor Statistics, Quarterly Census of Employment and Wages\\
@@ -39,10 +41,10 @@ Economics & Local Inputs & \textemdash & \textemdash & \textemdash & \textemdash
 Economics & Precarity Index & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
 Economics & Wealth and Income Distribution & Average Weekly Wages & Average weekly wage in NAICS sector 11, agriculture & 598.36 (245.11) & USD & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_annualAvgWklyWageNAICS11.png} & GDP & U.S. Bureau of Labor Statistics, Quarterly Census of Employment and Wages\\
 Economics & Wealth and Income Distribution & Gini Index & Gini Index of income inequality. 0 is perfect inequality, while 1 is perfect inequality & 0.44 (0.03) & Index & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_gini.png} & Population (5 Year, Smooth) & U.S. Census Bureau, American Community Survey: 5-Year Estimates: Detailed Tables, 2022.\\
-Economics & Marketplace & Consumer Price Index & Average annual change in prices paid by urban consumers in the Northeast for food at home, which excludes restaurants, alcohol, and other beverages. Not seasonally adjusted at this scale. & \textemdash & Index & State & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_cpi.png} & \textemdash & U.S. Bureau of Labor Statistics, Office of Prices and Living Conditions\\
+Economics & Marketplace & Consumer Price Index for food at home & Average annual change in prices paid by urban consumers in the Northeast for food at home, which excludes restaurants, alcohol, and other beverages. Not seasonally adjusted at this scale. & \textemdash & Index & State & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_cpiFoodAtHome.png} & \textemdash & U.S. Bureau of Labor Statistics, Office of Prices and Living Conditions\\
 Economics & Farm Insurance & Total Indemnities & Sum of indemnity amounts for all final loss amounts (stage code = FL) & 23.84 (172.14) & Thousand USD & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_totalIndemnities.png} & Total Farm Income & U.S. Department of Agriculture, Risk Management Agency (2025). Summary of Business - Cause of Loss\\
 Economics & Income Stability & Expenses per Operation & Expense totals, operating - expense, measured in  dollars / operation & 91.7 (71.77) & USD & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_expPF.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
-Economics & Income Stability & Labor Expenses & Hired labor expenses as a percentage of total operating expenses & 23.05 (6.93) & Percentage & State & \textemdash & \textemdash & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
+Economics & Income Stability & Labor Expenses & Hired labor expenses as a percentage of total operating expenses & 23.05 (6.93) & Percentage & State & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_expHiredLaborPercOpExp.png} & \textemdash & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
 Economics & Income Stability & Percent Change in Wages & Over-the-year percent change in average weekly wage, agricultural sector & 2.21 (7.58) & Percentage & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_otyAnnualAvgWklyWagePctChgNAICS11.png} & \textemdash & U.S. Bureau of Labor Statistics, Quarterly Census of Employment and Wages\\
 Economics & Market Health Index & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
 Economics & Market Mix & Market Channel Ratio & Proportion of commodity sales, including value-added, from retail channels to wholesale channels & 3.14 (6.47) & Ratio & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_retailSalesPropWholesale.png} & \textemdash & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
@@ -104,14 +106,14 @@ Social & Reciprocity & \textemdash & \textemdash & \textemdash & \textemdash & \
 Social & Social Connectedness & Social Isolation & Model-based estimate for crude prevalence of feeling socially isolated among adults. 5-point Likert: How often do you feel socially isolated from others? & 32.23 (2.3) & Proportion & County & \textemdash & Population (5 Year, Smooth) & CDC Division of Population Health, Epidemiology and Surveillance Branch\\
 Social & Tradition and Heritage & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
 Social & Trust & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
-Social & Age Diversity & Producer Age Skew & Skewness of distribution of producer age groups & -0.36 (0.23) & Skew & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_producerAgeSkew.png} & Total Number of Producers & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
-Social & Gender Diversity & Ratio of Female to Male Producers & Ratio of female to male producers & 0.67 (0.23) & Ratio & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_ftmProdRatio.png} & Total Number of Producers & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
-Social & Racial Diversity & Racial Diversity of Producers & Shannon index of NASS producer race statistics & 1.1 (0.07) & Index & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_producerRacialDiversity.png} & Total Number of Producers & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
-Social & Sexuality & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
+Social & Producer Age Diversity & Producer Age Skew & Skewness of distribution of producer age groups & -0.36 (0.23) & Skew & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_producerAgeSkew.png} & Total Number of Producers & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
+Social & Producer Gender Diversity & Ratio of Female to Male Producers & Ratio of female to male producers & 0.67 (0.23) & Ratio & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_ftmProdRatio.png} & Total Number of Producers & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
+Social & Producer Racial Diversity & Racial Diversity of Producers & Shannon index of NASS producer race statistics & 1.1 (0.07) & Index & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_producerRacialDiversity.png} & Total Number of Producers & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
+Social & Producer Sexuality & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
 Social & Community Safety & Violent Crime Rate & Number of arrests for violent crimes (assault, robbery, murder) per 100k residents & 33.58 (20.67) & Rate per 100,000 & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_violentCrimeArrestsPer100k.png} & Population (5 Year, Smooth) & U.S. Federal Bureau of Investigation, Uniform Crime Reporting Program\\
 Social & Participatory Governance & Voter Turnout & Percentage of citizen population aged 18 or older who voted in the last federal election (2-year cycle) & 0.69 (0.1) & Percentage & State & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_voterTurnout.png} & Population (5 Year, Smooth) & University of Wisconsin Population Health Institute, County Health Rankings and Roadmaps. (2024)\\
 Social & Policy, Regulation, Responsiveness & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
-Social & Transparency & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
+Social & Government Transparency & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
 Social & Diverse Representation & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
 Social & Open Spaces and Natural Beauty & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
 Social & Outmigration & Annual Population Change & Year over year percentage change in population & 0.03 (0.67) & Percentage & County & \includegraphics[width=\hsize,valign=c]{figures/trend_figures/fig_trend_populationChangePerc.png} & Population (5 Year, Smooth) & U.S. Census Bureau, American Community Survey: 5-Year Estimates: Detailed Tables, 2022.\\

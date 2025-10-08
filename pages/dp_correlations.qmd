@@ -416,17 +416,27 @@ get_str(df)
 # Pivot
 df <- df %>%
   pivot_wider(
-    names_from = var_1,
+    names_from = var_2,
     values_from = r,
-    id_cols = var_2
+    id_cols = var_1
   )
 get_str(df)
 
 # Make names short, remove var header, turn NA into ''
+truncate_strings <- function(x) {
+  if (str_length(x) > 20) {
+    paste0(str_sub(x, end = 20), '...')
+  } else {
+    x
+  }
+}
 df <- df %>% 
-  mutate(var_2 = str_sub(var_2, end = 20)) %>%
-  mutate(across(!var_2, ~ ifelse(is.na(.x), '', .x))) %>% 
-  setNames(c(names(.) %>% str_sub(end = 20)))
+  mutate(
+    var_1 = as.character(var_1),
+    var_1 = map_vec(var_1, truncate_strings),
+    across(!var_1, ~ ifelse(is.na(.x), '', .x))
+  ) %>%
+  setNames(c(map(names(.), truncate_strings)))
 get_str(df)
 colnames(df)[1] <- ' '
 get_str(df)
@@ -441,7 +451,7 @@ colnames(df)[2:ncol(df)] <- paste0(
 df %>% 
   kbl(
     format = "latex",
-    caption = 'Correlation matrix of county level metrics using latest available time point',
+    caption = 'Correlation matrix of county level metrics',
     label = 'tab_correlations',
     booktabs = TRUE,
     escape = FALSE
@@ -458,7 +468,10 @@ df %>%
   footnote(
     general_title = "",
     general = 
-      '\\\\textit{Note: }*: p < 0.05. Connecticut is not included in correlation analyses.',
+      '\\\\textit{Note: }
+    Pearson correlations among county level metrics using latest time points
+    available. Connecticut counties are not included in analyses.
+    ***: p < 0.001, **: p < 0.01, *: p < 0.05. ',
     threeparttable = TRUE,
     escape = FALSE
   ) %>% 
