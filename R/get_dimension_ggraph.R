@@ -75,7 +75,7 @@ get_dimension_ggraph <- function(csv_path = NULL,
                                  arrow = NULL,
                                  slim = FALSE) {
   # Put input in lower case for consistency
-  dimension_in <- stringr::str_to_lower(dimension_in)
+  # dimension_in <- stringr::str_to_lower(dimension_in)
 
   # Logic to take either path to csv
   if (!is.null(csv_path)) {
@@ -88,8 +88,8 @@ get_dimension_ggraph <- function(csv_path = NULL,
 
   # Filter to dimension, but put back to title case
   df <- df %>%
-    setNames(c(stringr::str_to_lower(names(.)))) %>%
-    dplyr::mutate(dplyr::across(dplyr::any_of(c('dimension', 'index', 'indicator')), ~ stringr::str_to_lower(.x))) %>%
+    # setNames(c(stringr::str_to_lower(names(.)))) %>%
+    # dplyr::mutate(dplyr::across(dplyr::any_of(c('dimension', 'index', 'indicator')), ~ stringr::str_to_lower(.x))) %>%
     dplyr::filter(dimension == dimension_in)
 
   # Metric logic
@@ -263,7 +263,8 @@ get_dimension_ggraph <- function(csv_path = NULL,
     ggraph::geom_node_label(
       ggplot2::aes(label = ifelse(
         name == group | name == dimension_in | name %in% indicator_names | name == 'root',
-        stringr::str_to_title(name),
+        name,
+        # stringr::str_to_title(name),
         NA
       )),
       label.padding = ggplot2::unit(0.2, "lines"),

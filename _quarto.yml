@@ -32,14 +32,14 @@ project:
     - pages/regional_bn.qmd
 
 website:
-  title: "Food Systems Research Institute"
+  title: "Sustainability Metrics"
   reader-mode: false
   page-navigation: true
   bread-crumbs: false
   back-to-top-navigation: true
   repo-url: https://github.com/Food-Systems-Research-Institute/SMdocs
   navbar:
-    logo: assets/images/FSRI-SpiritMarks_FSRI-mark-white.png
+    logo: assets/images/UVM_FSRI_Inline Horiz W.png
     logo-href: https://www.uvm.edu/ovpr/food-systems-research
     search: true
     tools:
@@ -52,7 +52,7 @@ website:
       - icon: github
         menu:
           - text: Source Code
-            href: https://github.com/Food-Systems-Research-Institute/sm-docs
+            href: https://github.com/Food-Systems-Research-Institute/SMdocs
           - text: FSRI GitHub
             href: https://github.com/Food-Systems-Research-Institute
   sidebar:

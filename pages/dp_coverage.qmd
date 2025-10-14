@@ -612,19 +612,19 @@ metric_heatmap <- ggplot(
   theme( 
     legend.position = 'right' #
   ) +
+  # scale_color_discrete(guide = guide_legend(keywidth = 0.4, keyheight = 0.4)) +
   guides(
-    # fill = guide_legend(nrow = 2, byrow = TRUE)
-    fill = guide_legend(direction = 'vertical') #
+    # fill = guide_legend(nrow = 2, byrow = TRUE),
+    fill = guide_legend(direction = 'vertical')
   ) +
-  coord_fixed(ratio = 2) #
+  coord_fixed(ratio = 1.5) #
 
 # Save to outputs for paper
 ggsave(
   metric_heatmap,
   filename = 'outputs/fig_metric_heatmap.png',
-  width = 5,
-  # width = 7.5,
-  height = 7,
+  width = 6,
+  height = 8,
   units = 'in',
   dpi = 300,
   bg = 'white'
