@@ -341,7 +341,7 @@ map <- tm_shape(tiles) +
     "n_metrics", 
     palette = "brewer.greens",
     title = "Metric\nRepresentation",
-    # breaks = c(seq(21, 41, 5), 42:47),
+    breaks = c(seq(22, 43, 3)),
     breaks = seq(min(var_counts$n_metrics), max(var_counts$n_metrics), 5),
     fill.legend = tm_legend(
       reverse = TRUE

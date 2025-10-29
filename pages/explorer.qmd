@@ -1,0 +1,29 @@
+---
+title: "Explorer"
+---
+
+SMexplorer is a a Shiny app that allows for interactive exploration of metrics, mostly at the county level. It includes a map page, a bivariate plot explorer to see relations between metrics, a county/state details page, and a metadata table much like what is included in this Quarto doc. It tends to work best if you open it in its own page using the button below:
+
+```{r echo=FALSE}
+pacman::p_load(
+    shiny,
+    htmltools
+)
+
+tagList(
+    tags$div(
+        style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
+        tags$a(
+            href = "https://fsrc.w3.uvm.edu/SMexplorer/", 
+            tags$button(
+                "Go To SM-Explorer",
+                class = 'btn btn-primary'
+            )
+        )
+    )
+)
+```
+
+You can also just use it here in the window, but some features, like the full screen mode in the map page, will only work in a separate tab. Note that either way, there is a bit of a cold start-up time before the app gets running and becomes responsive.
+
+<iframe height="800" width="100%" frameborder="no" src="https://fsrc.w3.uvm.edu/SMexplorer/"> </iframe>

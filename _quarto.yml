@@ -14,6 +14,7 @@ project:
     - pages/current_framework.qmd
     - pages/metadata_table.qmd
     - pages/metrics_table.qmd
+    - pages/explorer.qmd
     - pages/refined_framework.qmd
     - pages/refined_metadata.qmd
     - pages/metric_distributions.qmd
@@ -79,6 +80,8 @@ website:
             href: pages/metadata_table.qmd
           - text: Metrics Data
             href: pages/metrics_table.qmd
+          - text: SMexplorer
+            href: pages/explorer.qmd
       - section: National/State Analyses
         contents:
           - text: State Secondary Data Framework
@@ -135,7 +138,7 @@ format:
     link-external-icon: true
     title-block-style: default
 
-bibliography: 
+bibliography:
   - assets/fsrc.bib
   - assets/FSRI.bib
 
