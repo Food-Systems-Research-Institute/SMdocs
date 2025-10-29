@@ -135,7 +135,9 @@ format:
     link-external-icon: true
     title-block-style: default
 
-bibliography: assets/fsrc.bib
+bibliography: 
+  - assets/fsrc.bib
+  - assets/FSRI.bib
 
 execute:
   warning: false

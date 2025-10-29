@@ -8,7 +8,7 @@ editor_options:
   chunk_output_type: console
 warnings: false
 execute:
-  cache: true
+  cache: false
 ---
 
 ```{r}
@@ -68,66 +68,6 @@ conflicts_prefer(
 #| label: graph_functions
 #| output: false
 #| echo: false
-## Functions to make regression CI graphs
-
-# Take DF of model outputs (variable_name, coefficient, p values, outcomes...)
-# and format for regression graphs. Returns formatted data as well as a lookup
-# to match "indicator-metric" label to dimension to add colors.
-# prepare_figure_data <- function(model_output_df) {
-#   # Title case and combine labels
-#   figure_data <- model_output_df %>%
-#     mutate(
-#       indicator = snakecase::to_title_case(indicator),
-#       metric = snakecase::to_title_case(metric),
-#       combined_label = paste(indicator, "-", metric)
-#     )
-#   
-#   # Order dimensions alphabetically
-#   ordered_dims <- sort(unique(figure_data$dimension))
-#   
-#   # Arrange and filter
-#   figure_data <- figure_data %>%
-#     mutate(
-#       dimension = factor(dimension, levels = ordered_dims),
-#       estimate = as.numeric(estimate)
-#     ) %>%
-#     arrange(dimension, estimate) %>%
-#     mutate(
-#       combined_label = factor(combined_label, levels = rev(unique(combined_label)))
-#     ) %>%
-#     ungroup()
-#   
-#   # Create label-dimension lookup
-#   label_dimension_lookup <- figure_data %>%
-#     distinct(combined_label, dimension)
-#   
-#   # Return both processed data and label-dimension
-#   list(
-#     figure_data = figure_data,
-#     label_dimension_lookup = label_dimension_lookup
-#   )
-# }
-
-# Create a function for making y-axis labels using a palette for text colors
-# and label dimension lookup from prepare_figure_data()
-# make_y_axis_labels <- function(label_dimension_lookup, dp_text_palette) {
-#   function(x) {
-#     sapply(x, function(y) {
-#       dim_val <- label_dimension_lookup$dimension[label_dimension_lookup$combined_label == y]
-#       dimension_label_color <- dp_text_palette[as.character(dim_val)]
-#       
-#       # Split the combined label into indicator and metric
-#       parts <- strsplit(y, " - ", fixed = TRUE)[[1]]
-#       indicator_bold <- paste0("<b>", parts[1], "</b>")
-#       metric <- parts[2]
-#       
-#       # Recombine with bold indicator and normal metric
-#       formatted_label <- paste(indicator_bold, "-", metric)
-#       
-#       paste0('<span style="color:', dimension_label_color, ';">', formatted_label, '</span>')
-#     })
-#   }
-# }
 
 # Take formatted figure data, a palette for text colors, the label dimension
 # lookup from prepare_figure_data(). Return ggplot graph object
@@ -220,13 +160,15 @@ pct_change_graph <- function(figure_data,
 }
 ```
 
-This page explores time series data at state and county level, then runs some regressions to see whether metrics are improving or declining over time at the county level. We first run weighted OLS models with robust SEs in @sec-ols. Then in @sec-spdep, we use spatial error models weighted by both geography and weighting variables.
+This page explores time series data at the state and county level, then runs some regressions to see whether metrics are improving or declining over time at the county level. We first run weighted OLS models with robust SEs in @sec-ols. Then in @sec-spdep, we use spatial error models weighted by both geography and weighting variables.
 
 ## Time Series
 
-Plot time series of average variable that has at least 2 data points. These are unweighted values.
+Plot time series of each metric that has at least two data points. These are unweighted values. LOESS curves are shown in blue, while individual county/state data are shown in black
 
 ### County Data
+
+First, we prepare a vector names of our time series variables for counties:
 
 ```{r}
 #| label: prep_series
@@ -251,7 +193,7 @@ series_vars <- map(vars, ~ {
 usethis::use_data(series_vars, overwrite = TRUE)
 ```
 
-Land value per acre also appears jenky, but it is because Richmond County, NY (Staten Island) has a land value of 2.5 million per acre while most other counties are below 100k. We should probably remove this as an outlier.
+Now we plot each graph individually and arrange them together:
 
 ```{r}
 #| label: county_time_series
@@ -285,6 +227,8 @@ ggarrange(
 ```
 
 ### State Data
+
+Again, start by getting a vector of time series metrics for state data, then plot all metrics:
 
 ```{r}
 #| label: state_time_series
@@ -337,7 +281,7 @@ ggarrange(
 
 ### Tiny Trend Graphs
 
-Outputs not shown here - these will be added to table in paper.
+Outputs not shown here - these will be added to a table in the paper.
 
 ```{r}
 all_series_vars <- c(series_vars, state_series_vars)
@@ -439,7 +383,6 @@ First create a weights crosswalk that links `variable_name`s to weighting variab
 
 ```{r}
 #| label: weights_crosswalk
-#| output: false
 weights_crosswalk <- data.frame(
   metric = c(
     'GDP',
@@ -482,7 +425,6 @@ weights_crosswalk <- data.frame(
     'totalSalesCommodities'
   )
 )
-weights_crosswalk
 
 # Link weight vars to the appropriate variables
 weights_crosswalk <- SMdocs::dp_meta %>% 
@@ -492,11 +434,16 @@ weights_crosswalk <- SMdocs::dp_meta %>%
   setNames(c('variable_name', 'weight_metric', 'weight_variable')) %>% 
   select(-weight_metric) %>% 
   na.omit()
-get_str(weights_crosswalk)
-weights_crosswalk
+head(weights_crosswalk)
 ```
 
-Run regressions for all time series variables where time points \> 1.
+Run weighted OLS regressions for all time series variables where time points \> 1. The general formula is: 
+
+$$
+\Large y_i = \beta_0 + \beta_1 x_{1i} + \beta_2 x_{2i} + \epsilon_i,
+$$
+
+where $y_i$ is the normalized value of the metric across counties, $x_{1i}$ is the year, $x_{2i}$ is the state each county is part of, and $\epsilon$ is the error term.
 
 ```{r}
 #| label: regressions
@@ -579,6 +526,8 @@ lmtest::coeftest(res[[1]])
 saveRDS(res, 'data/objects/weighted_ols_outs.rds')
 ```
 
+We are saving these outputs to a file so we don't have to rerun it every time we want them.
+
 ### Wrangling
 
 Now that we have regression outputs, let's put them in a table to see which ones change significantly over time.
@@ -635,7 +584,7 @@ Note that we only have 2 years for the mobility disability metric - 2023 and 202
 
 Out of `{r} n_metrics` metrics with \> 1 time point, we have `{r} n_change` metrics that change significantly over time (`{r} round(perc_sig, 2)`%).
 
-Still have to make sense of the directional values of our metrics. These were defined in the [Aggregation](../pages/aggregation.qmd) from the main analysis branch.
+Still have to make sense of the directional values of our metrics. These were defined in the [Aggregation](../pages/aggregation.qmd) from the main analysis branch. In this next chunk, we assign normative directions to each metric so we can tell whether they are getting better or worse over time based on whether high values or low values are desirable.
 
 ```{r}
 #| label: make_sense_of_trends
@@ -689,9 +638,13 @@ model_outputs
 
 `{r} percs[['better']]`% are getting better and `{r} percs[['worse']]`% are getting worse. We drop `{r} length(lost)` metrics here that don't have proper directions (`{r} print_lost`).
 
-Check out table with outputs for each regression. Filter by significance and outcome. Trend is just whether it is going up or down, outcome is whether that is good or bad.
 
 ### Table
+
+Now we can check out the outputs table for each regression. In each model, 
+
+
+Trend is just whether it is going up or down, outcome is whether that is good or bad.
 
 ```{r}
 #| label: reg_table
@@ -721,121 +674,8 @@ Figure below shows 95% confidence intervals for the coefficients of each metric,
 ```{r}
 #| label: regression_figure
 # Combined label for indicator and metric
-# output_data <- framed_outputs %>%
-#   mutate(
-#     indicator = snakecase::to_title_case(indicator),
-#     metric = snakecase::to_title_case(metric),
-#     combined_label = paste(indicator, "-", metric)  # Combine indicator and metric
-#   )
-  
-# Color code by dimension
-# dimension_colors <- c(
-#   "economics"  = "#BF7417FF",
-#   "environment"  = "#A8BE74FF",
-#   "health" = "#9CB6A9FF",
-#   "production" = "#635C72FF",
-#   "social" = "#784116FF"
-# )
 
-# # Order dimensions alphabetically
-# ordered_dims <- sort(unique(output_data$dimension))
-# 
-# # Group by dimension, then alphabetically, and filter out "poor mental health"
-# output_data <- output_data %>%
-#   mutate(
-#     dimension = factor(dimension, levels = ordered_dims)
-#   ) %>%
-#   arrange(dimension, estimate) %>%
-#   mutate(
-#     combined_label = factor(combined_label, levels = rev(unique(combined_label))) 
-#   ) %>%
-#   filter(metric != "Poor Mental Health Days") %>%
-#   ungroup()
-# 
-# # Getting colors correctly mapped to combined labels
-# label_dimension_lookup <- output_data %>%
-#   distinct(combined_label, dimension)
-# 
-# # Percent change graph
-# lm_figure <- output_data %>% 
-#   mutate(
-#     across(c(estimate, starts_with('ci')), as.numeric),
-#     outcome = ifelse(is.na(outcome), 'no change', outcome) %>% 
-#       snakecase::to_title_case()
-#   ) %>% 
-#   ggplot(aes(x = estimate, y = combined_label)) +
-#   geom_point(aes(color = outcome)) +
-#   geom_errorbarh(aes(xmin = ci_low, xmax = ci_high, color = outcome)) +
-#   geom_vline(xintercept = 0) +
-#   
-#   # Invisible points to create a second legend (dimension colors)
-#   geom_point(
-#     aes(fill = dimension, color = dimension), 
-#     shape = 22, 
-#     alpha = 0, 
-#     show.legend = TRUE
-#   ) +
-#   
-#   # Outcome legend (color of real points and lines)
-#   scale_color_manual(
-#     values = c('Better' = 'darkgreen', 'No Change' = 'grey', 'Worse' = 'purple'),
-#     name = "Outcome"
-#   ) +
-#   
-#   # Dimension legend (fill colors)
-#   scale_fill_manual(
-#     values = dp_text_palette,
-#     name = "Dimension",
-#     labels = snakecase::to_title_case(names(dp_text_palette))
-#   ) +
-#   
-#   # Add both legends
-#   guides(
-#     color = guide_legend(order = 1, nrow = 2),
-#     fill = guide_legend(
-#       override.aes = list(shape = 22, size = 4, alpha = 1, color = dp_text_palette),
-#       order = 2,
-#       nrow = 2
-#     )
-#   ) +
-#   
-#   theme_minimal() +
-#   
-#   labs(
-#     x = 'Average Percent Change per Year',
-#     y = 'Indicator with Metric'
-#   ) + 
-#   
-#   scale_y_discrete(
-#     labels = function(x) {
-#       sapply(x, function(y) {
-#         dim_val <- label_dimension_lookup$dimension[label_dimension_lookup$combined_label == y]
-#         dimension_label_color <- dp_text_palette[as.character(dim_val)]
-#         
-#         # Split the combined label into indicator and metric
-#         parts <- strsplit(y, " - ", fixed = TRUE)[[1]]
-#         indicator_bold <- paste0("<b>", parts[1], "</b>")
-#         metric <- parts[2]
-#         
-#         # Recombine with bold indicator and normal metric
-#         formatted_label <- paste(indicator_bold, "-", metric)
-#         
-#         paste0('<span style="color:', dimension_label_color, ';">', formatted_label, '</span>')
-#       })
-#     }
-#   ) +
-#   theme(
-#     legend.position = "top",
-#     legend.direction = "horizontal",
-#     legend.title.position = "top",
-#     text = element_text(family = "Times New Roman"),
-#     axis.title = element_text(family = "Times New Roman"),
-#     axis.text = element_text(family = "Times New Roman"),
-#     legend.title = element_text(family = "Times New Roman", hjust = 0.5),
-#     legend.text = element_text(family = "Times New Roman"),
-#     axis.text.y.left = ggtext::element_markdown(),
-#   )
-
+# See repository for function definitions!
 processed_lm_data <- prepare_figure_data(framed_outputs)
 
 lm_figure <- pct_change_graph(
@@ -860,7 +700,15 @@ lm_figure
 
 ### Models
 
-Use `errorsarlm` on all metrics.
+Here we run the same process but using spatial error models with the `spatialreg` package. We are now working with:
+
+$$
+\Large y = X\beta + u, u = \lambda Wu + \epsilon,
+$$
+
+where $y$ are normalized metric values, $X$ is an $n * k$ matrix, $\beta$ is a vector of predictors, $u$ is the spatial autocorrelation error term, $\lambda$ is the spatial error parameter, $W$ is the county weights matrix, and $\epsilon$ is the error term. 
+
+We run this portion of the code in parallel because it has a pretty long run time. Again, results are saved so it doesn't need to be run again unless something changes.
 
 ```{r}
 #| label: spatial_reg_all
@@ -983,6 +831,8 @@ saveRDS(out, 'data/objects/errorsarlm_outs.rds')
 
 #### Reactable Table
 
+First we wrangle our outputs to get the relevant results in a nicely formatted table:
+
 ```{r}
 #| output: false
 sar_outs <- readRDS('data/objects/errorsarlm_outs.rds')
@@ -1092,6 +942,8 @@ sar_model_outputs
 
 We have `{r} n_metrics` metrics modeled. `{r} percs[['better']]`% are getting better, `{r} percs[['worse']]`% are getting worse, and `{r} percs[3]`% are stable. We drop `{r} length(lost)` metrics here that don't have proper directions (`{r} print_lost`).
 
+Now we present the table, including normative outcomes:
+
 ```{r}
 #| label: errorsar_reactable
 sar_framed_outputs <- SMdocs::dp_meta %>% 
@@ -1111,6 +963,7 @@ get_reactable(
   )
 )
 ```
+
 
 #### LaTeX Table
 
@@ -1177,6 +1030,8 @@ latex_df %>%
 ```
 
 #### Figure
+
+Finally, the figure below shows coefficient estimates and confidence intervals for the errorsar models. Green points represent metrics that are trending in a "good" direction, while purple represents trends in a "bad" direction.
 
 ```{r}
 #| label: errorsar_figure

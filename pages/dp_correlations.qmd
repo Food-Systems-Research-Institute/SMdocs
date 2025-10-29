@@ -64,6 +64,8 @@ This page explores correlations among metrics across counties using the latest a
 
 ## Wrangling
 
+Here, filter our dataset to latest time points for each metric, filter to county data only, and join with a crosswalk that matches variable names to metric names. We then make an ordered framework that we use to arrange axes in a correlation matrix below.
+
 ```{r}
 #| label: wrangle
 #| output: false
@@ -101,6 +103,10 @@ ordered_framework
 
 ## Figure
 
+This figure shows absolute values of Spearman rank correlation coefficients among county level metrics. Green cells show significant correlations, while grey cells are insignificant. Darker green cells are stronger correlations and lighter green cells are weaker (but still significant).
+
+Also, credits to Isabella and Tessa for making and improving this figure substantially.
+
 ```{r}
 #| label: make_cor_table
 #| output: false
@@ -122,7 +128,6 @@ vline_placements <- counts %>%
   cumsum() %>% 
   {. + 0.5}
 vline_placements
-
 
 # Reorder our df in proper metric order
 metric_order <- ordered_framework %>% 
@@ -382,6 +387,10 @@ ggsave(
 corplot
 ```
 
+Reading the tea leaves here, it looks like we have lots of strong correlations within the Health dimension. This might suggest that the health metrics are particularly cohesive. It might also suggest that they are redundant, and we could use fewer metrics to measure the dimension. In contrast, the Economics dimension, for example, has very few correlations within its metrics. Again, this might signify a lack of theoretical coherence among metrics or that it is indeed a diverse dimension that requires disparate data sources to measure.
+
+As for significant inter-dimension correlations, there are surprisingly few. This is probably a good thing on average, as strong correlations between dimensions would mean double counting of similar constructs. On the other hand, we might want to see more of these if we are to expect that changes in one dimension cause subsequent changes in another. For example, stricter environmental policies might lead to better environmental outcomes, but we would also want to see any changes it causes in the Production and Economic dimensions.
+
 ## LaTeX Table
 
 Making $\LaTeX$ table for paper.
@@ -482,7 +491,7 @@ df %>%
 
 ## Long Table
 
-Long interactive table that shows p values.
+Also including a long-format interactive table that shows p-values and coefficients. Use this for reporting in paper.
 
 ```{r}
 #| label: cor_table_long
