@@ -14,7 +14,7 @@ The original framework of dimensions, indices, and indicators representing food 
 
 As the project progressed, a collection of new indicators were proposed across all dimensions, yielding a total of 135 indicators. This full set of indicators is shown in @sec-framework_overview. Starting in July of 2024, the FSRC has been using a collaborative and transparent process to reduce the number of indicators to manageable amount that can comprehensively represent the food system while being tractable enough to be interpretable and actionable. 
 
-More information about this refinement process can be found in the [Indicator Refinement](../pages/refinement_process.qmd) pages, including results from surveys on indicator and index importance. Subsequent analyses in the [Refined Framework Analysis](../pages/refined_framework.qmd) use this reduce set of indicators. The selection of metrics to represent those indicators is tentative. For now, we are using a larger set of metrics than might be otherwise ideal to give us flexibility to explore which best represent the system and what the consequences are given different numbers and configurations of metrics.
+More information about this refinement process can be found in the [Indicator Refinement](../pages/refinement_process.qmd) pages, including results from surveys on indicator and index importance. The current set of indicators can be found in the [Current Framework](../pages/current_framework.qmd) section. The [National Analyses](../pages/refined_framework.qmd) shows some preliminary work on developing a weighted index for food system sustainability at the state level. The [Regional Analyses](../pages/dp_intro.qmd) contains the results of a survey of available secondary data at the county level in the Northeast.
 
 <div style="float: center; margin-left: auto; margin-right: auto; margin-bottom: 1em; width: 75%;">
   <img src="../assets/images/wiltshire2024_team_science_diagram.png" alt="Team science process diagram showing the progression from concept papers and backgroundf research to concept paper synthesis meetings to framework refinement, breakout groups for each dimnension, and breakout group synthesis, followed by collaborative drafting of a narrative document and manuscript." style="width: 100%;">
@@ -24,7 +24,7 @@ More information about this refinement process can be found in the [Indicator Re
 
 ## Framework Overview {#sec-framework_overview}
 
-Below is a diagram of all 135 indicators in the framework as of July, 2024. Colors represent dimensions, and splits occur at the dimension and index level. Don't worry too much about not being able to read anything here though. In the next section, we walk through indicator refinement workshops that give us a far tidier framework.
+Below is a diagram of all 135 indicators in the framework as of July, 2024. These have since been reduced dramatically (see [Current Framework](../pages/current_framework)). Colors represent dimensions, and splits occur at the dimension and index level. This is not a terribly practical visualization, but it gives an idea of where we've come as we get into the next sections on indicator refinement. 
 
 ```{r fig.dim=c(10, 10), fig.align='center'}
 #| label: radial_plot

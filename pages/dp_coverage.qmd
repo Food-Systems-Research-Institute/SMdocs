@@ -376,7 +376,7 @@ map <- tm_shape(tiles) +
 map
 ```
 
-Connecticut falls out of this due to the county/region transition. For the rest of our counties, we don't really have the granularity to tell how different they are across dimensions. 
+Connecticut falls out of this due to the county/region transition. For the rest of our counties, we don't really have the granularity to tell how different they are across dimensions. What we can see is that some of our most urban counties around New York and Boston are missing a handful of metrics.
 
 Let's try an interactive map so we can explore each dimension individually. Use the layer symbol in the top left to select which dimension to view. These maps show the proportion of the total metrics available in each county.
 
@@ -485,7 +485,7 @@ indicators_by_year_data <- merged_df %>%
   count(year, dimension, name = "indicator_count") %>% 
   mutate(year = as.numeric(year))
 get_str(indicators_by_year_data)
- 
+
 # Histogram
 indicator_plot <- ggplot(
     indicators_by_year_data, 

@@ -478,7 +478,7 @@ df %>%
     general_title = "",
     general = 
       '\\\\textit{Note: }
-    Pearson correlations among county level metrics using latest time points
+    Spearman correlations among county level metrics using latest time points
     available. Connecticut counties are not included in analyses.
     ***: p < 0.001, **: p < 0.01, *: p < 0.05. ',
     threeparttable = TRUE,

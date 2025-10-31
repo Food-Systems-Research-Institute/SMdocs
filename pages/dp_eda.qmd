@@ -98,6 +98,9 @@ metric_cov <- map(vars, ~ {
     perc_miss = round(100 - ((n_points / n_possible) * 100), 2)
   )
 
+# Overall numbers of missing
+(total_perc_missing <- 100 - (sum(metric_cov$n_points) / sum(metric_cov$n_possible)) * 100)
+  
 missy_metric_df <- metric_cov %>% 
   filter(perc_miss > 5)
 missy_metrics <- missy_metric_df$variable_name
@@ -105,6 +108,8 @@ print_missy_metrics <- paste0(missy_metrics, collapse = ', ')
   
 get_reactable(metric_cov)
 ```
+
+Across all county metrics, total percent missing was `{r} round(total_perc_missing, 2)`.
 
 The metrics with > 5% missing are: `{r} print_missy_metrics`. Now let's see in which counties they are missing data:
 

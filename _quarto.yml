@@ -82,7 +82,7 @@ website:
             href: pages/metrics_table.qmd
           - text: SMexplorer
             href: pages/explorer.qmd
-      - section: National/State Analyses
+      - section: National Analyses - Index Development
         contents:
           - text: State Secondary Data Framework
             href: pages/refined_framework.qmd
@@ -102,7 +102,7 @@ website:
             href: pages/validation.qmd
           - text: Sensitivity and Uncertainty
             href: pages/sensitivity.qmd
-      - section: Regional/County Analyses
+      - section: Regional Analyses - Data Survey
         contents:
           - text: Introduction
             href: pages/dp_intro.qmd
@@ -141,6 +141,7 @@ format:
 bibliography:
   - assets/fsrc.bib
   - assets/FSRI.bib
+  - assets/SM_Data_Survey.bib
 
 execute:
   warning: false
