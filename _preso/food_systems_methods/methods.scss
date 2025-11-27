@@ -1,0 +1,129 @@
+// Serif theme
+/*-- scss:defaults --*/
+
+// fonts
+$font-family-sans-serif: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif !default;
+$presentation-font-size-root: 30px !default;
+
+// colors
+// $body-bg: #f0f1eb !default;
+// $body-color: #000 !default;
+// $link-color: #51483d !default;
+// $link-color: #689D6A !default;
+$body-bg: #f9f5d7 !default;
+$body-color: #282828 !default;
+$selection-bg: #26351c !default;
+$code-block-bg: #f0f1eb !default;
+$link-color: #427b58 !default;
+
+// headings
+$presentation-h1-font-size: 2em !default; // original 2.5
+// $presentation-font-smaller: 0.5em !default; // original 0.7
+$presentation-heading-font: "Palatino Linotype", "Book Antiqua", Palatino, FreeSerif, serif !default;
+$presentation-heading-color: #383d3d !default;
+
+/*-- scss:rules --*/
+
+.reveal a {
+  line-height: 1.3em;
+}
+
+// Make nested list items smaller
+.reveal ul ul li,
+.reveal ol ol li,
+.reveal ul ol li,
+.reveal ol ul li {
+  font-size: 0.9em;
+}
+
+.centered-section {
+  text-align: center;
+}
+
+.centered {
+  display: flex;
+  justify-content: center;
+}
+
+.v-centered {
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 60vh;
+}
+
+// Image styling classes
+.centered-image {
+  display: flex;
+  justify-content: center;
+//   display: block;
+//   margin-left: auto;
+//   margin-right: auto;
+//   width: 90%;
+}
+
+// Wraps plot with border. Should go inside .centered
+.centered-plot {
+  display: inline-block; 
+  border: solid 2px #000;
+}
+
+// .tab-inner {
+//   display: flex;
+//   align-items: center;
+//   justify-content: space-between;
+// }
+
+
+// FROM OLD PRESO
+
+// $presentation-font-size-root: 25px;
+// $body-bg: #fff;
+// $link-color: #154734;
+
+
+// /*-- scss:rules --*/
+
+// .flex-container {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   width: 100%;
+// }
+
+// .flex-container iframe {
+//   width: 80%;
+//   height: 90vh;
+//   border: none;
+// }
+
+// .centered {
+//   display: flex;
+//   justify-content: center;
+// }
+
+// /* Does not work? */
+// .centered-vertical {
+//   display: flex;
+//   justify-content: center;
+//   align-items: center;
+//   height: 100%;
+// }
+
+// /* For centering section headers */
+// .centered-section h1 {
+//   text-align: center;
+// }
+
+// .v-center-container {
+//   display: flex !important;
+//   justify-content: center;
+//   align-items: center;
+//   height: 80%;
+// }
+
+// .left-align-math {
+//   text-align: left;
+//   width: 100%;
+// }
