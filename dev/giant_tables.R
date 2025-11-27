@@ -13,7 +13,8 @@ pacman::p_load(
   knitr,
   kableExtra,
   RefManageR,
-  fuzzyjoin
+  fuzzyjoin,
+  tidyr
 )
 
 pacman::p_load_current_gh('ChrisDonovan307/projecter')
@@ -37,18 +38,22 @@ get_str(giant_tab)
 
 # # Formatting for merges. Note this apparently has to be manual once page
 # # breaks are clear.
-# % Dimensions
-# cell{2}{1}={r=7}{l},
-# cell{9}{1}={r=5}{l},
-# cell{14}{1}={r=3}{l},
-# cell{17}{1}={r=3}{l},
-# % Indicators
-# cell{7}{2}={r=2}{l},
-# cell{11}{2}={r=3}{l},
-# cell{17}{2}={r=3}{l},
+% Dimensions
+cell{2}{1}={r=7}{l},
+cell{9}{1}={r=5}{l},
+cell{14}{1}={r=3}{l},
+cell{17}{1}={r=3}{l},
+% Indicators
+cell{7}{2}={r=2}{l},
+cell{11}{2}={r=3}{l},
+cell{17}{2}={r=3}{l},
 
 # Wrangle table
 trend_files <- dir('outputs/trend_plots/')
+trend_file_vars <- trend_files %>%
+  str_remove_all('fig_trend_') %>%
+  str_remove_all('\\.png')
+get_str(giant_tab)
 body_table <- giant_tab %>%
   select(
     dimension,
@@ -71,16 +76,22 @@ body_table <- giant_tab %>%
       .default = NA
     ),
 
+    # variable_name = ifelse(is.na(variable_name), '', variable_name),
+
     # Where we have a metric, include an image of trend
     trend = case_when(
-      (metric != 'NONE' & !is.na(variable_name) &
-         str_detect(paste(trend_files, collapse = "|"), variable_name)) ~ paste0(
-        '\\includegraphics[width=\\hsize,valign=c]{figures/trend_figures/fig_trend_',
-        variable_name,
-        '.png}'
-      ),
+      metric != 'NONE' & variable_name %in% trend_file_vars ~
+        paste0(
+          '\\includegraphics[width=\\hsize,valign=c]{fig_trend_',
+          variable_name,
+          '.png}'
+        ),
       .default = NA_character_
     ),
+      # & str_detect(paste(trend_files, collapse = "|"), variable_name)) ~
+
+    # Make indicators italic
+    indicator = paste0('\\textit{', indicator, '}'),
 
     # Manually escape (so that we don't excape in kbl())
     across(
@@ -169,6 +180,7 @@ body %>%
 header <- '\\begin{landscape}
 \\scriptsize
 \\begin{longtblr}[
+  placement = htbp,
   caption = Metric Attributes and Data Sources,
   label = {tab:tab_metrics_body},
   remark{Note} = {
@@ -184,6 +196,34 @@ header <- '\\begin{landscape}
   }
 ]{
   % colspec={Q[50] Q[200] Q[200] Q[200]}, % Column widths,
+  % Dimension cell merges
+  cell{2}{1}={r=8}{l},
+  cell{10}{1}={r=7}{l}, % econ to env (but clean, next is env)
+  cell{17}{1}={r=7}{l},
+  cell{24}{1}={r=8}{l},
+  cell{32}{1}={r=4}{l}, % env to health
+  cell{36}{1}={r=2}{l},
+  cell{38}{1}={r=6}{l},
+  cell{44}{1}={r=6}{l},
+  cell{50}{1}={r=3}{l}, % health to prod
+  cell{53}{1}={r=3}{l},
+  cell{56}{1}={r=6}{l},
+  cell{62}{1}={r=5}{l}, % prod to social
+  cell{67}{1}={r=4}{l},
+  cell{71}{1}={r=8}{l},
+  cell{79}{1}={r=8}{l},
+  % Indicators
+  cell{7}{2}={r=2}{l},
+  cell{11}{2}={r=3}{l},
+  cell{17}{2}={r=3}{l},
+  cell{22}{2}={r=2}{l},
+  cell{28}{2}={r=2}{l},
+  cell{32}{2}={r=2}{l},
+  cell{34}{2}={r=2}{l},
+  cell{47}{2}={r=2}{l},
+  cell{51}{2}={r=2}{l},
+  cell{63}{2}={r=3}{l},
+  %
   rowhead = 1,
   row{1} = {font=\\bfseries},
   colsep = 1pt, % Spaces between column lines and text/figure
@@ -324,7 +364,7 @@ app_table_long <- app_table %>%
     Citations = str_split(Citations, ","),
     row_id = row_number() # Use this to group by later
   ) %>%
-  unnest(Citations) %>%
+  tidyr::unnest(Citations) %>%
   mutate(Citations = str_trim(Citations))
 get_str(app_table_long)
 
@@ -333,6 +373,7 @@ app_table_long <- app_table_long %>%
   stringdist_left_join(bib, by = c('Citations' = 'label'), max_dist = 2)
 app_table_long %>%
   select(Citations, label, key)
+# Check here
 
 # Fixes
 app_table_long$key[app_table_long$Citations == 'Jones et al. (2016)'] <-

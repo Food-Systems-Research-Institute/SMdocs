@@ -53,26 +53,33 @@ ul.task-list li input[type="checkbox"] {
 <h1>Sustainability Metrics Docs</h1>
 <section id="about" class="level2">
 <h2 class="anchored" data-anchor-id="about">About</h2>
-<blockquote class="blockquote">
-<p>[!NOTE] This project is development. The framework, metrics, and analyses are all preliminary.</p>
-</blockquote>
-<p>The Sustainability Metrics project is a collaborative effort to measure food system sustainability in New England led by the University of Vermont (UVM) UVM Food Systems Research Center (FSRC). We work with five teams of investigators conducting primary research in vital aspects of local and regional food systems. To support this work, we are also exploring secondary data sources.</p>
-<p>This repository houses a Quarto project which describes the framework and contains information on the metrics as well as preliminary exploratory analyses. You can visit the <a href="https://fsrc.w3.uvm.edu/sustainability_metrics/pages/index.html">Quarto website here</a>.</p>
+<p>The Sustainability Metrics project is a collaborative effort to measure food system sustainability in New England led by the University of Vermont (UVM) Food Systems Research Institute (FSRI). We work with five teams of investigators conducting primary research in vital aspects of local and regional food systems. To support this work, we are also exploring secondary data sources.</p>
+<p>This repository houses a Quarto project which describes the framework and contains information on the metrics as well as preliminary exploratory analyses. You can visit the <a href="https://fsrc.w3.uvm.edu/sustainability_metrics/pages/index.html">Quarto website here</a>. Data for this repository are pulled from the <a href="https://www.github.com/Food-Systems-Research-Institute/SMdata">SMdata</a> package.</p>
 </section>
 <section id="project-structure" class="level2">
 <h2 class="anchored" data-anchor-id="project-structure">Project Structure</h2>
 <ul>
-<li><code>data</code>: Clean datasets imported from <a href="https://www.github.com/Food-Systems-Research-Institute/SMdata">SMdata</a>, including:
-<ul>
-<li><code>sm_data.rds</code>: metrics, metadata, fips keys, and more as a list R object</li>
-<li><code>sm_spatial.rds</code>: polygons for Northeast states, counties, and more as a list R object</li>
-<li><code>metrics_and_metadata.zip</code>: Zip file containing three <code>.csv</code>s containing metrics, metadata, and a fips key. Thrown in here to make it easier to pull data from Python directly. Rather than handing off from R.</li>
-</ul></li>
-<li><code>pages</code>: Quarto <code>.qmd</code> files that make up the website, including graphs and analyses. Quarto also plays nicely with <code>.ipynb</code> files.</li>
-<li><code>images</code>: Figures and photos used in Quarto doc.</li>
-<li><code>dev</code>: Functions and scripts to support analyses. Bit of a mess and needs some pruning.</li>
-<li><code>temp</code>: Various temporary scripts for testing.</li>
+<li><code>pages/</code>: Quarto <code>.qmd</code> files that make up the website, one per page, including graphs and analyses.</li>
+<li><code>outputs/</code>: Graphs and tables produced in <code>pages</code> are saved here.</li>
+<li><code>_assets/</code>: Contains images, CSS, and <code>.bib</code> files used in the project.</li>
+<li><code>_preso/</code>: Reveal.js presentations building on SMdocs analyses</li>
+<li><code>_site/</code>: Rendered site as HTML</li>
+<li><code>R/</code>: Functions used in the package.</li>
+<li><code>man/</code>: Documentation of functions and datasets used in the package.</li>
+<li><code>tests/</code>: Unit testing of package functions.</li>
+<li><code>dev/</code>: Functions and scripts to support analyses. Bit of a mess and needs some pruning.</li>
 </ul>
+<section id="data-inventory-manuscript" class="level3">
+<h3 class="anchored" data-anchor-id="data-inventory-manuscript">Data Inventory Manuscript</h3>
+<ul>
+<li>Wrangling and analysis scripts located in <code>pages/</code> directory as <code>dp_*</code>.</li>
+<li>Table processing scripts also found in <code>dev/</code>:
+<ul>
+<li><code>dev/excel_processing.R</code> takes Excel with the framework of dimensions, indices, indicators, and metrics for the manuscript and creates datasets used in scripts. It also processes the literature justifications for indicators.</li>
+<li><code>dev/giant_tables.R</code> makes two upsettingly large tables for the manuscript - one with summary stats and sources, the other with supplementary material including literature justifications.</li>
+</ul></li>
+</ul>
+</section>
 </section>
 </section>
 
