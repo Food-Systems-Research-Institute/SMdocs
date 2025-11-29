@@ -1,0 +1,46 @@
+---
+title: "Quantitative Methods for Food Systems Research"
+author: "Chris Donovan"
+institute: "Food Systems Research Institute"
+date: '2025-11-05'
+date-format: long
+format: revealjs
+engine: knitr
+editor:
+  markdown:
+    wrap: 72
+---
+
+## Does R Work?
+
+```{r}
+str(iris)
+```
+
+- Yep
+
+## Does Python work?
+
+```{python}
+#| include: false
+import sys
+print(sys.executable)
+```
+
+```{python}
+import numpy as np
+import pandas as pd
+import seaborn as sns
+iris = sns.load_dataset('iris')
+iris.info()
+```
+
+- Yep, it does. Note jupyter argument in YAML, installing jupyter, jupyter-cache, etc, in venv, and execute daemon: false
+- Also note that it is the `.Renviron` file that is setting the path to `QUARTO_PYTHON`, not `_environment`. Not even sure what `_environment` is doing.
+- We also need complete file paths apparently, not relative to project
+
+## Plot
+
+```{python}
+sns.boxplot(data = iris)
+```

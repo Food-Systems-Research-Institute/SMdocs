@@ -82,7 +82,7 @@ This section of pages presents the analysis and most of the data wrangling for a
 6. reflect the intended unit of analysis of each indicator where possible
 7. be in the public domain or under an open-source license
 
-We surveyed a range of public data sources to fit the indicator framework according to these criteria, including federal agencies (USDA, BLS, Census Bureau), academic studies (University of Wisconsin County Health Rankings), as well as NGO and crowdsourced data (NatureServe, iNaturalist). We focus on data available at the county level, as they are the finest resolution at which much secondary data are organized. Further, county level data are interpretable and actionable within a regionally focused framework. The following pages show what data we found, describe their quality and characteristics, and present some analyses of their relationships and trends over time.
+We surveyed a range of public data sources to fit the indicator framework according to these criteria, including federal agencies (USDA, BLS, Census Bureau), academic studies (University of Wisconsin County Health Rankings), as well as NGO and crowdsourced data (NatureServe, iNaturalist). We focus on regional data because of the ability of regional institutions to make policy changes [@clancy2010LocalEnoughArguments], and the county level as this is often finest resolution at which much secondary data are organized. The following pages show what data we found, describe their quality and characteristics, and present some analyses of their relationships and trends over time.
 
 Note that we have taken some liberties with consolidating the framework that can be seen in the graphs and tables below to make the material a bit more presentable as framework refinement continues. 
 
@@ -240,11 +240,11 @@ plots$social
 # })
 ```
 
-## Sunburst
-
-This doesn't add a whole lot but it fun to explore. Would be best with shorter labels though.
+<!-- This doesn't add a whole lot but it fun to explore. Would be best with shorter labels though. -->
 
 ```{python}
+#| include: false
+#| eval: false
 import plotly.io as pio
 import plotly.express as px
 import plotly.graph_objects as go

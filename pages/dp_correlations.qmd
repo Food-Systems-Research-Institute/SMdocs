@@ -478,7 +478,7 @@ df %>%
     general_title = "",
     general = 
       '\\\\textit{Note: }
-    Pearson correlations among county level metrics using latest time points
+    Spearman correlations among county level metrics using latest time points
     available. Connecticut counties are not included in analyses.
     ***: p < 0.001, **: p < 0.01, *: p < 0.05. ',
     threeparttable = TRUE,
@@ -508,3 +508,55 @@ tab %>%
     )
   )
 ```
+
+Reporting for paper: 
+
+```{r}
+#| output: false
+# Join dimensions back to correlations for reporting
+tree <- SMdocs::dp_tree %>% 
+  select(dimension, metric) %>% 
+  filter(str_detect(metric, 'NONE', negate = TRUE))
+
+# How many correlations are significant overall
+(perc_sig <- round(mean(tab$sig == '*') * 100, 2))
+(perc_unsig <- 100 - perc_sig)
+
+# Internal correlations among each dimension
+dimensions <- unique(tree$dimension)
+internal_cors <- map(dimensions, ~ {
+  dim_metrics <- tree %>% 
+    filter(dimension == .x) %>% 
+    pull(metric)
+  dim_cors <- tab %>% 
+    filter(var_1 %in% dim_metrics & var_2 %in% dim_metrics) %>% 
+    pull(sig)
+  dim_sig_cors <- round(mean(dim_cors == '*') * 100, 2)
+}) %>% 
+  setNames(c(dimensions)) %>% 
+  as.data.frame()
+internal_cors
+
+# Check percentage of sig correlations for a couple of examples in paper:
+get_str(tab)
+vars <- c(
+  'Violent Crime Rate',
+  'Land and Building Value per Acre'
+)
+examples <- map(vars, ~ {
+  sigs <- tab %>% 
+    filter(var_1 == .x | var_2 == .x) %>% 
+    pull(sig)
+  round(mean(sigs == '*') * 100, 2)
+}) %>% 
+  setNames(c(vars)) %>% 
+  bind_rows()
+examples
+```
+
+Percentage of significant internal correlations in each dimension:
+
+```{r}
+internal_cors
+```
+

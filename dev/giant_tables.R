@@ -11,7 +11,10 @@ pacman::p_load(
   dplyr,
   stringr,
   knitr,
-  kableExtra
+  kableExtra,
+  RefManageR,
+  fuzzyjoin,
+  tidyr
 )
 
 pacman::p_load_current_gh('ChrisDonovan307/projecter')
@@ -35,18 +38,22 @@ get_str(giant_tab)
 
 # # Formatting for merges. Note this apparently has to be manual once page
 # # breaks are clear.
-# % Dimensions
-# cell{2}{1}={r=7}{l},
-# cell{9}{1}={r=5}{l},
-# cell{14}{1}={r=3}{l},
-# cell{17}{1}={r=3}{l},
-# % Indicators
-# cell{7}{2}={r=2}{l},
-# cell{11}{2}={r=3}{l},
-# cell{17}{2}={r=3}{l},
+% Dimensions
+cell{2}{1}={r=7}{l},
+cell{9}{1}={r=5}{l},
+cell{14}{1}={r=3}{l},
+cell{17}{1}={r=3}{l},
+% Indicators
+cell{7}{2}={r=2}{l},
+cell{11}{2}={r=3}{l},
+cell{17}{2}={r=3}{l},
 
 # Wrangle table
 trend_files <- dir('outputs/trend_plots/')
+trend_file_vars <- trend_files %>%
+  str_remove_all('fig_trend_') %>%
+  str_remove_all('\\.png')
+get_str(giant_tab)
 body_table <- giant_tab %>%
   select(
     dimension,
@@ -69,16 +76,22 @@ body_table <- giant_tab %>%
       .default = NA
     ),
 
+    # variable_name = ifelse(is.na(variable_name), '', variable_name),
+
     # Where we have a metric, include an image of trend
     trend = case_when(
-      (metric != 'NONE' & !is.na(variable_name) &
-         str_detect(paste(trend_files, collapse = "|"), variable_name)) ~ paste0(
-        '\\includegraphics[width=\\hsize,valign=c]{figures/trend_figures/fig_trend_',
-        variable_name,
-        '.png}'
-      ),
+      metric != 'NONE' & variable_name %in% trend_file_vars ~
+        paste0(
+          '\\includegraphics[width=\\hsize,valign=c]{fig_trend_',
+          variable_name,
+          '.png}'
+        ),
       .default = NA_character_
     ),
+      # & str_detect(paste(trend_files, collapse = "|"), variable_name)) ~
+
+    # Make indicators italic
+    indicator = paste0('\\textit{', indicator, '}'),
 
     # Manually escape (so that we don't excape in kbl())
     across(
@@ -167,6 +180,7 @@ body %>%
 header <- '\\begin{landscape}
 \\scriptsize
 \\begin{longtblr}[
+  placement = htbp,
   caption = Metric Attributes and Data Sources,
   label = {tab:tab_metrics_body},
   remark{Note} = {
@@ -182,6 +196,34 @@ header <- '\\begin{landscape}
   }
 ]{
   % colspec={Q[50] Q[200] Q[200] Q[200]}, % Column widths,
+  % Dimension cell merges
+  cell{2}{1}={r=8}{l},
+  cell{10}{1}={r=7}{l}, % econ to env (but clean, next is env)
+  cell{17}{1}={r=7}{l},
+  cell{24}{1}={r=8}{l},
+  cell{32}{1}={r=4}{l}, % env to health
+  cell{36}{1}={r=2}{l},
+  cell{38}{1}={r=6}{l},
+  cell{44}{1}={r=6}{l},
+  cell{50}{1}={r=3}{l}, % health to prod
+  cell{53}{1}={r=3}{l},
+  cell{56}{1}={r=6}{l},
+  cell{62}{1}={r=5}{l}, % prod to social
+  cell{67}{1}={r=4}{l},
+  cell{71}{1}={r=8}{l},
+  cell{79}{1}={r=8}{l},
+  % Indicators
+  cell{7}{2}={r=2}{l},
+  cell{11}{2}={r=3}{l},
+  cell{17}{2}={r=3}{l},
+  cell{22}{2}={r=2}{l},
+  cell{28}{2}={r=2}{l},
+  cell{32}{2}={r=2}{l},
+  cell{34}{2}={r=2}{l},
+  cell{47}{2}={r=2}{l},
+  cell{51}{2}={r=2}{l},
+  cell{63}{2}={r=3}{l},
+  %
   rowhead = 1,
   row{1} = {font=\\bfseries},
   colsep = 1pt, % Spaces between column lines and text/figure
@@ -214,6 +256,34 @@ writeLines(body_out, 'outputs/tab_metrics_body.tex')
 
 
 # Appendix Table ----------------------------------------------------------
+## Ref Manager -------------------------------------------------------------
+
+
+# Pull from bibtex file to convert shorthand citations in appendix table
+bib_file <- ReadBib('dev/sm_data_survey.bib')
+bib <- imap(bib_file, ~ {
+  if (length(.x$author) > 2) {
+    label = paste0(.x$author$family[[1]], " et al. (", .x$year, ")")
+  } else if (length(.x$author) == 2) {
+    label = paste0(.x$author$family[[1]], ' \\& ', .x$author$family[[2]], "  (", .x$year, ")")
+  } else if (length(.x$author) == 1) {
+    label = paste0(.x$author$family[[1]], " (", .x$year, ")")
+  } else {
+    return(NULL)
+  }
+  data.frame(
+    key = .y,
+    label = label
+  )
+}) %>%
+  # setNames(c(names(bib_file))) %>%
+  purrr::discard(is.null) %>%
+  dplyr::bind_rows()
+get_str(bib)
+
+
+
+## Start Table -------------------------------------------------------------
 
 
 #' To include:
@@ -235,25 +305,117 @@ app_table <- SMdocs::giant_table %>%
   select(
     indicator,
     metric,
-    resolution,
     updates,
+    desirable,
     states = n_states,
     counties = n_counties,
     years = n_years,
     range = year_range,
     citations = shorthand_citations
   ) %>%
-  mutate(across(c(resolution, updates), ~ str_to_title(.x))) %>%
+  mutate(
+    desirable = case_when(
+      str_detect(desirable, 'lower') ~ 'lower',
+      str_detect(desirable, 'higher') ~ 'higher',
+      str_detect(desirable, 'target') ~ 'target',
+      .default = NA
+    ),
+    across(c(updates, desirable), ~ str_to_title(.x)),
+    across(everything(), ~ str_replace_all(.x, '&', '\\\\&')),
+  ) %>%
   setNames(c(str_to_title(names(.))))
 get_str(app_table)
 app_table
+app_table$Desirable
+
+
+
+## Fixes -------------------------------------------------------------------
+
+# Consumer price index - turn NAs into dashes
+app_table <- app_table %>%
+  mutate(
+    across(c(Desirable, States, Counties, Years, Range, Citations),
+    ~ case_when(
+      Metric == 'Consumer Price Index for food at home' ~ '\\textemdash',
+      .default = as.character(.x)
+    )),
+    Citations = case_when(
+      is.na(Citations) | Citations == 'NA' ~ '\\textemdash',
+      .default = Citations
+    )
+  )
+app_table %>%
+  filter(Metric == 'Consumer Price Index for food at home')
+get_str(app_table)
+
+
+
+## Citation Matching -------------------------------------------------------
+
+
+# Match Citations column with key from bib files
+get_str(bib)
+get_str(app_table)
+
+# Split citations on commas
+app_table_long <- app_table %>%
+  mutate(
+    Citations = str_split(Citations, ","),
+    row_id = row_number() # Use this to group by later
+  ) %>%
+  tidyr::unnest(Citations) %>%
+  mutate(Citations = str_trim(Citations))
+get_str(app_table_long)
+
+# Join long table to bib labels and keys
+app_table_long <- app_table_long %>%
+  stringdist_left_join(bib, by = c('Citations' = 'label'), max_dist = 2)
+app_table_long %>%
+  select(Citations, label, key)
+# Check here
+
+# Fixes
+app_table_long$key[app_table_long$Citations == 'Jones et al. (2016)'] <-
+  'jones2016SystematicReviewMeasurement'
+app_table_long %>%
+  select(Citations, label, key)
+
+# Collapse back down, make list cols for keys
+keys <- app_table_long %>%
+  group_by(row_id) %>%
+  summarize(Citations = paste0(key, collapse = ','))
+get_str(keys)
+
+# Format citations
+keys <- keys %>%
+  mutate(
+    Citations = case_when(
+      is.na(Citations) | Citations == 'NA' ~ '\\textemdash',
+      !is.na(Citations) ~ paste0('\\cite{', Citations, '}'),
+      .default = NA
+    )
+  )
+keys$Citations %>% head
+
+# Join keys back to app_table
+get_str(app_table)
+get_str(keys)
+
+app_table$Citations <- keys$Citations
+get_str(app_table)
+
+
+
+## Latex -------------------------------------------------------------------
+
 
 # Get baseline table
 app_latex <- app_table %>%
   kbl(
     format = 'latex',
-    caption = 'Supplemental Metric Data'
-    # escape = FALSE
+    caption = 'Supplemental Metric Data',
+    escape = FALSE
   ) %>%
   kable_styling(
     font_size = 10
@@ -269,28 +431,45 @@ app_body <- app_latex %>%
 cat(app_body)
 
 # Add our own header and footer
+# \\begin{longtblr}[
+#   caption = Metric Attributes and Data Sources,
+#   label = {tab:tab_metrics_body},
+#   remark{Note} = {
+#     Metrics were collected at the county level where possible,
+#     otherwise at the state level. These scales are represented accordingly by $\\mu$
+#     and $\\sigma$. Trend graphs show locally estimated regression lines in each metric
+#     from 2000-2024 in blue, with state or counties in grey.
+#     Metrics in units of USD were inflation adjusted to 2024 using the CPI.
+#     Metrics without a trend graph were available for only a
+#     single year. Weighting variables were used in regression analyses only.
+#     Smoothed weights were 5-year metrics from USDA NASS or US Census Bureau
+#     ACS-5 and interpolated linearly between data points.
+#   }
+# ]{
 app_header <- '\\begin{landscape}
 \\scriptsize
 \\begin{longtblr}[
   caption = Supplementary Metric Information,
-  label = {tab:tab_metrics_appendix}
+  label = {tab:tab_metrics_appendix},
   remark{Note} = {Resolution reflects the finest scale to which data were
   calculated for analyses. Metrics derived from spatial datasets are available
-  at finer scales. The States and Counties columns show the number of each
-  that the metric is available for, out of a total of 9 states and 209 counties
-  in the Northeast, not including Connecticut. Years describes the total number
-  of years represented by each metric, and Range describes the difference
-  between the first and last year available. The Citations column includes
-  literature supporting the value of the indicator.}
+  at finer scales. The Desirable column shows the direction of change that the
+  authors considered beneficial. Metrics were excluded from trend analyses if
+  the desirable state was a target. The States and Counties columns show the
+  number of each that the metric is available for, out of a total of 9 states
+  and 209 counties in the Northeast, not including Connecticut. Years describes
+  the total number of years represented by each metric, and Range describes the
+  difference between the first and last year available. The Citations column
+  includes literature supporting the value of the indicator.}
 ]{
   rowhead = 1,
   row{1} = {font=\\bfseries},
   colsep = 2pt, % Spaces between column lines and text/figure
   cells={halign=c,valign=m}, % Center horizontal and vertical
-  column{1-3}={wd=2cm},
-  column{4-6}={wd=1.75cm},
-  column{7-8}={wd=1.25cm},
-  column{9}={wd=3.25cm},
+  column{1-3}={wd=2cm}, % indicator, metric, updates
+  column{4}={wd=1.5cm}, % Desirable
+  column{5-8}={wd=1.75cm}, % States, counties, years, range
+  column{9}={wd=3.25cm}, % Citations
   vlines,
   % hline{1,2,Z}={solid} % for only header and footer
   hlines, % all horizontal lines

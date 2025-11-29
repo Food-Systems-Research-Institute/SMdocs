@@ -1,13 +1,13 @@
 # Environment variables for Quarto project
 
 # Python environment with reticulate
-RETICULATE_PYTHON=.venv/Scripts/python.exe
+RETICULATE_PYTHON=C:/Users/cdonov12/local/repos/SMdocs/.venv/Scripts/python.exe
 
 # Python for quarto
-QUARTO_PYTHON=.venv/Scripts/python.exe
+QUARTO_PYTHON=C:/Users/cdonov12/local/repos/SMdocs/.venv/Scripts/python.exe
 
 # This one too for some reason
-QUARTO_PY=.venv/Scripts/python.exe
+QUARTO_PY=C:/Users/cdonov12/local/repos/SMdocs/.venv/Scripts/python.exe
 
 # Julia environment for JuliaCall
 JULIA_PROJECT=SMdocs

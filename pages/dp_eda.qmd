@@ -33,7 +33,9 @@ pacman::p_load(
   viridisLite,
   conflicted,
   readr,
-  reactable
+  reactable,
+  naniar,
+  stringdist
 )
 
 # GitHub packages
@@ -55,6 +57,154 @@ conflicts_prefer(
   .quiet = TRUE
 )
 ```
+
+## Sources
+
+Check breakdowns of sources. How many metrics were provided by each source, what were the most used sources, etc.
+
+Wrangling sources: 
+
+```{r}
+#| label: source_wrangling
+#| output: false
+tab <- SMdocs::giant_table
+get_str(tab)
+
+# Filter down to metrics in use
+tab <- tab %>% 
+  filter( metric != 'NONE' & !is.na(variable_name) )
+get_str(tab)
+
+tab %>% 
+  group_by(source) %>% 
+  summarize(count = n()) %>% 
+  arrange(source)
+# Need to clean up names
+
+# String distance to consolidate sources
+mat <- stringdistmatrix(tab$source, tab$source, method = "lv")
+
+# Cluster
+hc <- hclust(as.dist(mat))
+
+# Cuttree at max edit distance
+clusters <- cutree(hc, h = 4)
+
+# Check
+tab$cluster <- clusters
+tab %>% 
+  select(source, cluster) %>% 
+  arrange(source)
+
+# This is less useful than I hoped - some sources have very different citations3
+# because they come from different branches. Let's try manually clumping
+get_str(tab)
+tab <- tab %>% 
+  mutate(
+    org = case_when(
+      str_detect(source, 'CDC|Disease Control') ~ 'CDC',
+      str_detect(source, 'National Agricultural Stat') ~ 'NASS',
+      str_detect(source, 'Madison|Wisconsin') ~ 'UWMadison',
+      str_detect(source, 'American Community Survey') ~ 'Census Bureau',
+      str_detect(source, 'Economic Research Service') ~ 'ERS',
+      str_detect(source, 'Forest Inventory Analysis') ~ 'USFS',
+      str_detect(source, 'Geological') ~ 'USGS',
+      str_detect(source, 'Labor Stat|BLS') ~ 'BLS',
+      str_detect(source, 'Environmental Protection') ~ 'EPA',
+      str_detect(source, 'Food and Nutrition') ~ 'Food and Nutrition',
+      str_detect(source, 'Carbon Monitoring') ~ 'National Carbon Forest Monitoring System',
+      str_detect(source, 'Bureau of Investigation') ~ 'FBI',
+      str_detect(source, 'Feeding America') ~ 'Feeding America',
+      str_detect(source, 'Drought') ~ 'USDM',
+      str_detect(source, 'Risk') ~ 'RMA',
+      str_detect(source, 'PRISM') ~ 'PRISM',
+      .default = source
+    ),
+    usda = case_when(
+      org %in% c('NASS', 'ERS', 'USFS', 'FNS', 'RMA', 'ERS') ~ TRUE,
+      .default = FALSE
+    ),
+    sector = case_when(
+      usda == TRUE | org %in% c(
+        'USDM', 
+        'EPA', 
+        'Carbon Monitoring',
+        'FBI',
+        'USGS',
+        'Census Bureau', 
+        'CDC',
+        'BLS'
+      ) ~ 'Federal',
+      org %in% c('UWMadison', 'PRISM') ~ 'Academic',
+      org %in% c('iNaturalist', 'NatureServe', 'Feeding America') ~ 'Nonprofit',
+      .default = NA
+    )
+  ) %>% 
+  select(dimension, indicator, metric, source, org, usda, sector)
+get_str(tab)
+```
+
+Breakdown by organization:
+
+```{r}
+#| label: orgs
+perc_usda <- round(mean(tab$usda) * 100, 2)
+perc_nass <- round(mean(tab$org == 'NASS') * 100, 2)
+nass_of_usda <- tab %>% 
+  filter(usda == TRUE) %>% 
+  {mean(.[['org']] == 'NASS') * 100} %>% 
+  round(2)
+
+tab %>% 
+  group_by(org) %>% 
+  summarize(
+    count = n(),
+    usda = any(usda == TRUE)
+  ) %>% 
+  arrange(desc(count)) %>% 
+  get_reactable()
+```
+
+`{r} perc_usda`% of metric data came from a branch of the USDA, of which `{r} nass_of_usda`% came from NASS specifically.
+
+Breakdown by organization and dimension:
+
+```{r}
+#| label: org_dimension
+tab %>% 
+  group_by(dimension, org) %>% 
+  summarize(count = n()) %>% 
+  arrange(dimension, desc(count)) %>% 
+  get_reactable()
+```
+
+Breakdown by sector:
+
+```{r}
+#| label: sector
+sector_tab <- tab %>% 
+  group_by(sector) %>% 
+  summarize(count = n()) %>% 
+  mutate(percent = round((count / sum(.[['count']])) * 100, 2)) %>% 
+  arrange(desc(count)) %>% 
+  get_reactable()
+sector_tab
+```
+
+Breakdown by sector and dimension:
+
+```{r}
+#| label: sector_dimension
+sector_tab <- tab %>% 
+  group_by(dimension, sector) %>% 
+  summarize(count = n()) %>% 
+  # mutate(percent = round((count / sum(.[['count']])) * 100, 2)) %>% 
+  arrange(dimension, desc(count)) %>% 
+  get_reactable()
+sector_tab
+```
+
+Economics and Production dimensions are both 100% federal data. 
 
 
 ## Missing Data
@@ -98,6 +248,9 @@ metric_cov <- map(vars, ~ {
     perc_miss = round(100 - ((n_points / n_possible) * 100), 2)
   )
 
+# Overall numbers of missing
+(total_perc_missing <- 100 - (sum(metric_cov$n_points) / sum(metric_cov$n_possible)) * 100)
+  
 missy_metric_df <- metric_cov %>% 
   filter(perc_miss > 5)
 missy_metrics <- missy_metric_df$variable_name
@@ -105,6 +258,8 @@ print_missy_metrics <- paste0(missy_metrics, collapse = ', ')
   
 get_reactable(metric_cov)
 ```
+
+Across all county metrics, total percent missing was `{r} round(total_perc_missing, 2)`.
 
 The metrics with > 5% missing are: `{r} print_missy_metrics`. Now let's see in which counties they are missing data:
 

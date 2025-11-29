@@ -14,6 +14,7 @@ project:
     - pages/current_framework.qmd
     - pages/metadata_table.qmd
     - pages/metrics_table.qmd
+    - pages/explorer.qmd
     - pages/refined_framework.qmd
     - pages/refined_metadata.qmd
     - pages/metric_distributions.qmd
@@ -79,7 +80,9 @@ website:
             href: pages/metadata_table.qmd
           - text: Metrics Data
             href: pages/metrics_table.qmd
-      - section: National/State Analyses
+          - text: SMexplorer
+            href: pages/explorer.qmd
+      - section: National Analyses - Index Development
         contents:
           - text: State Secondary Data Framework
             href: pages/refined_framework.qmd
@@ -99,7 +102,7 @@ website:
             href: pages/validation.qmd
           - text: Sensitivity and Uncertainty
             href: pages/sensitivity.qmd
-      - section: Regional/County Analyses
+      - section: Regional Analyses - Data Survey
         contents:
           - text: Introduction
             href: pages/dp_intro.qmd
@@ -135,9 +138,10 @@ format:
     link-external-icon: true
     title-block-style: default
 
-bibliography: 
+bibliography:
   - assets/fsrc.bib
   - assets/FSRI.bib
+  - assets/SM_Data_Survey.bib
 
 execute:
   warning: false

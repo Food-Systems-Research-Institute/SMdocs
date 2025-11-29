@@ -43,7 +43,7 @@ conflicts_prefer(
 source('dev/get_dimension_ggraph.R')
 ```
 
-This page describes the various iterations of indicator sets for the economics dimensions. First, we observe the indicators included in the dimension at three points in time. The second section then shows the results of the survey following the indicator refinement meeting. A final set of indicators to incorporate into the next RFP is still in the works!
+This page describes the various iterations of indicator sets for the economics dimensions. First, we observe the indicators included in the dimension at three points in time. The second section then shows the results of the survey following the indicator refinement meeting.
 
 ## Indicator Progression
 

@@ -1,0 +1,236 @@
+---
+title: "Quantitative Methods for Food Systems Research"
+author: "Chris Donovan"
+institute: "Food Systems Data Scientist<br>Food Systems Research Institute"
+date: '2025-11-05'
+date-format: long
+format:
+  revealjs:
+    theme: methods.scss
+    logo: assets/uvm_logo.png
+    embed-resources: true
+    # code-fold: true
+    # incremental: true
+    # footer: 'footer text'
+    # center: true # centers everything vertically, including headers
+    # chalkboard: true
+    # revealjs-plugins:
+    #   - revealjs-text-resizer
+    filters:
+      - show-lang.lua # In dir of qmd file
+engine: jupyter
+execute:
+    daemon: false
+editor:
+  markdown:
+    wrap: 72
+bibliography: assets/bib.bib
+citations-hover: true
+citeproc: true
+include-in-header:
+ - text: |
+     <style>
+     #title-slide .title {
+       font-size: 2em;
+     }
+     </style>
+---
+
+## Quantitative Methods {.smaller}
+
+<div class="v-centered">
+
+::: {.column width = '50%'}
+- What are they good for
+- What are they not good for
+- Standard toolkit
+  - Regression and friends
+- building on that
+  - directed acyclic graphs
+  - structural equation model
+- system modeling:
+  - fuzzy cognitive mapping
+  - agent-based
+  - system dynamics
+- bayesian methods
+:::
+
+::: {.column width = '50%'}
+![Intervale Farm, Sally McCay, UVM Photo](assets/intervale_small.png){class="centered" fig-alt="A picture of a field at Intervale Farm."}
+:::
+
+</div>
+
+## (Mis-)Interpreting Quantitative Results {.smaller}
+
+:::: {.panel-tabset}
+
+### P Values
+
+<div class="v-centered">
+
+::: {.column width = '50%'}
+- What does a p-value mean? [@anderson2020MisinterpretingDiscrepancyValues]
+  - Should be smaller
+:::
+
+::: {.column width = '50%'}
+![Intervale Farm, Sally McCay, UVM Photo](assets/intervale_small.png){class="centered" fig-alt="A picture of a field at Intervale Farm."}
+:::
+
+</div>
+
+### Confounders
+
+::: {.column width = '50%'}
+- Berksen's paradox
+- Image of a DAG, chain collider 
+:::
+
+::: {.column width = '50%'}
+![Intervale Farm, Sally McCay, UVM Photo](assets/intervale_small.png){class="centered" fig-alt="A picture of a field at Intervale Farm."}
+:::
+
+### Confidence Intervals
+
+<div class="v-centered">
+
+::: {.column width = '40%'}
+- Misinterpretation of confidence intervals [@cumming2005InferenceEyeConfidence]
+:::
+
+::: {.column width = '60%'}
+
+
+<div class="centered">
+::: {.r-stack}
+
+::: {.fragment .fade-out .centered-plot fragment-index=0}
+
+```{python}
+#| label: plotly_confidence_intervals
+import plotly.graph_objects as go
+
+# Example data
+x = ['A', 'B']
+y = [2.5, 1.6]
+ci = [0.5, 0.5]
+
+# Create figure
+fig = go.Figure()
+
+# Add points with error bars
+fig.add_trace(go.Scatter(
+    x=x,
+    y=y,
+    mode='markers',
+    error_y=dict(
+        type='data',
+        array=ci,
+        visible=True,
+        width=12,
+        thickness=3.5
+    ),
+    marker=dict(
+        size=12,
+        color='#076678'
+    )
+))
+
+# Customize layout
+fig.update_layout(
+    xaxis=dict(
+        title='Group',
+        range=[-2, 4]
+    ),
+    yaxis=dict(
+        title='Value',
+        range=[0, 3.5]
+    ),
+    template='simple_white',
+    width=300,
+    height=450
+    # plot_bgcolor='#F2E5BC',
+    # paper_bgcolor='#F2E5BC'
+)
+
+fig.show()
+```
+
+:::
+
+::: {.fragment .fade-in fragment-index=0}
+<img src="assets/cumming_ci_graph.png" style="height: 550px; border: 2px solid #000; display: inline-block;">
+:::
+
+:::
+
+</div>
+
+:::
+
+</div>
+
+### Effect Size
+
+<div class="v-centered">
+
+::: {.column width = '30%'}
+- Illusion of Predictability in Scientific Results [@zhang2023IllusionPredictabilityScientific]
+- <a href="https://sam.zhang.fyi/html/psup/index.html" target="_blank">What is the effect size?</a>
+:::
+
+::: {.column width = '70%'}
+<iframe src="https://sam.zhang.fyi/html/psup/index.html" height="500px" width="100%"></iframe>
+:::
+
+</div>
+
+### Data Visualization
+
+::: {.column width = '30%'}
+- People misunderstand graphs
+:::
+
+::: {.column width = '70%'}
+```{r}
+plot(iris)
+```
+:::
+
+::::
+
+
+## Approaching a Quantitative Analysis {.smaller}
+
+::: {.panel-tabset}
+
+### Plan Ahead
+
+- Power, sample size, outliers, analyses
+- Think many analyses
+- consider preregistration
+- DAGs asnd Berksen
+
+### Choosing Tools
+
+- 
+
+### EDA
+
+- do it
+- distributional assumptions
+- missing data, unknown trends
+
+### Reproducibility
+
+- Reproducibility
+- Version Control
+
+### Version Control
+
+- Do it
+
+:::
+
+## References

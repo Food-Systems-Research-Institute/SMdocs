@@ -1046,8 +1046,8 @@ errorsar_figure <- pct_change_graph(
 ggsave(
   'outputs/fig_errorsarlm.png',
   plot = errorsar_figure,
-  width = 8,
-  height = 5,
+  width = 8.5,
+  height = 6,
   units = 'in',
   bg = 'white'
 )
