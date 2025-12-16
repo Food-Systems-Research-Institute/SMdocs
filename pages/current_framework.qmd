@@ -48,10 +48,21 @@ The table below lets you search and filter through the indicators. Use the butto
 #| label: indicator_table
 #| warning: false
 # Clean up tree
-tree <- fixed_tree %>% 
+tree <- SMdata::fixed_tree %>% 
   select(dimension, index, indicator) %>% 
   unique() %>% 
   arrange(dimension, index, indicator)
+
+# Remove tbd from pbp indicator
+# Then remove all other indicators that end with tbd (placeholders)
+tree <- tree %>% 
+  mutate(
+    indicator = case_when(
+      str_detect(indicator, '^intention.*tbd$') ~ str_remove(indicator, ' tbd'),
+      .default = indicator
+    )
+  ) %>% 
+  filter(str_detect(indicator, ' tbd$', negate = TRUE))
 
 # Formatting
 tree <- tree %>% 

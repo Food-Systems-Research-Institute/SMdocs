@@ -544,7 +544,7 @@ indicator_plot <- ggplot(
     y = "Number of Indicators Represented",
     fill = "Dimension"
   ) +
-  dp_theme
+  SMdocs::dp_theme
 
 # Save to outputs
 ggsave(
@@ -662,7 +662,7 @@ metric_heatmap <- ggplot(
     y = "Metric",
     fill = "Dimension"
   ) +
-  dp_theme + 
+  SMdocs::dp_theme + 
   theme( 
     legend.position = 'right' #
   ) +
@@ -775,7 +775,7 @@ indicator_heatmap <- ggplot(
     y = "Indicator",
     fill = "Dimension"
   ) +
-  dp_theme + 
+  SMdocs::dp_theme + 
   theme( 
     legend.position = 'right' #
   ) +
