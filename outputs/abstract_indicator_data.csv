@@ -218,7 +218,9 @@ Biodiversity,2023,Environment
 Forest Health,2023,Environment
 Land Use Diversity,2023,Environment
 Water Quantity,2023,Environment
+Forest Complexity,2024,Environment
 Biodiversity,2024,Environment
+Forest Health,2024,Environment
 Land Use Diversity,2024,Environment
 Water Quantity,2024,Environment
 Food Affordability,2009,Health
@@ -425,10 +427,15 @@ Technology Adoption,2022,Production
 Yield,2022,Production
 Inputs,2022,Production
 Crop Diversity,2022,Production
+Total Quantity Exported,2023,Production
 Total Quantity Imported,2023,Production
 Total Quantity Forest Products,2023,Production
+Yield,2023,Production
 Crop Diversity,2023,Production
+Total Quantity Exported,2024,Production
 Total Quantity Imported,2024,Production
+Total Quantity Forest Products,2024,Production
+Yield,2024,Production
 Crop Diversity,2024,Production
 Participatory Governance,2000,Social
 Community Safety,2000,Social
@@ -1127,12 +1134,10 @@ Producer Gender Diversity,2023,NA
 Producer Racial Diversity,2023,NA
 Producer Age Diversity,2023,NA
 Conservation Program,2023,NA
-Total Quantity Exported,2023,NA
 Total Quantity Food Products,2023,NA
 Value Added Market,2023,NA
 Certificates of Assurance,2023,NA
 Technology Adoption,2023,NA
-Yield,2023,NA
 Inputs,2023,NA
 Nutritious Diets,2023,NA
 Access to Social Support,2023,NA
@@ -1150,13 +1155,10 @@ Producer Racial Diversity,2024,NA
 Producer Age Diversity,2024,NA
 Outmigration,2024,NA
 Conservation Program,2024,NA
-Total Quantity Exported,2024,NA
-Total Quantity Forest Products,2024,NA
 Total Quantity Food Products,2024,NA
 Value Added Market,2024,NA
 Certificates of Assurance,2024,NA
 Technology Adoption,2024,NA
-Yield,2024,NA
 Inputs,2024,NA
 Access to Culturally Appropriate Food,2024,NA
 Housing Supply and Quality,2024,NA
@@ -1164,9 +1166,7 @@ Food Affordability,2024,NA
 Nutritious Diets,2024,NA
 Educational Attainment,2024,NA
 Food Insecurity,2024,NA
-Forest Complexity,2024,NA
 Carbon Stocks,2024,NA
-Forest Health,2024,NA
 Sensitive or Rare Habitats,2024,NA
 Water Quality,2024,NA
 Embodied Carbon,2024,NA

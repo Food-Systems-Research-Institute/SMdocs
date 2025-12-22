@@ -1,6 +1,7 @@
 \begin{landscape}
 \scriptsize
 \begin{longtblr}[
+  placement = htbp,
   caption = Metric Attributes and Data Sources,
   label = {tab:tab_metrics_body},
   remark{Note} = {
@@ -16,6 +17,34 @@
   }
 ]{
   % colspec={Q[50] Q[200] Q[200] Q[200]}, % Column widths,
+  % Dimension cell merges
+  cell{2}{1}={r=8}{l},
+  cell{10}{1}={r=7}{l}, % econ to env (but clean, next is env)
+  cell{17}{1}={r=7}{l},
+  cell{24}{1}={r=8}{l},
+  cell{32}{1}={r=4}{l}, % env to health
+  cell{36}{1}={r=2}{l},
+  cell{38}{1}={r=6}{l},
+  cell{44}{1}={r=6}{l},
+  cell{50}{1}={r=3}{l}, % health to prod
+  cell{53}{1}={r=3}{l},
+  cell{56}{1}={r=6}{l},
+  cell{62}{1}={r=5}{l}, % prod to social
+  cell{67}{1}={r=4}{l},
+  cell{71}{1}={r=8}{l},
+  cell{79}{1}={r=8}{l},
+  % Indicators
+  cell{7}{2}={r=2}{l},
+  cell{11}{2}={r=3}{l},
+  cell{17}{2}={r=3}{l},
+  cell{22}{2}={r=2}{l},
+  cell{28}{2}={r=2}{l},
+  cell{32}{2}={r=2}{l},
+  cell{34}{2}={r=2}{l},
+  cell{47}{2}={r=2}{l},
+  cell{51}{2}={r=2}{l},
+  cell{63}{2}={r=3}{l},
+  %
   rowhead = 1,
   row{1} = {font=\bfseries},
   colsep = 1pt, % Spaces between column lines and text/figure
@@ -54,7 +83,7 @@ Environment & \textit{Carbon Fluxes} & CO2 Emissions from Agriculture & Total CO
 Environment & \textit{Carbon Fluxes} & N2O Emissions from Agriculture & Total N2O emissions from agriculture (Tg) & 0.91 (1.32) & Tg & State & \includegraphics[width=\hsize,valign=c]{fig_trend_N2OFromAg.png} & GDP From Agriculture & U.S. Environmental Protection Agency State GHG Data (2024).\\
 Environment & \textit{Carbon Stocks} & Total Ecosystem Carbon per Acre & Total ecosystem carbon includes all live and dead forest carbon pools & 305.4 (30.61) & Mg CO2 per acre & County & \textemdash & Acres of Land & USDA National Forest Carbon Monitoring System\\
 Environment & \textit{Embodied Carbon} & Fuel Expenses & Fuel and lubricant expenses as a proportion of total expenses & 0.06 (0.03) & Proportion & County & \includegraphics[width=\hsize,valign=c]{fig_trend_fuelExpensePropTotalExpense.png} & Total Number of Operations & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
-Environment & \textit{Forest Complexity} & Tree Size Diversity & Standard deviation of distribution of tree sizes as measured by DBH (diameter at breast height) & 4.57 (0.89) & Standard Deviations & County & \includegraphics[width=\hsize,valign=c]{fig_trend_sizeDiversity.png} & Acres of Land & U.S. Forest Service, Forest Inventory Analysis (2025)\\
+Environment & \textit{Forest Complexity} & Tree Size Diversity & Standard deviation of distribution of tree sizes as measured by DBH (diameter at breast height) & 4.58 (0.9) & Standard Deviations & County & \includegraphics[width=\hsize,valign=c]{fig_trend_sizeDiversity.png} & Acres of Land & U.S. Forest Service, Forest Inventory Analysis (2025)\\
 Environment & \textit{Forest Complexity} & Tree Species Diversity & Shannon index of diversity on tree species. Larger values are more diverse. & 2.31 (0.41) & Index & County & \includegraphics[width=\hsize,valign=c]{fig_trend_treeDiversity.png} & Acres of Land & U.S. Forest Service, Forest Inventory Analysis (2025)\\
 Environment & \textit{Forest Health} & Proportion of Invasive Species & Proportion of invasive species out of all observed species. & 0.02 (0.06) & Proportion & County & \includegraphics[width=\hsize,valign=c]{fig_trend_propInvasive.png} & Acres of Land & U.S. Forest Service, Forest Inventory Analysis (2025)\\
 Environment & \textit{Soil Biology} & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
@@ -85,19 +114,19 @@ Health & \textit{Nutritious Diets} & Percent Low Daily Fruit Consumption & Perce
 Health & \textit{Nutritious Diets} & Percent Low Daily Vegetable Consumption & Percent of adults who report consuming vegetables less than one time daily & 17.23 (3.18) & Percentage & State & \includegraphics[width=\hsize,valign=c]{fig_trend_percDailyVegLessThanOne.png} & Population (5 Year, Smooth) & CDC Behavioral Risk Factor Surveillance System (2025)\\
 Health & \textit{Prevalence of Diet-Related Disease} & Diabetes Prevalence & Percentage of adults aged 20 and above with diagnosed diabetes (age-adjusted). & 0.1 (0.02) & Percentage & County & \includegraphics[width=\hsize,valign=c]{fig_trend_diabetesPrevalence.png} & Population (5 Year, Smooth) & University of Wisconsin Population Health Institute, County Health Rankings and Roadmaps. (2024)\\
 Health & \textit{Prevalence of Diet-Related Disease} & Heart Disease Prevalence & Model-based estimate for crude prevalence of coronary heart disease among adults & 7.31 (1.22) & Proportion & County & \includegraphics[width=\hsize,valign=c]{fig_trend_heartDisease.png} & Population (5 Year, Smooth) & CDC Division of Population Health, Epidemiology and Surveillance Branch\\
-Production & \textit{Total Quantity Exported} & Value of Total Agricultural Exports & Value (in millions) of total agricultural exports & 455.93 (590.91) & Million USD & State & \includegraphics[width=\hsize,valign=c]{fig_trend_exportsTotalAgricultural.png} & GDP From Agriculture & US Department of Agriculture, Economic Research Service, State Agricultural Trade Data, State Exports\\
+Production & \textit{Total Quantity Exported} & Value of Total Agricultural Exports & Value (in millions) of total agricultural exports & 471.88 (609.61) & Million USD & State & \includegraphics[width=\hsize,valign=c]{fig_trend_exportsTotalAgricultural.png} & GDP From Agriculture & US Department of Agriculture, Economic Research Service, State Agricultural Trade Data, State Exports\\
 Production & \textit{Total Quantity Imported} & Value of Top Five Imports & Value (in millions) of imports for top five agricultural commodity groups from outside of the United States. & 2149.29 (2721.44) & Million USD & State & \includegraphics[width=\hsize,valign=c]{fig_trend_importsTopFive.png} & GDP From Agriculture & US Department of Agriculture, Economic Research Service, State Agricultural Trade Data, State Trade by Country of Origin and Destination\\
 Production & \textit{Certificates of Assurance} & Proportion of Organic Operations & Proportion of organic operations & 0.03 (0.03) & Proportion & County & \includegraphics[width=\hsize,valign=c]{fig_trend_propOpsOrganic.png} & Acres Operated, Smooth & U.S. Department of Agriculture, National Agricultural Statistical Survey, Census of Agriculture\\
 Production & \textit{Crop Diversity} & Crop Diversity & Shannon diversity index on the NASS Cropland Data Layer after non-agricultural acres and double crops have been removed. & 1.25 (0.48) & Index & County & \includegraphics[width=\hsize,valign=c]{fig_trend_cropDiversity.png} & Acres Operated, Smooth & U.S. Department of Agriculture, National Agricultural Statistics Service, Cropland Data Layer\\
 Production & \textit{Inputs} & Fertilizer Expenses & Fertilizer expenses as a percentage of operations expenses & \textemdash & Percentage & County & \textemdash & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
 Production & \textit{Technology Adoption} & Operations Using Precision Agriculture & Proportion of operations with precision agriculture & 34.49 (50.44) & Proportion & County & \textemdash & Acres Operated, Smooth & U.S. Department of Agriculture, National Agricultural Statistical Survey, Census of Agriculture\\
 Production & \textit{Total Quantity Food Products} & Total Animal and Crop Sales & Cash receipts value, total of all animal and crop sales & 79381.75 (129505.15) & Thousand USD & County & \includegraphics[width=\hsize,valign=c]{fig_trend_salesAnimalAndCrop.png} & Total Sales From Commodities & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
-Production & \textit{Total Quantity Forest Products} & Total Receipts from Forest Products & Cash receipts value, forest products, all & 8701.37 (7309.99) & USD & State & \includegraphics[width=\hsize,valign=c]{fig_trend_receiptsAllForestProducts.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
+Production & \textit{Total Quantity Forest Products} & Total Receipts from Forest Products & Cash receipts value, forest products, all & 8566.46 (7210.79) & USD & State & \includegraphics[width=\hsize,valign=c]{fig_trend_receiptsAllForestProducts.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistics Service. (2024). 2022 Census of Agriculture.\\
 Production & \textit{Total Quantity Non-Food Ag Products} & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
-Production & \textit{Value Added Market} & Sales from Value-Added Products & Proportion of sales from produced and value-added products as a proportion of total commodity sales & 0.05 (0.08) & Proportion & County & \includegraphics[width=\hsize,valign=c]{fig_trend_salesValueAddedPropTotal.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistical Survey, Census of Agriculture\\
-Production & \textit{Yield} & Hay Yield & Hay yield measured in tons per acre & 1.97 (0.27) & Tons per acre & State & \includegraphics[width=\hsize,valign=c]{fig_trend_hayYieldMeasuredInTonsAcre.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistical Survey, Survey of Agriculture\\
-Production & \textit{Yield} & Maple Yield & Maple yield measured in gallons per tap & 0.23 (0.06) & Gallons per tap & State & \includegraphics[width=\hsize,valign=c]{fig_trend_mapleSyrupYieldMeasuredInGallonsTap.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistical Survey, Census of Agriculture\\
-Production & \textit{Yield} & Milk Yield & Milk yield measured in pounds per head & 19431.86 (1912.78) & Pounds per head & State & \includegraphics[width=\hsize,valign=c]{fig_trend_yieldMilk.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistical Survey, Survey of Agriculture\\
+Production & \textit{Value Added Market} & Sales from Value-Added Products & Proportion of sales from produced and value-added products as a proportion of total commodity sales & 0.14 (0.13) & Proportion & County & \includegraphics[width=\hsize,valign=c]{fig_trend_salesValueAddedPropTotal.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistical Survey, Census of Agriculture\\
+Production & \textit{Yield} & Hay Yield & Hay yield measured in tons per acre & 1.97 (0.28) & Tons per acre & State & \includegraphics[width=\hsize,valign=c]{fig_trend_hayYieldMeasuredInTonsAcre.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistical Survey, Survey of Agriculture\\
+Production & \textit{Yield} & Maple Yield & Maple yield measured in gallons per tap & 0.24 (0.06) & Gallons per tap & State & \includegraphics[width=\hsize,valign=c]{fig_trend_mapleSyrupYieldMeasuredInGallonsTap.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistical Survey, Census of Agriculture\\
+Production & \textit{Yield} & Milk Yield & Milk yield measured in pounds per head & 19634.23 (2032.06) & Pounds per head & State & \includegraphics[width=\hsize,valign=c]{fig_trend_yieldMilk.png} & GDP From Agriculture & U.S. Department of Agriculture, National Agricultural Statistical Survey, Survey of Agriculture\\
 Production & \textit{Crop Failure} & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
 Social & \textit{Belonging to Community} & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\
 Social & \textit{Collective Action} & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash & \textemdash\\

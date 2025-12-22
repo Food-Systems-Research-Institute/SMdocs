@@ -38,15 +38,15 @@ get_str(giant_tab)
 
 # # Formatting for merges. Note this apparently has to be manual once page
 # # breaks are clear.
-% Dimensions
-cell{2}{1}={r=7}{l},
-cell{9}{1}={r=5}{l},
-cell{14}{1}={r=3}{l},
-cell{17}{1}={r=3}{l},
-% Indicators
-cell{7}{2}={r=2}{l},
-cell{11}{2}={r=3}{l},
-cell{17}{2}={r=3}{l},
+# % Dimensions
+# cell{2}{1}={r=7}{l},
+# cell{9}{1}={r=5}{l},
+# cell{14}{1}={r=3}{l},
+# cell{17}{1}={r=3}{l},
+# % Indicators
+# cell{7}{2}={r=2}{l},
+# cell{11}{2}={r=3}{l},
+# cell{17}{2}={r=3}{l},
 
 # Wrangle table
 trend_files <- dir('outputs/trend_plots/')

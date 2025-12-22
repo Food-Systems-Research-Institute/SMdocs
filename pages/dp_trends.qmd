@@ -712,7 +712,7 @@ We run this portion of the code in parallel because it has a pretty long run tim
 
 ```{r}
 #| label: spatial_reg_all
-#| eval: false
+#| eval: true
 #| output: false
 get_str(SMdocs::dp_metrics_county_adj)
 state_link <- SMdata::fips_key %>% 
@@ -727,13 +727,18 @@ dat <- SMdocs::dp_metrics_county_adj %>%
   ) %>% 
   filter(str_detect(fips, '^09', negate = TRUE)) %>% 
   mutate(link = str_sub(fips, end = 2)) %>% 
-  left_join(state_link, by = join_by(link == fips)) %>% 
+  left_join(state_link, by = dplyr::join_by(link == fips)) %>% 
   select(-link) %>% 
   mutate(across(!c(fips, state_code), as.numeric))
 get_str(dat)
 
 # Get vector of vars
 (vars <- names(dat)[!names(dat) %in% c('fips', 'year', 'state_code')])
+
+# Define things for global env for parallel workers
+min_max <- SMdocs::min_max
+dp_weights <- SMdocs::dp_weights
+neast_counties_2024 <- SMdata::neast_counties_2024
 
 tic()
 get_time()
@@ -745,34 +750,34 @@ out <- future_map(vars, \(var) {
   tryCatch({
     # Reduce to relevant variable, remove NAs
     df <- dat %>% 
-      select(fips, year, !!sym(var), state_code) %>% 
-      drop_na(!!sym(var)) %>% 
-      mutate(normed = min_max(!!sym(var)))
+      dplyr::select(fips, year, !!dplyr::sym(var), state_code) %>% 
+      tidyr::drop_na(!!dplyr::sym(var)) %>% 
+      dplyr::mutate(normed = min_max(!!dplyr::sym(var)))
  
     # Regular weights
     weight_var <- weights_crosswalk$weight_variable[weights_crosswalk$variable_name == var]
     if (!is.na(weight_var) && length(weight_var) > 0) {
-      weight_df <- SMdocs::dp_weights %>% 
-        mutate(
+      weight_df <- dp_weights %>% 
+        dplyr::mutate(
           value = as.numeric(value), 
           year = as.numeric(year)
         ) %>% 
-        rename(
+        dplyr::rename(
           weight_value = value, 
           weight_name = variable_name,
           weight_year = year
         ) %>% 
-        filter(weight_name == weight_var, str_length(fips) == 5)
+        dplyr::filter(weight_name == weight_var, stringr::str_length(fips) == 5)
       
       # Join weights back to df
       # df <- df %>% 
       #   inner_join(weight_df, by = join_by(fips, year == weight_year))
       if (all(is.na(weight_df$weight_year))) {
         df <- df %>% 
-          inner_join(weight_df, by = join_by(fips))
+          dplyr::inner_join(weight_df, by = dplyr::join_by(fips))
       } else {
         df <- df %>% 
-          inner_join(weight_df, by = join_by(fips, year == weight_year))
+          dplyr::inner_join(weight_df, by = dplyr::join_by(fips, year == weight_year))
       }
       
       cat('\nJoined to weights:', weight_var)
@@ -781,11 +786,11 @@ out <- future_map(vars, \(var) {
     }
     
     # List weights
-    lw <- SMdata::neast_counties_2024 %>% 
-      right_join(df) %>% 
-      select(fips, year, normed) %>% 
-      poly2nb() %>% 
-      nb2listw(zero.policy = TRUE)   
+    lw <- neast_counties_2024 %>% 
+      dplyr::right_join(df) %>% 
+      dplyr::select(fips, year, normed) %>% 
+      spdep::poly2nb() %>% 
+      spdep::nb2listw(zero.policy = TRUE)   
     cat('\nCreated lw')
     
     # Assign weights arg if variable is weighted. Otherwise NULL
@@ -796,7 +801,7 @@ out <- future_map(vars, \(var) {
     }
     
     # Run error sar model with appropriate (or no) weighting
-    model <- errorsarlm(
+    model <- spatialreg::errorsarlm(
       normed ~ as.numeric(year) + state_code,
       data = df,
       listw = lw,
@@ -810,21 +815,30 @@ out <- future_map(vars, \(var) {
       return(paste0('Error with ', var, ': ', e))
     }
   )
-}, .progress = FALSE) %>% 
+}, .progress = FALSE, .options = furrr_options(
+  globals = c(
+    "min_max",
+    "dat",
+    "dp_weights",
+    "weights_crosswalk",
+    "neast_counties_2024"
+  ),
+  packages = c(
+    "dplyr",
+    "tidyr",
+    "spdep",
+    "spatialreg",
+    "stringr",
+    "assertthat"
+  )
+)) %>% 
   setNames(c(vars))
 plan(sequential)
 toc()
 # 6 to 12 minutes or so
 
-# out
-# out[[1]]
-
-get_str(out)
 get_str(out[[1]])
 map(out, class)
-# get_str(out[[1]])
-# map(out, ~ .x['fips'])
-# map(out, ~ summary(.x))
 
 saveRDS(out, 'data/objects/errorsarlm_outs.rds')
 ```

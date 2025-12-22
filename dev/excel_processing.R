@@ -45,6 +45,8 @@ conflicted::conflicts_prefer(
   .quiet = TRUE
 )
 
+devtools::load_all()
+
 options(scipen = 9999)
 
 
