@@ -1,0 +1,164 @@
+---
+title: "Language Test - knitr"
+format:
+  html:
+    code-fold: false
+    code-tools:
+        source: true
+        toggle: true
+        caption: none
+# engine: julia
+# julia:
+#     exeflags: ["--project=@."]
+engine: knitr
+filters:
+    - show-lang.lua # show language in code block
+cache: false
+---
+
+## Setup
+
+Currently running this on knitr because we have a better handle on how to manage the Python and Julia environments from there. Otherwise PyCall will use a Conda environment, not .venv. Not even sure about renv.
+
+With the knitr engine, we at least get R opening properly with renv and we can set reticulate to the proper .venv. We can also hand off objects between R and Python easily.
+
+Note that running interactively shows working dir is SMdocs, but when rendered, it is temp. Can change this in yaml file under project. Or, if it is added to yaml file, that will do it too.
+
+Other notes:
+
+- This renders fine from CLI, but VSCodium is hinky, throws more errors.
+- Only issue here is that we cannot pass objects between Julia and R chunks because they are not linked environments. We can run JuliaCall to use weird jenky syntax to run Julia, but that is not what we need. What we can do is just save things to CSV and load them in Julia where necessary. This might be as close as we get to having all three in the same environment.
+
+### R
+
+Check working directory
+
+```{r}
+print(getwd())
+```
+
+Check where R is running from
+
+```{r}
+Sys.which("R")
+```
+
+Set environment for reticulate and Julia. (This is no longer necessary because we put it into the _environment file for Quarto). 
+
+Not clear why we get warnings about Quarto python path not existing. Working fine.
+
+```{r}
+# reticulate::use_virtualenv('./.venv')
+# Sys.setenv(JULIA_PROJECT="SMdocs")
+```
+
+### Python
+
+Check executable. Should be coming from .venv in SMdocs directory
+
+```{python}
+import sys
+print(sys.executable)
+```
+
+Make sure it can access our packages
+
+```{python}
+import seaborn as sns
+```
+
+### Julia
+
+Check working directory
+
+```{julia}
+println("Working directory:", pwd())
+```
+
+Check active project
+
+```{julia}
+Base.active_project()
+```
+
+## Moving Objects
+
+Get objects between R, Python, and Julia cells
+
+### R and Python
+
+```{r}
+library(reticulate)
+
+# Make a thing
+thing <- 'Thing'
+```
+
+```{python}
+# Pull the thing from R with r.
+print(r.thing)
+
+# Make another thing, save to py object
+thing2 = 'Second Thing'
+print(thing2)
+```
+
+```{r}
+# Pull second thing back into R the regular way
+py$thing2
+# But this doesn't work - not clear why
+```
+
+Try another way, assigning it explicitly
+
+```{python}
+r.thing2 = 'Second Thing'
+```
+
+```{r}
+thing2
+# This works
+```
+
+So it works if we do all the work on the Python side apparently.
+
+### R and Julia
+
+```{r}
+library(JuliaCall)
+newthing <- 'New Thing'
+julia_assign("to_julia", newthing)
+```
+
+```{julia}
+using RCall
+# @rget newthing
+```
+
+Apparently this doesn't work. We can only use JuliaCall to run Julia within R.
+
+## Wrangle Data
+
+Starting in R so we can get out dataset ready. Loading data
+
+```{r}
+# Packages
+pacman::p_load(
+    dplyr,
+    readr,
+    devtools
+)
+
+# Load SMdata, which has convenience functions
+devtools::load_all("../SMdata")
+
+# Load data pipeline functions (have to move these into SMdata package...)
+source('dev/data_pipeline_functions.R')
+
+library('projecter')
+
+# Load dataset
+raw <- read_csv('temp/metrics.csv')
+get_str(raw)
+```
+
