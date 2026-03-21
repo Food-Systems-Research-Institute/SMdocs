@@ -102,7 +102,6 @@ tab <- SMdocs::dp_meta %>%
     rep_ind = sum(has_metric),
     .groups = "drop"
   ) 
-tab
 
 # County metrics
 county_metrics <- SMdocs::dp_metrics_county %>% 
@@ -120,7 +119,6 @@ tab <- tab %>%
 # Add row of totals
 totals <- tab %>% 
   summarize(across(c(indicators:metrics, `County Scale`), base::sum))
-totals
 
 get_str(tab)
 latex_tab <- tab %>% 
@@ -137,7 +135,6 @@ latex_tab <- tab %>%
       str_to_title() %>% 
       str_replace('Perc_rep_ind', 'Representation (\\\\%)')
   ))
-latex_tab
 
 # Save to latex
 latex_tab %>% 

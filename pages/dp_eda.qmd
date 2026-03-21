@@ -121,14 +121,14 @@ tab <- tab %>%
       .default = source
     ),
     usda = case_when(
-      org %in% c('NASS', 'ERS', 'USFS', 'FNS', 'RMA', 'ERS') ~ TRUE,
+      org %in% c('NASS', 'ERS', 'USFS', 'FNS', 'RMA', 'ERS', 'Food and Nutrition') ~ TRUE,
       .default = FALSE
     ),
     sector = case_when(
       usda == TRUE | org %in% c(
         'USDM', 
         'EPA', 
-        'Carbon Monitoring',
+        'National Carbon Forest Monitoring System',
         'FBI',
         'USGS',
         'Census Bureau', 

@@ -56,6 +56,7 @@ conflicts_prefer(
   dplyr::summarize(),
   stats::lag(),
   base::setdiff(),
+  Hmisc::describe(),
   .quiet = TRUE
 )
 ```
@@ -553,6 +554,15 @@ examples <- map(vars, ~ {
   bind_rows()
 examples
 ```
+
+Overall, `{r} perc_sig`% of correlations were significant, and `{r} perc_unsig`% were insignificant.
+
+Examples of metrics with a large number of correlations (percentage):
+
+```{r}
+examples
+```
+
 
 Percentage of significant internal correlations in each dimension:
 

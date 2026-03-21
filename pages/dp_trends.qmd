@@ -712,7 +712,7 @@ We run this portion of the code in parallel because it has a pretty long run tim
 
 ```{r}
 #| label: spatial_reg_all
-#| eval: true
+#| eval: false
 #| output: false
 get_str(SMdocs::dp_metrics_county_adj)
 state_link <- SMdata::fips_key %>% 
@@ -743,7 +743,6 @@ neast_counties_2024 <- SMdata::neast_counties_2024
 tic()
 get_time()
 plan(multisession, workers = availableCores(omit = 2))
-# out <- map(vars[1], \(var) {
 out <- future_map(vars, \(var) {
   cat('\n\nStarting', var)
   
@@ -770,8 +769,6 @@ out <- future_map(vars, \(var) {
         dplyr::filter(weight_name == weight_var, stringr::str_length(fips) == 5)
       
       # Join weights back to df
-      # df <- df %>% 
-      #   inner_join(weight_df, by = join_by(fips, year == weight_year))
       if (all(is.na(weight_df$weight_year))) {
         df <- df %>% 
           dplyr::inner_join(weight_df, by = dplyr::join_by(fips))
@@ -850,13 +847,29 @@ First we wrangle our outputs to get the relevant results in a nicely formatted t
 ```{r}
 #| output: false
 sar_outs <- readRDS('data/objects/errorsarlm_outs.rds')
-start <- length(sar_outs)
+(start <- length(sar_outs))
 sar_outs <- sar_outs[names(sar_outs) != 'state_code'] %>% 
   keep(~ class(.x) == 'Sarlm')
-end <- length(sar_outs)
+(end <- length(sar_outs))
 (lost <- start - end)
-# 42 down to 38 here
 
+# Check AICs
+aics <- imap(sar_outs, ~ {
+  df <- data.frame(
+    model = .y,
+    aic_spatial = AIC(.x),
+    aic_lm = .x$AIC_lm.model
+  ) %>% 
+    mutate(
+      diff = aic_spatial - aic_lm, # negatives mean spatial is better
+      outcome = ifelse(diff < 0, 'spatial', 'lm')
+    )
+}) %>% 
+  bind_rows()
+# percentage that are better as spatial
+(perc_spatial <- round(mean(aics$outcome == 'spatial') * 100, 1))
+
+# Start putting together clean DF for reporting
 sar_df <- imap(sar_outs, ~ {
   tryCatch(
     {
@@ -898,7 +911,7 @@ sar_df <- imap(sar_outs, ~ {
 get_str(sar_df)
 # sar_df
 
-# 38 down to 36.
+# 38 down to 35.
 (lost <- setdiff(names(sar_outs), sar_df$variable_name))
 check <- sar_outs[names(sar_outs) %in% lost]
 # Not defined because of singularities. Single time points. 
@@ -953,6 +966,8 @@ sar_model_outputs
 (tab <- get_table(sar_model_outputs$outcome))
 (percs <- round(prop.table(tab), 3) * 100)
 ```
+
+`{r} perc_spatial`% of metrics have lower AIC in spatial model than regular OLS.
 
 We have `{r} n_metrics` metrics modeled. `{r} percs[['better']]`% are getting better, `{r} percs[['worse']]`% are getting worse, and `{r} percs[3]`% are stable. We drop `{r} length(lost)` metrics here that don't have proper directions (`{r} print_lost`).
 
@@ -1067,5 +1082,21 @@ ggsave(
 )
 
 errorsar_figure
+```
+
+Proportions of metrics that are getting better, worse, or not changing, broken down by dimension:
+
+```{r}
+#| label: metrics_trends_by_dimension
+sar_framed_outputs %>% 
+  group_by(dimension, outcome) %>% 
+  summarize(count = n()) %>% 
+  ungroup() %>% 
+  group_by(dimension) %>% 
+  mutate(total = sum(count)) %>% 
+  ungroup() %>% 
+  mutate(percent = format(round(count / total * 100, 1), nsmall = 1)) %>% 
+  select(-total) %>% 
+  get_reactable()
 ```
 
