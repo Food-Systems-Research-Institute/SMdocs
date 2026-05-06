@@ -3,6 +3,7 @@
 .Renviron
 .venv
 node_module/
+.Rhistory
 
 # Don't need to track the html pages after render
 _site/
@@ -16,3 +17,6 @@ temp/
 
 # julia things
 *.toml
+
+**/*.quarto_ipynb
+site_libs/*

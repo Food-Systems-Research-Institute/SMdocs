@@ -13,8 +13,8 @@ filters:
     - ../dev/show-lang.lua
 ---
 
-::: {.callout-note collapse='false' title='Caution'}
-The Sustainability Metrics project, as well as this site itself, are works in progress. All data and analyses shown here are preliminary. 
+::: {.callout-note collapse="false" title="Caution"}
+The Sustainability Metrics project, as well as this site itself, are works in progress. All data and analyses shown here are preliminary.
 :::
 
 ```{r}
@@ -59,12 +59,11 @@ conflicts_prefer(
 )
 ```
 
-
 ## Abstract
 
-Food systems are both significant contributors to climate change being and increasingly threatened by it. Sustainability is critical in meeting nutritional needs within ecological bounds, and achieving it depends on access to targeted and actionable data. Sustainability indicator frameworks provide a scaffolding for data collection. While most assessments are conducted at the national or farm level, regional approaches are effective because cooperation among state and local government is feasible and stakeholders share common context. 
+Food systems are both significant contributors to climate change being and increasingly threatened by it. Sustainability is critical in meeting nutritional needs within ecological bounds, and achieving it depends on access to targeted and actionable data. Sustainability indicator frameworks provide a scaffolding for data collection. While most assessments are conducted at the national or farm level, regional approaches are effective because cooperation among state and local government is feasible and stakeholders share common context.
 
-We use a comprehensive indicator framework assessing the Northeast food system across five dimensions of sustainability to conduct a survey of publicly available data, including coverage, quality, and trends. We found key gaps in indicators of local economies, crop failure, farmer values, and food system governance. Some critical data were only available at the state level, like carbon emissions from agriculture. Further, monitoring of some metrics began only recently, precluding analysis over time. We identified 62 metrics fitting the framework, but only 30 were available at the county level with enough data to assess trends. Of these, half were improving, and one third were declining. 
+We use a comprehensive indicator framework assessing the Northeast food system across five dimensions of sustainability to conduct a survey of publicly available data, including coverage, quality, and trends. We found key gaps in indicators of local economies, crop failure, farmer values, and food system governance. Some critical data were only available at the state level, like carbon emissions from agriculture. Further, monitoring of some metrics began only recently, precluding analysis over time. We identified 62 metrics fitting the framework, but only 30 were available at the county level with enough data to assess trends. Of these, half were improving, and one third were declining.
 
 Access to accurate and targeted data is critical in improving regional food system sustainability. The gaps we identified should serve as a road map in developing monitoring programs. However, public datasets also contain biases, and misinterpretations are common. When used judiciously, the curation of datasets that are consistent, compatible, and easily accessed will be crucial in monitoring food systems and developing appropriate policies and interventions
 
@@ -74,18 +73,17 @@ This section of pages presents the analysis and most of the data wrangling for a
 
 @wiltshire2024RegionalFoodSystema describe the development of the Sustainability Metrics framework on which this work is based. It builds on the "three pillar" model of sustainability (economic, environment, and health) [@barbier1987ConceptSustainableEconomic], and adds two more dimensions: production and social. We used a set of seven criteria to collect available data relevant to the Northeast based on this foundation. Metrics used in the framework should:
 
-1. be representative of their indicators
-2. leverage the finest spatial scale available
-3. adequately cover counties across the nine states in the Northeast
-4. cover a long period of time, where possible
-5. represent each indicator with as few metrics as is feasible
-6. reflect the intended unit of analysis of each indicator where possible
-7. be in the public domain or under an open-source license
+1.  be representative of their indicators
+2.  leverage the finest spatial scale available
+3.  adequately cover counties across the nine states in the Northeast
+4.  cover a long period of time, where possible
+5.  represent each indicator with as few metrics as is feasible
+6.  reflect the intended unit of analysis of each indicator where possible
+7.  be in the public domain or under an open-source license
 
 We surveyed a range of public data sources to fit the indicator framework according to these criteria, including federal agencies (USDA, BLS, Census Bureau), academic studies (University of Wisconsin County Health Rankings), as well as NGO and crowdsourced data (NatureServe, iNaturalist). We focus on regional data because of the ability of regional institutions to make policy changes [@clancy2010LocalEnoughArguments], and the county level as this is often finest resolution at which much secondary data are organized. The following pages show what data we found, describe their quality and characteristics, and present some analyses of their relationships and trends over time.
 
-Note that we have taken some liberties with consolidating the framework that can be seen in the graphs and tables below to make the material a bit more presentable as framework refinement continues. 
-
+Note that we have taken some liberties with consolidating the framework that can be seen in the graphs and tables below to make the material a bit more presentable as framework refinement continues.
 
 ## Dimension Graphs
 
@@ -262,7 +260,6 @@ px.sunburst(
 )
 ```
 
-
 ## Dimension Table
 
 Same information as above, but perhaps a bit easier to explore. Use the search bar at the top to search through all fields, or the filter fields at the top of each column for finer control.
@@ -276,4 +273,3 @@ dp_tree %>%
   arrange(dimension, index, indicator, metric) %>% 
   get_reactable()
 ```
-
