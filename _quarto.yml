@@ -1,3 +1,5 @@
+# root
+
 project:
   type: website
   execute-dir: project
@@ -24,13 +26,13 @@ project:
     - pages/indicator_correlations.qmd
     - pages/validation.qmd
     - pages/sensitivity.qmd
-    - pages/dp_intro.qmd
-    - pages/dp_eda.qmd
-    - pages/dp_coverage.qmd
-    - pages/dp_correlations.qmd
-    - pages/dp_trends.qmd
-    - pages/bnlearn.qmd
-    - pages/regional_bn.qmd
+    - inventory/dp_intro.qmd
+    - inventory/dp_eda.qmd
+    - inventory/dp_coverage.qmd
+    - inventory/dp_correlations.qmd
+    - inventory/dp_trends.qmd
+    # - inventory/bnlearn.qmd
+    # - inventory/regional_bn.qmd
 
 website:
   title: "Sustainability Metrics"
@@ -105,15 +107,15 @@ website:
       - section: Regional Analyses - Data Survey
         contents:
           - text: Introduction
-            href: pages/dp_intro.qmd
+            href: inventory/dp_intro.qmd
           - text: Exploratory
-            href: pages/dp_eda.qmd
+            href: inventory/dp_eda.qmd
           - text: Coverage
-            href: pages/dp_coverage.qmd
+            href: inventory/dp_coverage.qmd
           - text: Correlations
-            href: pages/dp_correlations.qmd
+            href: inventory/dp_correlations.qmd
           - text: Trends
-            href: pages/dp_trends.qmd
+            href: inventory/dp_trends.qmd
 
 format:
   html:
