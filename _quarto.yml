@@ -4,8 +4,6 @@ project:
   preview:
     browser: true
   render:
-    # Same order as pages show on website. Make sure they run in right order
-    # Also note that listing a qmd here changes the working directory to project
     - pages/index.qmd
     - pages/overview.qmd
     - pages/refine_economics.qmd
@@ -24,13 +22,7 @@ project:
     - pages/indicator_correlations.qmd
     - pages/validation.qmd
     - pages/sensitivity.qmd
-    - pages/dp_intro.qmd
-    - pages/dp_eda.qmd
-    - pages/dp_coverage.qmd
-    - pages/dp_correlations.qmd
-    - pages/dp_trends.qmd
-    - pages/bnlearn.qmd
-    - pages/regional_bn.qmd
+    - pages/data_inventory.qmd
 
 website:
   title: "Sustainability Metrics"
@@ -42,15 +34,18 @@ website:
   navbar:
     logo: assets/images/UVM_FSRI_Inline Horiz W.png
     logo-href: https://www.uvm.edu/ovpr/food-systems-research
+    logo-alt: Food Systems Research Institute logo
     search: true
     tools:
       - icon: tree
+        aria-label: FSRI Links
         menu:
           - text: FSRI
             href: https://www.uvm.edu/ovpr/food-systems-research
           - text: UVM
             href: https://www.uvm.edu
       - icon: github
+        aria-label: GitHub Links
         menu:
           - text: Source Code
             href: https://github.com/Food-Systems-Research-Institute/SMdocs
@@ -102,19 +97,8 @@ website:
             href: pages/validation.qmd
           - text: Sensitivity and Uncertainty
             href: pages/sensitivity.qmd
-      - section: Regional Analyses - Data Survey
-        contents:
-          - text: Introduction
-            href: pages/dp_intro.qmd
-          - text: Exploratory
-            href: pages/dp_eda.qmd
-          - text: Coverage
-            href: pages/dp_coverage.qmd
-          - text: Correlations
-            href: pages/dp_correlations.qmd
-          - text: Trends
-            href: pages/dp_trends.qmd
-
+      - text: Inventory of Regional Data
+        href: pages/data_inventory.qmd
 format:
   html:
     page-layout: article

@@ -23,10 +23,17 @@ This repository houses a Quarto project which describes the framework and contai
 - `tests/`: Unit testing of package functions.
 - `dev/`: Functions and scripts to support analyses. Bit of a mess and needs some pruning.
 
+## Development
 
-### Data Inventory Manuscript
+The site and analyses can be run simply using:
 
-- Wrangling and analysis scripts located in `pages/` directory as `dp_*`.
-- Table processing scripts also found in `dev/`:
-  - `dev/excel_processing.R` takes Excel with the framework of dimensions, indices, indicators, and metrics for the manuscript and creates datasets used in scripts. It also processes the literature justifications for indicators.
-  - `dev/giant_tables.R` makes two upsettingly large tables for the manuscript - one with summary stats and sources, the other with supplementary material including literature justifications. 
+```
+quarto render
+```
+
+This will call `renv` to restore the environment in each run.
+
+### Styles
+
+- `assets/custom_theme.scss` modifies Quarto's sandstone theme. This does most of the work
+- `assets/styles.css` makes a few other changes

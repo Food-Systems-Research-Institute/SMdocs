@@ -50,7 +50,10 @@ $body-color:                $gray-800 !default;
 // Links
 
 // $link-color:                $success !default;
-$link-color:                $green !default;
+$link-color:                $uvm !default;
+
+// Sidebar navigation (docked TOC) active/hover link color
+$sidebar-hl:                $uvm !default;
 
 // Fonts
 

@@ -20,7 +20,7 @@ conflicts_prefer(
 
 This page contains a metadata table for exploring the sources of secondary data used throughout this project. Note that the state analyses and county analyses use more refined and curated subsets of this larger dataset. This is just a collection of the ~650 metrics compiled in the course of the work.
 
-Using the table: 
+Using the table:
 
 * Click column headers to sort
 * Global search in the top right, or column search in each header
@@ -39,11 +39,16 @@ pacman::p_load(
   htmltools
 )
 
+# GitHub packages
+pacman::p_load_gh(
+  'Food-Systems-Research-Institute/SMdata'
+)
+
 # Load full metadata table
-metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
+metadata_all <- SMdata::metadata
 
 # Pick out variables to display
-metadata <- metadata_all %>% 
+metadata <- metadata_all %>%
   select(
     metric,
     'Variable Name' = variable_name,
@@ -57,16 +62,16 @@ metadata <- metadata_all %>%
     scope,
     resolution,
     url
-) %>% 
+) %>%
   setNames(c(str_to_title(names(.))))
 
 ###
 htmltools::browsable(
   tagList(
-    
+
     tags$div(
       style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
-      
+
       tags$button(
         class = "btn btn-primary",
         style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
@@ -75,7 +80,7 @@ htmltools::browsable(
           return prevColumns.length === 0 ? ['Definition', 'Scope', 'Resolution', 'Url'] : []
         })"
       ),
-      
+
       tags$button(
         class = "btn btn-primary",
         style = "display: flex; align-items: center; gap: 8px; padding: 8px 12px;",
@@ -83,7 +88,7 @@ htmltools::browsable(
         onclick = "Reactable.downloadDataCSV('metadata_table', 'sustainability_metadata.csv')"
       )
     ),
-    
+
     reactable(
       metadata,
       sortable = TRUE,
@@ -130,40 +135,40 @@ htmltools::browsable(
           style = "padding: 15px; border: 1px solid #ddd; margin: 10px 0;
              background-color: #E0EEEE; border-radius: 10px; border-color: black;
              box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);",
-          
+
           tags$h4(
-            strong("Details"), 
+            strong("Details"),
           ),
           tags$p(
-            strong('Metric Name: '), 
+            strong('Metric Name: '),
             as.character(metadata_all[index, 'metric']),
           ),
           tags$p(
-            strong('Variable Name: '), 
+            strong('Variable Name: '),
             as.character(metadata_all[index, 'variable_name']),
           ),
           tags$p(
-            strong('Definition: '), 
+            strong('Definition: '),
             as.character(metadata_all[index, 'definition']),
           ),
           tags$p(
-            strong('Source: '), 
+            strong('Source: '),
             as.character(metadata_all[index, 'source'])
           ),
           tags$p(
-            strong('Latest Year: '), 
+            strong('Latest Year: '),
             as.character(metadata_all[index, 'latest_year'])
           ),
           tags$p(
-            strong('All Years (cleaned, wrangled, and included): '), 
+            strong('All Years (cleaned, wrangled, and included): '),
             as.character(metadata_all[index, 'year'])
           ),
           tags$p(
-            strong('Updates: '), 
+            strong('Updates: '),
             str_to_title(as.character(metadata_all[index, 'updates']))
           ),
           tags$p(
-            strong('URL: '), 
+            strong('URL: '),
             tags$a(
               href = as.character(metadata_all[index, 'url']),
               target = '_blank',
@@ -191,20 +196,25 @@ pacman::p_load(
   htmltools
 )
 
+# GitHub packages
+pacman::p_load_gh(
+  'Food-Systems-Research-Institute/SMdata'
+)
+
 # Load metrics and metadata
-metadata_all <- readRDS('data/sm_data.rds')[['metadata']]
-metrics <- readRDS('data/sm_data.rds')[['metrics']]
-fips_key <- readRDS('data/sm_data.rds')[['fips_key']]
+metadata_all <- SMdata::metadata
+metrics <- SMdata::metrics
+fips_key <- SMdata::fips_key
 
 # Value formatting function based on units
 source('dev/format_values.R')
 
 # Join with metadata and county fips codes
-metrics <- metrics %>% 
-  left_join(metadata_all, by = join_by('variable_name')) %>% 
-  left_join(fips_key, by = join_by('fips')) %>% 
-  mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>% 
-  format_values() %>% 
+metrics <- metrics %>%
+  left_join(metadata_all, by = join_by('variable_name')) %>%
+  left_join(fips_key, by = join_by('fips')) %>%
+  mutate(county_name = ifelse(is.na(county_name), state_name, county_name)) %>%
+  format_values() %>%
   select(
     metric,
     'Variable Name' = variable_name,
@@ -213,15 +223,15 @@ metrics <- metrics %>%
     Area = county_name,
     units,
     value
-  ) %>% 
-  setNames(c(str_to_title(names(.)))) %>% 
+  ) %>%
+  setNames(c(str_to_title(names(.)))) %>%
   dplyr::filter(!is.na(Value))
 
 
 ## Reactable table
 htmltools::browsable(
   tagList(
-    
+
     tags$div(
       style = "display: flex; gap: 16px; margin-bottom: 20px; justify-content: center;",
       tags$button(
@@ -231,7 +241,7 @@ htmltools::browsable(
         onclick = "Reactable.downloadDataCSV('metrics_table', 'sustainability_metrics.csv')"
       )
     ),
-    
+
     reactable(
       metrics,
       sortable = TRUE,
