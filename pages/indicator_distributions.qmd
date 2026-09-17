@@ -9,9 +9,16 @@ warnings: false
 ```{r}
 #| label: prep
 #| echo: false
+#| cache: false
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
 pacman::p_load(
   dplyr,
-  conflicted,
   purrr,
   psych,
   tibble,
@@ -21,14 +28,7 @@ pacman::p_load(
   stringr
 )
 pacman::p_load_gh('ChrisDonovan307/projecter')
-source('dev/get_reactable.R')
-source('dev/get_indicator_distributions.R')
-conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::summarize(),
-  .quiet = TRUE
-)
+devtools::load_all()
 ```
 
 Now that our metrics have been aggregated into indicators, we can observe the univariate distributions of the indicators themselves. We will do this for all six sets of transformations.
@@ -84,6 +84,7 @@ get_reactable(
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - raw rank arithmetic
 get_indicator_distributions(scores, 'raw_rank_arithmetic')
 ```
 
@@ -93,6 +94,7 @@ get_indicator_distributions(scores, 'raw_rank_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - raw rank geometric
 get_indicator_distributions(scores, 'raw_rank_geometric')
 ```
 
@@ -102,6 +104,7 @@ get_indicator_distributions(scores, 'raw_rank_geometric')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - raw minmax arithmetic
 get_indicator_distributions(scores, 'raw_minmax_arithmetic')
 ```
 
@@ -111,6 +114,7 @@ get_indicator_distributions(scores, 'raw_minmax_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - raw minmax geometric
 get_indicator_distributions(scores, 'raw_minmax_geometric')
 ```
 
@@ -120,6 +124,7 @@ get_indicator_distributions(scores, 'raw_minmax_geometric')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - raw zscore arithmetic
 get_indicator_distributions(scores, 'raw_zscore_arithmetic')
 ```
 
@@ -129,6 +134,7 @@ get_indicator_distributions(scores, 'raw_zscore_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - raw zscore geometric
 get_indicator_distributions(scores, 'raw_zscore_geometric')
 ```
 
@@ -140,6 +146,7 @@ get_indicator_distributions(scores, 'raw_zscore_geometric')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - winsor rank arithmetic
 get_indicator_distributions(scores, 'winsor_rank_arithmetic')
 ```
 
@@ -149,6 +156,7 @@ get_indicator_distributions(scores, 'winsor_rank_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - winsor rank geometric
 get_indicator_distributions(scores, 'winsor_rank_geometric')
 ```
 
@@ -158,6 +166,7 @@ get_indicator_distributions(scores, 'winsor_rank_geometric')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - winsor minmax arithmetic
 get_indicator_distributions(scores, 'winsor_minmax_arithmetic')
 ```
 
@@ -167,6 +176,7 @@ get_indicator_distributions(scores, 'winsor_minmax_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - winsor minmax geometric
 get_indicator_distributions(scores, 'winsor_minmax_geometric')
 ```
 
@@ -176,6 +186,7 @@ get_indicator_distributions(scores, 'winsor_minmax_geometric')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - winsor zscore arithmetic
 get_indicator_distributions(scores, 'winsor_zscore_arithmetic')
 ```
 
@@ -185,6 +196,7 @@ get_indicator_distributions(scores, 'winsor_zscore_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - winsor zscore geometric
 get_indicator_distributions(scores, 'winsor_zscore_geometric')
 ```
 
@@ -196,6 +208,7 @@ get_indicator_distributions(scores, 'winsor_zscore_geometric')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - boxcox rank arithmetic
 get_indicator_distributions(scores, 'boxcox_rank_arithmetic')
 ```
 
@@ -205,6 +218,7 @@ get_indicator_distributions(scores, 'boxcox_rank_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - boxcox rank geometric
 get_indicator_distributions(scores, 'boxcox_rank_geometric')
 ```
 
@@ -214,6 +228,7 @@ get_indicator_distributions(scores, 'boxcox_rank_geometric')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - boxcox minmax arithmetic
 get_indicator_distributions(scores, 'boxcox_minmax_arithmetic')
 ```
 
@@ -223,6 +238,7 @@ get_indicator_distributions(scores, 'boxcox_minmax_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - boxcox minmax geometric
 get_indicator_distributions(scores, 'boxcox_minmax_geometric')
 ```
 
@@ -232,6 +248,7 @@ get_indicator_distributions(scores, 'boxcox_minmax_geometric')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - boxcox zscore arithmetic
 get_indicator_distributions(scores, 'boxcox_zscore_arithmetic')
 ```
 
@@ -241,5 +258,6 @@ get_indicator_distributions(scores, 'boxcox_zscore_arithmetic')
 #| fig-height: 15
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Indicator distributions - boxcox zscore geometric
 get_indicator_distributions(scores, 'boxcox_zscore_geometric')
 ```

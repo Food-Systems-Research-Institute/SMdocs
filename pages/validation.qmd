@@ -11,6 +11,15 @@ warnings: false
 ```{r}
 #| label: prep
 #| include: false
+#| cache: false
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::select(),
+  caret::cluster(),
+  .quiet = TRUE
+)
 pacman::p_load(
   dplyr,
   purrr,
@@ -28,19 +37,8 @@ pacman::p_load(
   tibble,
   reactable
 )
-source('dev/data_pipeline_functions.R')
-source('dev/get_res_plots.R')
-source('dev/get_setup.R')
-source('dev/get_stargazer.R')
-source('dev/get_reactable.R')
-
-conflicted::conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::select(),
-  caret::cluster(),
-  .quiet = TRUE
-)
+pacman::p_load_gh("ChrisDonovan307/projecter")
+devtools::load_all()
 ```
 
 # Introduction
@@ -57,11 +55,8 @@ External variables:
 ```{r}
 #| label: wrangle
 #| output: false
-# Load sm_data
-sm_data <- readRDS('data/sm_data.rds')
-
 # Load state fips key to join other datasets
-state_key <- sm_data[['state_key']] %>% 
+state_key <- SMdata::state_key %>% 
   select(state, state_code)
 
 # Load cleaned aggregated data for all levels of regresion
@@ -74,9 +69,9 @@ dimension_scores <- raw_minmax_geo %>%
   setNames(c(str_remove(names(.), 'dimen_')))
 get_str(dimension_scores)
 
-# Pull validation variables out of sm_data, wrangle them to match metrics_df
+# Pull validation variables out of SMdata, wrangle them to match metrics_df
 # Also including covariates, gdp and population
-validation_vars <- sm_data$metadata %>% 
+validation_vars <- SMdata::metadata %>%
   select(variable_name, metric, definition, source) %>% 
   filter(variable_name %in% c(
     'foodInsecurity',
@@ -93,7 +88,7 @@ validation_vars <- sm_data$metadata %>%
 validation_vars  
  
 # Get subset of metrics for our validation variables, get latest year only
-validation_metrics <- sm_data$metrics %>% 
+validation_metrics <- SMdata::metrics %>%
   filter(
     variable_name %in% validation_vars, 
     !is.na(value), 
@@ -119,7 +114,7 @@ get_str(validation_metrics)
 
 # Combine validation variables with our dimension scores using state key as the 
 # bridge. Also remove DC (don't have validation metrics there)
-key <- sm_data$state_key %>% 
+key <- SMdata::state_key %>%
   select(state, fips = state_code)
 dat <- dimension_scores %>% 
   left_join(key) %>% 

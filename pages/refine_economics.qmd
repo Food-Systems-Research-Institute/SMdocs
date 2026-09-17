@@ -8,8 +8,21 @@ format:
 ```{r}
 #| label: not_setup
 #| echo: false
+#| cache: false
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::mutate(),
+  dplyr::select(),
+  dplyr::full_join(),
+  dplyr::arrange(),
+  dplyr::bind_rows(),
+  dplyr::group_by(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
 pacman::p_load(
-  conflicted,
   dplyr,
   skimr,
   readr,
@@ -26,21 +39,7 @@ pacman::p_load(
   RColorBrewer,
   viridisLite
 )
-
-conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::mutate(),
-  dplyr::select(),
-  dplyr::full_join(),
-  dplyr::arrange(),
-  dplyr::bind_rows(),
-  dplyr::group_by(),
-  dplyr::summarize(),
-  .quiet = TRUE
-)
-
-source('dev/get_dimension_ggraph.R')
+devtools::load_all()
 ```
 
 This page describes the various iterations of indicator sets for the economics dimensions. First, we observe the indicators included in the dimension at three points in time. The second section then shows the results of the survey following the indicator refinement meeting.
@@ -58,7 +57,7 @@ This graph shows the original framework as described in the Wiltshire et al. pap
 #| fig-height: 6
 #| fig-width: 10
 #| fig-align: center
-source('dev/get_dimension_ggraph.R')
+#| fig-alt: Graph of economic indicators from Wiltshire
 get_dimension_ggraph(
   csv_path = 'data/trees/econ_wiltshire_tree.csv',
   dimension_in = 'economics',
@@ -79,7 +78,7 @@ Here is the current set of indicators in the matrix, following the Sustainabilit
 #| fig-height: 8
 #| fig-width: 10
 #| fig-align: center
-source('dev/get_dimension_ggraph.R')
+#| fig-alt: Graph of economic indicators from Matrix
 get_dimension_ggraph(
   csv_path = 'data/trees/econ_tree.csv',
   dimension_in = 'economics',
@@ -98,7 +97,7 @@ Finally, the tentative set of indicators following the indicator refinement meet
 #| fig-height: 3
 #| fig-width: 10
 #| fig-align: center
-source('dev/get_dimension_ggraph.R')
+#| fig-alt: Graph of refined economic indicators
 get_dimension_ggraph(
   csv_path = 'data/trees/econ_meeting_tree.csv',
   dimension_in = 'economics',
@@ -204,6 +203,7 @@ graph_table <- imap(ind_tables, ~ {
 #| fig-height: 12
 #| fig-align: center
 #| out-width: 90%
+#| fig-alt: Survey responses for economic dimension indicators
 ggplot(graph_table, aes(
   y = reorder(indicator, sort_key),
   x = proportion, 
@@ -323,6 +323,7 @@ reactable(
 #| fig-height: 4
 #| fig-align: center
 #| out-width: 75%
+#| fig-alt: Survey responses for economic dimension indices
 idx_out <- map(groups[5:7], to_df)
 
 # Add scores by multipliers

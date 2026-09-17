@@ -12,6 +12,17 @@ fig-responsive: false
 ```{r}
 #| label: setup
 #| include: false
+#| cache: false
+pacman::p_load(conflicted)
+conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::arrange(),
+  dplyr::summarize(),
+  dplyr::as_data_frame(),
+  dplyr::pull(),
+  .quiet = TRUE
+)
 pacman::p_load(
   dplyr,
   purrr,
@@ -29,17 +40,8 @@ pacman::p_load(
   DescTools,
   reactable
 )
-source('dev/get_aggregations.R')
-source('dev/get_reactable.R')
-conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::arrange(),
-  dplyr::summarize(),
-  dplyr::as_data_frame(),
-  dplyr::pull(),
-  .quiet = TRUE
-)
+pacman::p_load_gh("ChrisDonovan307/projecter")
+devtools::load_all()
 ```
 
 The plan here is to explore uncertainty and sensitivity in dimensions and indicators. Given our 3 transformation methods, 3 rescaling methods, and 2 aggregation methods, we have 18 ways to build the framework. We also have 38 indicators, and if we include iterations where we omit each indicator one time, that adds another 39 options (1 where all are included). In total, this gives us 702 options in our uncertain inputs. We will map through them all and get a distribution of dimension scores for Vermont that shows how confident we are in our uncertain inputs.
@@ -54,7 +56,7 @@ First we set up our input grid of 702 iterations.
 #| label: input_grid
 #| output: false
 ## Load data for aggregations
-state_key <- readRDS('data/sm_data.rds')[['state_key']]
+state_key <- SMdata::state_key
 # metrics_df <- readRDS('data/metrics_df.rds')
 valued <- readRDS('data/valued_rescaled_metrics.rds')
 framework <- readRDS('data/filtered_frame.rds')
@@ -82,52 +84,51 @@ grid <- expand.grid(
 get_str(grid)
 ```
 
-Now we run all 702 iterations and save dimension score results
+Now we run all iterations and save dimension score results
 
 ```{r}
 #| label: 702_iterations
-#| eval: false
+#| eval: true
 #| output: false
-# We are commenting out this cell chunk so that we don't actually run it. 
-# This is where we run 702 iterations to get distributions of scores for VT.
+# This is where we run all iterations to get distributions of scores for VT.
 
 # For each set of input factors, get dimension scores for VT
-# tic()
-# plan(multisession, workers = parallelly::availableCores(omit = 1))
-# 
-# out <- future_map(1:nrow(grid), \(i) {
-# 
-#   # Print outputs for debugging
-#   print(grid[i, ])
-#   get_time(c('\n~~~~~ Starting row ', i, ' at:'))
-#   
-#   # Get iteration specs to pull df from valued data
-#   iter_specs <- paste0(
-#     as.character(grid[i, 1]),
-#     '_',
-#     as.character(grid[i, 2])
-#   )
-#    
-#   # Run model
-#   model_out <- get_all_aggregations(
-#     normed_data = valued[iter_specs],
-#     framework = framework,
-#     state_key = state_key,
-#     aggregation = grid$aggregation[i],
-#     remove_indicators = grid$indicator[i]
-#   )
-#   return(model_out)
-# }, .progress = TRUE)
-# 
-# plan(sequential)
-# toc()
-# # 168s in parallel for 702 iterations
-# 
-# get_str(out)
-# get_str(out, 4)
-# 
-# # Save this so we don't have to run it again
-# saveRDS(out, 'data/objects/sensitivity_out.RDS')
+tic()
+plan(multisession, workers = parallelly::availableCores(omit = 1))
+
+out <- future_map(1:nrow(grid), \(i) {
+
+  # Print outputs for debugging
+  print(grid[i, ])
+  get_time(c('\n~~~~~ Starting row ', i, ' at:'))
+  
+  # Get iteration specs to pull df from valued data
+  iter_specs <- paste0(
+    as.character(grid[i, 1]),
+    '_',
+    as.character(grid[i, 2])
+  )
+   
+  # Run model
+  model_out <- get_all_aggregations(
+    normed_data = valued[iter_specs],
+    framework = framework,
+    state_key = state_key,
+    aggregation = grid$aggregation[i],
+    remove_indicators = grid$indicator[i]
+  )
+  return(model_out)
+}, .progress = TRUE)
+
+plan(sequential)
+toc()
+# 168s in parallel for iterations
+
+get_str(out)
+get_str(out, 4)
+
+# Save this so we don't have to run it again
+saveRDS(out, 'data/objects/sensitivity_out.RDS')
 ```
 
 Finally, put them back together in a sensible way

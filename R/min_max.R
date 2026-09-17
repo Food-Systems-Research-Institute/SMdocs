@@ -39,7 +39,7 @@
 #'
 #' @export
 min_max <- function(x) {
-  assert_that(length(x) > 1, msg = 'Vector must have length > 1')
+  assertthat::assert_that(length(x) > 1, msg = 'Vector must have length > 1')
   if (any(is.na(x))) {
     n_nas <- sum(is.na(x))
     warning(paste('Input contains', n_nas, 'NAs. These will be removed.'))

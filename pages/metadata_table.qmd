@@ -8,9 +8,11 @@ filters:
 #| label: setup
 #| warnings: false
 #| echo: false
+#| cache: false
 pacman::p_load(
   conflicted
 )
+devtools::load_all()
 conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
@@ -207,7 +209,6 @@ metrics <- SMdata::metrics
 fips_key <- SMdata::fips_key
 
 # Value formatting function based on units
-source('dev/format_values.R')
 
 # Join with metadata and county fips codes
 metrics <- metrics %>%

@@ -8,8 +8,21 @@ format:
 ```{r}
 #| label: not_setup
 #| echo: false
+#| cache: false
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::mutate(),
+  dplyr::select(),
+  dplyr::full_join(),
+  dplyr::arrange(),
+  dplyr::bind_rows(),
+  dplyr::group_by(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
 pacman::p_load(
-  conflicted,
   dplyr,
   skimr,
   readr,
@@ -26,22 +39,7 @@ pacman::p_load(
   RColorBrewer,
   viridisLite
 )
-
-conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::mutate(),
-  dplyr::select(),
-  dplyr::full_join(),
-  dplyr::arrange(),
-  dplyr::bind_rows(),
-  dplyr::group_by(),
-  dplyr::summarize(),
-  .quiet = TRUE
-)
-
-source('dev/get_dimension_ggraph.R')
-source('dev/clean_refine_surveys.R')
+devtools::load_all()
 ```
 
 This page describes the various iterations of indicator sets for the production dimension. First, we observe the indicators included in the dimension at three points in time. The second section then shows the results of the survey following the indicator refinement meeting. 
@@ -59,13 +57,12 @@ This graph shows the original framework for the dimension as described in the Wi
 #| fig-height: 5
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Graph of indicators from Wiltshire paper
 # Use custom function in SMDO repo
-source('dev/get_dimension_ggraph.R')
 get_dimension_ggraph(
   csv_path = 'data/trees/wiltshire_tree.csv',
   dimension_in = 'Production',
-  y_limits = c(-1.5, 2.1),
-  palette = "ggthemes::stata_s2color"
+  y_limits = c(-1.5, 2.1)
 )
 
 ```
@@ -81,13 +78,12 @@ Here is the current set of indicators in the matrix, following the Sustainabilit
 #| fig-height: 8
 #| fig-width: 11
 #| fig-align: center
+#| fig-alt: Graph of indicators from matrix
 # Use custom function in SMDO repo
-source('dev/get_dimension_ggraph.R')
 get_dimension_ggraph(
   csv_path = 'data/trees/matrix_tree.csv',
   dimension_in = 'Production',
-  y_limits = c(-1.5, 2.1),
-  palette = "ggthemes::stata_s2color"
+  y_limits = c(-1.5, 2.1)
 )
 ```
 
@@ -200,6 +196,7 @@ graph_table_clean <- graph_table %>%
 #| fig-height: 12
 #| fig-align: center
 #| out-width: 100%
+#| fig-alt: Graph of survey responses on indices
 ggplot(graph_table_clean, aes(
   y = reorder(indicator, sort_key),
   x = proportion, 
@@ -299,6 +296,7 @@ reactable(
 #| fig-height: 6
 #| fig-align: center
 #| out-width: 90%
+#| fig-alt: Graph of survey responses on indices
 # Add scores by multipliers
 multipliers <- c(3:1)
 idx_tables <- map2(idx_out[1:3], multipliers, ~ {

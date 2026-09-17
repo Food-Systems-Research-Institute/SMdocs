@@ -18,30 +18,28 @@ Be aware that spider/radar charts can be hard to interpret, and sometimes mislea
 
 ```{r}
 #| label: prep
-#| echo: false 
-pacman::p_load(
-  dplyr,
-  purrr,
-  conflicted,
-  fmsb,
-  tidyr,
-  ggplot2,
-  ggpubr
-)
-
-state_key <- readRDS('data/state_key.rds')
-fips_key <- readRDS('data/fips_key.rds')
-ne_states <- c('VT', 'NH', 'ME', 'MA', 'CT', 'RI') %>% sort
-
-source('dev/get_vt_spiders.R')
-source('dev/get_reactable_scores.R')
-
-conflicts_prefer(
+#| echo: false
+#| cache: false
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
   dplyr::summarize(),
   .quiet = TRUE
 )
+pacman::p_load(
+  dplyr,
+  purrr,
+  fmsb,
+  tidyr,
+  ggplot2,
+  ggpubr
+)
+devtools::load_all()
+
+state_key <- readRDS('data/state_key.rds')
+fips_key <- readRDS('data/fips_key.rds')
+ne_states <- c('VT', 'NH', 'ME', 'MA', 'CT', 'RI') %>% sort
 ```
 
 # Min Max
@@ -53,6 +51,7 @@ The transformation is easy to understand, but has some drawbacks, including bein
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| fig-alt: Spider plots comparing Vermont to the US median across dimensions - raw minmax
 # Load state score data
 dat <- readRDS('data/state_score_iterations.rds')
 # get_str(dat)
@@ -64,12 +63,14 @@ get_vt_spiders(dat, 'raw_minmax')
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| fig-alt: Spider plots comparing Vermont to the US median across dimensions - winsor minmax
 get_vt_spiders(dat, 'winsor_minmax')
 ```
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| fig-alt: Spider plots comparing Vermont to the US median across dimensions - boxcox minmax
 get_vt_spiders(dat, 'boxcox_minmax')
 ```
 
@@ -80,18 +81,21 @@ Z-scores are standardized values. We subtract the mean from every metric to cent
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| fig-alt: Spider plots comparing Vermont to the US median across dimensions - raw zscore
 get_vt_spiders(dat, 'raw_zscore')
 ```
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| fig-alt: Spider plots comparing Vermont to the US median across dimensions - winsor zscore
 get_vt_spiders(dat, 'winsor_zscore')
 ```
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| fig-alt: Spider plots comparing Vermont to the US median across dimensions - boxcox zscore
 get_vt_spiders(dat, 'boxcox_zscore')
 ```
 
@@ -100,18 +104,21 @@ get_vt_spiders(dat, 'boxcox_zscore')
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| fig-alt: Spider plots comparing Vermont to the US median across dimensions - raw rank
 get_vt_spiders(dat, 'raw_rank')
 ```
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| fig-alt: Spider plots comparing Vermont to the US median across dimensions - winsor rank
 get_vt_spiders(dat, 'winsor_rank')
 ```
 
 ```{r}
 #| fig-width: 10
 #| fig-height: 5
+#| fig-alt: Spider plots comparing Vermont to the US median across dimensions - boxcox rank
 get_vt_spiders(dat, 'boxcox_rank')
 ```
 

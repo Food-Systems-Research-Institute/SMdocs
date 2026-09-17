@@ -12,20 +12,9 @@ eval: false
 ```{r}
 #| label: setup
 #| echo: false
-source('dev/get_vt_spiders.R')
-source('dev/get_aggregations.R')
-source('dev/get_reactable.R')
-pacman::p_load(
-  dplyr,
-  purrr,
-  reactable,
-  fmsb,
-  snakecase,
-  conflicted,
-  tibble,
-  stringr
-)
-conflicts_prefer(
+#| cache: false
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
   dplyr::arrange(),
@@ -34,6 +23,16 @@ conflicts_prefer(
   dplyr::pull(),
   .quiet = TRUE
 )
+pacman::p_load(
+  dplyr,
+  purrr,
+  reactable,
+  fmsb,
+  snakecase,
+  tibble,
+  stringr
+)
+devtools::load_all()
 ```
 
 Here we will see how much the dimension scores for Vermont change when we reduce certain indicators with many metrics to a single metric. We do this for an indicator in every dimension except social, which really doesn't have any metrics to spare currently. 
@@ -44,7 +43,7 @@ Note that this should be redone more systematically and across all metrics to co
 #| label: explore
 #| output: false
 # Load data for aggregations
-state_key <- readRDS('data/sm_data.rds')[['state_key']]
+state_key <- SMdata::state_key
 metrics_df <- readRDS('data/metrics_df.rds')
 normed_data <- readRDS('data/normalized_metrics_df.rds')
 framework <- readRDS('data/filtered_frame.rds')

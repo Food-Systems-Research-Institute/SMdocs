@@ -24,25 +24,7 @@ Testing out a Bayesian Network with structural learning to identify drivers in o
 # if (!require('graph')) BiocManager::install('graph')
 # if (!require('Rgraphviz')) BiocManager::install('Rgraphviz')
 
-pacman::p_load(
-  dplyr,
-  bnlearn,
-  conflicted,
-  stringr,
-  purrr,
-  tidyr,
-  skimr,
-  knitr,
-  reactable,
-  graph,
-  Rgraphviz,
-  snakecase,
-  graph
-)
-
-source('dev/data_pipeline_functions.R')
-source('dev/get_reactable.R')
-
+pacman::p_load(conflicted)
 conflicted::conflicts_prefer(
   dplyr::filter(),
   dplyr::select(),
@@ -54,6 +36,20 @@ conflicted::conflicts_prefer(
   graph::nodes(),
   .quiet = TRUE
 )
+pacman::p_load(
+  dplyr,
+  bnlearn,
+  stringr,
+  purrr,
+  tidyr,
+  skimr,
+  knitr,
+  reactable,
+  graph,
+  Rgraphviz,
+  snakecase
+)
+devtools::load_all()
 ```
 
 ## Wrangling
@@ -63,10 +59,10 @@ conflicted::conflicts_prefer(
 #| output: false
 # Pull county time series variables
 vars <- readRDS('data/frontiers/county_time_series_vars.rds')
-sm_data <- readRDS('data/sm_data.rds')[['metrics']]
+metrics <- SMdata::metrics
 
 # Get county variables only, and lose CT
-dat <- sm_data %>% 
+dat <- metrics %>%
   filter(
     str_length(fips) == 5,
     variable_name %in% vars,

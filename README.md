@@ -37,3 +37,7 @@ This will call `renv` to restore the environment in each run.
 
 - `assets/custom_theme.scss` modifies Quarto's sandstone theme. This does most of the work
 - `assets/styles.css` makes a few other changes
+
+### Issues
+
+- `sensitivity.qmd` and `validation.qmd` are not being rendered - have to reconcile some data changes that are leading to problems here.

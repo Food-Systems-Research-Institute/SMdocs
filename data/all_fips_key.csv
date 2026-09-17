@@ -1,0 +1,278 @@
+fips,name
+01,Alabama
+02,Alaska
+04,Arizona
+05,Arkansas
+06,California
+08,Colorado
+09,Connecticut
+10,Delaware
+11,District of Columbia
+12,Florida
+13,Georgia
+15,Hawaii
+16,Idaho
+17,Illinois
+18,Indiana
+19,Iowa
+20,Kansas
+21,Kentucky
+22,Louisiana
+23,Maine
+24,Maryland
+25,Massachusetts
+26,Michigan
+27,Minnesota
+28,Mississippi
+29,Missouri
+30,Montana
+31,Nebraska
+32,Nevada
+33,New Hampshire
+34,New Jersey
+35,New Mexico
+36,New York
+37,North Carolina
+38,North Dakota
+39,Ohio
+40,Oklahoma
+41,Oregon
+42,Pennsylvania
+44,Rhode Island
+45,South Carolina
+46,South Dakota
+47,Tennessee
+48,Texas
+49,Utah
+50,Vermont
+51,Virginia
+53,Washington
+54,West Virginia
+55,Wisconsin
+56,Wyoming
+09001,Fairfield County
+09003,Hartford County
+09005,Litchfield County
+09007,Middlesex County
+09009,New Haven County
+09011,New London County
+09013,Tolland County
+09015,Windham County
+09110,Capitol
+09120,Greater Bridgeport
+09130,Lower Connecticut River Valley
+09140,Naugatuck Valley
+09150,Northeastern Connecticut
+09160,Northwest Hills
+09170,South Central Connecticut
+09180,Southeastern Connecticut
+09190,Western Connecticut
+23001,Androscoggin County
+23003,Aroostook County
+23005,Cumberland County
+23007,Franklin County
+23009,Hancock County
+23011,Kennebec County
+23013,Knox County
+23015,Lincoln County
+23017,Oxford County
+23019,Penobscot County
+23021,Piscataquis County
+23023,Sagadahoc County
+23025,Somerset County
+23027,Waldo County
+23029,Washington County
+23031,York County
+25001,Barnstable County
+25003,Berkshire County
+25005,Bristol County
+25007,Dukes County
+25009,Essex County
+25011,Franklin County
+25013,Hampden County
+25015,Hampshire County
+25017,Middlesex County
+25019,Nantucket County
+25021,Norfolk County
+25023,Plymouth County
+25025,Suffolk County
+25027,Worcester County
+33001,Belknap County
+33003,Carroll County
+33005,Cheshire County
+33007,Coos County
+33009,Grafton County
+33011,Hillsborough County
+33013,Merrimack County
+33015,Rockingham County
+33017,Strafford County
+33019,Sullivan County
+34001,Atlantic County
+34003,Bergen County
+34005,Burlington County
+34007,Camden County
+34009,Cape May County
+34011,Cumberland County
+34013,Essex County
+34015,Gloucester County
+34017,Hudson County
+34019,Hunterdon County
+34021,Mercer County
+34023,Middlesex County
+34025,Monmouth County
+34027,Morris County
+34029,Ocean County
+34031,Passaic County
+34033,Salem County
+34035,Somerset County
+34037,Sussex County
+34039,Union County
+34041,Warren County
+36001,Albany County
+36003,Allegany County
+36005,Bronx County
+36007,Broome County
+36009,Cattaraugus County
+36011,Cayuga County
+36013,Chautauqua County
+36015,Chemung County
+36017,Chenango County
+36019,Clinton County
+36021,Columbia County
+36023,Cortland County
+36025,Delaware County
+36027,Dutchess County
+36029,Erie County
+36031,Essex County
+36033,Franklin County
+36035,Fulton County
+36037,Genesee County
+36039,Greene County
+36041,Hamilton County
+36043,Herkimer County
+36045,Jefferson County
+36047,Kings County
+36049,Lewis County
+36051,Livingston County
+36053,Madison County
+36055,Monroe County
+36057,Montgomery County
+36059,Nassau County
+36061,New York County
+36063,Niagara County
+36065,Oneida County
+36067,Onondaga County
+36069,Ontario County
+36071,Orange County
+36073,Orleans County
+36075,Oswego County
+36077,Otsego County
+36079,Putnam County
+36081,Queens County
+36083,Rensselaer County
+36085,Richmond County
+36087,Rockland County
+36089,St. Lawrence County
+36091,Saratoga County
+36093,Schenectady County
+36095,Schoharie County
+36097,Schuyler County
+36099,Seneca County
+36101,Steuben County
+36103,Suffolk County
+36105,Sullivan County
+36107,Tioga County
+36109,Tompkins County
+36111,Ulster County
+36113,Warren County
+36115,Washington County
+36117,Wayne County
+36119,Westchester County
+36121,Wyoming County
+36123,Yates County
+42001,Adams County
+42003,Allegheny County
+42005,Armstrong County
+42007,Beaver County
+42009,Bedford County
+42011,Berks County
+42013,Blair County
+42015,Bradford County
+42017,Bucks County
+42019,Butler County
+42021,Cambria County
+42023,Cameron County
+42025,Carbon County
+42027,Centre County
+42029,Chester County
+42031,Clarion County
+42033,Clearfield County
+42035,Clinton County
+42037,Columbia County
+42039,Crawford County
+42041,Cumberland County
+42043,Dauphin County
+42045,Delaware County
+42047,Elk County
+42049,Erie County
+42051,Fayette County
+42053,Forest County
+42055,Franklin County
+42057,Fulton County
+42059,Greene County
+42061,Huntingdon County
+42063,Indiana County
+42065,Jefferson County
+42067,Juniata County
+42069,Lackawanna County
+42071,Lancaster County
+42073,Lawrence County
+42075,Lebanon County
+42077,Lehigh County
+42079,Luzerne County
+42081,Lycoming County
+42083,McKean County
+42085,Mercer County
+42087,Mifflin County
+42089,Monroe County
+42091,Montgomery County
+42093,Montour County
+42095,Northampton County
+42097,Northumberland County
+42099,Perry County
+42101,Philadelphia County
+42103,Pike County
+42105,Potter County
+42107,Schuylkill County
+42109,Snyder County
+42111,Somerset County
+42113,Sullivan County
+42115,Susquehanna County
+42117,Tioga County
+42119,Union County
+42121,Venango County
+42123,Warren County
+42125,Washington County
+42127,Wayne County
+42129,Westmoreland County
+42131,Wyoming County
+42133,York County
+44001,Bristol County
+44003,Kent County
+44005,Newport County
+44007,Providence County
+44009,Washington County
+50001,Addison County
+50003,Bennington County
+50005,Caledonia County
+50007,Chittenden County
+50009,Essex County
+50011,Franklin County
+50013,Grand Isle County
+50015,Lamoille County
+50017,Orange County
+50019,Orleans County
+50021,Rutland County
+50023,Washington County
+50025,Windham County
+50027,Windsor County

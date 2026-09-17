@@ -13,8 +13,18 @@ This page explores metric distributions before any transformations. Use this to 
 ```{r}
 #| label: prep
 #| include: false
-source('dev/get_setup.R')
-get_setup()
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::arrange(),
+  dplyr::summarize(),
+  dplyr::as_data_frame(),
+  dplyr::pull(),
+  .quiet = TRUE
+)
+pacman::p_load(dplyr)
+pacman::p_load_gh('ChrisDonovan307/projecter')
 ```
 
 # Distributions
@@ -27,6 +37,7 @@ Highly skewed distributions might be good candidates for Box-Cox transformations
 #| fig-height: 45
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Graphs of distributions of metrics
 pacman::p_load(
   ggplot2,
   purrr,

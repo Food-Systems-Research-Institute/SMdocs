@@ -91,8 +91,8 @@ get_reactable <- function(df,
                           compact = TRUE,
                           fullWidth = TRUE,
                           ...) {
-  assert_that('data.frame' %in% class(df), msg = 'The df object must be a data.frame')
-  assert_that(nrow(df) > 0, msg = 'The df must have at least 1 row')
+  assertthat::assert_that('data.frame' %in% class(df), msg = 'The df object must be a data.frame')
+  assertthat::assert_that(nrow(df) > 0, msg = 'The df must have at least 1 row')
 
   reactable::reactable(
     df,

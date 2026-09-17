@@ -12,24 +12,8 @@ warnings: false
 #| label: prep
 #| warnings: false
 #| echo: false
-pacman::p_load(
-  dplyr,
-  purrr,
-  conflicted,
-  psych,
-  readr, 
-  stringr, 
-  caret, 
-  purrr, 
-  DHARMa, 
-  lmtest,
-  snakecase,
-  tibble,
-  reactable
-)
-
-source('dev/get_reactable.r')
-
+#| cache: false
+pacman::p_load(conflicted)
 conflicted::conflicts_prefer(
  dplyr::select(),
  dplyr::filter(),
@@ -37,6 +21,21 @@ conflicted::conflicts_prefer(
  dplyr::rename(),
  .quiet = TRUE
 )
+pacman::p_load(
+  dplyr,
+  purrr,
+  psych,
+  readr,
+  stringr,
+  caret,
+  DHARMa,
+  lmtest,
+  snakecase,
+  tibble,
+  reactable
+)
+pacman::p_load_gh("ChrisDonovan307/projecter")
+devtools::load_all()
 ```
 
 On this page we will take our min-max normalized, geometrically averaged scores, which look like the most reliable and approachable so far, and take a deeper dive into variable selection, regression, and PCA. From the dimension meetings, it sounds like we may have some indicators with a couple of metrics, and potentially others with dozens. Because of this, and because of our focus on developing sensible indicators, I think it will be best to do any weighting at the indicator level or above. This also reduces our variable count substantially in relation to our state count of 51, opening more doors for PCA.
@@ -102,7 +101,7 @@ pca_dat <- dat %>%
 # Explore how many factors to extract
 VSS(pca_dat, n = 8, fm = 'pc', rotate = 'Promax')
 set.seed(42)
-fa.parallel(pca_dat, fm = 'ml')
+fa.parallel(pca_dat, fm = 'minres')
 ```
 
 MAP suggests 6, VSS 2 or 3, PA suggests 5. Not half bad. I think we are justified to go with 5.
@@ -124,20 +123,20 @@ pca_outs <- map(rotations, ~ {
   setNames(c(rotations))
 
 # Save a version of promax for preso?
-png(
-  filename = 'preso/plots/scree.png',
-  width = 800,
-  height = 600,
-  units = 'px',
-  res = 150
-)
-plot(
-  pca_outs$simplimax$values,
-  xlab = 'Number of Components',
-  ylab = 'Eigen Values'
-)
-abline(h = 1)
-dev.off()
+# png(
+#   filename = 'preso/plots/scree.png',
+#   width = 800,
+#   height = 600,
+#   units = 'px',
+#   res = 150
+# )
+# plot(
+#   pca_outs$simplimax$values,
+#   xlab = 'Number of Components',
+#   ylab = 'Eigen Values'
+# )
+# abline(h = 1)
+# dev.off()
 
 # Now actually show it 
 plot(
@@ -176,8 +175,8 @@ pca_tables <- map(pca_outs, ~ {
 })
 get_str(pca_tables)  
 
-# Save it for preso
-saveRDS(pca_tables, 'preso/data/pca_tables.rds')
+# # Save it for preso
+# saveRDS(pca_tables, 'preso/data/pca_tables.rds')
 ```
 
 

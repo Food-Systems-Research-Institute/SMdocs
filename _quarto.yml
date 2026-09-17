@@ -20,8 +20,9 @@ project:
     - pages/indicator_distributions.qmd
     - pages/comparison.qmd
     - pages/indicator_correlations.qmd
-    - pages/validation.qmd
-    - pages/sensitivity.qmd
+    - pages/selection.qmd
+    # - pages/validation.qmd
+    # - pages/sensitivity.qmd
     - pages/data_inventory.qmd
 
 website:
@@ -129,7 +130,7 @@ bibliography:
 
 execute:
   warning: false
-  cache: true
+  cache: false # reset this
   freeze: auto
 
 editor_options:

@@ -1,4 +1,4 @@
----
+-g--
 title: "Indicator Correlations"
 editor_options: 
   chunk_output_type: console
@@ -8,14 +8,20 @@ fig-responsive: false
 
 ```{r}
 #| label: prep
+#| cache: false
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::summarize(),
+  .quiet = TRUE
+)
 pacman::p_load(
   dplyr,
-  conflicted,
   tidyr,
   tibble,
   stringr,
   purrr,
-  tidyr,
   ggplot2,
   plotly,
   reshape,
@@ -23,13 +29,8 @@ pacman::p_load(
   viridisLite,
   reactable
 )
-source('dev/get_reactable.r')
-conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::summarize(),
-  .quiet = TRUE
-)
+pacman::p_load_gh("ChrisDonovan307/projecter")
+devtools::load_all()
 ```
 
 This page will explore the Pearson correlations between variables at the indicator level. Note that indicators have already been recoded as necessary such that they all point in the desirable direction. For example, the negative correlation between carbon fluxes (CO2 emissions from agriculture) and total quantity food products (animal and crop sales) means that as food production increases (good), carbon fluxes increase (bad). 
@@ -120,13 +121,14 @@ plot_out
 
 # Save this for preso
 # preso_matrix <- list(mat, color_map)
-saveRDS(mat, 'preso/data/correlation_data.rds')
+# saveRDS(mat, 'preso/data/correlation_data.rds')
 ```
 
 
 ```{r}
 #| label: correlation_plot
 #| fig-cap: Interactive Correlation Plot
+#| fig-alt: Interactive heatmap of pairwise correlations between indicators, color-coded by correlation strength and direction
 # Fair warning - this is some pretty jenky code. Plotly apparently doesn't want
 # us to know what happens when we make our x and y axes different colors.
 
@@ -349,7 +351,7 @@ plot <- plot %>%
   )
 
 # Save this for preso
-htmlwidgets::saveWidget(plot, 'preso/plots/correlation_plotly.html')
+# htmlwidgets::saveWidget(plot, 'preso/plots/correlation_plotly.html')
 
 # Show it 
 plot
@@ -415,7 +417,7 @@ cor_table <- cor_counts %>%
 get_str(cor_table)
 
 # Save this for preso  
-saveRDS(cor_table, 'preso/data/correlation_counts.rds')
+# saveRDS(cor_table, 'preso/data/correlation_counts.rds')
 ```
 
 ```{r}

@@ -44,6 +44,7 @@ Exploring methods of transforming, rescaling, and aggregating data into indicato
 ```{r}
 #| label: prep
 #| echo: false
+#| cache: false
 pacman::p_load(
   reactable,
   purrr,
@@ -54,9 +55,8 @@ pacman::p_load(
   DescTools,
   stringr
 )
-source('dev/get_reactable.R')
-source('dev/get_setup.R')
-source('dev/get_aggregations.R')
+devtools::load_all()
+pacman::p_load_gh("ChrisDonovan307/projecter")
 conflicted::conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
@@ -336,9 +336,29 @@ remove <- c(
 
 ## Remove the unclear ones from all three datasets
 # Then for each transformation, flip values in a way that makes sense
+
+# Some entries in `reverse`/`remove` may not exist in the current metrics_df
+missing_reverse <- setdiff(reverse, vars)
+if (length(missing_reverse) > 0) {
+  warning(
+    'The following `reverse` variables are missing from metrics_df and will be skipped: ',
+    paste(missing_reverse, collapse = ', ')
+  )
+}
+reverse <- intersect(reverse, vars)
+
+missing_remove <- setdiff(remove, vars)
+if (length(missing_remove) > 0) {
+  warning(
+    'The following `remove` variables are missing from metrics_df and will be skipped: ',
+    paste(missing_remove, collapse = ', ')
+  )
+}
+remove <- intersect(remove, vars)
+
 valued <- imap(scaled, \(df, method) {
-  df %>% 
-    select(-all_of(remove)) %>% 
+  df %>%
+    select(-all_of(remove)) %>%
     mutate(
       across(all_of(reverse), ~ case_when(
         str_detect(method, 'rank') ~ max(.x) - .x + 1,
@@ -365,8 +385,7 @@ saveRDS(valued, 'data/valued_rescaled_metrics.rds')
 #| label: wrangle_table
 #| output: false
 ## Show table of which metrics were set in which direction
-sm_data <- readRDS('data/sm_data.rds')
-meta <- sm_data$metadata
+meta <- SMdata::metadata
 
 # Reactable table showing var, metric, source, and direction
 table <- meta %>% 
@@ -389,7 +408,7 @@ table <- meta %>%
 get_str(table)
 
 # Save this desirable direction table for preso
-saveRDS(table, 'preso/data/desirable_directions_table.rds')
+# saveRDS(table, 'preso/data/desirable_directions_table.rds')
 ```
 
 
@@ -472,7 +491,7 @@ Here, we organize arithmetic and geometric means for each level of the framework
 ```{r}
 #| label: wrangle
 #| output: false
-state_key <- readRDS('data/state_key.rds')
+state_key <- SMdata::state_key
 
 get_str(indicator_scores, 4)
 get_str(index_scores, 4)

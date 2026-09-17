@@ -13,14 +13,21 @@ editor_options:
 #| label: setup
 #| echo: false
 #| cache: false
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
+  dplyr::select(),
+  dplyr::filter(),
+  dplyr::arrange(),
+  dplyr::summarize(),
+  dplyr::as_data_frame(),
+  .quiet = TRUE
+)
 pacman::p_load(
   dplyr,
-  conflicted,
   purrr,
   stringr,
   ggraph,
   igraph,
-  dplyr,
   readr,
   RColorBrewer,
   paletteer,
@@ -31,15 +38,7 @@ pacman::p_load(
   downloadthis
 )
 pacman::p_load_gh('ChrisDonovan307/projecter')
-source('dev/get_dimension_ggraph.R')
-conflicts_prefer(
-  dplyr::select(),
-  dplyr::filter(),
-  dplyr::arrange(),
-  dplyr::summarize(),
-  dplyr::as_data_frame(),
-  .quiet = TRUE
-)
+devtools::load_all()
 ```
 
 This page shows the partially refined framework as it stands after three dimension meetings: economics, environment, and production. It also includes a selection of preliminary secondary data metrics to match those indicators. Effectively, we have around 650 meaningful metrics. Here, we are using a selection of 124 of them to make a skeleton framework for preliminary analyses.
@@ -59,8 +58,7 @@ Here is the framework with a selection of secondary metrics, split into each dim
 #| label: wrangle_framework
 #| output: false
 # Load refined framework. We are leaving this here during rework so other pages work. It is now old though
-sm_data <- readRDS('data/sm_data.rds')
-old_frame <- sm_data[['refined_tree']]
+old_frame <- SMdata::refined_tree
 
 # Clean up the framework df 
 old_frame <- old_frame %>% 
@@ -82,15 +80,11 @@ saveRDS(old_frame, 'data/frameworks/frame.rds')
 
 
 ## Bringing in new tree for RFPP example (fixed tree actually)
-# new_tree <- sm_data[['new_tree']]
-new_tree <- sm_data[['fixed_tree']]
+new_tree <- SMdata::fixed_tree
 
 # Clean up the framework df 
 frame <- new_tree %>% 
-  filter(index != 'intention to consume pbp') %>%  # remove duplicate
-  # select(dimension:variable_name, use) %>% 
-  # filter(use == 'x') %>% 
-  # select(-use) %>% 
+  filter(index != 'intention to consume pbp') %>% 
   mutate(
     across(
       c(metric, indicator),
@@ -123,7 +117,7 @@ One gap I've noticed since this dimension was reworked in the dimension meeting 
 #| fig-align: center
 #| fig-height: 8
 #| fig-width: 10
-source('dev/get_dimension_ggraph.R')
+#| fig-alt: Graph of environment dimension
 plots$environment <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'environment',
@@ -146,6 +140,7 @@ It has definitely been easier to find economics data than other dimensions. Wort
 #| fig-height: 8
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Graph of economics dimension
 plots$economics <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'economics',
@@ -169,6 +164,7 @@ The rest of the metrics come from NASS. Production is an area in which I feel be
 #| fig-height: 7
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Graph of production dimension
 plots$production <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'production',
@@ -190,6 +186,7 @@ The Food Environment Atlas has lots of data on access and nutrition, which accou
 #| fig-height: 14
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Graph of health dimension
 plots$health <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'health',
@@ -212,6 +209,7 @@ The social dimension is admittedly slim, but it could have been worse. The Count
 #| fig-height: 8
 #| fig-width: 10
 #| fig-align: center
+#| fig-alt: Graph of social dimension
 plots$social <- get_dimension_ggraph(
   framework_df = frame,
   dimension_in = 'social',
@@ -278,7 +276,6 @@ htmltools::browsable(
         has_icon = TRUE,
         icon = "fa fa-download",
         self_contained = FALSE
-        # class = 'download-button'
       )
     ),
     
@@ -302,9 +299,7 @@ htmltools::browsable(
       compact = TRUE,
       elementId = "frame_table",
       fullWidth = TRUE
-      # defaultColDef = colDef(minWidth = 100),
     )
-    
   )
 )
 

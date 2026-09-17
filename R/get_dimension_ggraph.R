@@ -62,18 +62,20 @@
 #' }
 #'
 #' @export
-get_dimension_ggraph <- function(csv_path = NULL,
-                                 framework_df = NULL,
-                                 dimension_in,
-                                 include_metrics = FALSE,
-                                 x_limits = c(0, 0),
-                                 y_limits = c(-1.5, 2.1),
-                                 leaf_font_size = 4,
-                                 index_label_size = 0.1,
-                                 index_font_size = 4,
-                                 palette = "scico::batlowW",
-                                 arrow = NULL,
-                                 slim = FALSE) {
+get_dimension_ggraph <- function(
+  csv_path = NULL,
+  framework_df = NULL,
+  dimension_in,
+  include_metrics = FALSE,
+  x_limits = c(0, 0),
+  y_limits = c(-1.5, 2.1),
+  leaf_font_size = 4,
+  index_label_size = 0.1,
+  index_font_size = 4,
+  palette = "scico::batlowW",
+  arrow = NULL,
+  slim = FALSE
+) {
   # Put input in lower case for consistency
   # dimension_in <- stringr::str_to_lower(dimension_in)
 
@@ -88,16 +90,17 @@ get_dimension_ggraph <- function(csv_path = NULL,
 
   # Filter to dimension, but put back to title case
   df <- df %>%
-    # setNames(c(stringr::str_to_lower(names(.)))) %>%
-    # dplyr::mutate(dplyr::across(dplyr::any_of(c('dimension', 'index', 'indicator')), ~ stringr::str_to_lower(.x))) %>%
-    dplyr::filter(dimension == dimension_in)
+    dplyr::rename_with(stringr::str_to_lower) %>%
+    dplyr::filter(
+      stringr::str_to_lower(dimension) == stringr::str_to_lower(dimension_in)
+    )
 
   # Metric logic
   if (include_metrics == TRUE) {
     if (slim == FALSE) {
-    df <- df %>%
-      dplyr::select(dimension, index, indicator, metric) %>%
-      dplyr::arrange(desc(index), desc(indicator), desc(metric))
+      df <- df %>%
+        dplyr::select(dimension, index, indicator, metric) %>%
+        dplyr::arrange(desc(index), desc(indicator), desc(metric))
     } else if (slim == TRUE) {
       df <- df %>%
         dplyr::select(dimension, indicator, metric) %>%
@@ -150,27 +153,25 @@ get_dimension_ggraph <- function(csv_path = NULL,
         dplyr::mutate(
           group = from
         )
-
     }
   }
   edges <- dplyr::bind_rows(edges)
   ## Make vertices
   # Each line is a single vertex (dimension, index, or indicator)
   # We are just giving them random values to control point size for now
-  vertices = data.frame(
+  vertices <- data.frame(
     name = unique(c(as.character(edges$from), as.character(edges$to)))
     # value = runif(nrow(edges) + 1)
   )
 
   # Add the dimension groupings to the vertices as well
-  vertices$group = edges$group[match(vertices$name, edges$to)]
+  vertices$group <- edges$group[match(vertices$name, edges$to)]
 
   # IDs for vertices
-  vertices$id = NA
-  myleaves = which(is.na(match(vertices$name, edges$from)))
-  nleaves = length(myleaves)
-  vertices$id[myleaves] = seq(1:nleaves)
-
+  vertices$id <- NA
+  myleaves <- which(is.na(match(vertices$name, edges$from)))
+  nleaves <- length(myleaves)
+  vertices$id[myleaves] <- seq(1:nleaves)
 
   ## Sort for colors
   unique_groups <- na.omit(unique(vertices$group))
@@ -261,12 +262,17 @@ get_dimension_ggraph <- function(csv_path = NULL,
   # Node labels
   plot <- plot +
     ggraph::geom_node_label(
-      ggplot2::aes(label = ifelse(
-        name == group | name == dimension_in | name %in% indicator_names | name == 'root',
-        name,
-        # stringr::str_to_title(name),
-        NA
-      )),
+      ggplot2::aes(
+        label = ifelse(
+          name == group |
+            name == dimension_in |
+            name %in% indicator_names |
+            name == 'root',
+          name,
+          # stringr::str_to_title(name),
+          NA
+        )
+      ),
       label.padding = ggplot2::unit(0.2, "lines"),
       label.r = ggplot2::unit(0.3, "lines"),
       label.size = index_label_size,

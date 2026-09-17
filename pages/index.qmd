@@ -2,7 +2,6 @@
 title: "Sustainability Metrics"
 author: 
   - name: Chris Donovan
-    email: christopher.donovan@uvm.edu
     affiliation:
       - name: UVM Food Systems Research Institute
         city: Burlington
@@ -12,7 +11,7 @@ date: today
 ---
 
 ::: {.callout-note collapse='false' title='Caution'}
-The Sustainability Metrics project, as well as this site itself, are works in progress. All data and analyses shown here are preliminary. If you have any questions, comments, or suggestions about this site or the accompanying Shiny app, feel free to reach out to Chris at [christopher.donovan@uvm.edu](mailto:christopher.donovan@uvm.edu).
+The Sustainability Metrics project, as well as this site itself, are works in progress. All data and analyses shown here are preliminary. If you have any questions, comments, or suggestions about this site or the accompanying Shiny app, feel free to reach out to Chris at [christopher.donovan@uvm.edu](mailto:christopher.donovan@uvm.edu "Email Chris Donovan").
 :::
 
 ## Introduction {#sec-intro}

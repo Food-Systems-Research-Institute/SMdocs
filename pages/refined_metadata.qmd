@@ -9,19 +9,9 @@ warnings: false
 ```{r}
 #| label: setup
 #| echo: false
-pacman::p_load(
-  dplyr,
-  conflicted,
-  purrr,
-  stringr,
-  readr,
-  tibble, 
-  tidyr,
-  htmltools,
-  reactable
-)
-pacman::p_load_gh('ChrisDonovan307/projecter')
-conflicts_prefer(
+#| cache: false
+pacman::p_load(conflicted)
+conflicted::conflicts_prefer(
   dplyr::select(),
   dplyr::filter(),
   dplyr::arrange(),
@@ -29,7 +19,18 @@ conflicts_prefer(
   dplyr::as_data_frame(),
   .quiet = TRUE
 )
-source('dev/data_pipeline_functions.R')
+pacman::p_load(
+  dplyr,
+  purrr,
+  stringr,
+  readr,
+  tibble,
+  tidyr,
+  htmltools,
+  reactable
+)
+pacman::p_load_gh('ChrisDonovan307/projecter')
+devtools::load_all()
 ```
 
 # Introduction
@@ -40,20 +41,19 @@ This page holds a table of the 130 metrics that are used in the refined framewor
 #| label: wrangle_metrics
 #| output: false
 # Load metrics data
-sm_data <- readRDS('data/sm_data.rds')
-metrics <- sm_data$metrics
+metrics <- SMdata::metrics
 
 # Load refined framework
-raw_tree <- sm_data[['refined_tree']]
+raw_tree <- SMdata::refined_tree
 
 # Load refined framework
 frame <- readRDS('data/frame.rds')
 
 # Pull it from the actual metrics data
-metrics <- sm_data$metrics %>% 
+metrics <- SMdata::metrics %>%
   dplyr::filter(
     variable_name %in% frame$variable_name,
-    fips %in% sm_data$state_key$state_code
+    fips %in% SMdata::state_key$state_code
   )
 get_str(metrics)
 length(unique(metrics$variable_name))
@@ -99,7 +99,7 @@ vars <- unique(frame$variable_name) %>%
 
 
 ## Load metadata table, but keep framework from frame
-metadata <- sm_data$metadata %>% 
+metadata <- SMdata::metadata %>% 
   select(-c(dimension, index, indicator)) %>% 
   dplyr::filter(variable_name %in% vars)
 
@@ -132,7 +132,7 @@ metadata <- metadata %>%
   setNames(c(str_to_title(names(.))))
 
 # Save this for preso
-saveRDS(metadata, 'preso/data/meta_for_table.rds')
+# saveRDS(metadata, 'preso/data/meta_for_table.rds')
 
 ###
 htmltools::browsable(

@@ -24,7 +24,14 @@ More information about this refinement process can be found in the [Indicator Re
 
 ## Framework Overview {#sec-framework_overview}
 
-Below is a diagram of all 135 indicators in the framework as of July, 2024. These have since been reduced dramatically (see [Current Framework](../pages/current_framework)). Colors represent dimensions, and splits occur at the dimension and index level. This is not a terribly practical visualization, but it gives an idea of where we've come as we get into the next sections on indicator refinement. 
+Below is a diagram of all 135 indicators in the framework as of July, 2024. These have since been reduced dramatically (see [Current Framework](../pages/current_framework)). Colors represent dimensions, and splits occur at the dimension and index level. This is not a terribly practical visualization, but it gives an idea of where we've come as we get into the next sections on indicator refinement.
+
+```{r}
+#| label: setup
+#| echo: false
+#| cache: false
+devtools::load_all()
+```
 
 ```{r fig.dim=c(10, 10), fig.align='center'}
 #| label: radial_plot
@@ -170,7 +177,6 @@ pacman::p_load(
 tree <- readRDS('data/trees/tree_dat.rds')
 
 # Load custom reactable table function
-source('dev/get_reactable.R')
 
 # Pick out variables to display
 dat <- tree %>% 
